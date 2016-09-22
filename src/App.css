@@ -1,0 +1,33 @@
+/* general setup */
+h1 {
+    font-size: 1.75rem;
+}
+.f-app {
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.section {
+    margin: 60px auto;
+    max-width: 1024px; 
+    width: 100%;
+    /* temp */
+    height: 60vh;
+}
+
+.l-section {
+    /* layout like all sections */
+    max-width: 1024px; 
+    width: 100%;
+    margin: auto;
+}
+
+.button {
+    font-size: 14px;
+    background-color: white;
+    outline: 0;
+    padding: 8px;
+    border: 1px solid #333;
+    width: 120px;
+    cursor: pointer;
+}
