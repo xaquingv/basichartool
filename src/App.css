@@ -8,16 +8,15 @@ h1 {
 }
 
 .section {
-    margin: 60px auto;
-    max-width: 1024px; 
+    margin: 80px auto 60px;
+    max-width: 1024px;
     width: 100%;
-    /* temp */
-    height: 60vh;
+    height: calc(100vh - 140px);
 }
 
 .l-section {
     /* layout like all sections */
-    max-width: 1024px; 
+    max-width: 1024px;
     width: 100%;
     margin: auto;
 }
@@ -28,6 +27,5 @@ h1 {
     outline: 0;
     padding: 8px;
     border: 1px solid #333;
-    width: 120px;
     cursor: pointer;
 }

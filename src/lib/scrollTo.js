@@ -40,8 +40,8 @@ export default function (to, callback, duration) {
         currentTime = 0,
         increment = 20;
     duration = (typeof(duration) === 'undefined') ? 500 : duration;
-    console.log(to, start);
-    
+    //console.log(to, start);
+
     var animateScroll = function() {
         // increment the time
         currentTime += increment;

@@ -1,0 +1,3 @@
+// string
+// number: 1,000, 100m, %, currency
+// date: ...

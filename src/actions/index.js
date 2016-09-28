@@ -1,28 +1,36 @@
+import parseInputData from '../lib/parseInputData';
+
 /* navigation */
 export const changeStep = (step) => {
     return {
         type: "CHANGE_STEP",
-        step 
+        step
+    }
+}
+export const nextStep = (step) => {
+    return {
+        type: "NEXT_STEP",
+        step
+    }
+}
+export const activeStep = (step) => {
+    return {
+        type: "ACTIVE_STEP",
+        step
     }
 }
 
-/* section 1: impoart data */
-export const validateDATA = (data) => {
-    return {
-        type: "VALIDATE_DATA",
-        data
-    }
-}
-export const importData = (data) => {
+/* section 1: import data */
+export const importData = (dataInput) => {
     return {
         type: "IMPORT_DATA",
-        data
+        data: parseInputData(dataInput)
     }
 }
-export const clearData = () => {
+export const inputData = (dataInput) => {
     return {
-        type: "CLEAR_DATA",
-        data: ""
+        type: "INPUT_DATA",
+        dataInput
     }
 }
 

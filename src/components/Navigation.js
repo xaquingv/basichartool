@@ -1,46 +1,55 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import './navigation.css';
-import logo from '../assets/logo.svg';
+import {changeStep} from '../actions';
 import scrollTo from '../lib/scrollTo';
+import logo from '../assets/logo.svg';
+
+
+const mapDispatchToProps = (dispatch) => ({
+  onClickStep: (step) => {
+    dispatch(changeStep(step));
+  }
+});
+
+const mapStateToProps = (state) => ({
+  step: state.step,
+  stepActive: state.stepActive
+});
 
 class Navigation extends React.Component {
-    
-    render() {
-        const {list, stepChange} = this.props;
-        
-        // TODO: how to init states? 
-        // TODO: where should i put this code!?
-        let onClickStep = (index) => {
-            let step = index + 1; 
-            stepChange(step);
-            // remove all highlight
-            [...document.querySelectorAll(".step")].forEach(el => {
-                el.classList.remove("li-focus");
-            });
-            // highlight
-            document.querySelector("#step" + step)
-            .classList.add("li-focus");
-            // scrollTo
-            let to = document.querySelector("#section"+step).offsetTop - 60;
-            scrollTo(to, null, 1000);
-        }; 
-            
-        return (
-            <nav className="nav">
-                <ul className="ul-flex l-section">
-                    <li>Step</li>
-                    {list.map((li, index) => 
-                        <li 
-                            id = {"step"+(index+1)}
-                            className="li step" 
-                            onClick={()=>onClickStep(index)}>{li}
-                        </li>
-                    )}
-                    <li><img src={logo} className="logo" alt="logo" /></li>
-                </ul>
-            </nav>
-        );
-    }
+  static propTypes = {
+    step: React.PropTypes.number.isRequired,
+  };
+
+  animateScroll = () => {
+    const to = document.querySelector("#section" + this.props.step).offsetTop - 80;
+    scrollTo(to, null, 1000);
+  };
+  
+  // dom ready
+  componentDidUpdate() {
+    this.animateScroll();
+  };
+
+  render() {
+    //console.log("props:", this.props);
+    const {step, stepActive, list, onClickStep} = this.props;
+    return (
+      <nav className="nav">
+        <ul className="ul-flex l-section">
+          <li>Step</li>
+          {list.map((li, index) => <li
+            key={"step"+(index+1)}
+            ref={(node) => this.node = node}
+            className={"li step" + ((step===index+1)?" li-focus":"") + ((stepActive>=index+1)?"":" pe-n")}
+            onClick={()=>onClickStep(index+1)}>{li}
+          </li>)}
+          <li><img src={logo} className="logo" alt="logo" /></li>
+        </ul>
+      </nav>
+    );
+  }
 }
 
-export default Navigation;
+export default connect(mapStateToProps, mapDispatchToProps)(Navigation);

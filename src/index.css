@@ -3,3 +3,9 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+/* atomic css */
+.d-n { display: none; }
+.p-r { position: relative; }
+.o-0 { opacity: 0; }
+.pe-n { pointer-events: none; }
