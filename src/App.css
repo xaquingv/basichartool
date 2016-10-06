@@ -29,3 +29,15 @@ h1 {
     border: 1px solid #333;
     cursor: pointer;
 }
+
+[contenteditable="true"] {
+  min-width: 10px;
+  border-bottom: 1px solid transparent;
+}
+[contenteditable="true"]:focus {
+  outline: none;
+  border-bottom: 1px solid transparent;
+}
+[contenteditable="true"]:hover {
+  border-bottom: 1px dotted #333;
+}

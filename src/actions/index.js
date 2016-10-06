@@ -13,10 +13,11 @@ export const nextStep = (step) => {
         step
     }
 }
-export const activeStep = (step) => {
+export const activeStep = (stepActive) => {
+    console.log(stepActive);
     return {
         type: "ACTIVE_STEP",
-        step
+        stepActive
     }
 }
 

@@ -33,17 +33,17 @@ function step(step = 1, action) {
             return action.step;
         // sections
         case 'NEXT_STEP':
-            return step + 1;
+            return action.step + 1;
         default:
             return step;
     }
 }
-function stepActive(step = 1, action) {
+function stepActive(stepActive = 1, action) {
     switch(action.type) {
         case 'ACTIVE_STEP':
-            return action.step + 1;
+            return action.stepActive;
         default:
-            return step;
+            return stepActive;
     }
 }
 

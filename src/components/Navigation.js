@@ -5,6 +5,7 @@ import {changeStep} from '../actions';
 import scrollTo from '../lib/scrollTo';
 import logo from '../assets/logo.svg';
 
+//TODO: scroll and switch step
 
 const mapDispatchToProps = (dispatch) => ({
   onClickStep: (step) => {
@@ -26,7 +27,7 @@ class Navigation extends React.Component {
     const to = document.querySelector("#section" + this.props.step).offsetTop - 80;
     scrollTo(to, null, 1000);
   };
-  
+
   // dom ready
   componentDidUpdate() {
     this.animateScroll();

@@ -9,7 +9,7 @@ const STEP = 2;
 const mapDispatchToProps = (dispatch) => ({
   onClickCreate: () => {
     dispatch(nextStep(STEP));
-    dispatch(activeStep(STEP));
+    dispatch(activeStep(STEP + 1));
   },
   //onChangeContent: () => null,
 });
@@ -21,14 +21,21 @@ const mapStateToProps = (state) => ({
 
 
 class Section extends React.Component {
+    componentDidMount() {
+      //this.node = React.findDOMNode(this);
+    }
+    componentDidUpdate() {
+      //this.node.innerHTML = this.props.value;
+    }
 
     render() {
         const {data, stepActive, onClickCreate/*, onChangeContent*/} = this.props;
-        const tableData = data.rows || [];
-        const isData = tableData.length > 0;
-        const dataTypes = isData ? ["T"].concat(tableData[0].map(()=>"type?")):[]; //temp
-        //console.log("table:", tableData);
-        
+
+        const isData = data.body ? true : false;
+        const dataTypes = isData ? data.type : [];
+        const tableHead = isData ? data.head : [];
+        const tableBody = isData ? data.body : [];
+
         return (
             <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section2">
                 <h1>2. Toggle your dataset</h1>
@@ -42,17 +49,23 @@ class Section extends React.Component {
                 <div className="table">
                 <table>
                   <thead>
+                    <tr>{tableHead.map((head, i) =>
+                      <th key={"lab-"+i}>{head}</th>
+                    )}</tr>
                     <tr>{dataTypes.map((type, i) =>
-                      <th key={"key-"+i}>{type}</th>
+                      <th key={"key-"+i} className={type.list[0] + " fw-n ws-n"}>
+                        <span contentEditable={true}>
+                          {type.list[0].toUpperCase() +
+                          (type.format!=="" ? " : " + type.format : "")}
+                        </span>
+                      </th>
                     )}</tr>
                   </thead>
                   <tbody>
-                    {tableData.map((tr, i) =>
-                      <tr key={"row-"+i}>{[i].concat(tr).map((td, j) =>
-                        <td
-                          key={"col-"+j}
-                          /*contentEditable={"true"}
-                          onChange={onChangeContent}*/>{td}
+                    {tableBody.map((tr, i) =>
+                      <tr key={"row-"+(i+1)}>{[i+1].concat(tr).map((td, j) =>
+                        <td key={"col-"+(j+1)} className={dataTypes[j].list[0] + (!td ? " null" : "") + " ws-n"}>
+                          {td ? td : "null"}
                         </td>)}
                       </tr>
                     )}

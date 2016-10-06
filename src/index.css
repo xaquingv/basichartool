@@ -9,3 +9,5 @@ body {
 .p-r { position: relative; }
 .o-0 { opacity: 0; }
 .pe-n { pointer-events: none; }
+.fw-n { font-weight: normal; }
+.ws-n { white-space: nowrap; }
