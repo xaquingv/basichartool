@@ -11,11 +11,15 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(nextStep(STEP));
     dispatch(activeStep(STEP + 1));
   },
-  //onChangeContent: () => null,
+  // TODO:
+  // onChangeFormat: () => {}
+  // onToggleRows: () => {}
+  // onToggleCols: () => {}
+  // onTranspose: () => {}
 });
 
 const mapStateToProps = (state) => ({
-    data: state.data,
+    dataTable: state.dataTable,
     stepActive: state.stepActive
 });
 
@@ -29,21 +33,17 @@ class Section extends React.Component {
     }
 
     render() {
-        const {data, stepActive, onClickCreate/*, onChangeContent*/} = this.props;
-
-        const isData = data.body ? true : false;
-        const dataTypes = isData ? data.type : [];
-        const tableHead = isData ? data.head : [];
-        const tableBody = isData ? data.body : [];
+        const {dataTable, stepActive, onClickCreate/*, onChangeContent*/} = this.props;
+        //console.log(this.props)
+        const isData = dataTable.body ? true : false;
+        const dataTypes = isData ? dataTable.type : [];
+        const tableHead = isData ? dataTable.head : [];
+        const tableBody = isData ? dataTable.body : [];
 
         return (
             <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section2">
                 <h1>2. Toggle your dataset</h1>
                 <div className={isData?"":" o-0"}>
-                {/*
-                  toggles
-                  ...
-                */}
 
                 {/* table */}
                 <div className="table">
@@ -54,10 +54,11 @@ class Section extends React.Component {
                     )}</tr>
                     <tr>{dataTypes.map((type, i) =>
                       <th key={"key-"+i} className={type.list[0] + " fw-n ws-n"}>
-                        <span contentEditable={true}>
+                        {/*<span contentEditable={true}>*/}
+                        {/* how about use text input ? */}
                           {type.list[0].toUpperCase() +
                           (type.format!=="" ? " : " + type.format : "")}
-                        </span>
+                        {/*</span>*/}
                       </th>
                     )}</tr>
                   </thead>

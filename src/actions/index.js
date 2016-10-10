@@ -1,4 +1,4 @@
-import parseInputData from '../lib/parseInputData';
+import parseInputData from '../parsers/parseInputData';
 
 /* navigation */
 export const changeStep = (step) => {
@@ -14,7 +14,7 @@ export const nextStep = (step) => {
     }
 }
 export const activeStep = (stepActive) => {
-    console.log(stepActive);
+    console.log("step:", stepActive);
     return {
         type: "ACTIVE_STEP",
         stepActive
@@ -25,7 +25,7 @@ export const activeStep = (stepActive) => {
 export const importData = (dataInput) => {
     return {
         type: "IMPORT_DATA",
-        data: parseInputData(dataInput)
+        dataTable: dataInput === "" ? {} : parseInputData(dataInput)
     }
 }
 export const inputData = (dataInput) => {

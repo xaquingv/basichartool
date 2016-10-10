@@ -47,12 +47,12 @@ function stepActive(stepActive = 1, action) {
     }
 }
 
-function data(data = {}, action) {
+function dataTable(dataTable = {}, action) {
     switch(action.type) {
         case 'IMPORT_DATA':
-            return action.data;
+            return action.dataTable;
         default:
-            return data;
+            return dataTable;
     }
 }
 function dataInput(dataInput = "", action) {
@@ -67,8 +67,8 @@ function dataInput(dataInput = "", action) {
 const app = combineReducers({
   step,
   stepActive,
-  data,
-  dataInput
+  dataInput,
+  dataTable
 })
 
 export default app

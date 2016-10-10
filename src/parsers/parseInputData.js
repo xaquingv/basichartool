@@ -5,18 +5,50 @@ const META_KEYS = ["headline", "standfirst", "source", "type", "keys"];
 
 
 /*
-  detect file format => CSV with , or \t or | OR JSON
-  === validatation 1 ===
-  string => rows (based on the format)
-  rows => meta, body rows; ps. remove empty rows, wt about empty cols
-  === validatation 2 ===
-  detect data type(s) of body rows
-  return meta, body, head (possible types)
+detect file format => CSV with , or \t or | OR JSON
+=== validatation 1 ===
+string => rows (based on the format)
+rows => meta, body rows; ps. remove empty rows, wt about empty cols
+=== validatation 2 ===
+detect data type(s) of body rows
+return meta, body, head (possible types)
 */
 
 
+// Check if a row is meta data
+function isMetaKeys(col) {
+  return META_KEYS.filter(d => d === col).length === 1;
+}
+
+// Check if a row is empty, all cols have no value as content
+function isNotEmpty(row) {
+  return row.length !== row.filter(d => d === null).length;
+}
+
+function parseRow(dataTable, row) {
+  let col0 = row[0].toLowerCase();
+  // col0 is the key if this row is meta data
+
+  // 1. trim and set empty entris to null
+  row = row.map(d => {
+    d = d.trim();
+    return d!=="" ? d : null;
+  });
+
+  // 2. extract meta
+  // 3. ignore empty lines
+  switch (true) {
+    case isMetaKeys(col0): dataTable.meta[col0] = row[1]; break;
+    case isNotEmpty(row): dataTable.rows.push(row); break;
+    default: /*console.log("empty row")*/;
+  }
+}
+
+
 export default function(dataInput) {
-    // console.log(data);
+  //console.log(dataInput);
+  //if (dataInput==="") { return {}; }
+  //else {
 
     // type
     let dataMatch = {
@@ -44,17 +76,14 @@ export default function(dataInput) {
 
     /* 1. meta , rows */
     dataLines.forEach(row => {
-        switch(dataType) {
-            case "tsv": row = row.split("\t"); break;
-            case "csv": row = row.split(",");  break;
-            case "json": console.log("add a parser"); break;
-            default: console.log("need a new type:", dataType);
-        }
-        parseRow(dataTable, row);
+      switch(dataType) {
+        case "tsv": row = row.split("\t"); break;
+        case "csv": row = row.split(",");  break;
+        case "json": console.log("add a parser"); break;
+        default: console.log("need a new type:", dataType);
+      }
+      parseRow(dataTable, row);
     });
-    /*dataTable.rows.map(val =>
-      val !== "" ? val : "null"
-    );*/
 
 
     /* 2. cols */
@@ -99,14 +128,16 @@ export default function(dataInput) {
     // - head types doesn't match body types or
     // - all head types are strings
     let isFirstRowLabel =
-      (headTypes.filter(headType => headType === "string").length === headTypes.length) ||
-      (headTypes.filter((headType, i) => headType === bodyTypes[i].list[0]).length !== headTypes.length)
+    (headTypes.filter(headType => headType === "string").length === headTypes.length) ||
+    (headTypes.filter((headType, i) => headType === bodyTypes[i].list[0]).length !== headTypes.length)
     //console.log(headTypes)
 
     dataTable.type = [{list:[""], format:""}].concat(bodyTypes)
     if (isFirstRowLabel) {
       dataTable.head = ["T"].concat(dataTable.rows.slice(0, 1)[0]);
       dataTable.body = dataTable.rows.slice(1)
+      dataTable.rows = dataTable.rows.slice(1)
+      dataTable.cols = dataTable.cols.map(col => col.slice(1))
     } else {
       dataTable.head = ["T"].concat(headTypes.map(() => "unknown title"));
       dataTable.body = dataTable.rows
@@ -115,45 +146,17 @@ export default function(dataInput) {
 
     console.log(dataTable)
     return dataTable
-}
-
-// Check if a row is meta data
-function isMetaKeys(col) {
-    return META_KEYS.filter(d => d === col).length === 1;
-}
-
-// Check if a row is empty, all cols have no value as content
-function isNotEmpty(row) {
-    return row.length !== row.filter(d => d === null).length;
-}
-
-function parseRow(dataTable, row) {
-    let col0 = row[0].toLowerCase();
-    // col0 is the key if this row is meta data
-
-    // 1. trim and set empty entris to null
-    row = row.map(d => {
-        d = d.trim();
-        return d!=="" ? d : null;
-    });
-
-    // 2. extract meta
-    // 3. ignore empty lines
-    switch (true) {
-        case isMetaKeys(col0): dataTable.meta[col0] = row[1]; break;
-        case isNotEmpty(row): dataTable.rows.push(row); break;
-        default: /*console.log("empty row")*/;
-    }
+  //}
 }
 
 
 /*
 //http://stackoverflow.com/questions/3710204/how-to-check-if-a-string-is-a-valid-json-string-in-javascript-without-using-try
 function IsJsonString(str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
+try {
+JSON.parse(str);
+} catch (e) {
+return false;
+}
+return true;
 }*/

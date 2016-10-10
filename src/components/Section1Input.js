@@ -7,14 +7,15 @@ const STEP = 1;
 // read https://facebook.github.io/react/docs/forms.html
 const mapDispatchToProps = (dispatch) => ({
   onClickImport: (textarea) => {
-    dispatch(importData(textarea.value));
     dispatch(inputData(textarea.value));
+    dispatch(importData(textarea.value));
     dispatch(nextStep(STEP));
     dispatch(activeStep(2));
   },
   onClickClear: (textarea, textInput) => {
     [textarea, textInput].forEach(input => input.value= "");
-    dispatch(inputData(textarea.value));
+    dispatch(inputData(""));
+    dispatch(importData(""));
     dispatch(nextStep(0));
     dispatch(activeStep(STEP));
   }
@@ -55,9 +56,9 @@ class Section extends React.Component {
   render() {
     let textarea, textInput;
 
-    const {state, onClickImport, onClickClear} = this.props;
+    const {/*state,*/ onClickImport, onClickClear} = this.props;
     //console.log(state.step, "(cur)", state.stepActive, "(active)");
-    console.log(state);
+    //console.log(state);
 
     return (
       <div className="section" id="section1" ref={(node) => this.node = node}>
