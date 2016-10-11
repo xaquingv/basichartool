@@ -112,6 +112,8 @@ export default function(dataInput) {
     /* 3. type, head, body */
     let bodyTypes = dataTable.cols.map((col) => {
       let output = getDataTypeAnalysis(col.slice(1), "body")
+      //console.log(output)
+
       let list = output.types
       let type = list[0]
       let format = (type !== "string") ? (output[type].format !== "" ? output[type].format : "") : ""
@@ -132,14 +134,14 @@ export default function(dataInput) {
     (headTypes.filter((headType, i) => headType === bodyTypes[i].list[0]).length !== headTypes.length)
     //console.log(headTypes)
 
-    dataTable.type = [{list:[""], format:""}].concat(bodyTypes)
+    dataTable.type = bodyTypes
     if (isFirstRowLabel) {
-      dataTable.head = ["T"].concat(dataTable.rows.slice(0, 1)[0]);
+      dataTable.head = dataTable.rows.slice(0, 1)[0]
       dataTable.body = dataTable.rows.slice(1)
       dataTable.rows = dataTable.rows.slice(1)
       dataTable.cols = dataTable.cols.map(col => col.slice(1))
     } else {
-      dataTable.head = ["T"].concat(headTypes.map(() => "unknown title"));
+      dataTable.head = headTypes.map(() => "unknown title")
       dataTable.body = dataTable.rows
     }
 

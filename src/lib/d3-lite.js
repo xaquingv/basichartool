@@ -17,4 +17,5 @@ export const d3 = {
   scaleQuantile,
   scaleSqrt
 }
-console.log(d3)
+
+//console.log(d3)

@@ -1,23 +1,18 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import './section1Input.css';
-import {inputData, importData, nextStep, activeStep} from '../actions';
+import {importData, clearData} from '../actions';
 
-const STEP = 1;
+//const STEP = 1;
 // read https://facebook.github.io/react/docs/forms.html
+
 const mapDispatchToProps = (dispatch) => ({
   onClickImport: (textarea) => {
-    dispatch(inputData(textarea.value));
     dispatch(importData(textarea.value));
-    dispatch(nextStep(STEP));
-    dispatch(activeStep(2));
   },
   onClickClear: (textarea, textInput) => {
     [textarea, textInput].forEach(input => input.value= "");
-    dispatch(inputData(""));
-    dispatch(importData(""));
-    dispatch(nextStep(0));
-    dispatch(activeStep(STEP));
+    dispatch(clearData());
   }
 });
 
@@ -27,18 +22,6 @@ const mapStateToProps = (state) => ({
 
 
 class Section extends React.Component {
-  /*STEP = 1;
-  focusIfChosenStep = () => {
-    console.log('focusIfChosenStep', this.props.step, this.STEP);
-    if (this.props.step === this.STEP) {
-      //console.log('focus', this.node);
-      //let to = this.node.offsetTop - 60;
-      //scrollTo(to, null, 1000);
-    }
-  };
-  componentDidUpdate() {
-    this.focusIfChosenStep();
-  }*/
 
   openFile(e) {
     const dataSrc = e.target.value;
@@ -58,7 +41,7 @@ class Section extends React.Component {
 
     const {/*state,*/ onClickImport, onClickClear} = this.props;
     //console.log(state.step, "(cur)", state.stepActive, "(active)");
-    //console.log(state);
+    //console.log("step: 1", state);
 
     return (
       <div className="section" id="section1" ref={(node) => this.node = node}>

@@ -1,38 +1,39 @@
 import parseInputData from '../parsers/parseInputData';
+import summarizeData from '../parsers/summarizeData';
 
 /* navigation */
-export const changeStep = (step) => {
-    return {
-        type: "CHANGE_STEP",
-        step
-    }
-}
-export const nextStep = (step) => {
-    return {
-        type: "NEXT_STEP",
-        step
-    }
-}
-export const activeStep = (stepActive) => {
-    console.log("step:", stepActive);
-    return {
-        type: "ACTIVE_STEP",
-        stepActive
-    }
-}
+export const changeStep = (step) => ({
+  type: "CHANGE_STEP",
+  step
+})
+export const activeStep = (stepActive) => ({
+  type: "ACTIVE_STEP",
+  stepActive
+})
 
-/* section 1: import data */
-export const importData = (dataInput) => {
-    return {
-        type: "IMPORT_DATA",
-        dataTable: dataInput === "" ? {} : parseInputData(dataInput)
-    }
-}
-export const inputData = (dataInput) => {
-    return {
-        type: "INPUT_DATA",
-        dataInput
-    }
-}
+/* section 1 */
+export const clearData = () => ({
+  type: "CLEAR_DATA",
+})
+export const inputData = (dataInput) => ({
+  type: "INPUT_DATA",
+  dataInput
+})
+export const importData = (dataInput) => ({
+  type: "IMPORT_DATA",
+  dataTable: dataInput === "" ? {} : parseInputData(dataInput)
+})
 
-/* section ... */
+/* section 2 */
+export const transposeData = () => ({
+  type: "TRANSPOSE_DATA",
+})
+export const toggleData = ({type, index}) => ({
+  type: "TOGGLE_DATA",
+  target: type,
+  index,
+})
+export const analyzeData = (dataTable, show) => ({
+  type: "ANALYZE_DATA",
+  dataBrief: summarizeData(dataTable, show)
+})

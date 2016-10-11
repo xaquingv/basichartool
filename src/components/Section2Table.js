@@ -1,27 +1,30 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import './Section2Table.css';
-import {nextStep, activeStep} from '../actions';
-//import scrollTo from '../lib/scrollTo';
+import './section2Table.css';
+import {analyzeData, toggleData, transposeData} from '../actions';
 
 
 const STEP = 2;
+
 const mapDispatchToProps = (dispatch) => ({
-  onClickCreate: () => {
-    dispatch(nextStep(STEP));
-    dispatch(activeStep(STEP + 1));
+  onClickCreate: (dataTable, show) => {
+    dispatch(analyzeData(dataTable, show))
   },
+  onToggle: (i, type) => {
+    dispatch(toggleData({type, index: i}))
+  },
+  onTranspose: () => {
+    dispatch(transposeData())
+  }
   // TODO:
   // onChangeFormat: () => {}
-  // onToggleRows: () => {}
-  // onToggleCols: () => {}
-  // onTranspose: () => {}
-});
+})
 
 const mapStateToProps = (state) => ({
+    stepActive: state.stepActive,
     dataTable: state.dataTable,
-    stepActive: state.stepActive
-});
+    show: state.show
+})
 
 
 class Section extends React.Component {
@@ -33,7 +36,7 @@ class Section extends React.Component {
     }
 
     render() {
-        const {dataTable, stepActive, onClickCreate/*, onChangeContent*/} = this.props;
+        const {stepActive, dataTable, show, onClickCreate, onToggle, onTranspose/*, ... */} = this.props;
         //console.log(this.props)
         const isData = dataTable.body ? true : false;
         const dataTypes = isData ? dataTable.type : [];
@@ -49,25 +52,34 @@ class Section extends React.Component {
                 <div className="table">
                 <table>
                   <thead>
-                    <tr>{tableHead.map((head, i) =>
-                      <th key={"lab-"+i}>{head}</th>
-                    )}</tr>
-                    <tr>{dataTypes.map((type, i) =>
-                      <th key={"key-"+i} className={type.list[0] + " fw-n ws-n"}>
+                    <tr>
+                      <th onClick={onTranspose}>T</th>
+                      {tableHead.map((head, j) =>
+                      <th key={"lab-"+j} onClick={()=>onToggle(j, "col")} className={"c-p" + (show.col[j] ? '' : ' col-hide')}>{head}</th>
+                      )}
+                    </tr>
+                    <tr>
+                      <th></th>
+                      {dataTypes.map((type, j) =>
+                      <th key={"key-"+j} className={type.list[0] + " fw-n ws-n" + (show.col[j] ? '' : ' col-hide')}>
                         {/*<span contentEditable={true}>*/}
                         {/* how about use text input ? */}
                           {type.list[0].toUpperCase() +
                           (type.format!=="" ? " : " + type.format : "")}
                         {/*</span>*/}
                       </th>
-                    )}</tr>
+                      )}
+                    </tr>
                   </thead>
                   <tbody>
                     {tableBody.map((tr, i) =>
-                      <tr key={"row-"+(i+1)}>{[i+1].concat(tr).map((td, j) =>
-                        <td key={"col-"+(j+1)} className={dataTypes[j].list[0] + (!td ? " null" : "") + " ws-n"}>
+                      <tr key={"row-"+i} className={show.row[i] ? '' : 'row-hide'}>
+                        <td onClick={()=>onToggle(i, "row")} className="c-p">{i+1}</td>
+                        {(tr).map((td, j) =>
+                        <td key={"col-"+j} className={dataTypes[j].list[0] + (!td ? " null" : "") + " ws-n" + (show.col[j] ? '' : ' col-hide')}>
                           {td ? td : "null"}
-                        </td>)}
+                        </td>
+                        )}
                       </tr>
                     )}
                   </tbody>
@@ -79,7 +91,7 @@ class Section extends React.Component {
                   type="button"
                   className={"button btn-create"}
                   value="Create Visualizations"
-                  onClick={() => onClickCreate()}
+                  onClick={() => onClickCreate(dataTable, show)}
                 />
                 </div>
             </div>

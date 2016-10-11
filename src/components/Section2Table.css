@@ -52,3 +52,9 @@ td:first-child {
   color: #d61d00;
   background-color: rgba(253, 173, 186, 0.2);
 }
+
+/* hide and show */
+.col-hide,
+.row-hide td {
+  color: #dcdcdc !important;
+}

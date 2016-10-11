@@ -15,7 +15,7 @@ const mapStateToProps = (state) => ({
 class Section extends React.Component {
   render() {
     const {stepActive} = this.props
-    console.log("step: 3", this.props)
+    //console.log("step: 3", this.props)
 
     return (
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section3">

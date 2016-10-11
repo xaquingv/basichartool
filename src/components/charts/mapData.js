@@ -26,7 +26,7 @@ const getColors = (count, scaleType, color) => {
 export default function(dataCols, dataType) {
   //console.log(dataCols)
   //temp
-  let types = dataType.slice(1).map(type => type.list[0])
+  let types = dataType.map(type => type.list[0])
   //end of temp
 
   /* values */
