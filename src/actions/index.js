@@ -1,4 +1,4 @@
-import parseInputData from '../parsers/parseInputData';
+import parseDataInput from '../parsers/parseDataInput';
 import summarizeData from '../parsers/summarizeData';
 
 /* navigation */
@@ -21,7 +21,7 @@ export const inputData = (dataInput) => ({
 })
 export const importData = (dataInput) => ({
   type: "IMPORT_DATA",
-  dataTable: dataInput === "" ? {} : parseInputData(dataInput)
+  dataTable: dataInput === "" ? {} : parseDataInput(dataInput)
 })
 
 /* section 2 */

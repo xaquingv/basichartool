@@ -8,6 +8,7 @@ import {d3} from '../../lib/d3-lite'
   data spec
   missing data accepted
   cols [2, 5]
+  rows []
   - string: country code and/or name  => mapping
   - number: any range                 => bubble radius or seq color
   - number (optional): any range      => bubble radius or seq color
@@ -20,6 +21,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const mapStateToProps = (state) => ({
+  step: state.step,
   stepActive: state.stepActive,
   dataCols: state.dataTable.cols,
   dataType: state.dataTable.type
@@ -28,9 +30,8 @@ const mapStateToProps = (state) => ({
 
 class Map extends React.Component {
   //componentDidMount
-  componentWillUpdate(){
-    //console.log("MapBubble")
-    if (!this.props.dataCols) return
+  componentDidUpdate(){
+    if (this.props.step !== 3) return
 
     /* data */
     const dataChart = getParsedData(this.props.dataCols, this.props.dataType)

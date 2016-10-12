@@ -39,9 +39,8 @@ class Section extends React.Component {
   render() {
     let textarea, textInput;
 
-    const {/*state,*/ onClickImport, onClickClear} = this.props;
-    //console.log(state.step, "(cur)", state.stepActive, "(active)");
-    //console.log("step: 1", state);
+    const {state, onClickImport, onClickClear} = this.props;
+    console.log(state);
 
     return (
       <div className="section" id="section1" ref={(node) => this.node = node}>

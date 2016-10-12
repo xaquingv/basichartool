@@ -5,7 +5,7 @@ function countType(dataTypes, type) {
 
 export default function(dataTable, show) {
   //console.log(show)
-  //console.log(dataTable.cols)
+  //console.log(dataTable)
 
   /* filter on toggle */
   let dataType = [];
@@ -40,8 +40,9 @@ export default function(dataTable, show) {
   //console.log(types)
 
   /* summarise data */
+  // TODO: from here ...
   const data = {}
 
-  console.log(count)
+  //console.log(count)
   return {count, data}
 }

@@ -14,14 +14,6 @@ const dateFormatExtension = ["%d/%m/%Y", "%d/%m/%y", "%Y%m%d", "%B", "%b", "%H:%
 export default function(dataArr = "", tablePart) {
   //console.log(dataArr)
   let data = { types:[] };
-  // types = [],
-  // number = {format: ,data: }
-  // date = {format: ,data: ,hasDay: false},
-  // prop = {
-  //  hasNull: false,
-  //  hasRepeat: false
-  //  range: []
-  // }
 
   /* missing data */
   let dataClean;
@@ -40,6 +32,7 @@ export default function(dataArr = "", tablePart) {
 
   /* number format */
   //TODO: think if it's enough to use only the first row
+  //console.log(dataClean)
   let numberFormat = dataClean[0].match(regexNumberFormats);
   let dataNumberClean = dataClean
   .map(data =>

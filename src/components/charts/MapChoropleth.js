@@ -16,6 +16,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const mapStateToProps = (state) => ({
+  step: state.step,
   stepActive: state.stepActive,
   dataCols: state.dataTable.cols,
   dataType: state.dataTable.type
@@ -24,9 +25,8 @@ const mapStateToProps = (state) => ({
 
 class Map extends React.Component {
   //componentDidMount
-  componentWillUpdate(){
-    //console.log("MapChoropleth")
-    if (!this.props.dataCols) return
+  componentDidUpdate(){
+    if (this.props.step !== 3) return
 
     /* data */
     const dataChart = getParsedData(this.props.dataCols, this.props.dataType)

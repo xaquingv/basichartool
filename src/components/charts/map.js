@@ -8,22 +8,20 @@ import borders from '../../assets/data/borders'
 const width = 320;
 const height = 320*0.6;
 
-export let projection;
-export let path;
-export let featureCountries;
-
-
-export function drawMap(els) {
-  //console.log(world)
-
-  projection = d3.geoKavrayskiy7()
+export let projection =
+  d3.geoKavrayskiy7()
   .scale(60)
   .translate([width / 2, (height / 2)+15])
 
-  path = d3.geoPath()
-  .projection(projection)
+export let path =
+  d3.geoPath()
+  .projection(projection);
 
-  featureCountries = topojson.feature(world, world.objects.countries).features
+export let featureCountries =
+  topojson.feature(world, world.objects.countries).features;
+
+
+export function drawMap(els) {
 
   d3.select(els.svg)
   .attr("width", width)

@@ -30,6 +30,7 @@ export default function(dataCols, dataType) {
   //end of temp
 
   /* values */
+  //console.log(dataCols)
   let iNumber = types.indexOf("number")
   let colNumberClean = dataCols[iNumber].filter(val => !isNaN(val) && val)
   let domain = [
