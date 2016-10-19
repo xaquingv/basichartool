@@ -32,9 +32,7 @@ function step(step = 1, action) {
     // navigation
     case 'CHANGE_STEP':
       return action.step
-    /*case 'NEXT_STEP':
-      return action.step + 1
-    */
+
     // sections
     case 'CLEAR_DATA':
       return 1
@@ -51,10 +49,6 @@ function step(step = 1, action) {
 }
 function stepActive(stepActive = 1, action) {
   switch(action.type) {
-    /*/ navigation
-    case 'ACTIVE_STEP':
-      return action.stepActive
-    */
     // sections
     case 'CLEAR_DATA':
       return 1
@@ -87,10 +81,14 @@ function dataTable(dataTable = {}, action) {
       return action.dataTable
 
     case 'TRANSPOSE_DATA':
-      let newDataTable = { ...dataTable }
-      newDataTable.cols = dataTable.rows
-      newDataTable.rows = dataTable.cols
-      return getNewDataTable(newDataTable)
+      // swape rows and cols
+      const {meta, rows, cols} = dataTable
+      const newDataTableRaw = {
+        meta,
+        rows: cols,
+        cols: rows
+      }
+      return getNewDataTable(newDataTableRaw)
 
     default:
       return dataTable

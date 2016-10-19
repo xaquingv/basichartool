@@ -1,7 +1,14 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import MapChoropleth from './charts/MapChoropleth'
-import MapBubble from './charts/MapBubble'
+import './section3Chart.css';
+
+import MapChoropleth      from './charts/MapChoropleth'
+import MapBubble          from './charts/MapBubble'
+import LineDiscrete       from './charts/LineDiscrete'
+import LineContinuous     from './charts/LineConti'
+import LineContiWithPlot  from './charts/LineContiWithPlot'
+import ScatterPlot        from './charts/ScatterPlot'
+import AreaStack100       from './charts/AreaStack100'
 
 const STEP = 3
 const mapDispatchToProps = (dispatch) => ({
@@ -23,6 +30,11 @@ class Section extends React.Component {
         <div>
           <MapChoropleth />
           <MapBubble />
+          <LineDiscrete />
+          <LineContinuous />
+          <LineContiWithPlot />
+          <ScatterPlot />
+          <AreaStack100 />
         </div>
       </div>
     )

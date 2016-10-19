@@ -23,15 +23,17 @@ const getColors = (count, scaleType, color) => {
 }
 
 
-export default function(dataCols, dataType) {
-  //console.log(dataCols)
-  //temp
-  let types = dataType.map(type => type.list[0])
-  //end of temp
+export default function(data) {
+  //console.log(data)
+  // NOTE: at least 1 number required
+  if (data.count.number===0) return null
+
+  const dataCols = data.cols.map(d => d.values)
+  const dataType = data.cols.map(d => d.type)
 
   /* values */
   //console.log(dataCols)
-  let iNumber = types.indexOf("number")
+  let iNumber = dataType.indexOf("number")
   let colNumberClean = dataCols[iNumber].filter(val => !isNaN(val) && val)
   let domain = [
     Math.min(...colNumberClean),
@@ -46,7 +48,7 @@ export default function(dataCols, dataType) {
   /* countries */
   // country code or name mapping
   let key = []
-  let iString = types.filter(type => type === "string").map((type, i) => i)
+  let iString = dataType.filter(type => type === "string").map((type, i) => i)
   iString.forEach(i => {
     let dataClean = dataCols[i].filter(val => val)
     let len = dataClean.length
@@ -58,7 +60,7 @@ export default function(dataCols, dataType) {
         key.push({type:"name", index:i, count:len})
         break
       default:
-        console.log("ni code ni name!")
+        console.log("ni code ni name!", dataClean)
     }
   })
   // code first, name second

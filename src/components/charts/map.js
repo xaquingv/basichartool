@@ -11,7 +11,8 @@ const height = 320*0.6;
 export let projection =
   d3.geoKavrayskiy7()
   .scale(60)
-  .translate([width / 2, (height / 2)+15])
+  // TODO: adjust translate
+  .translate([(width / 2)-20, (height / 2)+15])
 
 export let path =
   d3.geoPath()
@@ -22,12 +23,7 @@ export let featureCountries =
 
 
 export function drawMap(els) {
-
-  d3.select(els.svg)
-  .attr("width", width)
-  .attr("height", height)
-  .style("border", "1px solid #dcdcdc")
-
+  
   d3.select(els.countries)
   .attr("class", "countries")
   .selectAll("path")
