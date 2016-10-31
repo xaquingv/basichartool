@@ -14,8 +14,8 @@ const colors = [
 ];
 
 const chartType = {
-  scatter: { r: 6, opacity: .75, stroke: 0 },
-  line:    { r: 3, opacity: 1,   stroke: 1 }
+  scatter: { r: 6, stroke: 0, opacity: 0.5  },
+  line:    { r: 3, stroke: 0, opacity: 0.75 }
 }
 
 export function drawPlot(els, dataChart, scaleX, scaleY, who) {
@@ -23,7 +23,7 @@ export function drawPlot(els, dataChart, scaleX, scaleY, who) {
   // init gs
   let gs =
   d3.select(els.svg)
-  .classed("d-n", false)
+  //.classed("d-n", false)
   .selectAll("g")
   .data(dataChart)
 
@@ -36,9 +36,10 @@ export function drawPlot(els, dataChart, scaleX, scaleY, who) {
   .enter().append("circle")
   .attr("cx", d => scaleX(d.date))
   .attr("cy", d => scaleY(d.number))
+  .attr("title", d => "(" + d.date + ", " + d.number + ")")
   // custom on chart type
   .attr("r", chartType[who].r)
-  .attr("fill-opacity", chartType[who].opacity)
+  .attr("fill-opacity", d => d.number ? chartType[who].opacity : 0)
   .attr("stroke-width", chartType[who].stroke)
   .attr("stroke", "white")
 
@@ -50,9 +51,11 @@ export function drawPlot(els, dataChart, scaleX, scaleY, who) {
   .enter().append("circle")
   .attr("cx", d => scaleX(d.date))
   .attr("cy", d => scaleY(d.number))
+  .attr("title", d => "(" + d.date + ", " + d.number + ")")
   // custom on chart type
   .attr("r", chartType[who].r)
-  .attr("fill-opacity", chartType[who].opacity)
+  .attr("fill-opacity", d => d.number ? chartType[who].opacity : 0)
+  //.attr("fill-opacity", d => chartType[who].opacity : 0)
   .attr("stroke-width", chartType[who].stroke)
   .attr("stroke", "white")
 

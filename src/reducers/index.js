@@ -103,9 +103,12 @@ function show(show = {col: [], row: []}, action) {
         col: action.dataTable.cols.map(() => true)
       }
     case 'TRANSPOSE_DATA':
+      // due to header shift
+      // row has an extra toggle that is not used at the end of the list
+      // TODO: fix untitles cutting the headers
       return {
-        row: show.col,
-        col: show.row
+        row: show.col.slice(1).concat([true]),
+        col: [true].concat(show.row.slice(0, -1))
       }
 
     case 'TOGGLE_DATA':

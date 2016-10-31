@@ -20,10 +20,10 @@ export let path =
 
 export let featureCountries =
   topojson.feature(world, world.objects.countries).features;
-
+//console.log(featureCountries)
 
 export function drawMap(els) {
-  
+
   d3.select(els.countries)
   .attr("class", "countries")
   .selectAll("path")

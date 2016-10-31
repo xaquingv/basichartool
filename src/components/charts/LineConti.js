@@ -1,14 +1,14 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {drawLine} from './line'
 import {d3} from '../../lib/d3-lite'
+import {drawLine} from './line'
 
 /*
   data spec
   missing data accepted
-  cols [2, many]
+  cols [4, many]
   - date: no-repeat
-  - number: any range                 => country's color
+  - number*: any range, min 3
 */
 
 const width = 320;
@@ -31,37 +31,44 @@ class Line extends React.Component {
 
 
     // TODO: move to section 3
-    /* validate */
+    /* validate 1 */
     const els = this.refs
 
+    const dataCols = this.props.dataChart.cols
+    const iDate = dataCols.map(d => d.type).indexOf("date")
+    const hasRepeatDateValue = iDate > -1 ? dataCols[iDate].hasRepeatValue : null
+
     const count = this.props.dataChart.count
-    if (count.date !== 1 || count.number < 1) {
-      d3.select(els.svg)
+    if (count.date === 1 && count.number > 0 && count.row > 2 && !hasRepeatDateValue) {
+      //console.log("line conti")
+      d3.select("#lineConti")
+      .classed("d-n", false)
+    }
+    else{
+      d3.select("#lineConti")
       .classed("d-n", true)
-      console.log("no line")
       return
     }
 
 
     /* data */
-    const dataCols = this.props.dataChart.cols
-    const types = dataCols.map(d => d.type)
-    const dates = dataCols[types.indexOf("date")].values
-
+    const dataDates = dataCols[iDate].values
     const dataNumbers = this.props.dataChart.cols
     .filter(d => d.type === "number")
     .map(numberCol => numberCol.values)
 
     const dataChart = dataNumbers.map(numberCol =>
       numberCol.map((number, i) => ({
-        date: dates[i],
+        date: dataDates[i],
         number: number
     })))
 
 
     /* draw */
-    const scaleX = d3.scaleTime()
-    .domain(d3.extent(dates))
+    //const scaleTime =
+    const scaleTime = dataCols[iDate].hasDay ? d3.scaleTime : d3.scaleLinear
+    const scaleX = scaleTime()
+    .domain(d3.extent(dataDates))
     .range([10, width-10])
 
     const scaleY = d3.scaleLinear()
@@ -70,6 +77,16 @@ class Line extends React.Component {
     .range([height-10, 10])
 
     drawLine(els, dataChart, scaleX, scaleY)
+
+
+    /* validate 2 */
+    // TODO: move out if possible
+    // NOTE: special validation to double check if discrete and conti are the same
+    // if the same (duplicate), hide the discrete line
+    const elLineDiscrete = d3.select("#lineDiscrete")
+    if (d3.select("#lineConti path").attr("d") === elLineDiscrete.select("path").attr("d")) {
+      elLineDiscrete.classed("d-n", true)
+    }
   }
 
 

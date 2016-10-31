@@ -3,9 +3,9 @@ import {timeFormat, timeParse} from 'd3-time-format'
 import {select, selectAll} from 'd3-selection'
 import {geoPath} from 'd3-geo'
 import {geoKavrayskiy7} from 'd3-geo-projection'
-import {scaleQuantize, scaleQuantile, scaleSqrt, scaleLinear, scaleTime} from 'd3-scale'
-import {extent} from 'd3-array'
-import {line, area, stack} from 'd3-shape'
+import {scaleQuantize, scaleQuantile, scaleSqrt, scaleLinear, scaleTime, scaleBand} from 'd3-scale'
+import {extent, quantile} from 'd3-array'
+import {line, arc, area, stack, pie, curveStep, curveStepBefore} from 'd3-shape'
 
 export const d3 = {
   queue,
@@ -20,10 +20,16 @@ export const d3 = {
   scaleSqrt,
   scaleLinear,
   scaleTime,
+  scaleBand,
   extent,
+  quantile,
   line,
-  area, 
-  stack
+  area,
+  arc,
+  stack,
+  pie,
+  curveStepBefore,
+  curveStep
 }
 
 //console.log(d3)

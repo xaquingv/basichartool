@@ -1,4 +1,5 @@
-import {d3} from '../lib/d3-lite.js'
+import {d3} from '../lib/d3-lite'
+import {uniqueArray} from '../lib/array'
 
 function countType(dataTypes, type) {
     return dataTypes.filter(t => t === type).length
@@ -11,23 +12,31 @@ function getValueByType(data, dataType) {
   switch(type) {
     case "number":
       //console.log("format:", dataType.format)
-      return data.map(d => d ? parseFloat(d.replace(/,|%/g, "")) : d)
+      // remove all non numeric or period
+      return {values: data.map(d => d ? +d.replace(/[^0-9.\-]/g, "") : d)}
 
     case "date":
-      let isFormat = dataType.format
+      let format = dataType.format
       let parser = d3.timeParse(dataType.format)
-      /*
-      let dataLen = data.length
-      let day   = data.filter(date => date.getDate()  === 1).length !== dataLen
-      let month = data.filter(date => date.getMonth() === 0).length !== dataLen
-      let year  = data.filter(date => date.getYear()  === 0).length !== dataLen
-      //console.log("units D:", hasDUnit, "M", hasMUnit, "Y", hasYUnit)
-      //isUnit: {year, month, day}
-      */
-      return data.map(date => isFormat ? parser(date) : new Date(date))
+      let hasDay = dataType.hasDay
+
+      let values
+      let getDates = () => data.map(date => format ? parser(date) : new Date(date))
+
+      switch (true) {
+        case (format === "%Y"):
+          values = data.map(date => +date)
+          break
+        case !hasDay:
+          values = getDates().map(date => date.getFullYear() + date.getMonth()/12)
+          break
+        default:
+          values = getDates()
+      }
+      return {values, hasDay}
 
     default:
-      return data
+      return {values: data}
   }
 }
 
@@ -38,14 +47,22 @@ export default function(dataTable, show) {
   /* filter on toggle */
   let dataType = [];
   let dataCols = [];
+
+  let showRowAdjust = dataTable.flag.isHeader ? [true].concat(show.row.slice(0, -1)) : show.row
+  //console.log(show.row, showRowAdjust)
+
   show.col.forEach((flagCol, i) => {
     if (flagCol) {
       // data values
       let col = []
-      show.row.forEach((flagRow, j) => {
+      showRowAdjust.forEach((flagRow, j) => {
         if (flagRow) {
           col.push(dataTable.cols[i][j])
-      }})
+        } else {
+          // remove row
+          //console.log("remove:", j, dataTable.rows[j])
+        }
+      })
       dataCols.push(col)
 
       // data types
@@ -69,14 +86,17 @@ export default function(dataTable, show) {
 
   /* summarise col data */
   // TODO: from here ...
-  const cols = dataCols.map((col, i) => ({
+
+  const cols = dataCols.map((col, i) => {
+    //console.log(uniqueArray(col))
+    return {
     // content
     header: dataTable.flag.isHeader ? col.splice(0, 1)[0] : "",
     string: col,
-    values: getValueByType(col, dataType[i]),
+    ...getValueByType(col, dataType[i]), //values
     // properties in general
-    //hasNullValue:
-    //hasRepeatValue:
+    hasNullValue: col.indexOf(null) > -1,
+    hasRepeatValue: uniqueArray(col).length !== col.length,
     type: dataType[i].list[0],
     // properties on type
     // color: ...
@@ -85,7 +105,9 @@ export default function(dataTable, show) {
     isNegative:
     baseUnit:
     hasDay:*/
-  }))
+    }
+
+  })
 
   let output = {count, cols}
   console.log(output)

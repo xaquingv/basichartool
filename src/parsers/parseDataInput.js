@@ -1,4 +1,5 @@
 import getDataTable from '../parsers/getDataTable';
+import {swapeArray} from '../lib/array'
 
 // meta keys
 const META_KEYS = ["headline", "standfirst", "source", "type", "keys"];
@@ -32,7 +33,7 @@ function parseRow(dataTableRaw, row) {
   // 1. trim and set empty entris to null
   row = row.map(d => {
     d = d.trim();
-    return d!=="" ? d : null;
+    return (d!=="" && d!=="..") ? d : null;
   });
 
   // 2. extract meta
@@ -79,12 +80,7 @@ export default function(dataInput) {
 
     /* 2. cols */
     // init cols
-    dataTableRaw.cols = dataTableRaw.rows[0].map(() => [] )
-    dataTableRaw.rows.forEach((row, i) =>
-      row.forEach((val, j) =>
-        dataTableRaw.cols[j][i] = val
-      )
-    )
+    dataTableRaw.cols = swapeArray(dataTableRaw.rows)
 
     // detect empty cols
     let emptyCols = []
@@ -103,7 +99,7 @@ export default function(dataInput) {
     /* 3. dataTableDraw: type, head, body, flag */
     // including dataTableRaw and dataTableDraw
     const dataTable = getDataTable(dataTableRaw)
-
+    console.log(dataTable)
     return dataTable
 }
 

@@ -11,6 +11,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(analyzeData(dataTable, show))
   },
   onToggle: (i, type) => {
+    //console.log(i, type)
     dispatch(toggleData({type, index: i}))
   },
   onTranspose: () => {

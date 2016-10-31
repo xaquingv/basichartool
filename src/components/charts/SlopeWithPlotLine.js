@@ -2,12 +2,14 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {drawLine} from './line'
+import {drawPlot} from './plot'
+import {swapeArray} from '../../lib/array'
 
 /*
   data spec
   missing data accepted
   cols [4, many]
-  - date: repeat accepted
+  - date: no-repeat
   - number*: any range, min 3
 */
 
@@ -24,7 +26,7 @@ const mapStateToProps = (state) => ({
 })
 
 
-class Line extends React.Component {
+class Slope extends React.Component {
   //componentDidMount
   componentDidUpdate(){
     if (this.props.step !== 3) return
@@ -35,41 +37,56 @@ class Line extends React.Component {
     const els = this.refs
 
     const count = this.props.dataChart.count
-    if (count.date !== 1 || count.number < 1 || count.row < 3) {
-      d3.select("#lineDiscrete")
+    if (count.number !== 2 || count.row > 25) {
+      d3.select("#slope")
       .classed("d-n", true)
       return
     } else {
-      //console.log("line discrete")
-      d3.select("#lineDiscrete")
+      d3.select("#slope")
       .classed("d-n", false)
     }
 
 
     /* data */
-    const dataNumbers = this.props.dataChart.cols
+    const dataCols = this.props.dataChart.cols
+    const dataNumbers = dataCols
     .filter(d => d.type === "number")
     .map(numberCol => numberCol.values)
 
-    const dataChart = dataNumbers.map(numberCol =>
-      numberCol.map((number, i) => ({
-        date: i,
+    const dataChart = dataNumbers.map((numberCol, i) =>
+      numberCol.map(number => ({
+        date: i,//dataDates[i],
         number: number
     })))
 
+    // swape
+    let dataChartSlope = swapeArray(dataChart)
+    /*dataChart[0].map(() => [])
+    dataChart.forEach((col, i) =>
+      col.forEach((val, j) =>
+        dataChartSlope[j][i] = val
+      )
+    )*/
+    //console.log(dataChart)
+    //console.log(dataChartSlope)
 
     /* draw */
+    // line(s)
     const scaleX = d3.scaleLinear()
-    .domain([0, count.row-1])
-    .range([10, width-10])
+    .domain([0, 1]/*d3.extent(dataDates)*/)
+    .range([75, width-75])
 
     const scaleY = d3.scaleLinear()
     // TODO: pretty domain
     .domain(d3.extent([].concat.apply([], dataNumbers)))
     .range([height-10, 10])
 
-    drawLine(els, dataChart, scaleX, scaleY)
+    drawLine(els, dataChartSlope, scaleX, scaleY)
+
+    // circles (plot)
+    drawPlot(els, dataChartSlope, scaleX, scaleY, "line")
   }
+
 
   render() {
     return (
@@ -78,4 +95,4 @@ class Line extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Line)
+export default connect(mapStateToProps, mapDispatchToProps)(Slope)

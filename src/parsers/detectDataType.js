@@ -5,12 +5,12 @@
 // https://en.wikipedia.org/wiki/Date_format_by_country
 import {d3} from '../lib/d3-lite.js'
 
-//const regex = /-?[$¢£¤¥֏؋৲৳৻૱௹฿៛\u20a0-\u20bd\ua838\ufdfc\ufe69\uff04\uffe0\uffe1\uffe5\uffe6]?\d{1,3}(,\d{3}|\d)*(\.\d+)?%?/g;
-const regexNumberFormats = /,|%|[\$\xA2-\xA5\u058F\u060B\u09F2\u09F3\u09FB\u0AF1\u0BF9\u0E3F\u17DB\u20A0-\u20BD\uA838\uFDFC\uFE69\uFF04\uFFE0\uFFE1\uFFE5\uFFE6]/g;
-// the third part equaivalent to /\p{Sc}/
 //const regexDateSeparators = /\/|-|\.|\s/g
+// the third part equaivalent to /\p{Sc}/
+const regexNumberFormats = /,|%|[\$\xA2-\xA5\u058F\u060B\u09F2\u09F3\u09FB\u0AF1\u0BF9\u0E3F\u17DB\u20A0-\u20BD\uA838\uFDFC\uFE69\uFF04\uFFE0\uFFE1\uFFE5\uFFE6]/g;
+
 const dateFormatExtension = ["%d/%m/%Y", "%d/%m/%y", "%Y%m%d", "%B", "%b", "%H:%M:%S"]
-const dateFormatHijack = ["%b-%y"]
+const dateFormatHijack = ["%Y", "%b-%y"]
 
 function testDataDateClean(dataClean, formats) {
   let dateFormat = formats.filter(f => {
@@ -46,7 +46,7 @@ export default function(dataArr = "", tablePart) {
       dataClean = dataArr
       break;
   }
-
+  //console.log("check1:", dataClean)
 
   /* number format */
   //TODO: think if it's enough to use only the first row
@@ -64,7 +64,7 @@ export default function(dataArr = "", tablePart) {
   ).map(data =>
     parseFloat(data)
   )
-  //console.log(dataNumberClean)
+  //console.log("checkN:", dataNumberClean)
 
   let isNumber = dataNumberClean.length === dataClean.length;
   // case of unit but not number(s), ex. %
@@ -87,16 +87,18 @@ export default function(dataArr = "", tablePart) {
 
 
   /* date format */
-  let charCount = dataClean[0].match(/\w\s|\/|-|\s|:/g) ? dataClean[0].match(/\D/g).length : 0
+  //let charCount = dataClean[0].match(/\w\s|\/|\s|:/g) ? dataClean[0].match(/\D/g).length : 0
   let numberCount = dataClean[0].match(/\d/g) ? dataClean[0].match(/\d/g).length : 0
 
   // filter cols with number only
   let numberMightBeDate = true
-  if (numberCount>0 && charCount===0) {
+  if (isNumber && !numberFormat/*numberCount>0 && charCount===0*/) {
     let dataLen = dataClean.length
 
     let isSameNumberCount = dataClean.filter(d => d.match(/\d/g).length === numberCount).length === dataLen
-    let isInteger = dataClean.filter(d => Number.isInteger(parseFloat(d))).length === dataLen
+    let isInteger = dataClean.filter(d => /*Number.isInteger(parseFloat(d))*/+d > 0).length === dataLen
+    //console.log("checkD:", dataClean)
+    //console.log("integer", isInteger)
 
     let thisYear = new Date().getFullYear()
     let isAllYearsLargerThanThisYear =
@@ -110,39 +112,50 @@ export default function(dataArr = "", tablePart) {
       isInteger &&
       !isAllYearsLargerThanThisYear
 
-    //console.log("num count", numberCount, isSameNumberCount)
-    //console.log("chart int", charCount === 0 && isInteger)
+    //console.log(dataClean)
+    //console.log(isSameNumberCount)
+    //console.log((numberCount === 4 || numberCount === 8))
+    //console.log(isInteger)
+    //console.log(!isAllYearsLargerThanThisYear)
   }
 
-  if (!numberFormat && numberMightBeDate) {
+  //console.log(!numberFormat && numberMightBeDate)
+  if (/*!numberFormat && */numberMightBeDate) {
     let isDate
     let dataDateClean
     let dateParser
     let dateFormat
+
 
     // first attemp - hijack
     ({dataDateClean, dateParser, dateFormat, isDate} = testDataDateClean(dataClean, dateFormatHijack))
 
     // second attemp - js default date
     if (!isDate) {
-      dataDateClean = dataClean.filter(data =>
-        new Date(data).getTime() > 0
-      )
+      dataDateClean = dataClean.filter(data => {
+        //console.log(data, new Date(data))
+        return !isNaN(new Date(data).getTime())
+      })
+
       isDate = dataDateClean.length === dataClean.length
+      //console.log(dataDateClean.length, dataClean.length, isDate)
     }
 
     // third attemp - custom
     if (!isDate) {
       ({dataDateClean, dateParser, dateFormat, isDate} = testDataDateClean(dataClean, dateFormatExtension))
     }
-
+    //console.log(dataClean)
+    //console.log("date", isDate)
     if (isDate) {
       let dates = dataDateClean.map(str => dateFormat ? dateParser(str) : new Date(str))
 
       data.types.push("date")
       data.date = {
-        values: dates,
-        format: dateFormat ? dateFormat : ""
+        //values: dates,
+        format: dateFormat ? dateFormat : "",
+        hasDay: dates.filter(date => date.getDate() === 1).length !== dates.length
+        // TODO: how about HMS
       }
     }
   }

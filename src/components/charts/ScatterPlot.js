@@ -1,14 +1,14 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {drawPlot} from './plot'
 import {d3} from '../../lib/d3-lite'
+import {drawPlot} from './plot'
 
 /*
   data spec
   missing data accepted
-  cols [2, many]
-  - date: repeat is allowed
-  - number: any range                 => country's color
+  cols [4, many]
+  - date: repeat accepted
+  - number*: any range, min 3
 */
 
 const width = 320;
@@ -24,7 +24,7 @@ const mapStateToProps = (state) => ({
 })
 
 
-class Line extends React.Component {
+class Scatter extends React.Component {
   //componentDidMount
   componentDidUpdate(){
     if (this.props.step !== 3) return
@@ -35,11 +35,13 @@ class Line extends React.Component {
     const els = this.refs
 
     const count = this.props.dataChart.count
-    if (count.date !== 1 || count.number < 1 || count.row > 125) {
-      d3.select(els.svg)
+    if (count.date !== 1 || count.number < 2 || count.row < 3 /*|| count.row > 125*/) {
+      d3.select("#dotPlot")
       .classed("d-n", true)
-      console.log("no line")
       return
+    } else {
+      d3.select("#dotPlot")
+      .classed("d-n", false)
     }
 
 
@@ -60,7 +62,8 @@ class Line extends React.Component {
 
 
     /* draw */
-    const scaleX = d3.scaleTime()
+    const scaleTime = dataCols[types.indexOf("date")].hasDay ? d3.scaleTime : d3.scaleLinear
+    const scaleX = scaleTime()
     .domain(d3.extent(dates))
     .range([10, width-10])
 
@@ -80,4 +83,4 @@ class Line extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Line)
+export default connect(mapStateToProps, mapDispatchToProps)(Scatter)

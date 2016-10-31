@@ -3,15 +3,15 @@ import {d3} from '../../lib/d3-lite'
 
 //Sequential scales
 const blue = ['#D4FFFF','#00699C','#49A7D1','#88CAE1','#3D95BC','#004971','#002A46','#000A1B'];
-const red = ['#FFECCA','#FF513D','#FF9F84','#FFB89B','#FF856C','#F51911','#BC0003','#8A0003'];
+//const red = ['#FFECCA','#FF513D','#FF9F84','#FFB89B','#FF856C','#F51911','#BC0003','#8A0003'];
 
 //Diverging scales
-const red_blue = ['#39A4D8','#ED3D61','#FFF8D1','#A1D2C9','#F59680','#058CCE','#6FBBC8','#DAEAC1','#FDD09E','#F58680','#CA2345'];
-const orange_purple = ['#F4A35A','#91316B','#E9E9E9','#FDD09E','#C75C86','#FF7C42','#F5AB5B','#FFD5A9','#D593A5','#C4537F','#6D195A'];
+//const red_blue = ['#39A4D8','#ED3D61','#FFF8D1','#A1D2C9','#F59680','#058CCE','#6FBBC8','#DAEAC1','#FDD09E','#F58680','#CA2345'];
+//const orange_purple = ['#F4A35A','#91316B','#E9E9E9','#FDD09E','#C75C86','#FF7C42','#F5AB5B','#FFD5A9','#D593A5','#C4537F','#6D195A'];
 
 //Colours order
 const scale_seq = [ [0,1], [0,2,1], [0,3,4,1], [0,3,4,1,5], [0,3,4,1,5,6], [0,3,4,1,5,6,7] ];
-const scale_div = [ [0,1], [0,2,1], [0,3,4,1], [0,3,2,4,1], [5,6,7,8,9,1], [5,6,7,2,8,9,10] ];
+//const scale_div = [ [0,1], [0,2,1], [0,3,4,1], [0,3,2,4,1], [5,6,7,8,9,1], [5,6,7,2,8,9,10] ];
 
 const counts = scale_seq.map(arr => arr.length)
 
@@ -26,7 +26,7 @@ const getColors = (count, scaleType, color) => {
 export default function(data) {
   //console.log(data)
   // NOTE: at least 1 number required
-  if (data.count.number===0) return null
+  if (data.count.number===0 || data.count.row < 50) return null
 
   const dataCols = data.cols.map(d => d.values)
   const dataType = data.cols.map(d => d.type)
@@ -43,7 +43,7 @@ export default function(data) {
   //console.log(domain)
   let color = getColors(6, scale_seq, blue)
   let qtize = d3.scaleQuantize().domain(domain).range(color)
-  let qtile = d3.scaleQuantile().domain(domain).range(color)
+  //let qtile = d3.scaleQuantile().domain(domain).range(color)
 
   /* countries */
   // country code or name mapping

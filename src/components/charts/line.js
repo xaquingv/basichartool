@@ -17,12 +17,12 @@ export function drawLine(els, dataChart, scaleX, scaleY) {
 
   const line = d3.line()
   .defined(d => d.number)
-  .x(d => scaleX(d.date))
+  .x(d => Math.round(scaleX(d.date)*100)/100)
   .y(d => scaleY(d.number));
 
   // init
   let svg = d3.select(els.svg)
-  .classed("d-n", false)
+  //.classed("d-n", false)
   .selectAll("path")
   .data(dataChart)
 
@@ -37,7 +37,8 @@ export function drawLine(els, dataChart, scaleX, scaleY) {
   .attr("stroke", (d, i) => colors[i])
   .attr("stroke-width", "2px")
   .attr("shape-rendering", "auto")
-  .attr("stroke-linecap", "square") // or round to render a single point
+  .attr("stroke-linecap", "round") // or square to render a single point
+  .attr("stroke-opacity", .75)
   .attr("d", d => line(d))
 
   // remove

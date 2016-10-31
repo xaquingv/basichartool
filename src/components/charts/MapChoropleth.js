@@ -36,7 +36,7 @@ class Map extends React.Component {
     if (dataChart) {
       drawMap(els)
 
-      d3.select(els.svg)
+      d3.select("#mapChoropleth")
       .classed("d-n", false)
 
       d3.select(els.countries)
@@ -49,7 +49,7 @@ class Map extends React.Component {
       })
 
     } else {
-      d3.select(els.svg)
+      d3.select("#mapChoropleth")
       .classed("d-n", true)
     }
   }

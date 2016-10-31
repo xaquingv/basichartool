@@ -15,7 +15,7 @@ import {d3} from '../../lib/d3-lite'
   - string (optional): ordinal        => div color
 */
 
-const rangeRadius = [2, 10]
+const rangeRadius = [0.5, 10]
 
 const mapDispatchToProps = (dispatch) => ({
 })
@@ -35,8 +35,6 @@ class Map extends React.Component {
     /* data */
     const dataChart = getParsedData(this.props.dataChart)
 
-    /* draw */
-    const els = this.refs
 
     if (dataChart) {
       /* data */
@@ -58,20 +56,22 @@ class Map extends React.Component {
       const els = this.refs
       drawMap(els)
 
-      d3.select(els.svg)
+      d3.select("#mapBubble")
       .classed("d-n", false)
 
       d3.select(els.circles)
       .selectAll("circle")
       .data(dataCountriesClean)
       .enter().append("circle")
-      .attr("fill-opacity", 0.5)
-      .attr("fill", d => d.val ? dataChart.scaleColor(d.val) : "#dcdcdc") //n-4
+      //.attr("fill-opacity", 0.5)
+      //.attr("fill", d => d.val ? dataChart.scaleColor(d.val) : "#dcdcdc") //n-4
+      .attr("fill", "transparent")
+      .attr("stroke", "#951c55")
       .attr("r", d => scaleRadius(d.val))
       .attr("transform", d => "translate(" + path.centroid(d) + ")")
 
     } else {
-      d3.select(els.svg)
+      d3.select("#mapBubble")
       .classed("d-n", true)
     }
   }

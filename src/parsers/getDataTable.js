@@ -1,7 +1,7 @@
 import getDataTypeAnalysis from './detectDataType';
 
 export default function(dataTableRaw) {
-  console.log(dataTableRaw)
+  //console.log(dataTableRaw)
   const {cols, rows} = dataTableRaw
 
   /* head and body types */
@@ -11,8 +11,9 @@ export default function(dataTableRaw) {
 
     let list = output.types
     let type = list[0]
-    let format = (type !== "string") ? (output[type].format !== "" ? output[type].format : "") : ""
-    return {list, format}
+    let format = (type !== "string") ? output[type] : {format:""}
+
+    return {list, ...format}
   })
 
   let headTypes = cols.map((col) => {
