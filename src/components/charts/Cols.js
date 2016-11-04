@@ -47,8 +47,10 @@ class Col extends React.Component {
     /* validate */
     const els = this.refs
 
+
     const count = this.props.dataChart.count
-    if (count.col >= 2 && count.number >= 1 && count.row > 1) {
+    console.log(count.col*count.row)
+    if (count.col >= 2 && count.number >= 1 && count.row > 1 && (count.col*count.row <= 200)) {
       d3.select("#cols")
       .classed("d-n", false)
     } else {

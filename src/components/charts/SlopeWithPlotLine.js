@@ -60,15 +60,17 @@ class Slope extends React.Component {
     })))
 
     // swape
-    let dataChartSlope = swapeArray(dataChart)
-    /*dataChart[0].map(() => [])
-    dataChart.forEach((col, i) =>
-      col.forEach((val, j) =>
-        dataChartSlope[j][i] = val
-      )
-    )*/
-    //console.log(dataChart)
+    const dataChartSlope = swapeArray(dataChart)
+    const dataChartColor = dataChartSlope.map(d => {
+      switch (true) {
+        case d[1].number - d[0].number > 0: return "#4dc6dd"  // blue-light
+        case d[1].number - d[0].number < 0: return "#005789"  // blue-dark
+        default: return "#dfdfdf"                             // grey
+      }
+    })
     //console.log(dataChartSlope)
+    //console.log(dataChartColor)
+
 
     /* draw */
     // line(s)
@@ -82,9 +84,13 @@ class Slope extends React.Component {
     .range([height-10, 10])
 
     drawLine(els, dataChartSlope, scaleX, scaleY)
+    d3.selectAll("#slope path")
+    .attr("stroke", (d, i) => dataChartColor[i])
 
     // circles (plot)
     drawPlot(els, dataChartSlope, scaleX, scaleY, "line")
+    d3.selectAll("#slope g")
+    .style("fill", (d, i) => dataChartColor[i])
   }
 
 

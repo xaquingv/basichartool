@@ -78,13 +78,11 @@ class Bar extends React.Component {
 
     const dataChart = dataGroup.map((group, i) => ({
       group: group,
-      value: dataNumbers[i].map((num, j) => {
-        console.log(num, Math.abs(scaleX(num) - scaleX(0)))
-        return {
+      value: dataNumbers[i].map((num, j) => ({
         title: num,
         width: Math.abs(scaleX(num) - scaleX(0)),
         shift: (num < 0 && j===0) ? scaleX(dataNumberSums[i]) : 0
-      }})
+      }))
     }))
 
 

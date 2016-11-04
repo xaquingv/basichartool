@@ -39,6 +39,7 @@ export function drawPlot(els, dataChart, scaleX, scaleY, who) {
   .attr("title", d => "(" + d.date + ", " + d.number + ")")
   // custom on chart type
   .attr("r", chartType[who].r)
+  .attr("fill", d => d.color ? d.color : false)
   .attr("fill-opacity", d => d.number ? chartType[who].opacity : 0)
   .attr("stroke-width", chartType[who].stroke)
   .attr("stroke", "white")
@@ -54,8 +55,8 @@ export function drawPlot(els, dataChart, scaleX, scaleY, who) {
   .attr("title", d => "(" + d.date + ", " + d.number + ")")
   // custom on chart type
   .attr("r", chartType[who].r)
+  .attr("fill", d => d.color ? d.color : false)
   .attr("fill-opacity", d => d.number ? chartType[who].opacity : 0)
-  //.attr("fill-opacity", d => chartType[who].opacity : 0)
   .attr("stroke-width", chartType[who].stroke)
   .attr("stroke", "white")
 
