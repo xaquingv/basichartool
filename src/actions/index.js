@@ -1,5 +1,6 @@
 import parseDataInput from '../data/parseDataInput';
 import summarizeData from '../data/summarizeData';
+import selectCharts from '../data/selectCharts';
 
 /* navigation */
 export const changeStep = (step) => ({
@@ -33,7 +34,11 @@ export const toggleData = ({type, index}) => ({
   target: type,
   index,
 })
-export const analyzeData = (dataTable, show) => ({
-  type: "ANALYZE_DATA",
-  dataBrief: summarizeData(dataTable, show)
-})
+export const analyzeData = (dataTable, show) => {
+  const summary = summarizeData(dataTable, show)
+  return {
+    type: "ANALYZE_DATA",
+    dataBrief: summary,
+    selection: selectCharts(summary)
+  }
+}

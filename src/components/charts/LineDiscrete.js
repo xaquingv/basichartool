@@ -12,41 +12,27 @@ import {drawLine} from './line'
 */
 
 const width = 320;
-const height = 320*0.6;
+const height = width*0.6;
+
+const mapStateToProps = (state) => ({
+  dataChart: state.dataBrief
+})
 
 const mapDispatchToProps = (dispatch) => ({
 })
 
-const mapStateToProps = (state) => ({
-  step: state.step,
-  stepActive: state.stepActive,
-  dataChart: state.dataBrief
-})
-
 
 class Line extends React.Component {
-  //componentDidMount
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.flag
+  }
+
   componentDidUpdate(){
-    if (this.props.step !== 3) return
-
-
-    // TODO: move to section 3
-    /* validate */
-    const els = this.refs
-
-    const count = this.props.dataChart.count
-    if (count.date !== 1 || count.number < 1 || count.row < 3) {
-      d3.select("#lineDiscrete")
-      .classed("d-n", true)
-      return
-    } else {
-      //console.log("line discrete")
-      d3.select("#lineDiscrete")
-      .classed("d-n", false)
-    }
-
 
     /* data */
+    const count = this.props.dataChart.count
+
     const dataNumbers = this.props.dataChart.cols
     .filter(d => d.type === "number")
     .map(numberCol => numberCol.values)
@@ -59,6 +45,8 @@ class Line extends React.Component {
 
 
     /* draw */
+    const els = this.refs
+
     const scaleX = d3.scaleLinear()
     .domain([0, count.row-1])
     .range([10, width-10])

@@ -4,6 +4,7 @@
 // https://en.wikipedia.org/wiki/Decimal_mark
 // https://en.wikipedia.org/wiki/Date_format_by_country
 import {d3} from '../lib/d3-lite.js'
+import {uniqueArray} from '../lib/array'
 
 //const regexDateSeparators = /\/|-|\.|\s/g
 // the third part equaivalent to /\p{Sc}/
@@ -30,7 +31,7 @@ function testDataDateClean(dataClean, formats) {
 
 
 export default function(dataArr = "", tablePart) {
-  //console.log(dataArr)
+  //console.log(dataArr, tablePart)
   let data = { types:[] };
 
   /* missing data */
@@ -162,7 +163,20 @@ export default function(dataArr = "", tablePart) {
 
 
   /* string format */
-  if (!numberFormat && data.types.join() !== "number") { data.types.push("string")};
+  if (!numberFormat && data.types.join() !== "number") {
+    let uniqueLen = uniqueArray(dataClean).length
+    let hasRepeat = dataClean.length !== uniqueLen
+
+    if (hasRepeat && uniqueLen > 1 && uniqueLen < 11) {
+      data.types.push("string2")
+    } else {
+      data.types.push("string1")
+      data.string = {
+        hasRepeat: hasRepeat,
+        //format:
+      }
+    }
+  };
 
 
   //console.log(data.types.sort())

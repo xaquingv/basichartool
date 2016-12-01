@@ -1,8 +1,8 @@
-import getDataTable from '../data/getDataTable';
-import {swapeArray} from '../lib/array'
+import getDataTable from '../data/getDataTable'
+import {swapArray} from '../lib/array'
 
 // meta keys
-const META_KEYS = ["headline", "standfirst", "source", "type", "keys"];
+const META_KEYS = ["headline", "standfirst", "source", "type", "keys"]
 
 
 /*
@@ -80,7 +80,7 @@ export default function(dataInput) {
 
     /* 2. cols */
     // init cols
-    dataTableRaw.cols = swapeArray(dataTableRaw.rows)
+    dataTableRaw.cols = swapArray(dataTableRaw.rows)
 
     // detect empty cols
     let emptyCols = []

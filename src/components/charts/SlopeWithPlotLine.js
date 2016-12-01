@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {drawLine} from './line'
 import {drawPlot} from './plot'
-import {swapeArray} from '../../lib/array'
+import {swapArray} from '../../lib/array'
 
 /*
   data spec
@@ -13,39 +13,24 @@ import {swapeArray} from '../../lib/array'
   - number*: any range, min 3
 */
 
-const width = 320;
-const height = 320*0.6;
+const width = 320
+const height = width*0.6
+
+const mapStateToProps = (state) => ({
+  dataChart: state.dataBrief
+})
 
 const mapDispatchToProps = (dispatch) => ({
 })
 
-const mapStateToProps = (state) => ({
-  step: state.step,
-  stepActive: state.stepActive,
-  dataChart: state.dataBrief
-})
-
 
 class Slope extends React.Component {
-  //componentDidMount
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.flag
+  }
+
   componentDidUpdate(){
-    if (this.props.step !== 3) return
-
-
-    // TODO: move to section 3
-    /* validate */
-    const els = this.refs
-
-    const count = this.props.dataChart.count
-    if (count.number !== 2 || count.row > 25) {
-      d3.select("#slope")
-      .classed("d-n", true)
-      return
-    } else {
-      d3.select("#slope")
-      .classed("d-n", false)
-    }
-
 
     /* data */
     const dataCols = this.props.dataChart.cols
@@ -59,8 +44,8 @@ class Slope extends React.Component {
         number: number
     })))
 
-    // swape
-    const dataChartSlope = swapeArray(dataChart)
+    // swap
+    const dataChartSlope = swapArray(dataChart)
     const dataChartColor = dataChartSlope.map(d => {
       switch (true) {
         case d[1].number - d[0].number > 0: return "#4dc6dd"  // blue-light
@@ -73,6 +58,8 @@ class Slope extends React.Component {
 
 
     /* draw */
+    const els = this.refs
+
     // line(s)
     const scaleX = d3.scaleLinear()
     .domain([0, 1]/*d3.extent(dataDates)*/)
@@ -89,6 +76,7 @@ class Slope extends React.Component {
 
     // circles (plot)
     drawPlot(els, dataChartSlope, scaleX, scaleY, "line")
+    // try d3.select(els).selectAll("g")
     d3.selectAll("#slope g")
     .style("fill", (d, i) => dataChartColor[i])
   }

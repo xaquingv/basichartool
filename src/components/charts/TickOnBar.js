@@ -1,7 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {swapeArray} from '../../lib/array'
+import {swapArray} from '../../lib/array'
+import {colors, colorBarBackground} from '../../data/config'
 
 /*
   data spec
@@ -12,61 +13,28 @@ import {swapeArray} from '../../lib/array'
 */
 
 const barHeight = 16
-//const bodyHeight = 4
-//const bodyTop = (barHeight - bodyHeight) / 2
-//const headSize = 12
-//const headTop = (barHeight - headSize) / 2
 const marginBottom = 8
-const bgColor = "#f6f6f6"
 
-const colors = [
-    "#4dc6dd",  // blue light
-    "#005789",  // blue dark
-    "#fcdd03",  // yellow
-    "#ff9b0b",  // orange light
-    "#ea6911",  // orange dark
-    "#dfdfdf",  // grey 5
-    "#bdbdbd",  // grey 3
-    "#808080",  // grey 1.5
-    "#aad801",  // green
-    "#000000"   // custom color
-];
+const mapStateToProps = (state) => ({
+  dataChart: state.dataBrief
+})
 
 const mapDispatchToProps = (dispatch) => ({
 })
 
-const mapStateToProps = (state) => ({
-  step: state.step,
-  stepActive: state.stepActive,
-  dataChart: state.dataBrief
-})
-
 
 class Bar extends React.Component {
-  //componentDidMount
-  componentDidUpdate(){
-    if (this.props.step !== 3) return
 
+  shouldComponentUpdate(nextProps) {
+    return nextProps.flag
+  }
 
-    // TODO: move to section 3
-    /* validate */
-    const els = this.refs
-
-    const count = this.props.dataChart.count
-    if ((count.date === 1 || count.string === 1) && count.number >= 2 && count.col >= 3 && count.row < 25) {
-      d3.select("#tickOnBar")
-      .classed("d-n", false)
-    } else {
-      d3.select("#tickOnBar")
-      .classed("d-n", true)
-      return
-    }
-
+  componentDidUpdate() {
 
     /* data */
     const dataCols = this.props.dataChart.cols
     // const dataDates
-    const dataNumbers = swapeArray(dataCols
+    const dataNumbers = swapArray(dataCols
     .filter(d => d.type === "number")
     .map(numberCol => numberCol.values))
 
@@ -83,10 +51,12 @@ class Bar extends React.Component {
       width: Math.abs(scaleX(ns[1]) - scaleX(ns[0])),
       shift: scaleX(Math.min(ns[0], ns[1]))//,
     }))
-    console.log("tick:", dataChart)
+    //console.log("tick:", dataChart)
 
 
     /* draw */
+    const els = this.refs
+
     let gs = d3.select(els.div)
     // TODO: remove temp solution
     .html("")
@@ -99,7 +69,7 @@ class Bar extends React.Component {
     .style("height", barHeight + "px")
     .style("margin-bottom", marginBottom + "px")
     .style("position", "relative")
-    .style("background-color", bgColor)
+    .style("background-color", colorBarBackground)
     .selectAll("div")
     .data(d => d.value)
     .enter().append("div")

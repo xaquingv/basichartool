@@ -1,7 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {swapeArray} from '../../lib/array'
+import {swapArray} from '../../lib/array'
+import {colorBarBackground} from '../../data/config'
 
 /*
   data spec
@@ -12,49 +13,32 @@ import {swapeArray} from '../../lib/array'
 */
 
 const barHeight = 16
+const marginBottom = 8
 const bodyHeight = 4
 const bodyTop = (barHeight - bodyHeight) / 2
 const headSize = 12
 const headTop = (barHeight - headSize) / 2
-const marginBottom = 8
-const bgColor = "#f6f6f6"
 
+const mapStateToProps = (state) => ({
+  dataChart: state.dataBrief
+})
 
 const mapDispatchToProps = (dispatch) => ({
 })
 
-const mapStateToProps = (state) => ({
-  step: state.step,
-  stepActive: state.stepActive,
-  dataChart: state.dataBrief
-})
-
 
 class Bar extends React.Component {
-  //componentDidMount
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.flag
+  }
+
   componentDidUpdate(){
-    if (this.props.step !== 3) return
-
-
-    // TODO: move to section 3
-    /* validate */
-    const els = this.refs
-
-    const count = this.props.dataChart.count
-    if ((count.date === 1 || count.string === 1) && count.number === 2 && count.col === 3 && count.row < 25) {
-      d3.select("#arrowOnBar")
-      .classed("d-n", false)
-    } else {
-      d3.select("#arrowOnBar")
-      .classed("d-n", true)
-      return
-    }
-
 
     /* data */
     const dataCols = this.props.dataChart.cols
     // const dataDates
-    const dataNumbers = swapeArray(dataCols
+    const dataNumbers = swapArray(dataCols
     .filter(d => d.type === "number")
     .map(numberCol => numberCol.values))
 
@@ -108,25 +92,14 @@ class Bar extends React.Component {
 
 
     /* draw */
+    const els = this.refs
+
     let gs, g
     gs = d3.select(els.div)
     // TODO: remove temp solution
     .html("")
     .selectAll(".group")
     .data(dataChartArrow)
-
-    // update
-    /*gu = gs
-    .html("")
-    .selectAll("div")
-    .data(d => [d])
-    .enter()
-
-    gu.append("div")
-    .style("width", d => "calc(" + d.width + "% - " + headSize/2 + "px)")
-    .style("left", d => d.bodyLeft)
-    .style("background-color", d => d.color)
-    */
 
     // new
     g = gs.enter().append("div")
@@ -135,7 +108,7 @@ class Bar extends React.Component {
     .style("height", barHeight + "px")
     .style("margin-bottom", marginBottom + "px")
     .style("position", "relative")
-    .style("background-color", bgColor)
+    .style("background-color", colorBarBackground)
     .selectAll("div")
     .data(d => [d])
     .enter()
@@ -158,9 +131,6 @@ class Bar extends React.Component {
     .style("border-width", d => d.borderWidths)
     .style("border-color", d => d.borderColors)
     .style("border-style", "solid")
-
-    // remove
-    //gs.exit().remove()
   }
 
 

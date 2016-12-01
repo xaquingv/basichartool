@@ -12,20 +12,20 @@ import {d3} from '../../lib/d3-lite'
   - number: any range                 => country's color
 */
 
-const mapDispatchToProps = (dispatch) => ({
+const mapStateToProps = (state) => ({
+  dataChart: state.dataBrief
 })
 
-const mapStateToProps = (state) => ({
-  step: state.step,
-  stepActive: state.stepActive,
-  dataChart: state.dataBrief
+const mapDispatchToProps = (dispatch) => ({
 })
 
 
 class Map extends React.Component {
-  //componentDidMount
+  shouldComponentUpdate(nextProps) {
+    return nextProps.flag
+  }
+
   componentDidUpdate(){
-    if (this.props.step !== 3) return
 
     /* data */
     const dataChart = getParsedData(this.props.dataChart)

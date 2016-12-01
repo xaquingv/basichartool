@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {swapeArray} from '../../lib/array'
+import {swapArray} from '../../lib/array'
 import {drawPlot} from './bar'
 
 /*
@@ -13,47 +13,32 @@ import {drawPlot} from './bar'
   PS. col sums 100(%) !?
 */
 
+const mapStateToProps = (state) => ({
+  dataChart: state.dataBrief
+})
 
 const mapDispatchToProps = (dispatch) => ({
 })
 
-const mapStateToProps = (state) => ({
-  step: state.step,
-  stepActive: state.stepActive,
-  dataChart: state.dataBrief
-})
-
 
 class Bar extends React.Component {
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.flag
+  }
+
   componentDidUpdate(){
-    if (this.props.step !== 3) return
-
-
-    // TODO: move to section 3
-    /* validate 1 */
-    const els = this.refs
-
-    const count = this.props.dataChart.count
-    if (count.col >= 2 && count.number > 1 && count.row > 1 && count.date ===0) {
-      d3.select("#barStack100")
-      .classed("d-n", false)
-    } else {
-      d3.select("#barStack100")
-      .classed("d-n", true)
-      return
-    }
-
 
     /* data */
     const dataCols = this.props.dataChart.cols
     const dataGroup = dataCols[0].values
-    const dataNumbers = swapeArray(this.props.dataChart.cols
+    const dataNumbers = swapArray(this.props.dataChart.cols
     .filter(d => d.type === "number")
     .map(numberCol => numberCol.values))
 
-    /* validate 2 */
-    // NOTE: round to aviod system number digit issue
-    const dataNumberSums = dataNumbers.map(ns => Math.round(ns.reduce((n1, n2) => n1 + n2)*100)/100)
+    // TODO: doube check
+    /* validate 2 * /
+    // NOTE: round to avoid system number digit issue
     const isAll100 = dataNumberSums.filter(sum => sum === 100).length === dataNumberSums.length
     const dataNumbersAll = [].concat.apply([], dataNumbers)
     const isAllPositive = dataNumbersAll.filter(num => num < 0).length === 0
@@ -62,10 +47,9 @@ class Bar extends React.Component {
       d3.select("#barStack100")
       .classed("d-n", true)
       return
-    }
+    }*/
 
-
-
+    const dataNumberSums = dataNumbers.map(ns => Math.round(ns.reduce((n1, n2) => n1 + n2)*100)/100)
     const scaleX = (i) => d3.scaleLinear()
     .domain([0, dataNumberSums[i]])
     .range([0, 100])
@@ -83,6 +67,7 @@ class Bar extends React.Component {
 
 
     /* draw */
+    const els = this.refs
     drawPlot(els, dataChart)
   }
 

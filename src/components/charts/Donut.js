@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
+import {colors} from '../../data/config'
 
 /*
   data spec
@@ -11,54 +12,24 @@ import {d3} from '../../lib/d3-lite'
   PS. col sums 100(%) !?
 */
 
-const width = 320;
-const height = 320*0.6;
+const width = 320
+const height = width*0.6
 const radius = Math.min(width, height) / 2;
-
-const colors = [
-    "#4dc6dd",  // blue light
-    "#005789",  // blue dark
-    "#fcdd03",  // yellow
-    "#ff9b0b",  // orange light
-    "#ea6911",  // orange dark
-    "#dfdfdf",  // grey 5
-    "#bdbdbd",  // grey 3
-    "#808080",  // grey 1.5
-    "#aad801",  // green
-    "#000000"   // custom color
-];
+const mapStateToProps = (state) => ({
+  dataChart: state.dataBrief
+})
 
 const mapDispatchToProps = (dispatch) => ({
 })
 
-const mapStateToProps = (state) => ({
-  step: state.step,
-  stepActive: state.stepActive,
-  dataChart: state.dataBrief
-})
-
 
 class Area extends React.Component {
-  //componentDidMount
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.flag
+  }
+
   componentDidUpdate(){
-    if (this.props.step !== 3) return
-
-
-    // TODO: move to section 3
-    /* validate 1 */
-    const els = this.refs
-
-    const count = this.props.dataChart.count
-    //console.log(count.col, count.row)
-    if ((count.row !== 1 || count.col < 2 || count.col > 15) && (count.col !==2 || count.row < 2 || count.row > 15)) {
-      d3.select("#donut")
-      .classed("d-n", true)
-      return
-    } else {
-      d3.select("#donut")
-      .classed("d-n", false)
-    }
-
 
     /* data */
     const dataNumbers = this.props.dataChart.cols
@@ -88,6 +59,7 @@ class Area extends React.Component {
 
 
     /* draw */
+    const els = this.refs
 
     // init area
     let svg = d3.select(els.pie)

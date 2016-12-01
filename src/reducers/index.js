@@ -81,7 +81,7 @@ function dataTable(dataTable = {}, action) {
       return action.dataTable
 
     case 'TRANSPOSE_DATA':
-      // swape rows and cols
+      // swap rows and cols
       const {meta, rows, cols} = dataTable
       const newDataTableRaw = {
         meta,
@@ -143,6 +143,14 @@ function dataBrief(dataBrief = {}, action) {
       return dataBrief
   }
 }
+function selection(chartList = [], action) {
+  switch(action.type) {
+    case 'ANALYZE_DATA':
+      return action.selection
+    default:
+      return chartList
+  }
+}
 
 const app = combineReducers({
   step,
@@ -150,7 +158,8 @@ const app = combineReducers({
   dataInput,
   dataTable,
   show,
-  dataBrief
+  dataBrief,
+  selection
 });
 
 export default app

@@ -1,17 +1,5 @@
 import {d3} from '../../lib/d3-lite'
-
-const colors = [
-    "#4dc6dd",  // blue light
-    "#005789",  // blue dark
-    "#fcdd03",  // yellow
-    "#ff9b0b",  // orange light
-    "#ea6911",  // orange dark
-    "#dfdfdf",  // grey 5
-    "#bdbdbd",  // grey 3
-    "#808080",  // grey 1.5
-    "#aad801",  // green
-    "#000000"   // custom color
-];
+import {colors} from '../../data/config'
 
 const groupHeight = 24
 const barHeightDefault = 16

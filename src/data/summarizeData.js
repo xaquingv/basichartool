@@ -1,5 +1,6 @@
 import {d3} from '../lib/d3-lite'
 import {uniqueArray} from '../lib/array'
+import getDataType from './detectDataType'
 
 function countType(dataTypes, type) {
     return dataTypes.filter(t => t === type).length
@@ -37,6 +38,9 @@ function getValueByType(data, dataType) {
           values = getDates()
       }
       return {values, hasDay}
+
+    //case "string1"
+    //TODO: format checking - code/name of world, europe, uk , us .... or bins
 
     default:
       return {values: data}
@@ -81,7 +85,8 @@ export default function(dataTable, show) {
   const count = {
     col: dataCols.length,
     row: dataTable.flag.isHeader ? dataCols[0].length-1 : dataCols[0].length,
-    string: countType(types, "string"),
+    string1: countType(types, "string1"),
+    string2: countType(types, "string2"),
     number: countType(types, "number"),
     date: countType(types, "date")
   }
@@ -98,21 +103,56 @@ export default function(dataTable, show) {
     string: col,
     ...getValueByType(col, dataType[i]), //values
     // properties in general
-    hasNullValue: col.indexOf(null) > -1,
-    hasRepeatValue: uniqueArray(col).length !== col.length,
+    //hasNullValue: col.indexOf(null) > -1,
+    //hasRepeatValue: uniqueArray(col).length !== col.length,
     type: dataType[i].list[0],
     // properties on type
     // color: ...
-    /*format: dataType[i].format,
-    domain: //range
-    isNegative:
-    baseUnit:
-    hasDay:*/
+    format: dataType[i].format
+    //domain: //range
+    //hasDay:*/
     }
-
   })
 
-  let output = {count, cols}
+
+  const getStringFormat = () => {
+    // TODO: parse and return code/name or bin
+    return null
+  }
+
+  const numberCols = cols.filter(col => col.type === "number")
+
+  const getNumberRangeType = () => {
+    const numbers = numberCols.map(col => col.values).reduce((col1, col2) => col1.concat(col2))
+    const range = d3.extent(numbers)
+    const min = range[0]
+    const max = range[1]
+
+    switch (true) {
+      case min < 0 && max > 0 :
+        return 0
+      // all positives
+      case min >= 0 && max > 0:
+        return 1
+      // either all positives or all negatives
+      case (min >= 0 && max > 0) || (min < 0 && max <= 0):
+        return 2
+      default:
+        console.err("rangeType unknown!!!")
+
+    }
+  }
+
+  const value = {
+    date_hasRepeat:    count.date    > 0 ? (uniqueArray(cols.find(col => col.type === "date").values).length    !== count.row) : null,
+    string1_hasRepeat: count.string1 > 0 ? (uniqueArray(cols.find(col => col.type === "string1").values).length !== count.row) : null,
+    string1_format:    getStringFormat(),
+    numberH_format:    getDataType(numberCols.map(col => col.header)).types[0],
+    number_rangeType:  getNumberRangeType()
+  }
+
+
+  let output = {count, cols, value}
   //console.log(output)
   return output
 }

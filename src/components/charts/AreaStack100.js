@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
+import {colors} from '../../data/config'
 
 /*
   data spec
@@ -12,51 +13,23 @@ import {d3} from '../../lib/d3-lite'
 */
 
 const width = 320;
-const height = 320*0.6;
+const height = width*0.6;
 
-const colors = [
-    "#4dc6dd",  // blue light
-    "#005789",  // blue dark
-    "#fcdd03",  // yellow
-    "#ff9b0b",  // orange light
-    "#ea6911",  // orange dark
-    "#dfdfdf",  // grey 5
-    "#bdbdbd",  // grey 3
-    "#808080",  // grey 1.5
-    "#aad801",  // green
-    "#000000"   // custom color
-];
+const mapStateToProps = (state) => ({
+  dataChart: state.dataBrief
+})
 
 const mapDispatchToProps = (dispatch) => ({
 })
 
-const mapStateToProps = (state) => ({
-  step: state.step,
-  stepActive: state.stepActive,
-  dataChart: state.dataBrief
-})
-
 
 class Area extends React.Component {
-  //componentDidMount
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.flag
+  }
+
   componentDidUpdate(){
-    if (this.props.step !== 3) return
-
-
-    // TODO: move to section 3
-    /* validate 1 */
-    const els = this.refs
-
-    const count = this.props.dataChart.count
-    if (count.date !== 1 || count.number < 2 || count.row < 3) {
-      d3.select("#areaStack100")
-      .classed("d-n", true)
-      return
-    } else {
-      d3.select("#areaStack100")
-      .classed("d-n", false)
-    }
-
 
     /* data */
     const dataCols = this.props.dataChart.cols
@@ -83,13 +56,6 @@ class Area extends React.Component {
       return {date, ...nums}
     })
 
-    /* validate 2 */
-    /*if (isNot100.length > 0) {
-      d3.select("#areaStack100")
-      .classed("d-n", true)
-      return
-    }*/
-
 
     let keys = Object.keys(dataChart[0])
     keys.splice(keys.indexOf("date"), 1)
@@ -103,6 +69,8 @@ class Area extends React.Component {
 
 
     /* draw */
+    const els = this.refs
+
     const scaleTime = dataCols[types.indexOf("date")].hasDay ? d3.scaleTime : d3.scaleLinear
     const scaleX = scaleTime()
     .domain(d3.extent(dataDates))

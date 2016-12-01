@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {drawPlot} from './plot'
 import {uniqueArray} from '../../lib/array'
+import {colors} from '../../data/config'
 
 /*
   data spec
@@ -12,53 +13,24 @@ import {uniqueArray} from '../../lib/array'
   - number*: any range, min 3
 */
 
-const width = 320;
-const height = 320*0.6;
+const width = 320
+const height = width*0.6
 
-const colors = [
-    "#4dc6dd",  // blue light
-    "#005789",  // blue dark
-    "#fcdd03",  // yellow
-    "#ff9b0b",  // orange light
-    "#ea6911",  // orange dark
-    "#dfdfdf",  // grey 5
-    "#bdbdbd",  // grey 3
-    "#808080",  // grey 1.5
-    "#aad801",  // green
-    "#000000"   // custom color
-];
+const mapStateToProps = (state) => ({
+  dataChart: state.dataBrief
+})
 
 const mapDispatchToProps = (dispatch) => ({
 })
 
-const mapStateToProps = (state) => ({
-  step: state.step,
-  stepActive: state.stepActive,
-  dataChart: state.dataBrief
-})
-
 
 class Scatter extends React.Component {
-  //componentDidMount
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.flag
+  }
+
   componentDidUpdate(){
-    if (this.props.step !== 3) return
-
-
-    // TODO: move to section 3
-    /* validate */
-    const els = this.refs
-
-    //TODO: add string || date
-    const count = this.props.dataChart.count
-    if ((count.date === 0 && count.number === 2) && count.row > 2) {
-      d3.select("#scatterPlot")
-      .classed("d-n", false)
-    } else {
-      d3.select("#scatterPlot")
-      .classed("d-n", true)
-      return
-    }
-
 
     /* data */
     const dataCols = this.props.dataChart.cols
@@ -88,7 +60,8 @@ class Scatter extends React.Component {
     //console.log(dataChart)
 
     /* draw */
-    //const scaleTime = dataCols[types.indexOf("date")].hasDay ? d3.scaleTime : d3.scaleLinear
+    const els = this.refs
+
     const scaleX = d3.scaleLinear()
     .domain(d3.extent(dataNumbers[0]))
     .range([10, width-10])

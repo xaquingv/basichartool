@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {swapeArray} from '../../lib/array'
+import {swapArray} from '../../lib/array'
 import {drawPlot} from './bar'
 
 /*
@@ -13,41 +13,27 @@ import {drawPlot} from './bar'
   PS. col sums 100(%) !?
 */
 
+const mapStateToProps = (state) => ({
+  dataChart: state.dataBrief
+})
 
 const mapDispatchToProps = (dispatch) => ({
 })
 
-const mapStateToProps = (state) => ({
-  step: state.step,
-  stepActive: state.stepActive,
-  dataChart: state.dataBrief
-})
-
 
 class Bar extends React.Component {
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.flag
+  }
+
   componentDidUpdate(){
-    if (this.props.step !== 3) return
-
-
-    // TODO: move to section 3
-    /* validate */
-    const els = this.refs
-
-    const count = this.props.dataChart.count
-    if (count.col >= 2 && count.number >= 1 && count.number < 6 && count.row > 1 && count.date ===0) {
-      d3.select("#bars")
-      .classed("d-n", false)
-    } else {
-      d3.select("#bars")
-      .classed("d-n", true)
-      return
-    }
-
 
     /* data */
+    const count = this.props.dataChart.count
     const dataCols = this.props.dataChart.cols
     const dataGroup = dataCols[0].values
-    const dataNumbers = swapeArray(this.props.dataChart.cols
+    const dataNumbers = swapArray(this.props.dataChart.cols
     .filter(d => d.type === "number")
     .map(numberCol => numberCol.values))
 
@@ -70,9 +56,10 @@ class Bar extends React.Component {
         shift: num > 0 ? scaleX(0) : scaleX(num)
       }))
     }))
-  
+
 
     /* draw */
+    const els = this.refs
     const scaleY = (count) => Math.round((((24 - (count-1)) / 3) * 2) / count)
     const barHeight = scaleY(count.number)
 

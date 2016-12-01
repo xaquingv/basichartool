@@ -12,46 +12,28 @@ import {drawLine} from './line'
 */
 
 const width = 320;
-const height = 320*0.6;
+const height = width*0.6;
+
+const mapStateToProps = (state) => ({
+  dataChart: state.dataBrief
+})
 
 const mapDispatchToProps = (dispatch) => ({
 })
 
-const mapStateToProps = (state) => ({
-  step: state.step,
-  stepActive: state.stepActive,
-  dataChart: state.dataBrief
-})
-
 
 class Line extends React.Component {
-  //componentDidMount
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.flag
+  }
+
   componentDidUpdate(){
-    if (this.props.step !== 3) return
-
-
-    // TODO: move to section 3
-    /* validate 1 */
-    const els = this.refs
-
-    const dataCols = this.props.dataChart.cols
-    const iDate = dataCols.map(d => d.type).indexOf("date")
-    const hasRepeatDateValue = iDate > -1 ? dataCols[iDate].hasRepeatValue : null
-
-    const count = this.props.dataChart.count
-    if (count.date === 1 && count.number > 0 && count.row > 2 && !hasRepeatDateValue) {
-      //console.log("line conti")
-      d3.select("#lineConti")
-      .classed("d-n", false)
-    }
-    else{
-      d3.select("#lineConti")
-      .classed("d-n", true)
-      return
-    }
-
 
     /* data */
+    const dataCols = this.props.dataChart.cols
+    const iDate = dataCols.map(d => d.type).indexOf("date")
+
     const dataDates = dataCols[iDate].values
     const dataNumbers = this.props.dataChart.cols
     .filter(d => d.type === "number")
@@ -65,7 +47,8 @@ class Line extends React.Component {
 
 
     /* draw */
-    //const scaleTime =
+    const els = this.refs
+
     const scaleTime = dataCols[iDate].hasDay ? d3.scaleTime : d3.scaleLinear
     const scaleX = scaleTime()
     .domain(d3.extent(dataDates))

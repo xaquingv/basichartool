@@ -11,7 +11,7 @@ export default function(dataTableRaw) {
 
     let list = output.types
     let type = list[0]
-    let format = (type !== "string") ? output[type] : {format:""}
+    let format = (type.indexOf("string") === -1) ? output[type] : {format:""}
 
     return {list, ...format}
   })
@@ -29,7 +29,7 @@ export default function(dataTableRaw) {
   // - head types doesn't match body types or
   // - all head types are strings
   dataTableDraw.flag = { isHeader:
-    (headTypes.filter(headType => headType === "string").length === headTypes.length) ||
+    (headTypes.filter(headType => headType.indexOf("string") !== -1).length === headTypes.length) ||
     (headTypes.filter((headType, i) => headType === bodyTypes[i].list[0]).length !== headTypes.length)
   }
   //console.log(headTypes)
