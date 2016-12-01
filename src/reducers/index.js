@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import getNewDataTable from '../parsers/getDataTable';
+import getNewDataTable from '../data/getDataTable';
 
 // function dummyReducer(prevState = {}, action) {
 //     switch (action.type) {

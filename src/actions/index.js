@@ -1,5 +1,5 @@
-import parseDataInput from '../parsers/parseDataInput';
-import summarizeData from '../parsers/summarizeData';
+import parseDataInput from '../data/parseDataInput';
+import summarizeData from '../data/summarizeData';
 
 /* navigation */
 export const changeStep = (step) => ({

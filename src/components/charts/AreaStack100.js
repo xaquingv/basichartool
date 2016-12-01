@@ -68,12 +68,15 @@ class Area extends React.Component {
     .map(numberCol => numberCol.values)
 
     let isNot100 = []
+    let maxSum = 0
     const dataChart = dataDates.map((date, i) => {
       const nums = dataNumbers.map(numbers => numbers[i])
 
       // TODO: remove temp validation
       const sum = nums.reduce((n1, n2) => n1+n2)
       if (sum < 99 || sum > 101) { isNot100.push(true) }
+      if (sum > maxSum) maxSum = sum
+      //console.log(sum)
 
       // TODO: rescale to 100% !?
 
@@ -96,7 +99,7 @@ class Area extends React.Component {
     //const dataChartStack = stack(dataChart)
     //console.log(dataChart)
     //console.log(dataChartStack)
-    console.log(stack(dataChart))
+    //console.log(stack(dataChart))
 
 
     /* draw */
@@ -105,8 +108,10 @@ class Area extends React.Component {
     .domain(d3.extent(dataDates))
     .range([10, width-10])
 
+    //console.log(maxSum)
+    const domainMax = isNot100.length > 0 ? maxSum : 100
     const scaleY = d3.scaleLinear()
-    .domain([0, 100])
+    .domain([0, domainMax])
     .range([height-10, 10])
 
     const area = d3.area()
@@ -117,7 +122,12 @@ class Area extends React.Component {
     .y0((d) => scaleY(d[0]))
     .y1((d) => scaleY(d[1]))
 
-    if (isNot100.length === 0) area.curve(d3.curveStep/*Before*/)
+    if (isNot100.length === 0) {
+      area.curve(d3.curveStep/*Before*/)
+    } else {
+      d3.select(els.line)
+      .classed("d-n", true)
+    }
 
     // init area
     let svg = d3.select(els.svg)

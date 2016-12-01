@@ -14,8 +14,8 @@ import {swapeArray} from '../../lib/array'
 const barHeight = 16
 const bodyHeight = 4
 const bodyTop = (barHeight - bodyHeight) / 2
-const headSize = 12
-const headTop = (barHeight - headSize) / 2
+//const headSize = 12
+//const headTop = (barHeight - headSize) / 2
 const marginBottom = 8
 const bgColor = "#f6f6f6"
 const dotColors = ["#4dc6dd", "#005789"]

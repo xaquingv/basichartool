@@ -1,4 +1,4 @@
-import getDataTable from '../parsers/getDataTable';
+import getDataTable from '../data/getDataTable';
 import {swapeArray} from '../lib/array'
 
 // meta keys
@@ -33,7 +33,7 @@ function parseRow(dataTableRaw, row) {
   // 1. trim and set empty entris to null
   row = row.map(d => {
     d = d.trim();
-    return (d!=="" && d!=="..") ? d : null;
+    return (d!=="" && d!==".." && d!=="-") ? d : null;
   });
 
   // 2. extract meta
@@ -99,7 +99,7 @@ export default function(dataInput) {
     /* 3. dataTableDraw: type, head, body, flag */
     // including dataTableRaw and dataTableDraw
     const dataTable = getDataTable(dataTableRaw)
-    console.log(dataTable)
+    //console.log(dataTable)
     return dataTable
 }
 

@@ -10,7 +10,7 @@ import {d3} from '../lib/d3-lite.js'
 const regexNumberFormats = /,|%|[\$\xA2-\xA5\u058F\u060B\u09F2\u09F3\u09FB\u0AF1\u0BF9\u0E3F\u17DB\u20A0-\u20BD\uA838\uFDFC\uFE69\uFF04\uFFE0\uFFE1\uFFE5\uFFE6]/g;
 
 const dateFormatExtension = ["%d/%m/%Y", "%d/%m/%y", "%Y%m%d", "%B", "%b", "%H:%M:%S"]
-const dateFormatHijack = ["%Y", "%b-%y"]
+const dateFormatHijack = ["%Y", "%b-%y", "%b %y", "%Y-%y", "%Y/%y"]
 
 function testDataDateClean(dataClean, formats) {
   let dateFormat = formats.filter(f => {
@@ -96,14 +96,14 @@ export default function(dataArr = "", tablePart) {
     let dataLen = dataClean.length
 
     let isSameNumberCount = dataClean.filter(d => d.match(/\d/g).length === numberCount).length === dataLen
-    let isInteger = dataClean.filter(d => /*Number.isInteger(parseFloat(d))*/+d > 0).length === dataLen
+    let isInteger = dataClean.filter(d => Number.isInteger(+d) > 0).length === dataLen
     //console.log("checkD:", dataClean)
     //console.log("integer", isInteger)
 
     let thisYear = new Date().getFullYear()
     let isAllYearsLargerThanThisYear =
       (numberCount === 4) &&
-      (dataClean.filter(d => parseInt(d) > thisYear).length === dataLen)
+      (dataClean.filter(d => parseInt(d, 10) > thisYear).length === dataLen)
 
     numberMightBeDate =
       isSameNumberCount &&

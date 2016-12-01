@@ -63,7 +63,7 @@ class Scatter extends React.Component {
 
 
     /* draw */
-    const scaleTime = dataCols[types.indexOf("date")].hasDay ? d3.scaleTime : d3.scaleLinear
+    //const scaleTime = dataCols[types.indexOf("date")].hasDay ? d3.scaleTime : d3.scaleLinear
     const scaleX = d3.scaleLinear()
     .domain(d3.extent(dates))
     .range([10, width-10])

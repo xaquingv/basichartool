@@ -41,7 +41,7 @@ class Line extends React.Component {
     const hasRepeatDateValue = iDate > -1 ? dataCols[iDate].hasRepeatValue : null
 
     const count = this.props.dataChart.count
-    if (count.date === 1 && count.number > 0 && count.row > 2 && (count.row < 50 || (count.row >= 50 && hasRepeatDateValue))) {
+    if (count.date === 1 && count.number > 0 && count.row >= 2 && (count.row < 100 || (count.row >= 100 && hasRepeatDateValue))) {
       d3.select("#lineContiPlot")
       .classed("d-n", false)
     }
@@ -92,10 +92,11 @@ class Line extends React.Component {
     .domain(d3.extent([].concat.apply([], dataNumbers)))
     .range([height-10, 10])
 
+    drawPlot(els, dataChart, scaleX, scaleY, "line")
     drawLine(els, dataChartLine, scaleX, scaleY)
 
     // circles (plot)
-    drawPlot(els, dataChart, scaleX, scaleY, "line")
+    //drawPlot(els, dataChart, scaleX, scaleY, "line")
   }
 
 

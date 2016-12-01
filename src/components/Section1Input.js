@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import './section1Input.css';
 import {importData, clearData} from '../actions';
+import fetchConfig from '../data/config'
 
 //const STEP = 1;
 // read https://facebook.github.io/react/docs/forms.html
@@ -58,6 +59,11 @@ class Section extends React.Component {
         </div>
       </div>
     );
+  }
+
+  componentDidMount() {
+    // load cfg file
+    fetchConfig()
   }
 }
 

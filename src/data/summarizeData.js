@@ -27,6 +27,9 @@ function getValueByType(data, dataType) {
         case (format === "%Y"):
           values = data.map(date => +date)
           break
+        case (format === "%Y-%y" || format === "%Y/%y"):
+          values = data.map(date => +date.slice(0, 4))
+          break
         case !hasDay:
           values = getDates().map(date => date.getFullYear() + date.getMonth()/12)
           break
@@ -110,6 +113,6 @@ export default function(dataTable, show) {
   })
 
   let output = {count, cols}
-  console.log(output)
+  //console.log(output)
   return output
 }

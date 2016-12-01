@@ -25,6 +25,7 @@ const mapStateToProps = (state) => ({
 
 class Bar extends React.Component {
   componentDidUpdate(){
+    console.log("bar100", this.props.step)
     if (this.props.step !== 3) return
 
 

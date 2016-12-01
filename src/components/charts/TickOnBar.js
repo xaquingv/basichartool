@@ -12,13 +12,25 @@ import {swapeArray} from '../../lib/array'
 */
 
 const barHeight = 16
-const bodyHeight = 4
-const bodyTop = (barHeight - bodyHeight) / 2
-const headSize = 12
-const headTop = (barHeight - headSize) / 2
+//const bodyHeight = 4
+//const bodyTop = (barHeight - bodyHeight) / 2
+//const headSize = 12
+//const headTop = (barHeight - headSize) / 2
 const marginBottom = 8
 const bgColor = "#f6f6f6"
-const dotColors = ["#4dc6dd", "#005789"]
+
+const colors = [
+    "#4dc6dd",  // blue light
+    "#005789",  // blue dark
+    "#fcdd03",  // yellow
+    "#ff9b0b",  // orange light
+    "#ea6911",  // orange dark
+    "#dfdfdf",  // grey 5
+    "#bdbdbd",  // grey 3
+    "#808080",  // grey 1.5
+    "#aad801",  // green
+    "#000000"   // custom color
+];
 
 const mapDispatchToProps = (dispatch) => ({
 })
@@ -41,7 +53,7 @@ class Bar extends React.Component {
     const els = this.refs
 
     const count = this.props.dataChart.count
-    if ((count.date === 1 || count.string === 1) && count.number === 2 && count.col === 3 && count.row < 25) {
+    if ((count.date === 1 || count.string === 1) && count.number >= 2 && count.col >= 3 && count.row < 25) {
       d3.select("#tickOnBar")
       .classed("d-n", false)
     } else {
@@ -71,7 +83,7 @@ class Bar extends React.Component {
       width: Math.abs(scaleX(ns[1]) - scaleX(ns[0])),
       shift: scaleX(Math.min(ns[0], ns[1]))//,
     }))
-    //console.log(dataChart)
+    console.log("tick:", dataChart)
 
 
     /* draw */
@@ -94,7 +106,7 @@ class Bar extends React.Component {
     .style("width", "6px")
     .style("height", "16px")
     .style("border-radius", "2px")
-    .style("background-color", (d, i) => dotColors[i])
+    .style("background-color", (d, i) => colors[i])
     .style("position", "absolute")
     //.style("top", "3px")
     .style("left", d => "calc(" + scaleX(d) + "% - 3px)")

@@ -22,6 +22,8 @@ import BarBroken          from './charts/BarBroken'
 import ArrowOnBar         from './charts/ArrowOnBar'
 import DotPlotOnBar       from './charts/DotPlotOnBar'
 import TickOnBar          from './charts/TickOnBar'
+//import histogram
+//import colMatrix
 //import treemap
 
 const STEP = 3
@@ -35,6 +37,10 @@ const mapStateToProps = (state) => ({
 
 
 class Section extends React.Component {
+  shouldComponentUpdate(nextProps, nextState){
+    console.log("section", this.props.step, nextProps.step)
+    return nextProps.step === 3
+  }
   render() {
     const {stepActive} = this.props
 

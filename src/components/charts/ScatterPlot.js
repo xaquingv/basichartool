@@ -50,7 +50,7 @@ class Scatter extends React.Component {
 
     //TODO: add string || date
     const count = this.props.dataChart.count
-    if ((count.date === 0 && count.number >= 2) && count.row > 2) {
+    if ((count.date === 0 && count.number === 2) && count.row > 2) {
       d3.select("#scatterPlot")
       .classed("d-n", false)
     } else {
@@ -74,7 +74,7 @@ class Scatter extends React.Component {
     const dataNumbers = this.props.dataChart.cols // fisrt two numbers
     .filter(d => d.type === "number")
     .map(numberCol => numberCol.values)
-    console.log(dataNumbers)
+    //console.log(dataNumbers)
     const dataChart = dataGroup.map((group, i) => {
 
     return {
@@ -85,7 +85,7 @@ class Scatter extends React.Component {
         date: dataNumbers[0][i],
         number: dataNumbers[1][i]
     }})
-    console.log(dataChart)
+    //console.log(dataChart)
 
     /* draw */
     //const scaleTime = dataCols[types.indexOf("date")].hasDay ? d3.scaleTime : d3.scaleLinear
