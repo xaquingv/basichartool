@@ -24,6 +24,14 @@ import TickOnBar          from './charts/TickOnBar'
 
 // TODO: obj -> arr, sort by config file
 export const chartList = {
+  lineDiscrete:  LineDiscrete,
+  lineConti:     LineContinuous,
+  dotPlot:       DotPlot,
+  scatterPlot:   ScatterPlot,
+  slope:         Slope,
+  diffArrow:     ArrowOnBar,
+  diffDot:       DotPlotOnBar,
+  tickPlot:      TickOnBar,
   bar:           Bars,
   barGroup:      Bars,
   barGStack:     BarStack,
@@ -36,14 +44,6 @@ export const chartList = {
   colGStack100:  AreaStack100,
   areaStack100:  AreaStack100,
   donut:         Donut,
-  lineDiscrete:  LineDiscrete,
-  lineConti:     LineContinuous,
-  dotPlot:       DotPlot,
-  scatterPlot:   ScatterPlot,
-  tickPlot:      TickOnBar,
-  slope:         Slope,
-  diffArrow:     ArrowOnBar,
-  diffDot:       DotPlotOnBar,
   mapChoropleth: MapChoropleth,
   mapBubble:     MapBubble
 }

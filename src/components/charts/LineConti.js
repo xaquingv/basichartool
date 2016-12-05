@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {drawLine} from './line'
+import drawChart from './line'
 
 /*
   data spec
@@ -15,7 +15,7 @@ const width = 320;
 const height = width*0.6;
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief
+  dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -31,40 +31,32 @@ class Line extends React.Component {
   componentDidUpdate(){
 
     /* data */
-    const dataCols = this.props.dataChart.cols
-    const iDate = dataCols.map(d => d.type).indexOf("date")
-
-    const dataDates = dataCols[iDate].values
-    const dataNumbers = this.props.dataChart.cols
-    .filter(d => d.type === "number")
-    .map(numberCol => numberCol.values)
-
-    const dataChart = dataNumbers.map(numberCol =>
+    const data = this.props.dataChart
+    const dates = data.dateCol
+    const dataChart = data.numberCols.map(numberCol =>
       numberCol.map((number, i) => ({
-        date: dataDates[i],
+        date: dates[i],
         number: number
     })))
 
-
-    /* draw */
-    const els = this.refs
-
-    const scaleTime = dataCols[iDate].hasDay ? d3.scaleTime : d3.scaleLinear
+    const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
     const scaleX = scaleTime()
-    .domain(d3.extent(dataDates))
-    .range([10, width-10])
+    .domain(d3.extent(dates))
+    .range([10, width - 10])
 
     const scaleY = d3.scaleLinear()
     // TODO: pretty domain
-    .domain(d3.extent([].concat.apply([], dataNumbers)))
-    .range([height-10, 10])
-
-    drawLine(els, dataChart, scaleX, scaleY)
+    .domain(d3.extent(data.numbers))
+    .range([height - 10, 10])
 
 
-    /* validate 2 */
-    // TODO: move out if possible
-    // NOTE: special validation to double check if discrete and conti are the same
+    /* draw */
+    drawChart(this.refs, dataChart, scaleX, scaleY)
+
+
+    /* validate special */
+    // TODO: move to another validatetion file
+    // NOTE: double check if discrete and conti are the same
     // if the same (duplicate), hide the discrete line
     const elLineDiscrete = d3.select("#lineDiscrete")
     if (d3.select("#lineConti path").attr("d") === elLineDiscrete.select("path").attr("d")) {

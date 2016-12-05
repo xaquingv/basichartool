@@ -32,11 +32,12 @@ export default function(dataTableRaw) {
     (headTypes.filter(headType => headType.indexOf("string") !== -1).length === headTypes.length) ||
     (headTypes.filter((headType, i) => headType === bodyTypes[i].list[0]).length !== headTypes.length)
   }
-  //console.log(headTypes)
 
   dataTableDraw.type = bodyTypes
   if (dataTableDraw.flag.isHeader) {
-    dataTableDraw.head = rows.slice(0, 1)[0]
+    // TODO: double check headers
+    const headers = rows.slice(0, 1)[0].map(header => header ? header : "unknown title")
+    dataTableDraw.head = headers//rows.slice(0, 1)[0]
     dataTableDraw.body = rows.slice(1)
   } else {
     dataTableDraw.head = headTypes.map(() => "unknown title")

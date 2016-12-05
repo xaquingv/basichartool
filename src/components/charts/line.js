@@ -1,23 +1,20 @@
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 
-
-export function drawLine(els, dataChart, scaleX, scaleY) {
+export default function (els, dataChart, scaleX, scaleY) {
 
   const line = d3.line()
-  .defined(d => d.number)
+  .defined(d => d.number !== null)
   .x(d => Math.round(scaleX(d.date)*100)/100)
   .y(d => scaleY(d.number));
 
   // init
   let svg = d3.select(els.svg)
-  //.classed("d-n", false)
   .selectAll("path")
   .data(dataChart)
 
   // update
-  svg
-  .attr("d", d => line(d))
+  svg.attr("d", d => line(d))
 
   // new
   svg.enter().append("path")

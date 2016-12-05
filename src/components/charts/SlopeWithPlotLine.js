@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {drawLine} from './line'
+import drawChart from './line'
 import {drawPlot} from './plot'
 import {swapArray} from '../../lib/array'
 
@@ -70,7 +70,7 @@ class Slope extends React.Component {
     .domain(d3.extent([].concat.apply([], dataNumbers)))
     .range([height-10, 10])
 
-    drawLine(els, dataChartSlope, scaleX, scaleY)
+    drawChart(els, dataChartSlope, scaleX, scaleY)
     d3.selectAll("#slope path")
     .attr("stroke", (d, i) => dataChartColor[i])
 

@@ -35,7 +35,7 @@ class Scatter extends React.Component {
     /* data */
     const dataCols = this.props.dataChart.cols
     const dataTypes = dataCols.map(d => d.type)
-    const dataGroup = dataCols[dataTypes.indexOf("string")].values // first string
+    const dataGroup = dataCols[dataTypes.indexOf("string1")].values // first string
     const groupUnique = uniqueArray(dataGroup)
     const groupColors = []
     groupUnique.forEach((d, i) => {

@@ -1,8 +1,10 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {swapArray} from '../../lib/array'
-import {drawPlot} from './bar'
+import {colors} from '../../data/config'
+import {uniqueArray} from '../../lib/array'
+import drawChart from './bar'
+import {getDomainByDataRange} from './domain'
 
 /*
   data spec
@@ -14,7 +16,7 @@ import {drawPlot} from './bar'
 */
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief
+  dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -30,40 +32,35 @@ class Bar extends React.Component {
   componentDidUpdate(){
 
     /* data */
-    const count = this.props.dataChart.count
-    const dataCols = this.props.dataChart.cols
-    const dataGroup = dataCols[0].values
-    const dataNumbers = swapArray(this.props.dataChart.cols
-    .filter(d => d.type === "number")
-    .map(numberCol => numberCol.values))
-
-    const domain = d3.extent([].concat.apply([], dataNumbers))
-    if (domain[0] > 0) {
-      domain[0] = 0
-    } else if (domain[1] < 0) {
-      domain[1] = 0
-    }
+    const data = this.props.dataChart
+    const numberRows = data.numberRows
+    const labelGroup = data.string1Col
+    const colorGroup = data.string2Col
 
     const scaleX = d3.scaleLinear()
-    .domain(domain)
+    .domain(getDomainByDataRange(data.numbers))
     .range([0, 100])
 
-    const dataChart = dataGroup.map((group, i) => ({
-      group: group,
-      value: dataNumbers[i].map(num => ({
+    const scaleColors = d3.scaleOrdinal()
+    .domain(uniqueArray(colorGroup))
+    .range(colors)
+
+    const dataChart = labelGroup.map((label, i) => ({
+      group: label,
+      value: numberRows[i].map(num => ({
         title: num,
         width: Math.abs(scaleX(num) - scaleX(0)),
-        shift: num > 0 ? scaleX(0) : scaleX(num)
+        shift: num > 0 ? scaleX(0) : scaleX(num),
+        color: colorGroup.length !== 0 ? scaleColors(colorGroup[i]) : null
       }))
     }))
 
 
     /* draw */
-    const els = this.refs
-    const scaleY = (count) => Math.round((((24 - (count-1)) / 3) * 2) / count)
-    const barHeight = scaleY(count.number)
+    const getBarHeight = (count) => Math.round((((24 - (count-1)) / 3) * 2) / count)
+    const barHeight = getBarHeight(numberRows[0].length)
 
-    drawPlot(els, dataChart, {barHeight})
+    drawChart(this.refs, dataChart, {barHeight})
   }
 
 

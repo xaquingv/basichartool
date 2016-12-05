@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {drawLine} from './line'
+import drawChart from './line'
 
 /*
   data spec
@@ -15,7 +15,7 @@ const width = 320;
 const height = width*0.6;
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief
+  dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -29,34 +29,27 @@ class Line extends React.Component {
   }
 
   componentDidUpdate(){
-
+    
     /* data */
-    const count = this.props.dataChart.count
-
-    const dataNumbers = this.props.dataChart.cols
-    .filter(d => d.type === "number")
-    .map(numberCol => numberCol.values)
-
-    const dataChart = dataNumbers.map(numberCol =>
+    const data = this.props.dataChart
+    const dataChart = data.numberCols.map(numberCol =>
       numberCol.map((number, i) => ({
         date: i,
         number: number
     })))
 
-
-    /* draw */
-    const els = this.refs
-
     const scaleX = d3.scaleLinear()
-    .domain([0, count.row-1])
-    .range([10, width-10])
+    .domain([0, data.rowCount - 1])
+    .range([10, width - 10])
 
     const scaleY = d3.scaleLinear()
     // TODO: pretty domain
-    .domain(d3.extent([].concat.apply([], dataNumbers)))
-    .range([height-10, 10])
+    .domain(d3.extent(data.numbers))
+    .range([height - 10, 10])
 
-    drawLine(els, dataChart, scaleX, scaleY)
+
+    /* draw */
+    drawChart(this.refs, dataChart, scaleX, scaleY)
   }
 
   render() {

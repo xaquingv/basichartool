@@ -1,9 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {swapArray} from '../../lib/array'
 import {colors, colorBarBackground} from '../../data/config'
-
+import {drawBarsBackground} from './barOnBar'
 /*
   data spec
   missing data accepted
@@ -13,10 +12,13 @@ import {colors, colorBarBackground} from '../../data/config'
 */
 
 const barHeight = 16
-const marginBottom = 8
+const barMarginBottom = 8
+const tickWidth = 6
+const tickShift = tickWidth / 2
+const tickBorderRadius = 2
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief
+  dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -32,54 +34,30 @@ class Bar extends React.Component {
   componentDidUpdate() {
 
     /* data */
-    const dataCols = this.props.dataChart.cols
-    // const dataDates
-    const dataNumbers = swapArray(dataCols
-    .filter(d => d.type === "number")
-    .map(numberCol => numberCol.values))
+    const data = this.props.dataChart
 
-    //console.log(dataNumbers)
-    const domain = d3.extent([].concat.apply([], dataNumbers))
-    //console.log(domain)
+    const dataChart = data.numberRows.map((numbers, i) => {
+      const count = {}
+      numbers.forEach(num => count[num] = (count[num] || 0) + 1)
+      //             (num => count[num] = count[num] ? count[num] + 1 : 1)
+      return numbers.map((num, i) => ({
+        value: num,
+        index: numbers.slice(0, i+1).filter(n => n === num).length,
+        count: count[num]
+      }))
+    })
+    //console.log(dataChart)
+
     const scaleX = d3.scaleLinear()
-    .domain(domain)
+    .domain(d3.extent(data.numbers))
     .range([0, 100])
-
-    //TODO: check ticks on top of each other
-    const dataChart = dataNumbers.map((ns, i) => ({
-      value: ns,
-      width: Math.abs(scaleX(ns[1]) - scaleX(ns[0])),
-      shift: scaleX(Math.min(ns[0], ns[1]))//,
-    }))
-    //console.log("tick:", dataChart)
 
 
     /* draw */
+    const id = this.props.id
     const els = this.refs
-
-    let gs = d3.select(els.div)
-    // TODO: remove temp solution
-    .html("")
-    .selectAll(".group")
-    .data(dataChart/*Arrow*/)
-
-    gs.enter().append("div")
-    .attr("class", "group")
-    .attr("title", d => d.value)
-    .style("height", barHeight + "px")
-    .style("margin-bottom", marginBottom + "px")
-    .style("position", "relative")
-    .style("background-color", colorBarBackground)
-    .selectAll("div")
-    .data(d => d.value)
-    .enter().append("div")
-    .style("width", "6px")
-    .style("height", "16px")
-    .style("border-radius", "2px")
-    .style("background-color", (d, i) => colors[i])
-    .style("position", "absolute")
-    //.style("top", "3px")
-    .style("left", d => "calc(" + scaleX(d) + "% - 3px)")
+    drawBarsBackground(els, dataChart, tickShift)
+    drawChart(els, dataChart, {id, scaleX})
   }
 
 
@@ -91,3 +69,49 @@ class Bar extends React.Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Bar)
+
+
+function drawChart(els, dataChart, opt) {
+  /*console.log(opt.id)
+
+  let div = d3.select(els.div)
+  let gs1 = div.selectAll(".group")
+  let gs2 = document.querySelectorAll("#"+opt.id + " .group")
+  //.selectAll(".group")
+  //.selectAll("div.group")
+  console.log(div)
+  console.log(gs1)
+  console.log(gs2)*/
+
+  let gs = d3.select(els.div)
+  .html("")
+  .selectAll(".group")
+  .data(dataChart)
+  .enter().append("div")
+  .style("height", barHeight + "px")
+  .style("margin-bottom", barMarginBottom + "px")
+  .style("background-color", colorBarBackground)
+  // shift half tick size
+  .append("div")
+  .attr("class", "group")
+  .style("position", "relative")
+  .style("margin", "0 " + tickShift + "px")
+  .selectAll("div")
+  .data(d => d)
+  .enter()
+
+  // ticks
+  gs.append("div")
+  .attr("title", d => d.value)
+  .style("background-color", (d, i) => colors[i])
+  .style("width", tickWidth + "px")
+  .style("height", d => (barHeight/d.count) + "px")
+  .style("position", "absolute")
+  .style("top", d => (barHeight * (d.index-1) / d.count) + "px")
+  .style("left", d => "calc(" + opt.scaleX(d.value) + "% - " + tickShift + "px)")
+  //.style("border-radius", tickBorderRadius + "px")
+  .style("border-top-right-radius",    d => d.index === 1       ? tickBorderRadius + "px" : false)
+  .style("border-top-left-radius",     d => d.index === 1       ? tickBorderRadius + "px" : false)
+  .style("border-bottom-right-radius", d => d.index === d.count ? tickBorderRadius + "px" : false)
+  .style("border-bottom-left-radius",  d => d.index === d.count ? tickBorderRadius + "px" : false)
+}

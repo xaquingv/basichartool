@@ -14,9 +14,10 @@ import {colors} from '../../data/config'
 
 const width = 320
 const height = width*0.6
-const radius = Math.min(width, height) / 2;
+const radius = Math.min(width, height) / 2
+
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief
+  dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -32,22 +33,9 @@ class Area extends React.Component {
   componentDidUpdate(){
 
     /* data */
-    const dataNumbers = this.props.dataChart.cols
-    .filter(d => d.type === "number")
-    .map(numberCol => numberCol.values)
-
-    /* validate 2 */
-    const dataNumbersAll = [].concat.apply([], dataNumbers)
-    const isAllPositive = dataNumbersAll.filter(num => num < 0).length === 0
-    if (!isAllPositive) {
-      d3.select("#donut")
-      .classed("d-n", true)
-      return
-    }
-
-    // TODO: labels of numbers
-    const dataChart = dataNumbersAll
-    //console.log(dataChart)
+    const data = this.props.dataChart
+    const dataChart = data.numbers
+    //const ... 
 
     const pie = d3.pie()
     .sort(null)
@@ -59,10 +47,8 @@ class Area extends React.Component {
 
 
     /* draw */
-    const els = this.refs
-
     // init area
-    let svg = d3.select(els.pie)
+    let svg = d3.select(this.refs.pie)
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
     .selectAll("path")
     .data(pie(dataChart))

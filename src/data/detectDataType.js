@@ -51,7 +51,7 @@ export default function(dataArr = "", tablePart) {
 
   /* number format */
   //TODO: think if it's enough to use only the first row
-  //console.log(dataClean)
+  //console.log(dataClean, dataArr)
   let numberFormat = dataClean[0].match(regexNumberFormats);
   let dataNumberClean = dataClean
   .map(data =>
@@ -65,7 +65,6 @@ export default function(dataArr = "", tablePart) {
   ).map(data =>
     parseFloat(data)
   )
-  //console.log("checkN:", dataNumberClean)
 
   let isNumber = dataNumberClean.length === dataClean.length;
   // case of unit but not number(s), ex. %
@@ -85,6 +84,7 @@ export default function(dataArr = "", tablePart) {
     }
     //TODO: sync dataNumber format
   }
+  //console.log("numb:", dataNumberClean, numberFormat, isNumber)
 
 
   /* date format */
@@ -120,8 +120,8 @@ export default function(dataArr = "", tablePart) {
     //console.log(!isAllYearsLargerThanThisYear)
   }
 
-  //console.log(!numberFormat && numberMightBeDate)
-  if (/*!numberFormat && */numberMightBeDate) {
+  //console.log("date:", !numberFormat && numberMightBeDate)
+  if (!numberFormat && numberMightBeDate) {
     let isDate
     let dataDateClean
     let dateParser
@@ -179,8 +179,7 @@ export default function(dataArr = "", tablePart) {
   };
 
 
-  //console.log(data.types.sort())
-  //console.log(data)
   data.types.sort()
+  //console.log("=>", data.types[0])
   return data
 }

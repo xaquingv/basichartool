@@ -1,7 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {swapArray} from '../../lib/array'
 import {colors} from '../../data/config'
 
 /*
@@ -13,8 +12,10 @@ import {colors} from '../../data/config'
   PS. col sums 100(%) !?
 */
 
+const barHeight = 72
+
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief
+  dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -28,57 +29,75 @@ class Bar extends React.Component {
   }
 
   componentDidUpdate(){
+    // TODO: add multi broken bars as another chart
 
     /* data */
-    const dataNumbers = swapArray(this.props.dataChart.cols
-    .filter(d => d.type === "number")
-    .map(numberCol => numberCol.values))
+    const data = this.props.dataChart
+    const numbers = data.numbers
+    
+    const scaleX = d3.scaleLinear()
+    .domain([0, numbers.reduce((n1, n2) => n1 + n2)])
+    .range([0, 100])
 
-    const dataChart = [].concat.apply([], dataNumbers)
+    const dataChart = numbers.map(number => ({
+      title: number,
+      width: scaleX(number)
+    }))
 
 
     /* draw */
     const els = this.refs
-
-    const scaleX = d3.scaleLinear()
-    .domain([0, dataChart.reduce((n1, n2) => n1 + n2)])
-    .range([0, 100])
-
-    // init gs
-    // TODO: multi broken bars
-    //let gs =
-    let div =
-    d3.select(els.div)
-    .style("padding-top", 48 + 10 + "px") // override
-    .selectAll("div")
-    .data(dataChart/*.slice(0, 1)*/)
-
-    // update
-    div
-    .attr("title", d => d)
-    .style("width", d => scaleX(d) + "%")
-    .style("height", "72px")
-    .style("display", "inline-block")
-    .style("background-color", (d, i) => d ? colors[i] : "transparent")
-
-    div
-    .enter().append("div")
-    .attr("title", d => d)
-    .style("width", d => scaleX(d) + "%")
-    .style("height", "72px")
-    .style("display", "inline-block")
-    .style("background-color", (d, i) => d ? colors[i] : "transparent")
-
-    // remove
-    div.exit().remove()
+    drawChart(els, dataChart)
+    drawAxis(els)
   }
 
 
   render() {
     return (
-      <div className="chart" ref="div"></div>
+      <div className="chart" ref="div">
+        <div ref="bars"></div>
+        <div ref="axis">
+          <div ref="axis_tick"></div>
+          <div ref="axis_mark">50%</div>
+        </div>
+      </div>
     )
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Bar)
+
+
+function drawChart(els, dataChart) {
+  d3.select(els.bars)
+  .html("")
+  .style("padding-top", 48 + "px") // override
+  .style("height", barHeight + "px")
+  .selectAll("div")
+  .data(dataChart)
+  .enter().append("div")
+  .attr("title", d => d.title)
+  .style("width", d => d.width + "%")
+  .style("height", barHeight + "px")
+  .style("display", "inline-block")
+  .style("background-color", (d, i) => d ? colors[i] : "transparent")
+}
+
+function drawAxis(els) {
+  d3.select(els.axis)
+  .style("position", "relative")
+
+  d3.select(els.axis_tick)
+  .style("position", "absolute")
+  .style("left", "50%")
+  .style("height", "8px")
+  .style("border-left", "1px solid #bdbdbd") //grey-3
+
+  d3.select(els.axis_mark)
+  .style("position", "absolute")
+  .style("top", "10px")
+  .style("width", "100%")
+  .style("text-align", "center")
+  .style("font-size", "12px")
+  .style("color", "#bdbdbd")
+}

@@ -1,9 +1,9 @@
 import {d3} from '../lib/d3-lite'
-import {uniqueArray} from '../lib/array'
+import {uniqueArray, swapArray} from '../lib/array'
 import getDataType from './detectDataType'
 
 function countType(dataTypes, type) {
-    return dataTypes.filter(t => t === type).length
+  return dataTypes.filter(t => t === type).length
 }
 
 // TODO:
@@ -12,38 +12,38 @@ function getValueByType(data, dataType) {
   let type = dataType.list[0]
   switch(type) {
     case "number":
-      //console.log("format:", dataType.format)
-      // remove all non numeric or period
-      return {values: data.map(d => d ? +d.replace(/[^0-9.\-]/g, "") : d)}
+    //console.log("format:", dataType.format)
+    // remove all non numeric or period
+    return {values: data.map(d => d ? +d.replace(/[^0-9.\-]/g, "") : d)}
 
     case "date":
-      let format = dataType.format
-      let parser = d3.timeParse(dataType.format)
-      let hasDay = dataType.hasDay
+    let format = dataType.format
+    let parser = d3.timeParse(dataType.format)
+    let hasDay = dataType.hasDay
 
-      let values
-      let getDates = () => data.map(date => format ? parser(date) : new Date(date))
+    let values
+    let getDates = () => data.map(date => format ? parser(date) : new Date(date))
 
-      switch (true) {
-        case (format === "%Y"):
-          values = data.map(date => +date)
-          break
-        case (format === "%Y-%y" || format === "%Y/%y"):
-          values = data.map(date => +date.slice(0, 4))
-          break
-        case !hasDay:
-          values = getDates().map(date => date.getFullYear() + date.getMonth()/12)
-          break
-        default:
-          values = getDates()
-      }
-      return {values, hasDay}
+    switch (true) {
+      case (format === "%Y"):
+        values = data.map(date => +date)
+        break
+      case (format === "%Y-%y" || format === "%Y/%y"):
+        values = data.map(date => +date.slice(0, 4))
+        break
+      case !hasDay:
+        values = getDates().map(date => date.getFullYear() + date.getMonth()/12)
+        break
+      default:
+        values = getDates()
+    }
+    return {values, hasDay}
 
     //case "string1"
     //TODO: format checking - code/name of world, europe, uk , us .... or bins
 
     default:
-      return {values: data}
+    return {values: data}
   }
 }
 
@@ -98,19 +98,12 @@ export default function(dataTable, show) {
   const cols = dataCols.map((col, i) => {
     //console.log(uniqueArray(col))
     return {
-    // content
-    header: dataTable.flag.isHeader ? col.splice(0, 1)[0] : "",
-    string: col,
-    ...getValueByType(col, dataType[i]), //values
-    // properties in general
-    //hasNullValue: col.indexOf(null) > -1,
-    //hasRepeatValue: uniqueArray(col).length !== col.length,
-    type: dataType[i].list[0],
-    // properties on type
-    // color: ...
-    format: dataType[i].format
-    //domain: //range
-    //hasDay:*/
+      // content
+      header: dataTable.flag.isHeader ? col.splice(0, 1)[0] : "",
+      string: col,
+      ...getValueByType(col, dataType[i]), //values
+      type: dataType[i].list[0],
+      format: dataType[i].format
     }
   })
 
@@ -120,39 +113,56 @@ export default function(dataTable, show) {
     return null
   }
 
-  const numberCols = cols.filter(col => col.type === "number")
+  const dateData = count.date > 0 ? cols.find(col => col.type === "date")/*.values*/ : []
+  const numberData = cols.filter(col => col.type === "number")
+  const string1Col = count.string1 > 0 ? cols.find(col => col.type === "string1").values : [] // TODO: may have more than 1 col !?
+  const string2Col = count.string2 > 0 ? cols.find(col => col.type === "string2").values : []
+
+  const chart = {
+    string1Col, string2Col,
+    dateCol: dateData.values,
+    dateHasDay: dateData.hasDay,
+    numberCols: numberData.map(col => col.values),
+    rowCount: count.row
+  }
+  //console.log(chart.numberCols)
+  chart.numberRows = swapArray(chart.numberCols)
+  chart.numbers = chart.numberCols.reduce((col1, col2) => col1.concat(col2))
+  //console.log(data)
 
   const getNumberRangeType = () => {
-    const numbers = numberCols.map(col => col.values).reduce((col1, col2) => col1.concat(col2))
-    const range = d3.extent(numbers)
+    const range = d3.extent(chart.numbers)
     const min = range[0]
     const max = range[1]
 
     switch (true) {
-      case min < 0 && max > 0 :
+      case min < 0 && max > 0:
         return 0
       // all positives
       case min >= 0 && max > 0:
         return 1
-      // either all positives or all negatives
-      case (min >= 0 && max > 0) || (min < 0 && max <= 0):
-        return 2
+      // all negatives
+      case (min < 0 && max <= 0):
+        return -1
       default:
-        console.err("rangeType unknown!!!")
+      console.err("rangeType unknown!!!")
 
     }
   }
 
+  // NOTE: in case header is null, also see getDataTable.js
+  const numberHeaders = numberData.map(col => col.header ? col.header : "unknown title")
   const value = {
-    date_hasRepeat:    count.date    > 0 ? (uniqueArray(cols.find(col => col.type === "date").values).length    !== count.row) : null,
-    string1_hasRepeat: count.string1 > 0 ? (uniqueArray(cols.find(col => col.type === "string1").values).length !== count.row) : null,
+    date_hasRepeat:    count.date > 0 ? uniqueArray(chart.dateCol).length !== count.row : null,
+    string1_hasRepeat: count.string1 > 0 ? uniqueArray(chart.string1Col).length !== count.row : null,
     string1_format:    getStringFormat(),
-    numberH_format:    getDataType(numberCols.map(col => col.header)).types[0],
-    number_rangeType:  getNumberRangeType()
+    numberH_format:    getDataType(numberHeaders).types[0],
+    number_rangeType:  getNumberRangeType(),
+    number_hasNull:    chart.numbers.indexOf(null) > -1
   }
+  //console.log(chart.numbers, value.number_hasNull)
 
-
-  let output = {count, cols, value}
-  //console.log(output)
+  let output = {cols, count, value, chart}
+  console.log(output)
   return output
 }

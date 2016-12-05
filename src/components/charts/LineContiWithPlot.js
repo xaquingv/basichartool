@@ -1,3 +1,5 @@
+/* deprecated */
+
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'

@@ -2,7 +2,7 @@ import {d3} from '../lib/d3-lite.js'
 import jsonBackup from '../assets/data/config'
 
 // source: https://docs.google.com/spreadsheets/d/1Kw1M08x6yybOG8b7JxDvxIbtdffFzCsB0xQ7UuLuzh8/edit#gid=1881209151
-const url = 'https://interactive.guim.co.uk/docsdata-test/1Kw1M08x6yybOG8b7JxDvxIbtdffFzCsB0xQ7UuLuzh8.jso'
+const url = 'https://interactive.guim.co.uk/docsdata-test/1Kw1M08x6yybOG8b7JxDvxIbtdffFzCsB0xQ7UuLuzh8.json'
 
 export let colors, colorBarBackground
 export let cfg_charts
@@ -40,25 +40,23 @@ function parseCfgJson(cfg) {
   /* charts: cfg for chart selection
   // TODO: sort by order and filter by on/off flag */
   cfg_charts = cfg.cfg_charts.filter(chart => chart.id).map(chart => {
-    // 1. count
+
+    // 1. count => 5 features
     let count = {
       row: JSON.parse(chart.row.replace("Infinity", '"Infinity"'))
     };
-    ["date", "number", "string1", "string2"].forEach(type => {
-      count[type] = JSON.parse(chart[type])
+    ["date", "number", "string1", "string2"].forEach(feature => {
+      count[feature] = JSON.parse(chart[feature])
     })
-    // 2. value
-    const {date_hasRepeat, string1_hasRepeat, string1_format, numberH_format} = chart
-    //console.log(date_hasRepeat)
-    //console.log(date_hasRepeat.trim() !== "" ? JSON.parse(date_hasRepeat) : null)
-    const rangeType = +chart.number_rangeType
+
+    // 2. value => 5 features
     const value = {
-      date_hasRepeat: date_hasRepeat.trim() !== "" ? JSON.parse(date_hasRepeat) : null,
-      string1_hasRepeat: string1_hasRepeat.trim() !== "" ? JSON.parse(string1_hasRepeat) : null,
-      //string1_format,
-      number_rangeType: rangeType === 0 ? null : rangeType,
-      //numberH_format
-    }
+    //string1_format: chart.string1_format.trim() !== "" ? chart.string1_format : null,
+      numberH_format: chart.numberH_format.trim() !== "" ? chart.numberH_format : null
+    };
+    ["date_hasRepeat", "string1_hasRepeat", "number_hasNull", "number_rangeType"].forEach(feature => {
+      value[feature] = chart[feature].trim() !== "" ? JSON.parse(chart[feature]) : null
+    })
 
     return {
       chart: chart.id,

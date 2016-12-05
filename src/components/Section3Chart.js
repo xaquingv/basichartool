@@ -26,7 +26,7 @@ class Section extends React.Component {
       const isSelected = selection.indexOf(chartID) > -1
       const cnDisplay = isSelected ? "" : "d-n"
       const ComponentChart = chartList[chartID]
-      return <div key={chartID} id={chartID} className={cnDisplay}><ComponentChart flag={isSelected}/>{chartID}</div>
+      return <div key={chartID} id={chartID} className={cnDisplay}><ComponentChart flag={isSelected} id={chartID}/>{chartID}</div>
     })
 
     return (

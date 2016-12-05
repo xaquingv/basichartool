@@ -1,8 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {swapArray} from '../../lib/array'
-import {drawPlot} from './bar'
+import drawChart from './bar'
 
 /*
   data spec
@@ -14,7 +13,7 @@ import {drawPlot} from './bar'
 */
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief
+  dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -30,45 +29,37 @@ class Bar extends React.Component {
   componentDidUpdate(){
 
     /* data */
-    const dataCols = this.props.dataChart.cols
-    const dataGroup = dataCols[0].values
-    const dataNumbers = swapArray(this.props.dataChart.cols
-    .filter(d => d.type === "number")
-    .map(numberCol => numberCol.values))
+    const data = this.props.dataChart
+    const groups = data.string1Col
+    const numberRows = data.numberRows
 
-    // TODO: doube check
-    /* validate 2 * /
-    // NOTE: round to avoid system number digit issue
-    const isAll100 = dataNumberSums.filter(sum => sum === 100).length === dataNumberSums.length
-    const dataNumbersAll = [].concat.apply([], dataNumbers)
-    const isAllPositive = dataNumbersAll.filter(num => num < 0).length === 0
-    //console.log("isAllPositive", isAllPositive)
-    if (isAll100 || !isAllPositive) {
-      d3.select("#barStack100")
-      .classed("d-n", true)
-      return
-    }*/
-
-    const dataNumberSums = dataNumbers.map(ns => Math.round(ns.reduce((n1, n2) => n1 + n2)*100)/100)
+    const numberRowSums = numberRows.map(ns => Math.round(ns.reduce((n1, n2) => n1 + n2)*100)/100)
     const scaleX = (i) => d3.scaleLinear()
-    .domain([0, dataNumberSums[i]])
+    .domain([0, numberRowSums[i]])
     .range([0, 100])
 
-    const dataChart = dataGroup.map((group, i) => {
-      let scale = scaleX(i)
+    const dataChart = groups.map((group, i) => {
+      const scale = scaleX(i)
       return {
         group: group,
-        value: dataNumbers[i].map(num => ({
-          title: num,
+        value: numberRows[i].map(num => ({
+          title: Math.round(scale(num)) + "% (" + num + ")",
           width: scale(num)
         }))
       }
     })
 
-
     /* draw */
-    const els = this.refs
-    drawPlot(els, dataChart)
+    drawChart(this.refs, dataChart, {display: "inline-block"})
+
+    /* validate special */
+    // TODO: move to another validatetion file
+    // TODO: remove barGStack or barGStack100 ?
+    // NOTE: check if BarStack100 and BarStack is duplicate
+    const isDuplicate = !numberRowSums.find(sum => sum !== 100)
+    if (isDuplicate) {
+      d3.select("#barGStack100").classed("d-n", true)
+    }
   }
 
 

@@ -1,8 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {swapArray} from '../../lib/array'
-import {drawPlot} from './bar'
+import drawChart from './bar'
+import {getDomainByDataRange} from './domain'
 
 /*
   data spec
@@ -14,7 +14,7 @@ import {drawPlot} from './bar'
 */
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief
+  dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -30,38 +30,28 @@ class BarStack extends React.Component {
   componentDidUpdate(){
 
     /* data */
-    const dataCols = this.props.dataChart.cols
-    const dataGroup = dataCols[0].values
-    const dataNumbers = swapArray(this.props.dataChart.cols
-    .filter(d => d.type === "number")
-    .map(numberCol => numberCol.values))
+    const data = this.props.dataChart
+    const groups = data.string1Col
+    const numberRows = data.numberRows
 
-    const dataNumberSums = dataNumbers.map(ns => ns.reduce((n1, n2) => n1 + n2))
-
-    const domain = d3.extent(dataNumberSums)
-    if (domain[0] > 0) {
-      domain[0] = 0
-    } else if (domain[1] < 0) {
-      domain[1] = 0
-    }
+    const numberRowSums = numberRows.map(ns => ns.reduce((n1, n2) => n1 + n2))
 
     const scaleX = d3.scaleLinear()
-    .domain(domain)
+    .domain(getDomainByDataRange(numberRowSums))
     .range([0, 100])
 
-    const dataChart = dataGroup.map((group, i) => ({
-      group: group,
-      value: dataNumbers[i].map((num, j) => ({
-        title: num,
-        width: Math.abs(scaleX(num) - scaleX(0)),
-        shift: (num < 0 && j===0) ? scaleX(dataNumberSums[i]) : 0
-      }))
+    const dataChart = groups.map((group, i) => ({
+        group: group,
+        value: numberRows[i].map((num, j) => ({
+          title: num,
+          width: Math.abs(scaleX(num) - scaleX(0)),
+          shift: (num < 0 && j===0) ? scaleX(numberRowSums[i]) : null
+        }))
     }))
 
 
     /* draw */
-    const els = this.refs
-    drawPlot(els, dataChart)
+    drawChart(this.refs, dataChart, {display: "inline-block"})
   }
 
   render() {

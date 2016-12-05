@@ -1,7 +1,9 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {drawPlot} from './bar'
+import {colors} from '../../data/config'
+import {uniqueArray} from '../../lib/array'
+import drawChart from './bar'
 
 /*
   data spec
@@ -13,7 +15,7 @@ import {drawPlot} from './bar'
 */
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief
+  dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -29,40 +31,37 @@ class Bar extends React.Component {
   componentDidUpdate(){
 
     /* data */
-    const dataCols = this.props.dataChart.cols
-    const dataType = dataCols.map(d => d.type)
+    const data = this.props.dataChart
+    const numbers = data.numbers
+    const labelGroup = data.string1Col
+    const colorGroup = data.string2Col
 
-    const dataGroup = dataCols[dataType.indexOf("string")].values
-    const dataNumbers = dataCols[dataType.indexOf("number")].values
-
-    /* validate 2 */
-    // is100
-    const isAllSmallerThan100 = dataNumbers.filter(num => num <= 100).length === dataNumbers.length
-    const domainMax = isAllSmallerThan100 ? 100 : Math.max.apply(null, [].concat.apply([], dataNumbers))
+    const isAnyNumbersLargerThan100 = numbers.find(num => num > 100)
+    const domainMax = isAnyNumbersLargerThan100 ? Math.max.apply(null, numbers) : 100
 
     const scaleX = d3.scaleLinear()
     .domain([0, domainMax])
     .range([0, 100])
 
-    const dataChart = dataGroup.map((group, i) => {
-      const num = dataNumbers[i]
-      return {
-        group: group,
+    const scaleColors = d3.scaleOrdinal()
+    .domain(uniqueArray(colorGroup))
+    .range(colors)
+
+    const dataChart = labelGroup.map((label, i) => ({
+        group: label,
         value: [{
-          title: num,
-          width: scaleX(num)
-        }].concat([{
-          title: "",
-          width: 100 - scaleX(num)
-        }])
-      }
-    })
-    //console.log(dataChart)
+          title: isAnyNumbersLargerThan100 ?
+            Math.round(scaleX(numbers[i])) + "% (" + numbers[i] + ")" :
+            numbers[i] + "%",
+          width: scaleX(numbers[i]),
+          color: colorGroup.length !== 0 ? scaleColors(colorGroup[i]) : null
+        }]
+      })
+    )
 
 
     /* draw */
-    const els = this.refs
-    drawPlot(els, dataChart, {colors: ["#4dc6dd", "#f6f6f6"]})
+    drawChart(this.refs, dataChart, {hasGroupBgColor: true})
   }
 
 
