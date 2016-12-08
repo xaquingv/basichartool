@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {drawPlot} from './plot'
+import drawChart from './plot'
 
 /*
   data spec
@@ -13,8 +13,9 @@ import {drawPlot} from './plot'
 
 const width = 320
 const height = width*0.6
+
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief
+  dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -30,34 +31,28 @@ class Scatter extends React.Component {
   componentDidUpdate(){
 
     /* data */
-    const dataCols = this.props.dataChart.cols
-    const types = dataCols.map(d => d.type)
-    const dates = dataCols[types.indexOf("date")].values
+    const data = this.props.dataChart
+    const dates = data.dateCol
 
-    const dataNumbers = this.props.dataChart.cols
-    .filter(d => d.type === "number")
-    .map(numberCol => numberCol.values)
-
-    const dataChart = dataNumbers.map(numberCol =>
+    // TODO: overlap case, see ScatterPlot.js
+    const dataChart = data.numberCols.map(numberCol =>
       numberCol.map((number, i) => ({
-        date: dates[i],
-        number: number
+        x: dates[i],
+        y: number
     })))
-
-
-    /* draw */
-    const els = this.refs
 
     const scaleX = d3.scaleLinear()
     .domain(d3.extent(dates))
-    .range([10, width-10])
+    .range([10, width - 10])
 
     const scaleY = d3.scaleLinear()
     // TODO: pretty domain
-    .domain(d3.extent([].concat.apply([], dataNumbers)))
-    .range([height-10, 10])
+    .domain(d3.extent(data.numbers))
+    .range([height - 10, 10])
 
-    drawPlot(els, dataChart, scaleX, scaleY, "scatter")
+
+    /* draw */
+    drawChart(this.refs, dataChart, scaleX, scaleY, "scatter")
   }
 
 

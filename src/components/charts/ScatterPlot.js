@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {drawPlot} from './plot'
+import drawChart from './plot'
 import {uniqueArray} from '../../lib/array'
 import {colors} from '../../data/config'
 
@@ -33,45 +33,49 @@ class Scatter extends React.Component {
   componentDidUpdate(){
 
     /* data */
-    const dataCols = this.props.dataChart.cols
-    const dataTypes = dataCols.map(d => d.type)
-    const dataGroup = dataCols[dataTypes.indexOf("string1")].values // first string
-    const groupUnique = uniqueArray(dataGroup)
-    const groupColors = []
-    groupUnique.forEach((d, i) => {
-      groupColors[d] = colors[i]
+    const data = this.props.dataChart.chart
+
+    const names = data.string1Col
+    const group = data.string2Col
+    const colorGroup = []
+    uniqueArray(group).forEach((d, i) => {
+      colorGroup[d] = colors[i]
     })
-    console.log("colors:", groupColors)
 
-    const dataNumbers = this.props.dataChart.cols // fisrt two numbers
-    .filter(d => d.type === "number")
-    .map(numberCol => numberCol.values)
-    //console.log(dataNumbers)
-    const dataChart = dataGroup.map((group, i) => {
+    const numberCols = data.numberCols
+    const numberRows = data.numberRows
 
-    return {
-        group: group,
-        color: groupColors[group],
-        value: [dataNumbers[0][i], dataNumbers[1][i]],
-        // TODO change keys below
-        date: dataNumbers[0][i],
-        number: dataNumbers[1][i]
-    }})
-    //console.log(dataChart)
+    // TODO: overlap case
+    // 1 px shift from center following the circle, degree divided by count
+    // http://stackoverflow.com/questions/3436453/calculate-coordinates-of-a-regular-polygons-vertices
+    //let count = {}
+    //numberRows.forEach(n => { count["x"+n[0]+"y"+n[1]] = (count["x"+n[0]+"y"+n[1]] || 0 ) + 1 })
+    //console.log(count)
 
-    /* draw */
-    const els = this.refs
+    const dataChart = [numberRows.map((n, i) => {
+      //const countOverlap = count["x"+n[0]+"y"+n[1]]
+      //const isOverlapped = countOverlap > 1
+      //if (isOverlapped) console.log(n[0], n[1], countOverlap)
+      return {
+        x: n[0],
+        y: n[1],
+        color: colorGroup[group[i]],
+        title: names[i] + " [" + n[0] + ", " + n[1] + "]"//,
+      }
+    })]
 
     const scaleX = d3.scaleLinear()
-    .domain(d3.extent(dataNumbers[0]))
-    .range([10, width-10])
+    .domain(d3.extent(numberCols[0]))
+    .range([10, width - 10])
 
     const scaleY = d3.scaleLinear()
     // TODO: pretty domain
-    .domain(d3.extent(dataNumbers[1]))
-    .range([height-10, 10])
+    .domain(d3.extent(numberCols[1]))
+    .range([height - 10, 10])
 
-    drawPlot(els, [dataChart], scaleX, scaleY, "scatter")
+
+    /* draw */
+    drawChart(this.refs, dataChart, scaleX, scaleY, "scatter")
   }
 
 

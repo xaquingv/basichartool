@@ -35,8 +35,8 @@ class Line extends React.Component {
     const dates = data.dateCol
     const dataChart = data.numberCols.map(numberCol =>
       numberCol.map((number, i) => ({
-        date: dates[i],
-        number: number
+        x: dates[i],
+        y: number
     })))
 
     const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear

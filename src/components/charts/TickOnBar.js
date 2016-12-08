@@ -1,8 +1,9 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {colors, colorBarBackground} from '../../data/config'
-import {drawBarsBackground} from './barOnBar'
+import {colors} from '../../data/config'
+import {addBarsBackground} from './barOnBar'
+
 /*
   data spec
   missing data accepted
@@ -12,7 +13,6 @@ import {drawBarsBackground} from './barOnBar'
 */
 
 const barHeight = 16
-const barMarginBottom = 8
 const tickWidth = 6
 const tickShift = tickWidth / 2
 const tickBorderRadius = 2
@@ -54,10 +54,7 @@ class Bar extends React.Component {
 
 
     /* draw */
-    const id = this.props.id
-    const els = this.refs
-    drawBarsBackground(els, dataChart, tickShift)
-    drawChart(els, dataChart, {id, scaleX})
+    drawChart(this.refs, dataChart, {scaleX})
   }
 
 
@@ -72,33 +69,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(Bar)
 
 
 function drawChart(els, dataChart, opt) {
-  console.log(opt.id)
 
-  let div = d3.select(els.div)
-  let gs1 = div.selectAll(".group")
-  let gs2 = document.querySelectorAll("#"+opt.id + " .group")
-  //.selectAll(".group")
-  //.selectAll("div.group")
-  console.log("div:", div)
-  console.log("gs1:", gs1)
-  console.log("gs2:", gs2)
-
-  let gs = d3.select(els.div)
-  .html("")
-  .selectAll(".group")
-  .data(dataChart)
-  .enter().append("div")
-  .style("height", barHeight + "px")
-  .style("margin-bottom", barMarginBottom + "px")
-  .style("background-color", colorBarBackground)
-  // shift half tick size
-  .append("div")
-  .attr("class", "group")
-  .style("position", "relative")
-  .style("margin", "0 " + tickShift + "px")
-  .selectAll("div")
-  .data(d => d)
-  .enter()
+  let gs = addBarsBackground(els.div, dataChart, tickShift)
 
   // ticks
   gs.append("div")

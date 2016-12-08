@@ -1,7 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {colors, colorBarBackground} from '../../data/config'
+import {colors} from '../../data/config'
+import {addBarsBackground, drawBarSticks} from './barOnBar'
 
 /*
 data spec
@@ -12,9 +13,6 @@ cols [4, many]
 */
 
 const barHeight = 16
-const barMarginBottom = 8
-const bodyHeight = 4
-const bodyTop = (barHeight - bodyHeight) / 2
 const dotSzie = 10
 const dotTop = (barHeight - dotSzie) / 2
 
@@ -47,6 +45,7 @@ class Bar extends React.Component {
       dots: nums.map((n, i) => {
         const isOverlapped = nums[0] === nums[1]
         return {
+          title: n,
           topCalc: (isOverlapped ? i*dotTop*2 : dotTop) + "px", // 0, 3 (default), 6
           leftCalc: "calc(" + scaleX(n) + "% - " + (dotSzie/2) + "px)"
         }
@@ -72,45 +71,22 @@ export default connect(mapStateToProps, mapDispatchToProps)(Bar)
 
 function drawChart(els, dataChart) {
 
-  let gs = d3.select(els.div)
-  .html("")
-  .selectAll(".group")
-  .data(dataChart)
-  .enter().append("div")
-  .style("height", barHeight + "px")
-  .style("margin-bottom", barMarginBottom + "px")
-  .style("background-color", colorBarBackground)
-  // shift half dot size
-  .append("div")
-  .attr("class", "group")
-  .style("position", "relative")
-  .style("margin", "0 " + (dotSzie/2) + "px")
-  .selectAll("div")
-  .data(d => d)
-  .enter()
-  console.log(gs)
+  let gs = addBarsBackground(els.div, dataChart, dotSzie/2)
 
-  // bar
-  // NOTE: similar to ArrowOnBar's arrow-body
-  gs.append("div")
-  .attr("class", "bar")
-  .style("width", d => d.width + "%")
-  .style("height", bodyHeight + "px")
-  .style("position", "absolute")
-  .style("top", bodyTop + "px")
-  .style("left", d => d.shift + "%")
-  .style("background-color", d => colors[6])
+  // line that connects dots
+  drawBarSticks(gs)
 
   // dots
-  gs.selectAll(".dots")
+  gs.selectAll(".dot")
   .data(d => d.dots)
   .enter().append("div")
   .attr("class", "dots")
+  .attr("title", d => d.title)
+  .style("background-color", (d, i) => colors[i])
   .style("width", dotSzie + "px")
   .style("height", dotSzie + "px")
-  .style("border-radius", (dotSzie/2) + "px")
-  .style("background-color", (d, i) => colors[i])
   .style("position", "absolute")
-  .style("left", d => d.leftCalc)
   .style("top", d => d.topCalc)
+  .style("left", d => d.leftCalc)
+  .style("border-radius", (dotSzie/2) + "px")
 }

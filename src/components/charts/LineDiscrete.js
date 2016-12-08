@@ -29,13 +29,13 @@ class Line extends React.Component {
   }
 
   componentDidUpdate(){
-    
+
     /* data */
     const data = this.props.dataChart
     const dataChart = data.numberCols.map(numberCol =>
       numberCol.map((number, i) => ({
-        date: i,
-        number: number
+        x: i,
+        y: number
     })))
 
     const scaleX = d3.scaleLinear()

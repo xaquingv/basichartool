@@ -5,8 +5,8 @@ export default function (els, dataChart, scaleX, scaleY) {
 
   const line = d3.line()
   .defined(d => d.number !== null)
-  .x(d => Math.round(scaleX(d.date)*100)/100)
-  .y(d => scaleY(d.number));
+  .x(d => Math.round(scaleX(d.x)*100)/100)
+  .y(d => scaleY(d.y));
 
   // init
   let svg = d3.select(els.svg)
