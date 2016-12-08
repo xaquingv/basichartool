@@ -5,7 +5,7 @@ const barHeight = 16
 const barMarginBottom = 8
 
 export function drawBarsBackground(els, dataChart, margin) {
-  d3.select(els.div)
+  let gs3 = d3.select(els.div)
   .html("")
   .selectAll(".group")
   .data(dataChart)
@@ -22,4 +22,6 @@ export function drawBarsBackground(els, dataChart, margin) {
   .selectAll("div")
   .data(d =>d)
   .enter()
+
+  console.log(gs3)
 }

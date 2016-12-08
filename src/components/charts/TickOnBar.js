@@ -72,16 +72,16 @@ export default connect(mapStateToProps, mapDispatchToProps)(Bar)
 
 
 function drawChart(els, dataChart, opt) {
-  /*console.log(opt.id)
+  console.log(opt.id)
 
   let div = d3.select(els.div)
   let gs1 = div.selectAll(".group")
   let gs2 = document.querySelectorAll("#"+opt.id + " .group")
   //.selectAll(".group")
   //.selectAll("div.group")
-  console.log(div)
-  console.log(gs1)
-  console.log(gs2)*/
+  console.log("div:", div)
+  console.log("gs1:", gs1)
+  console.log("gs2:", gs2)
 
   let gs = d3.select(els.div)
   .html("")

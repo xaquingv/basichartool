@@ -2,14 +2,25 @@
   "name": "basichartool-react",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://visuals.gutools.co.uk/basichartool/",
   "devDependencies": {
     "react-scripts": "0.4.3"
   },
   "dependencies": {
+    "d3-array": "^1.0.2",
+    "d3-geo": "^1.4.0",
+    "d3-geo-projection": "^1.2.1",
+    "d3-request": "^1.0.3",
+    "d3-scale": "^1.0.4",
+    "d3-selection": "^1.0.3",
+    "d3-shape": "^1.0.4",
+    "d3-time-format": "^2.0.3",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-redux": "^4.4.5",
-    "redux": "^3.6.0"
+    "redux": "^3.6.0",
+    "st": "^1.2.0",
+    "topojson": "^1.6.27"
   },
   "scripts": {
     "start": "react-scripts start",

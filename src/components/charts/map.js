@@ -1,9 +1,8 @@
 import {d3} from '../../lib/d3-lite'
-import * as topojson from "topojson";
+import * as topojson from "topojson" // v1
 import world from '../../assets/data/world'
 import lakes from '../../assets/data/lakes'
 import borders from '../../assets/data/borders'
-
 
 const width = 320;
 const height = 320*0.6;
