@@ -30,6 +30,6 @@ export default function(feature) {
     return isCountPassed && isValuePassed
   }).map(cfg => cfg.chart)
 
-  console.log(chartList)
+  //console.log(chartList)
   return chartList
 }

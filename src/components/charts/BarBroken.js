@@ -15,6 +15,7 @@ import {colors} from '../../data/config'
 const barHeight = 72
 
 const mapStateToProps = (state) => ({
+  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -23,9 +24,12 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Bar extends React.Component {
-
+  /* update controls */
+  componentDidMount() {
+    if (this.props.isUpdate) this.setState({kickUpdate: true})
+  }
   shouldComponentUpdate(nextProps) {
-    return nextProps.flag
+    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
   }
 
   componentDidUpdate(){
@@ -34,7 +38,7 @@ class Bar extends React.Component {
     /* data */
     const data = this.props.dataChart
     const numbers = data.numbers
-    
+
     const scaleX = d3.scaleLinear()
     .domain([0, numbers.reduce((n1, n2) => n1 + n2)])
     .range([0, 100])

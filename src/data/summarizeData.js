@@ -163,6 +163,6 @@ export default function(dataTable, show) {
   //console.log(chart.numbers, value.number_hasNull)
 
   let output = {cols, count, value, chart}
-  console.log(output)
+  //console.log(output)
   return output
 }

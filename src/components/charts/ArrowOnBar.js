@@ -20,6 +20,7 @@ const tickShift = 5
 let groupMargin = {}
 
 const mapStateToProps = (state) => ({
+  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -27,17 +28,21 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 
-class Bar extends React.Component {
-
+class ArrowOnBar extends React.Component {
+  /* update controls */
+  componentDidMount() {
+    ///console.log("init ArrowOnBar at step", this.props.step)
+    if (this.props.isUpdate) this.setState({kickUpdate: true})
+  }
   shouldComponentUpdate(nextProps) {
-    return nextProps.flag
+    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
   }
 
-  componentDidUpdate(){
+  componentDidUpdate() {
+    //console.log("draw ArrowOnBar at step", this.props.callByStep)
 
     /* data */
     const data = this.props.dataChart
-
     const scaleX = d3.scaleLinear()
     .domain(d3.extent(data.numbers))
     .range([0, 100])
@@ -79,7 +84,7 @@ class Bar extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Bar)
+export default connect(mapStateToProps, mapDispatchToProps)(ArrowOnBar)
 
 
 function getArrowData(d) {
@@ -122,7 +127,6 @@ function getArrowData(d) {
 
 
 function drawChart(els, dataChart) {
-
   let gs = addBarsBackground(els.div, dataChart, 0)
 
   // arrow - line

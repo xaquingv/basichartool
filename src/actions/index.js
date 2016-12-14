@@ -42,3 +42,9 @@ export const analyzeData = (dataTable, show) => {
     selection: selectCharts(summary)
   }
 }
+
+/* section 3 */
+export const selectChart = (chartId) => ({
+  type: "SELECT_CHART",
+  chartId
+})

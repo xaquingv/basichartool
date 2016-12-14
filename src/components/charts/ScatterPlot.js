@@ -17,7 +17,8 @@ const width = 320
 const height = width*0.6
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief
+  stepUser: state.step,
+  dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -25,15 +26,18 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Scatter extends React.Component {
-
+  /* update controls */
+  componentDidMount() {
+    if (this.props.isUpdate) this.setState({kickUpdate: true})
+  }
   shouldComponentUpdate(nextProps) {
-    return nextProps.flag
+    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
   }
 
   componentDidUpdate(){
 
     /* data */
-    const data = this.props.dataChart.chart
+    const data = this.props.dataChart
 
     const names = data.string1Col
     const group = data.string2Col

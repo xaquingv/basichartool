@@ -1,7 +1,7 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import './section2Table.css';
-import {analyzeData, toggleData, transposeData} from '../actions';
+import React from 'react'
+import {connect} from 'react-redux'
+import './section2Table.css'
+import {analyzeData, toggleData, transposeData} from '../actions'
 
 
 const STEP = 2;
@@ -22,6 +22,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const mapStateToProps = (state) => ({
+    //step: state.step,
     stepActive: state.stepActive,
     dataTable: state.dataTable,
     show: state.show
@@ -32,12 +33,16 @@ class Section extends React.Component {
     componentDidMount() {
       //this.node = React.findDOMNode(this);
     }
+
+    //shouldComponentUpdate(nextProps) {
+    //  return nextProps.step === STEP
+    //}
     componentDidUpdate() {
       //this.node.innerHTML = this.props.value;
     }
 
     render() {
-        const {stepActive, dataTable, show, onClickCreate, onToggle, onTranspose/*, ... */} = this.props;
+        const {/*step,*/ stepActive, dataTable, show, onClickCreate, onToggle, onTranspose/*, ... */} = this.props;
         //console.log(this.props)
         const isData = dataTable.body ? true : false;
         const dataTypes = isData ? dataTable.type : [];

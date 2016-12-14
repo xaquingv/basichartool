@@ -18,6 +18,7 @@ import {d3} from '../../lib/d3-lite'
 const rangeRadius = [0.5, 10]
 
 const mapStateToProps = (state) => ({
+  stepUser: state.step,
   dataChart: state.dataBrief
 })
 
@@ -26,8 +27,12 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Map extends React.Component {
+  /* update controls */
+  componentDidMount() {
+    if (this.props.isUpdate) this.setState({kickUpdate: true})
+  }
   shouldComponentUpdate(nextProps) {
-    return nextProps.flag
+    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
   }
 
   componentDidUpdate(){

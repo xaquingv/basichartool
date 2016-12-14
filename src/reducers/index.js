@@ -42,6 +42,8 @@ function step(step = 1, action) {
       return 2
     case 'ANALYZE_DATA':
       return 3
+    case 'SELECT_CHART':
+      return 4
 
     default:
       return step
@@ -56,6 +58,8 @@ function stepActive(stepActive = 1, action) {
       return 2
     case 'ANALYZE_DATA':
       return 3
+    case 'SELECT_CHART':
+      return 4
 
     default:
       return stepActive
@@ -152,6 +156,15 @@ function selection(chartList = [], action) {
   }
 }
 
+function chartId(id = "", action) {
+  switch(action.type) {
+    case 'SELECT_CHART':
+      return action.chartId
+    default:
+      return id
+  }
+}
+
 const app = combineReducers({
   step,
   stepActive,
@@ -159,7 +172,8 @@ const app = combineReducers({
   dataTable,
   show,
   dataBrief,
-  selection
+  selection,
+  chartId
 });
 
 export default app

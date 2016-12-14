@@ -20,6 +20,7 @@ const height = width*0.6
 const radius = 3
 
 const mapStateToProps = (state) => ({
+  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -28,9 +29,12 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Slope extends React.Component {
-
+  /* update controls */
+  componentDidMount() {
+    if (this.props.isUpdate) this.setState({kickUpdate: true})
+  }
   shouldComponentUpdate(nextProps) {
-    return nextProps.flag
+    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
   }
 
   componentDidUpdate(){
@@ -55,7 +59,6 @@ class Slope extends React.Component {
         default: return colors[6]                   // grey
       }
     })
-    console.log(dataColor)
 
     // 2a. dot position adjustment
     const dataChartNumberDuplicates =
@@ -91,7 +94,6 @@ class Slope extends React.Component {
 
     // 2b. adjust dot(s) position if overlapped
     const chartEl = document.querySelector("#" + chartId)
-    console.log(dataChartNumberDuplicates)
     dataChartNumberDuplicates.forEach(d => {
       const el = chartEl.querySelectorAll("g")[d.rowId].childNodes[d.colId]
       const cx = +el.getAttribute("cx")

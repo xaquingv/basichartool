@@ -17,6 +17,7 @@ const height = width*0.6
 const radius = Math.min(width, height) / 2
 
 const mapStateToProps = (state) => ({
+  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -25,9 +26,12 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Area extends React.Component {
-
+  /* update controls */
+  componentDidMount() {
+    if (this.props.isUpdate) this.setState({kickUpdate: true})
+  }
   shouldComponentUpdate(nextProps) {
-    return nextProps.flag
+    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
   }
 
   componentDidUpdate(){
@@ -35,7 +39,7 @@ class Area extends React.Component {
     /* data */
     const data = this.props.dataChart
     const dataChart = data.numbers
-    //const ... 
+    //const ...
 
     const pie = d3.pie()
     .sort(null)

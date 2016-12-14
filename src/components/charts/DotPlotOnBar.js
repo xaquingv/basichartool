@@ -17,6 +17,7 @@ const dotSzie = 10
 const dotTop = (barHeight - dotSzie) / 2
 
 const mapStateToProps = (state) => ({
+  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -25,9 +26,12 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Bar extends React.Component {
-
+  /* update controls */
+  componentDidMount() {
+    if (this.props.isUpdate) this.setState({kickUpdate: true})
+  }
   shouldComponentUpdate(nextProps) {
-    return nextProps.flag
+    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
   }
 
   componentDidUpdate(){
