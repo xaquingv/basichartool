@@ -1,27 +1,27 @@
 .charts > div {
   text-align: center;
-  width: 320px;
+  width: calc(320px - 20px);
   border: 1px solid #dcdcdc;
   display: inline-block;
   margin-right: -1px;
   margin-bottom: -1px;
+  padding: 10px;
   padding-bottom: 5px;
   cursor: pointer;
 }
 
 .chart,
 svg {
-  width: 320px;
+  width: 100%; /*320px;*/
+  max-width: 620px;
   text-align: left;
 }
 .chart {
-  padding: 10px;
-  box-sizing: border-box;
   /* hotfix to align with svg */
   margin-bottom: 14px;
-  height: calc(320px * 0.6 - 10px);
+  height: calc(300px * 0.6 - 10px);
   overflow: hidden;
 }
 svg {
-  height: calc(320px * 0.6);
+  height: calc(300px * 0.6);
 }

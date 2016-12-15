@@ -4,23 +4,13 @@ import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 import {addBarsBackground, drawBarSticks} from './barOnBar'
 
-/*
-data spec
-missing data accepted
-cols [4, many]
-- date: no-repeat
-- number*: any range, min 3
-*/
 
 const barHeight = 16
 const headSize = 12
 const headTop = (barHeight - headSize) / 2
 const tickShift = 5
 
-let groupMargin = {}
-
 const mapStateToProps = (state) => ({
-  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -29,17 +19,25 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class ArrowOnBar extends React.Component {
-  /* update controls */
+
   componentDidMount() {
-    ///console.log("init ArrowOnBar at step", this.props.step)
-    if (this.props.isUpdate) this.setState({kickUpdate: true})
+    //console.log("ArrowOnBar init")
+    this.renderChart()
   }
-  shouldComponentUpdate(nextProps) {
-    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
+  componentDidUpdate() {
+    //console.log("ArrowOnBar update")
+    this.renderChart()
   }
 
-  componentDidUpdate() {
-    //console.log("draw ArrowOnBar at step", this.props.callByStep)
+  render() {
+    //console.log('render')
+    return (
+      <div className="chart" ref="div"></div>
+    )
+  }
+
+  renderChart() {
+    //console.log("render chart at step", this.props.callByStep)
 
     /* data */
     const data = this.props.dataChart
@@ -53,7 +51,7 @@ class ArrowOnBar extends React.Component {
       shift: scaleX(Math.min(nums[0], nums[1]))
     }))
 
-    const dataChart = dataRows.map(d => {
+    this.dataChart = dataRows.map(d => {
       const nums = d.value
       return [{
         title: nums[0] === nums[1] ? nums[0] : Math.min(nums[0], nums[1]) + " - " + Math.max(nums[0], nums[1]),
@@ -61,26 +59,61 @@ class ArrowOnBar extends React.Component {
         ...getArrowData(d)
       }]
     })
-    //console.log(dataRows)
-    //console.log(dataChart)
-
 
     /* draw */
-    drawChart(this.refs, dataChart)
-
+    this.drawChart()
 
     /* validate special */
     // NOTE: fix pixel out of bar issue (range [0, 3px])
     // due to extrem even values at two ends
     // which causes faulty layout on iOS mobile
-    fixPixelOutOfLayout(this.props.id)
+    this.fixPixelOutOfLayout()
   }
 
+  drawChart() {
+    // group and background bars
+    // margin 0 at two ends due to un-pre-calculat-able pixel shift
+    // patch fix in fixPixelOutOfLayout()
+    let gs = addBarsBackground(this.refs.div, this.dataChart, 0)
 
-  render() {
-    return (
-      <div className="chart" ref="div"></div>
-    )
+    // arrow - line
+    drawBarSticks(gs)
+
+    // arrow - head
+    gs.append("div")
+    .attr("class", d => "head" + (d.isKick ? " js-kick" : "") + (d.isEven ? " is-even" : ""))
+    .attr("title", d => d.title)
+    .style("position", "absolute")
+    .style("top", d => d.headTop + "px")
+    .style("left", d => d.headLeftCalc)
+    .style("border-width", d => d.borderWidths)
+    .style("border-color", d => d.borderColors)
+    .style("border-style", "solid")
+    .style("transform", d => d.isEven ? "rotate(45deg)" : false)
+  }
+
+  fixPixelOutOfLayout(chartId) {
+    const elChart = document.querySelector("#" + this.props.id + " .chart")
+    const chartWidth = elChart.offsetWidth - 20 // padding
+    const elKicks = [...elChart.querySelectorAll(".js-kick")]
+
+    // test1: return if no kicks
+    if (elKicks.length === 0) return
+
+    // NOTE: additional tick shift due to rotation
+    const tickRotate = Math.ceil((tickShift*Math.sqrt(2) /* 45deg  rotation */ - tickShift)*10) / 10
+    const ls = elKicks.map(el => el.offsetLeft - (el.classList.contains("is-even") ? tickRotate : 0)).filter(left => left < 0)
+    const rs = elKicks.map(el => el.offsetLeft + tickShift*2 + (el.classList.contains("is-even") ? tickRotate : 0)).filter(right => right > chartWidth)
+    const groupMarginLeft  = ls.length === 0 ? 0 : Math.abs(Math.min(...ls))
+    const groupMarginRight = rs.length === 0 ? 0 : Math.max(...rs) - chartWidth
+
+    // test2: return if kicks don't break layout
+    if (groupMarginLeft === 0 && groupMarginRight === 0) return
+
+    // fix
+    const elGroups = [...elChart.querySelectorAll(".group")]
+    elGroups.forEach(el => el.style.margin = "0 " + groupMarginRight + "px 0 " + groupMarginLeft + "px")
+    //console.log("groupMargin:", groupMargin)
   }
 }
 
@@ -123,49 +156,4 @@ function getArrowData(d) {
       isEven: true
     }
   }
-}
-
-
-function drawChart(els, dataChart) {
-  let gs = addBarsBackground(els.div, dataChart, 0)
-
-  // arrow - line
-  drawBarSticks(gs)
-
-  // arrow - head
-  gs.append("div")
-  .attr("class", d => "head" + (d.isKick ? " js-kick" : "") + (d.isEven ? " is-Even" : ""))
-  .attr("title", d => d.title)
-  .style("position", "absolute")
-  .style("top", d => d.headTop + "px")
-  .style("left", d => d.headLeftCalc)
-  .style("border-width", d => d.borderWidths)
-  .style("border-color", d => d.borderColors)
-  .style("border-style", "solid")
-  .style("transform", d => d.isEven ? "rotate(45deg)" : false)
-}
-
-
-function fixPixelOutOfLayout(chartId) {
-  const elChart = document.querySelector("#" + chartId + " .chart")
-  const chartWidth = elChart.offsetWidth - 20 // padding
-  const elKicks = [...elChart.querySelectorAll(".js-kick")]
-
-  // test1: return if no kicks
-  if (elKicks.length === 0) return
-
-  // NOTE: additional tick shift due to rotation
-  const tickRotate = Math.ceil((tickShift*Math.sqrt(2) /* 45deg  rotation */ - tickShift)*10) / 10
-  const ls = elKicks.map(el => el.offsetLeft - (el.classList.contains("is-Even") ? tickRotate : 0)).filter(left => left < 0)
-  const rs = elKicks.map(el => el.offsetLeft + tickShift*2 + (el.classList.contains("is-Even") ? tickRotate : 0)).filter(right => right > chartWidth)
-  groupMargin.left  = ls.length === 0 ? 0 : Math.abs(Math.min(...ls))
-  groupMargin.right = rs.length === 0 ? 0 : Math.max(...rs) - chartWidth
-
-  // test2: return if kicks don't break layout
-  if (groupMargin.left === 0 && groupMargin.right === 0) return
-
-  // fix
-  const elGroups = [...elChart.querySelectorAll(".group")]
-  elGroups.forEach(el => el.style.margin = "0 " + groupMargin.right + "px 0 " + groupMargin.left + "px")
-  //console.log("groupMargin:", groupMargin)
 }

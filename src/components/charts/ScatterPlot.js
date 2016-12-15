@@ -5,19 +5,8 @@ import drawChart from './plot'
 import {uniqueArray} from '../../lib/array'
 import {colors} from '../../data/config'
 
-/*
-  data spec
-  missing data accepted
-  cols [4, many]
-  - date: repeat accepted
-  - number*: any range, min 3
-*/
-
-const width = 320
-const height = width*0.6
 
 const mapStateToProps = (state) => ({
-  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -26,15 +15,21 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Scatter extends React.Component {
-  /* update controls */
+
   componentDidMount() {
-    if (this.props.isUpdate) this.setState({kickUpdate: true})
+    this.renderChart()
   }
-  shouldComponentUpdate(nextProps) {
-    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
+  componentDidUpdate() {
+    this.renderChart()
   }
 
-  componentDidUpdate(){
+  render() {
+    return (
+      <svg ref="svg"></svg>
+    )
+  }
+
+  renderChart() {
 
     /* data */
     const data = this.props.dataChart
@@ -68,25 +63,21 @@ class Scatter extends React.Component {
       }
     })]
 
+    const width = this.props.width
+    const height = width*0.6
+
     const scaleX = d3.scaleLinear()
     .domain(d3.extent(numberCols[0]))
-    .range([10, width - 10])
+    .range([0, width])
 
     const scaleY = d3.scaleLinear()
     // TODO: pretty domain
     .domain(d3.extent(numberCols[1]))
-    .range([height - 10, 10])
+    .range([height, 0])
 
 
     /* draw */
     drawChart(this.refs, dataChart, scaleX, scaleY, "scatter")
-  }
-
-
-  render() {
-    return (
-      <svg ref="svg"></svg>
-    )
   }
 }
 

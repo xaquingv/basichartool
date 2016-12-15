@@ -1,4 +1,5 @@
-/*.chart {
-  width: 300px;
-  padding: 0;
-}*/
+.chart-edit,
+.chart-edit svg {
+  width: 320px;
+  height: calc(320px * 0.6);
+}

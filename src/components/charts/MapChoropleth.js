@@ -4,16 +4,8 @@ import {drawMap} from './map'
 import getParsedData from './mapData'
 import {d3} from '../../lib/d3-lite'
 
-/*
-  data spec
-  missing data accepted
-  cols [2, 3]
-  - string: country code and/or name  => mapping
-  - number: any range                 => country's color
-*/
 
 const mapStateToProps = (state) => ({
-  stepUser: state.step,
   dataChart: state.dataBrief
 })
 
@@ -22,15 +14,25 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Map extends React.Component {
-  /* update controls */
+
   componentDidMount() {
-    if (this.props.isUpdate) this.setState({kickUpdate: true})
+    this.renderChart()
   }
-  shouldComponentUpdate(nextProps) {
-    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
+  componentDidUpdate() {
+    this.renderChart()
   }
 
-  componentDidUpdate(){
+  render() {
+    return (
+      <svg ref="svg">
+        <g ref="countries"></g>
+        <g ref="borders"></g>
+        <g ref="lakes"></g>
+      </svg>
+    )
+  }
+
+  renderChart() {
 
     /* data */
     const dataChart = getParsedData(this.props.dataChart)
@@ -57,16 +59,6 @@ class Map extends React.Component {
       d3.select("#mapChoropleth")
       .classed("d-n", true)
     }
-  }
-
-  render() {
-    return (
-      <svg ref="svg">
-        <g ref="countries"></g>
-        <g ref="borders"></g>
-        <g ref="lakes"></g>
-      </svg>
-    )
   }
 }
 

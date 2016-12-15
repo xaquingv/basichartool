@@ -22,7 +22,8 @@ export function addBarsBackground(el, dataChart, margin) {
   .style("height", barHeight + "px")
   .style("position", "relative")
   // margin used to avoid pixel out of canvas
-  // ex. half tick / dot size / custom in case of arrow
+  // ex. half tick / dot size / extra customisation in case of arrow
+  // see fixPixelOutOfLayout() in ArrowOnBar.js
   .style("margin", "0 " + margin + "px")
   .selectAll("div")
   .data(d => d)

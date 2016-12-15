@@ -3,17 +3,8 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import drawChart from './bar'
 
-/*
-  data spec
-  no missing data
-  cols [4, many]
-  - string: no-repeat
-  - number*: all positive, min 3
-  PS. col sums 100(%) !?
-*/
 
 const mapStateToProps = (state) => ({
-  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -21,16 +12,22 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 
-class Bar extends React.Component {
-  /* update controls */
-  componentDidMount() {
-    if (this.props.isUpdate) this.setState({kickUpdate: true})
-  }
-  shouldComponentUpdate(nextProps) {
-    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
-  }
+class BarStack100 extends React.Component {
 
-  componentDidUpdate(){
+    componentDidMount() {
+      this.renderChart()
+    }
+    componentDidUpdate() {
+      this.renderChart()
+    }
+
+    render() {
+      return (
+        <div className="chart" ref="div"></div>
+      )
+    }
+
+    renderChart() {
 
     /* data */
     const data = this.props.dataChart
@@ -65,13 +62,6 @@ class Bar extends React.Component {
       d3.select("#barGStack100").classed("d-n", true)
     }
   }
-
-
-  render() {
-    return (
-      <div className="chart" ref="div"></div>
-    )
-  }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Bar)
+export default connect(mapStateToProps, mapDispatchToProps)(BarStack100)

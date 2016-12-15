@@ -3,20 +3,8 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 
-/*
-  data spec
-  no missing data
-  cols [4, many]
-  - date: no-repeat
-  - number*: all positive, min 3
-  PS. col sums 100(%) !?
-*/
-
-const width = 320;
-const height = width*0.6;
 
 const mapStateToProps = (state) => ({
-  stepUser: state.step,
   dataChart: state.dataBrief
 })
 
@@ -25,29 +13,33 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Area extends React.Component {
-  /* update controls */
+
   componentDidMount() {
-    if (this.props.isUpdate) this.setState({kickUpdate: true})
+    this.renderChart()
   }
-  shouldComponentUpdate(nextProps) {
-    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
+  componentDidUpdate() {
+    this.renderChart()
   }
 
-  componentDidUpdate(){
+  render() {
+    return (
+      <svg ref="svg">
+        <line ref="line" x1="0" x2="100%" y1="50%" y2="50%"></line>
+      </svg>
+    )
+  }
+
+  renderChart() {
 
     /* data */
-    const dataCols = this.props.dataChart.cols
-    const types = dataCols.map(d => d.type)
-
-    const dataDates = dataCols[types.indexOf("date")].values
-    const dataNumbers = this.props.dataChart.cols
-    .filter(d => d.type === "number")
-    .map(numberCol => numberCol.values)
+    const data = this.props.dataChart.chart
+    const dates = data.dateCol
+    const numberCols = data.numberCols
 
     let isNot100 = []
     let maxSum = 0
-    const dataChart = dataDates.map((date, i) => {
-      const nums = dataNumbers.map(numbers => numbers[i])
+    const dataChart = dates.map((date, i) => {
+      const nums = numberCols.map(numbers => numbers[i])
 
       // TODO: remove temp validation
       const sum = nums.reduce((n1, n2) => n1+n2)
@@ -73,18 +65,19 @@ class Area extends React.Component {
 
 
     /* draw */
-    const els = this.refs
+    const width = this.props.width
+    const height = width*0.6
 
-    const scaleTime = dataCols[types.indexOf("date")].hasDay ? d3.scaleTime : d3.scaleLinear
+    const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
     const scaleX = scaleTime()
-    .domain(d3.extent(dataDates))
-    .range([10, width-10])
+    .domain(d3.extent(dates))
+    .range([0, width])
 
     //console.log(maxSum)
     const domainMax = isNot100.length > 0 ? maxSum : 100
     const scaleY = d3.scaleLinear()
     .domain([0, domainMax])
-    .range([height-10, 10])
+    .range([height, 0])
 
     const area = d3.area()
     //.defined(d => {console.log(d); return d})
@@ -94,6 +87,7 @@ class Area extends React.Component {
     .y0((d) => scaleY(d[0]))
     .y1((d) => scaleY(d[1]))
 
+    let els = this.refs
     if (isNot100.length === 0) {
       area.curve(d3.curveStep/*Before*/)
     } else {
@@ -128,15 +122,6 @@ class Area extends React.Component {
     .attr("stroke", "white")
     .attr("stroke-width", 1)
     .attr("stroke-dasharray", "3, 3")
-  }
-
-
-  render() {
-    return (
-      <svg ref="svg">
-        <line ref="line" x1="0" x2="100%" y1="50%" y2="50%"></line>
-      </svg>
-    )
   }
 }
 

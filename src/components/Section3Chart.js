@@ -13,7 +13,7 @@ const mapDispatchToProps = (dispatch) => ({
 
     // TODO: replace with 1. dispatch scrollSteps
     // to let Navigation.js take care of it ...
-    // or attach a scroll event ... 
+    // or attach a scroll event ...
     const to = document.querySelector("#section4").offsetTop - 80;
     scrollTo(to, null, 1000);
   }
@@ -33,15 +33,19 @@ class Section extends React.Component {
     // TODO: loop through arr, see charts.js
     const chartComponents = Object.keys(chartList).map(chartID => {
       const isSelected = selection.indexOf(chartID) > -1
-      const cnDisplay = isSelected ? "" : "d-n"
       const ComponentChart = chartList[chartID]
+      // const cnDisplay = isSelected ? "" : "d-n"
 
-      return (
-        <div key={chartID} id={chartID} className={cnDisplay} onClick={() => onSelect(chartID)}>
-          <ComponentChart id={chartID} stepCall={STEP} isSelected={isSelected} />{chartID}
+      return isSelected
+      ? (
+        <div key={chartID} id={chartID} onClick={() => onSelect(chartID)}>
+          <ComponentChart id={chartID} callByStep={STEP} width={300}/>{chartID}
         </div>
       )
+      : null
     })
+    // <div key={chartID} id={chartID} className={cnDisplay} onClick={() => onSelect(chartID)}>
+    // <ComponentChart id={chartID} stepCall={STEP} isSelected={isSelected} />{chartID}
 
     return (
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section3">

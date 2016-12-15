@@ -4,17 +4,8 @@ import {d3} from '../../lib/d3-lite'
 import drawChart from './bar'
 import {getDomainByDataRange} from './domain'
 
-/*
-  data spec
-  no missing data
-  cols [4, many]
-  - date: no-repeat
-  - number*: all positive, min 3
-  PS. col sums 100(%) !?
-*/
 
 const mapStateToProps = (state) => ({
-  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -23,15 +14,21 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class BarStack extends React.Component {
-  /* update controls */
+
   componentDidMount() {
-    if (this.props.isUpdate) this.setState({kickUpdate: true})
+    this.renderChart()
   }
-  shouldComponentUpdate(nextProps) {
-    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
+  componentDidUpdate() {
+    this.renderChart()
   }
 
-  componentDidUpdate(){
+  render() {
+    return (
+      <div className="chart" ref="div"></div>
+    )
+  }
+
+  renderChart() {
 
     /* data */
     const data = this.props.dataChart
@@ -53,16 +50,8 @@ class BarStack extends React.Component {
         }))
     }))
 
-
     /* draw */
     drawChart(this.refs, dataChart, {display: "inline-block"})
-  }
-
-  render() {
-    return (
-      //<div className="chart" ref={theNode => this.drawGraph(theNode)}>Coucou Pom</div>
-      <div className="chart" ref="div"></div>
-    )
   }
 }
 

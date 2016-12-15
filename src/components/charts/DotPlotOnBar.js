@@ -4,20 +4,12 @@ import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 import {addBarsBackground, drawBarSticks} from './barOnBar'
 
-/*
-data spec
-missing data accepted
-cols [4, many]
-- date: no-repeat
-- number*: any range, min 3
-*/
 
 const barHeight = 16
 const dotSzie = 10
 const dotTop = (barHeight - dotSzie) / 2
 
 const mapStateToProps = (state) => ({
-  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -26,15 +18,21 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Bar extends React.Component {
-  /* update controls */
-  componentDidMount() {
-    if (this.props.isUpdate) this.setState({kickUpdate: true})
-  }
-  shouldComponentUpdate(nextProps) {
-    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
-  }
 
-  componentDidUpdate(){
+    componentDidMount() {
+      this.renderChart()
+    }
+    componentDidUpdate() {
+      this.renderChart()
+    }
+
+    render() {
+      return (
+        <div className="chart" ref="div"></div>
+      )
+    }
+
+    renderChart() {
 
     /* data */
     const data = this.props.dataChart
@@ -43,7 +41,7 @@ class Bar extends React.Component {
     .domain(d3.extent(data.numbers))
     .range([0, 100])
 
-    const dataChart = data.numberRows.map((nums, i) => ([{
+    this.dataChart = data.numberRows.map((nums, i) => ([{
       width: Math.abs(scaleX(nums[1]) - scaleX(nums[0])),
       shift: scaleX(Math.min(nums[0], nums[1])),
       dots: nums.map((n, i) => {
@@ -55,42 +53,32 @@ class Bar extends React.Component {
         }
       })
     }]))
-    //console.log(dataChart)
-
 
     /* draw */
-    drawChart(this.refs, dataChart)
+    this.drawChart()
   }
 
+  drawChart() {
 
-  render() {
-    return (
-      <div className="chart" ref="div"></div>
-    )
+    let gs = addBarsBackground(this.refs.div, this.dataChart, dotSzie/2)
+
+    // line that connects dots
+    drawBarSticks(gs)
+
+    // dots
+    gs.selectAll(".dot")
+    .data(d => d.dots)
+    .enter().append("div")
+    .attr("class", "dots")
+    .attr("title", d => d.title)
+    .style("background-color", (d, i) => colors[i])
+    .style("width", dotSzie + "px")
+    .style("height", dotSzie + "px")
+    .style("position", "absolute")
+    .style("top", d => d.topCalc)
+    .style("left", d => d.leftCalc)
+    .style("border-radius", (dotSzie/2) + "px")
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Bar)
-
-
-function drawChart(els, dataChart) {
-
-  let gs = addBarsBackground(els.div, dataChart, dotSzie/2)
-
-  // line that connects dots
-  drawBarSticks(gs)
-
-  // dots
-  gs.selectAll(".dot")
-  .data(d => d.dots)
-  .enter().append("div")
-  .attr("class", "dots")
-  .attr("title", d => d.title)
-  .style("background-color", (d, i) => colors[i])
-  .style("width", dotSzie + "px")
-  .style("height", dotSzie + "px")
-  .style("position", "absolute")
-  .style("top", d => d.topCalc)
-  .style("left", d => d.leftCalc)
-  .style("border-radius", (dotSzie/2) + "px")
-}

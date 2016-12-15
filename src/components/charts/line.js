@@ -4,7 +4,7 @@ import {colors} from '../../data/config'
 export default function (els, dataChart, scaleX, scaleY) {
 
   const line = d3.line()
-  .defined(d => d.number !== null)
+  .defined(d => d.y !== null)
   .x(d => Math.round(scaleX(d.x)*100)/100)
   .y(d => scaleY(d.y));
 

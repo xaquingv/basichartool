@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import './section4Panel.css'
 import {chartList} from './charts'
 
 const STEP = 4;
@@ -23,13 +24,16 @@ class Section extends React.Component {
       //console.log("===")
       console.log(this.props.chartId || "NaN", "is selected")
     }*/
-
-    const ComponentChart = chartList[chartId] || ""
-    const chartComponent = (
-      <div data-id={chartId} id={chartId+"_edit"}>
-        <ComponentChart id={chartId+"_edit"} stepCall={STEP} isSelected={true} isUpdate={true}/>
+    // TODO: responsive width
+    const ComponentChart = chartList[chartId]
+    const chartComponent = ComponentChart
+    ? (
+      <div data-id={chartId} id={chartId+"_edit"} className="chart-edit">
+        <ComponentChart id={chartId+"_edit"} callByStep={STEP} width={320} />
       </div>
     )
+    : null
+    //<ComponentChart id={chartId+"_edit"} callByStep={STEP} isSelected={true} isUpdate={true}/>
 
     return (
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section4">
@@ -41,14 +45,12 @@ class Section extends React.Component {
             <div className="js-headline"></div>
             <div className="js-standfirst"></div>
           </header>
-          {chartId ? chartComponent : null}
+          {chartComponent}
           <footer className="js-source"></footer>
         </div>
       </div>
     );
   }
-
-  forceUpdate(){}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Section);

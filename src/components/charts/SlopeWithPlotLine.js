@@ -6,21 +6,10 @@ import drawChartLine from './line'
 import drawChartPlot from './plot'
 import {uniqueArray} from '../../lib/array'
 
-/*
-  data spec
-  missing data accepted
-  cols [4, many]
-  - date: no-repeat
-  - number*: any range, min 3
-*/
-
-const width = 320
-const height = width*0.6
 
 const radius = 3
 
 const mapStateToProps = (state) => ({
-  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -29,15 +18,21 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Slope extends React.Component {
-  /* update controls */
+
   componentDidMount() {
-    if (this.props.isUpdate) this.setState({kickUpdate: true})
+    this.renderChart()
   }
-  shouldComponentUpdate(nextProps) {
-    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
+  componentDidUpdate() {
+    this.renderChart()
   }
 
-  componentDidUpdate(){
+  render() {
+    return (
+      <svg ref="svg"></svg>
+    )
+  }
+
+  renderChart() {
 
     /* data */
     const data = this.props.dataChart
@@ -64,6 +59,9 @@ class Slope extends React.Component {
     const dataChartNumberDuplicates =
       getDuplicatNumbers(data.numberCols, dataColor, dataChart.length)
 
+    const width = 300//this.props.width
+    const height = width*0.6
+
     const scaleXL = d3.scaleLinear() //longer
     .domain([0, 1])
     .range([75, width-75])
@@ -74,7 +72,7 @@ class Slope extends React.Component {
     const scaleY = d3.scaleLinear()
     // TODO: pretty domain
     .domain(d3.extent(data.numbers))
-    .range([height-10, 10])
+    .range([height-radius, radius])
 
 
     /* draw */
@@ -100,13 +98,6 @@ class Slope extends React.Component {
       const shift = (d.colId === 0 ? -2 : 2) * (d.count-1)
       el.setAttribute("cx", cx + shift)
     })
-  }
-
-
-  render() {
-    return (
-      <svg ref="svg"></svg>
-    )
   }
 }
 

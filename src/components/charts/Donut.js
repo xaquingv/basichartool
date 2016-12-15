@@ -3,21 +3,8 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 
-/*
-  data spec
-  no missing data
-  cols [4, many]
-  - date: no-repeat
-  - number*: all positive, min 3
-  PS. col sums 100(%) !?
-*/
-
-const width = 320
-const height = width*0.6
-const radius = Math.min(width, height) / 2
 
 const mapStateToProps = (state) => ({
-  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -25,16 +12,24 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 
-class Area extends React.Component {
-  /* update controls */
+class Donut extends React.Component {
+
   componentDidMount() {
-    if (this.props.isUpdate) this.setState({kickUpdate: true})
+    this.renderChart()
   }
-  shouldComponentUpdate(nextProps) {
-    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
+  componentDidUpdate() {
+    this.renderChart()
   }
 
-  componentDidUpdate(){
+  render() {
+    return (
+      <svg ref="svg">
+        <g ref="pie"></g>
+      </svg>
+    )
+  }
+
+  renderChart() {
 
     /* data */
     const data = this.props.dataChart
@@ -45,10 +40,13 @@ class Area extends React.Component {
     .sort(null)
     .value(d => d)
 
+    const width = 300//this.props.width
+    const height = width*0.6
+    const radius = Math.min(width, height) / 2
+
     const arc = d3.arc()
     .outerRadius(radius - 10)
     .innerRadius(radius - radius*2/3)
-
 
     /* draw */
     // init area
@@ -71,15 +69,6 @@ class Area extends React.Component {
     // remove
     svg.exit().remove()
   }
-
-
-  render() {
-    return (
-      <svg ref="svg">
-        <g ref="pie"></g>
-      </svg>
-    )
-  }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Area)
+export default connect(mapStateToProps, mapDispatchToProps)(Donut)

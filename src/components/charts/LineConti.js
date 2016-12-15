@@ -3,19 +3,8 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import drawChart from './line'
 
-/*
-  data spec
-  missing data accepted
-  cols [4, many]
-  - date: no-repeat
-  - number*: any range, min 3
-*/
-
-const width = 320;
-const height = width*0.6;
 
 const mapStateToProps = (state) => ({
-  stepUser: state.step,
   dataChart: state.dataBrief.chart
 })
 
@@ -24,15 +13,21 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Line extends React.Component {
-  /* update controls */
+
   componentDidMount() {
-    if (this.props.isUpdate) this.setState({kickUpdate: true})
+    this.renderChart()
   }
-  shouldComponentUpdate(nextProps) {
-    return nextProps.isSelected && nextProps.stepUser === nextProps.stepCall
+  componentDidUpdate() {
+    this.renderChart()
   }
 
-  componentDidUpdate(){
+  render() {
+    return (
+      <svg ref="svg"></svg>
+    )
+  }
+
+  renderChart() {
 
     /* data */
     const data = this.props.dataChart
@@ -43,36 +38,32 @@ class Line extends React.Component {
         y: number
     })))
 
+    const width = this.props.width
+    const height = width*0.6
+
     const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
     const scaleX = scaleTime()
     .domain(d3.extent(dates))
-    .range([10, width - 10])
+    .range([0, width])
 
     const scaleY = d3.scaleLinear()
     // TODO: pretty domain
     .domain(d3.extent(data.numbers))
-    .range([height - 10, 10])
-
+    .range([height, 0])
 
     /* draw */
     drawChart(this.refs, dataChart, scaleX, scaleY)
-
 
     /* validate special */
     // TODO: move to another validatetion file
     // NOTE: double check if discrete and conti are the same
     // if the same (duplicate), hide the discrete line
     const elLineDiscrete = d3.select("#lineDiscrete")
-    if (d3.select("#lineConti path").attr("d") === elLineDiscrete.select("path").attr("d")) {
+    if (!elLineDiscrete) {
+      return
+    } else if (d3.select("#lineConti path").attr("d") === elLineDiscrete.select("path").attr("d")) {
       elLineDiscrete.classed("d-n", true)
     }
-  }
-
-
-  render() {
-    return (
-      <svg ref="svg"></svg>
-    )
   }
 }
 

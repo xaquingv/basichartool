@@ -59,7 +59,7 @@ function stepActive(stepActive = 1, action) {
     case 'ANALYZE_DATA':
       return 3
     case 'SELECT_CHART':
-      return 4
+      return 5
 
     default:
       return stepActive
