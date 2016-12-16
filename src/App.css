@@ -36,6 +36,7 @@ h1 {
 .button {
     font-size: 14px;
     background-color: white;
+    min-width: 160px;
     outline: 0;
     padding: 8px;
     border: 1px solid #333;

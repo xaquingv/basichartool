@@ -30,16 +30,6 @@ const mapStateToProps = (state) => ({
 
 
 class Section extends React.Component {
-    componentDidMount() {
-      //this.node = React.findDOMNode(this);
-    }
-
-    //shouldComponentUpdate(nextProps) {
-    //  return nextProps.step === STEP
-    //}
-    componentDidUpdate() {
-      //this.node.innerHTML = this.props.value;
-    }
 
     render() {
         const {/*step,*/ stepActive, dataTable, show, onClickCreate, onToggle, onTranspose/*, ... */} = this.props;

@@ -4,6 +4,7 @@ import {Provider} from 'react-redux'
 import {createStore/*, applyMiddleware*/} from 'redux'
 //import logger from "redux-logger"
 import './index.css'
+//import '../bower_components/guss-typography/_typography.scss'
 import reducers from './reducers'
 import App from './App'
 
