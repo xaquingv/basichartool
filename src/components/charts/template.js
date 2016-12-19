@@ -1,5 +1,5 @@
 
-export default function(graph) { 
+export default function(graph) {
   return `
 <!DOCTYPE html>
 <html>
@@ -38,6 +38,40 @@ export default function(graph) {
         font-style: normal;
         font-stretch: normal;
       }
+
+      /* TOTHINK: style or inline */
+      .graph {
+        color: #767676; /*n-2*/
+        font-size: 13px;
+        font-family: "Guardian Text Sans Web", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        width: 100%;
+      }
+      .headline {
+        color: black;
+        font-size: 18px;
+        font-family: 'Guardian Egyptian Web', Georgia, serif;
+        font-weight: 600;
+        line-height: 24px;
+        margin-bottom: 12px;
+      }
+      .standfirst {
+        font-size: 14px;
+        margin-top: 12px;
+        margin-bottom: 16px;
+      }
+      footer {
+        font-size: 12px;
+        line-height: 16px;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dotted #bdbdbd; /*n-3*/
+      }
+      footer > div {
+        word-break: break-word;
+      }
+      /* end of TOTHINK */
+
       html { -webkit-font-smoothing: antialiased; }
       /* for iOS safari mobile */
       body { -webkit-text-size-adjust: 100%; }

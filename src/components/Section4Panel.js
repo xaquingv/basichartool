@@ -50,7 +50,7 @@ class Section extends React.Component {
         <h1>4. Edit your graph</h1>
         <div className="setup1"></div>
         <div className="setup2"></div>
-        <div className="js-graph">
+        <div className="graph js-graph">
           <header className="header">
             <div className="headline" ref="headline"></div>
             <div className="standfirst" ref="standfirst"></div>

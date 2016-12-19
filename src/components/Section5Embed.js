@@ -17,31 +17,19 @@ const mapStateToProps = (state) => ({
 class Section extends React.Component {
   embed() {
     const data = getHTMLFileData()
-    console.log(data.html)
-    console.log(JSON.stringify({ embed: data.html }))
 
     // TODO: push html to s3 server
-    //pushToS3(data)
-    // debug for fetch issue
-    if (fetch) {
-      fetch("https://visuals.gutools.co.uk/embed-uploader?type=chart", {
-        method: "POST",
-        body: JSON.stringify({ embed: "" }),
-        data: JSON.stringify({ embed: "" }),
-        headers: new Headers({
-          //'Accept': 'application/json',
-          'Content-Type': 'text/html'//'application/json'
-        })
-      }).then((res) => {
-        console.log(res)
-        //return res.json()
-      }).catch((err) => {
-        console.log(err)
-      })
-    }
-    else {
-      console.log("fetch is not working on your browser!")
-    }
+    // console.log(data.html)
+    // console.log(JSON.stringify({ embed: data.html }))
+
+    pushToS3ByReqwest(data)
+
+    // TODO: debug for fetch issue
+    // if (fetch) {
+    //   pushToS3ByFetch(data)
+    // } else {
+    //  console.log("fetch is not working on your browser!")
+    // }
   }
 
   downloadHTML() {
@@ -79,7 +67,7 @@ function getHTMLFileData() {
   }
 }
 
-function pushToS3(data) {
+function pushToS3ByReqwest(data) {
   reqwest({
     url: 'https://visuals.gutools.co.uk/embed-uploader?type=chart',
     method: 'post',
@@ -87,11 +75,28 @@ function pushToS3(data) {
     data: JSON.stringify({
         embed: data.html
     }),
-    success: resp => {
-      console.log(resp)
+    success: res => {
+      console.log(res)
     },
     error: err => {
-      console.log(err);
+      console.log(err)
     }
-});
+  })
+}
+
+function pushToS3ByFetch(data) {
+  fetch('https://visuals.gutools.co.uk/embed-uploader?type=chart', {
+    method: 'POST',
+    body: JSON.stringify({ embed: data.html }),
+    data: JSON.stringify({ embed: data.html }),
+    headers: new Headers({
+      //'Accept': 'application/json',
+      'Content-Type': 'text/html'//'application/json'
+    })
+  }).then((res) => {
+    console.log(res)
+    //return res.json()
+  }).catch((err) => {
+    console.log(err)
+  })
 }
