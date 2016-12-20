@@ -57,8 +57,16 @@ export default function(graph) {
       }
       .standfirst {
         font-size: 14px;
+        line-height: 20px;
         margin-top: 12px;
         margin-bottom: 16px;
+      }
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+      svg path {
+        vector-effect: non-scaling-stroke;
       }
       footer {
         font-size: 12px;

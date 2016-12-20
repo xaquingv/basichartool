@@ -21,8 +21,12 @@ h1 {
 .section-full {
     margin-top: 80px;
     margin-bottom: 60px;
+    max-width: 1284px;
     width: 100%;
     height: calc(100vh - 140px);
+}
+#section5 {
+    min-height: 100px;
 }
 
 .l-section {

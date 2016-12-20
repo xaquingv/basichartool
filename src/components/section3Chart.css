@@ -9,20 +9,17 @@
   padding-bottom: 5px;
   cursor: pointer;
 }
+
+/* chart */
 .charts > div > div {
   /* hotfix to align with svg */
-  margin-bottom: 14px;
-  height: calc(300px * 0.6 - 10px);
+  height: calc(300px * 0.6);
+  margin-bottom: 8px;
   overflow: hidden;
-}
-
-/*.chart,*/
-svg {
-  width: 100%; /*320px;*/
-  max-width: 620px;
-  text-align: left;
 }
 
 svg {
   height: calc(300px * 0.6);
+  margin-bottom: 5px;
+  /*text-align: left;*/
 }
