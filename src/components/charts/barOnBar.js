@@ -2,7 +2,9 @@ import {d3} from '../../lib/d3-lite'
 import {colors, colorBarBackground} from '../../data/config'
 
 const barHeight = 16
-const barMarginBottom = 8
+const barHeightHalf = 8
+const barMarginBottom = 16  //style2
+//const barMarginBottom = 8 //style1
 
 const stickHeight = 4
 const stickTop = (barHeight - stickHeight) / 2
@@ -15,11 +17,14 @@ export function addBarsBackground(el, dataChart, margin) {
   .selectAll(".group")
   .data(dataChart)
   .enter().append("div")
-  .style("margin-bottom", barMarginBottom + "px")
-  .style("background-color", colorBarBackground)
+  //.style("margin-bottom", barMarginBottom + "px") //style 1
+  //.style("background-color", colorBarBackground)  //style 1
+  .style("margin-bottom", barMarginBottom + "px")   //style 2
+  .style("border-bottom", "1px dotted " + colorBarBackground) // style 2
   .append("div")
   .attr("class", "group")
-  .style("height", barHeight + "px")
+  .style("height", barHeightHalf + "px") //style2
+  //.style("height", barHeight + "px") //style1
   .style("position", "relative")
   // margin used to avoid pixel out of canvas
   // ex. half tick / dot size / extra customisation in case of arrow

@@ -165,6 +165,15 @@ function chartId(id = "", action) {
   }
 }
 
+function dataSetup(dataSetup = {}, action) {
+  switch(action.type) {
+    case 'EDIT_CHART':
+      return action.dataSetup
+    default:
+      return dataSetup
+  }
+}
+
 const app = combineReducers({
   step,
   stepActive,
@@ -173,7 +182,8 @@ const app = combineReducers({
   show,
   dataBrief,
   selection,
-  chartId
+  chartId,
+  dataSetup
 });
 
 export default app

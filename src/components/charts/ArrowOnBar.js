@@ -94,7 +94,7 @@ class ArrowOnBar extends React.Component {
 
   fixPixelOutOfLayout(chartId) {
     const elChart = document.querySelector("#" + this.props.id + " .chart")
-    const chartWidth = elChart.offsetWidth - 20 // padding
+    const chartWidth = elChart.offsetWidth
     const elKicks = [...elChart.querySelectorAll(".js-kick")]
 
     // test1: return if no kicks

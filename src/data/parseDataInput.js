@@ -88,7 +88,7 @@ export default function(dataInput) {
       let empty = col.length === col.filter(val => val === null).length
       if (empty) {
         emptyCols.push(i)
-        console.log("empty", i, col)
+        //console.log("empty", i, col)
       }
     })
     // remove empty cols from both cols and rows data

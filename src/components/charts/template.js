@@ -47,6 +47,9 @@ export default function(graph) {
         -webkit-font-smoothing: antialiased;
         width: 100%;
       }
+      .chart {
+        margin-bottom: 24px;
+      }
       .headline {
         color: black;
         font-size: 18px;
@@ -60,6 +63,28 @@ export default function(graph) {
         line-height: 20px;
         margin-top: 12px;
         margin-bottom: 16px;
+      }
+      .keys {
+        margin-bottom: 12px;
+      }
+      .key {
+        white-space: nowrap;
+        display: inline-block;
+        margin-right: 12px;
+        position: relative;
+      }
+      .key-color {
+        display: inline-block;
+        width: 6px;
+        height: 12px;
+        margin-right: 4px;
+        border-radius: 2px;
+        position: absolute;
+        top: -1px;
+      }
+      .key-label {
+        pointer-events: all;
+        margin-left: 10px;
       }
       svg {
         width: 100%;

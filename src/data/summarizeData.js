@@ -114,16 +114,18 @@ export default function(dataTable, show) {
   }
 
   const dateData = count.date > 0 ? cols.find(col => col.type === "date")/*.values*/ : []
-  const numberData = cols.filter(col => col.type === "number")
   const string1Col = count.string1 > 0 ? cols.find(col => col.type === "string1").values : [] // TODO: may have more than 1 col !?
   const string2Col = count.string2 > 0 ? cols.find(col => col.type === "string2").values : []
+  const numberData = cols.filter(col => col.type === "number")
 
   const chart = {
+    rowCount: count.row,
     string1Col, string2Col,
     dateCol: dateData.values,
     dateHasDay: dateData.hasDay,
     numberCols: numberData.map(col => col.values),
-    rowCount: count.row
+    // NOTE: in case header is null, also see getDataTable.js
+    keys: numberData.map(col => col.header ? col.header : "unknown title")
   }
   //console.log(chart.numberCols)
   chart.numberRows = swapArray(chart.numberCols)
@@ -150,13 +152,11 @@ export default function(dataTable, show) {
     }
   }
 
-  // NOTE: in case header is null, also see getDataTable.js
-  const numberHeaders = numberData.map(col => col.header ? col.header : "unknown title")
   const value = {
     date_hasRepeat:    count.date > 0 ? uniqueArray(chart.dateCol).length !== count.row : null,
     string1_hasRepeat: count.string1 > 0 ? uniqueArray(chart.string1Col).length !== count.row : null,
     string1_format:    getStringFormat(),
-    numberH_format:    getDataType(numberHeaders).types[0],
+    numberH_format:    getDataType(chart.keys).types[0],
     number_rangeType:  getNumberRangeType(),
     number_hasNull:    chart.numbers.indexOf(null) > -1
   }

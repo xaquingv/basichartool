@@ -16,10 +16,11 @@
   height: calc(300px * 0.6);
   margin-bottom: 8px;
   overflow: hidden;
+  text-align: left;
 }
 
 svg {
   height: calc(300px * 0.6);
   margin-bottom: 5px;
-  /*text-align: left;*/
+  text-align: left;
 }

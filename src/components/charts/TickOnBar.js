@@ -45,10 +45,14 @@ class Bar extends React.Component {
       return numbers.map((num, i) => ({
         value: num,
         index: numbers.slice(0, i+1).filter(n => n === num).length,
-        count: count[num]
+        count: count[num],
+        color: colors[i]
       }))
+      // sort to help with overlapped layout
+      .sort((num1, num2) => num1.value - num2.value)
+      .sort((num1, num2) => num1.count - num2.count)
     })
-    //console.log(dataChart)
+    //console.log(this.dataChart)
 
     const scaleX = d3.scaleLinear()
     .domain(d3.extent(data.numbers))
@@ -65,7 +69,8 @@ class Bar extends React.Component {
     // ticks
     gs.append("div")
     .attr("title", d => d.value)
-    .style("background-color", (d, i) => colors[i])
+    .style("background-color", d => d.color)
+    //.style("opacity", 0.85)
     .style("width", tickWidth + "px")
     .style("height", d => (barHeight/d.count) + "px")
     .style("position", "absolute")

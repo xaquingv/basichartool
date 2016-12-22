@@ -4,8 +4,9 @@ import jsonBackup from '../assets/data/config'
 // source: https://docs.google.com/spreadsheets/d/1Kw1M08x6yybOG8b7JxDvxIbtdffFzCsB0xQ7UuLuzh8/edit#gid=1881209151
 const url = 'https://interactive.guim.co.uk/docsdata-test/1Kw1M08x6yybOG8b7JxDvxIbtdffFzCsB0xQ7UuLuzh8.json'
 
-export let colors, colorBarBackground
 export let cfg_charts
+export let colors, colorBarBackground
+export let metaKeys, default_metaText
 
 export default function() {
   // TODO: maybe switch fetch
@@ -66,4 +67,13 @@ function parseCfgJson(cfg) {
   })
 
   //console.log(colors, cfg_charts)
+}
+
+// TODO: add meta to config file ?
+metaKeys = ["headline", "standfirst", "keys", "source"] // note, ...
+default_metaText = {
+  "headline":   "Headline ...",
+  "standfirst": "Standfirst ...",
+  "keys":       "No keys ...",
+  "source":     ""
 }

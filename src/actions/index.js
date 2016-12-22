@@ -48,3 +48,9 @@ export const selectChart = (chartId) => ({
   type: "SELECT_CHART",
   chartId
 })
+
+/* section 4 */
+// changeChartSize
+// pickColor
+// changeFillColor
+// display

@@ -2,23 +2,65 @@
   min-height: calc(100vh - 300px);
 }
 
+.setup1 {
+  color: #333;
+  background-color: #f6f6f6; /* n-6 */
+  font-family: monospace;
+  padding: 15px 5px;
+}
+.setup2 {
+  margin-bottom: 20px;
+}
+.setup1 div {
+  line-height: 30px;
+}
+.setup1 span {
+  padding: 0 5px;
+}
+
 .chart-edit {
-  margin: 16px 0;
-  font-family: "Guardian Agate Sans 1 Web", monospace;
+  margin: 16px 0 24px;
 }
-#section4 svg {
-  width: 100%;
-  height: 100%;
+
+.display span {
+  cursor: url('../assets/icon/toggle3.svg') 16 16, auto;
 }
-svg path {
-  vector-effect: non-scaling-stroke;
+.display span:not(:first-child)::before {
+  content: '| ';
+}
+
+.palette {
+  margin: 0 0 10px;
+  padding-left: 0;
+}
+.palette li {
+  width: 32px;
+  height: 32px;
+  border-radius: 1px;
+  padding: 0;
+  display: inline-block;
+  vertical-align: middle;
+  cursor: url('../assets/icon/colorize.svg') 12 12, pointer;
+}
+.palette li:nth-child(2),
+.palette li:nth-child(5),
+.palette li:nth-child(8),
+.palette li:nth-child(9) {
+  margin-right: 10px;
+}
+.palette .li-custom {
+    width: 106px;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: text;
+    border: 1px solid black;
 }
 
 /* TOTHINK: temp or not, sync with template */
 .graph {
   color: #767676; /*n-2*/
   font-size: 13px;
-  font-family: "Guardian Text Sans Web", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: 'Guardian Text Sans Web', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
   -webkit-font-smoothing: antialiased;
   width: 100%;
   /* temp */
@@ -37,6 +79,32 @@ svg path {
   margin-top: 12px;
   margin-bottom: 16px;
 }
+
+.keys {
+  margin-bottom: 12px;
+}
+.key {
+  white-space: nowrap;
+  display: inline-block;
+  margin-right: 12px;
+  position: relative;
+}
+.key-color {
+  display: inline-block;
+  width: 6px;
+  height: 12px;
+  border-radius: 2px;
+  position: absolute;
+  top: -1px;
+  /* to help selection, no need in templates */
+  margin: 0 4px 4px 0;
+  cursor: url('../assets/icon/colordrop.svg') 12 12, auto;
+}
+.key-label {
+  pointer-events: all;
+  margin-left: 10px; /* 6+4 */
+}
+
 footer {
   font-size: 12px;
   line-height: 16px;
@@ -46,4 +114,16 @@ footer {
 }
 footer > div {
   word-break: break-word;
+}
+
+#section4 chart {
+  font-family: 'Guardian Agate Sans 1 Web', monospace;
+}
+#section4 svg {
+  width: 100%;
+  height: 100%;
+  font-family: 'Guardian Agate Sans 1 Web', monospace;
+}
+svg path {
+  vector-effect: non-scaling-stroke;
 }

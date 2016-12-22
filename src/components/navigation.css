@@ -20,13 +20,13 @@
     display: flex;
 }
 
-li {
+.ul-flex li {
     padding: 10px 0 5px 0;
 }
-li:first-child {
+.ul-flex li:first-child {
     margin-right: 10px;
 }
-li:last-child {
+.ul-flex li:last-child {
     margin-left: 10px;
 }
 
