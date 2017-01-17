@@ -81,6 +81,7 @@
 }
 
 .keys {
+  line-height: 18px;
   margin-bottom: 12px;
 }
 .key {
@@ -95,7 +96,7 @@
   height: 12px;
   border-radius: 2px;
   position: absolute;
-  top: -1px;
+  top: 1px;
   /* to help selection, no need in templates */
   margin: 0 4px 4px 0;
   cursor: url('../assets/icon/colordrop.svg') 12 12, auto;

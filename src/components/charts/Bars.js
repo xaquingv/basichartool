@@ -5,13 +5,16 @@ import {colors} from '../../data/config'
 import {uniqueArray} from '../../lib/array'
 import drawChart from './bar'
 import {getDomainByDataRange} from './domain'
-
+import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
   dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  onSelect: (keys) => {
+    dispatch(setupLegend(keys))
+  }
 })
 
 
@@ -25,8 +28,17 @@ class Bar extends React.Component {
   }
 
   render() {
+    const {callByStep, dataChart, onSelect} = this.props
+
+    const setLegendData = () => {
+      if (callByStep === 3) {
+        const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : dataChart.keys
+        onSelect(legendKeys)
+      }
+    }
+
     return (
-      <div className="chart" ref="div"></div>
+      <div className="chart" ref="div" onClick={setLegendData}></div>
     )
   }
 
@@ -37,13 +49,14 @@ class Bar extends React.Component {
     const numberRows = data.numberRows
     const labelGroup = data.string1Col
     const colorGroup = data.string2Col
+    this.colorKeys = uniqueArray(colorGroup)
 
     const scaleX = d3.scaleLinear()
     .domain(getDomainByDataRange(data.numbers))
     .range([0, 100])
 
     const scaleColors = d3.scaleOrdinal()
-    .domain(uniqueArray(colorGroup))
+    .domain(this.colorKeys)
     .range(colors)
 
     const dataChart = labelGroup.map((label, i) => ({
@@ -55,6 +68,7 @@ class Bar extends React.Component {
         color: colorGroup.length !== 0 ? scaleColors(colorGroup[i]) : null
       }))
     }))
+
 
     /* draw */
     const getBarHeight = (count) => Math.round((((24 - (count-1)) / 3) * 2) / count)

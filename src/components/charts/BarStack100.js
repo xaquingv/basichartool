@@ -2,13 +2,16 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import drawChart from './bar'
-
+import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
   dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  onSelect: (keys) => {
+    dispatch(setupLegend(keys))
+  }
 })
 
 
@@ -22,8 +25,14 @@ class BarStack100 extends React.Component {
     }
 
     render() {
+      const {callByStep, dataChart, onSelect} = this.props
+
+      const setLegendData = () => {
+        if (callByStep === 3) { onSelect(dataChart.keys) }
+      }
+
       return (
-        <div className="chart" ref="div"></div>
+        <div className="chart" ref="div" onClick={setLegendData}></div>
       )
     }
 

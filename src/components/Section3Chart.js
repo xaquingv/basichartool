@@ -27,7 +27,6 @@ class Section extends React.Component {
     const chartComponents = Object.keys(chartList).map(chartID => {
       const isSelected = selection.indexOf(chartID) > -1
       const ComponentChart = chartList[chartID]
-      // const cnDisplay = isSelected ? "" : "d-n"
 
       return isSelected
       ? (
@@ -37,8 +36,6 @@ class Section extends React.Component {
       )
       : null
     })
-    // <div key={chartID} id={chartID} className={cnDisplay} onClick={() => onSelect(chartID)}>
-    // <ComponentChart id={chartID} stepCall={STEP} isSelected={isSelected} />{chartID}
 
     return (
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section3">

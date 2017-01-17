@@ -1,7 +1,7 @@
 import {cfg_charts} from '../data/config'
 
 export default function(feature) {
-  //console.log(feature)
+  //console.log(cfg_charts)
 
   const chartList = cfg_charts.filter(cfg => {
     //console.log("===")

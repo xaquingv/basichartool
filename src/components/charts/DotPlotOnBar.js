@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 import {addBarsBackground, drawBarSticks} from './barOnBar'
-
+import {setupLegend} from '../../actions'
 
 const barHeight = 16
 const dotSzie = 10
@@ -14,25 +14,35 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  onSelect: (keys) => {
+    dispatch(setupLegend(keys))
+  }
 })
+
 
 
 class Bar extends React.Component {
 
-    componentDidMount() {
-      this.renderChart()
-    }
-    componentDidUpdate() {
-      this.renderChart()
+  componentDidMount() {
+    this.renderChart()
+  }
+  componentDidUpdate() {
+    this.renderChart()
+  }
+
+  render() {
+    const {callByStep, dataChart, onSelect} = this.props
+
+    const setLegendData = () => {
+      if (callByStep === 3) { onSelect(dataChart.keys) }
     }
 
-    render() {
-      return (
-        <div className="chart" ref="div"></div>
-      )
-    }
+    return (
+      <div className="chart" ref="div" onClick={setLegendData}></div>
+    )
+  }
 
-    renderChart() {
+  renderChart() {
 
     /* data */
     const data = this.props.dataChart

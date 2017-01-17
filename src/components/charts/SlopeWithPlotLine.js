@@ -5,7 +5,7 @@ import {colors} from '../../data/config'
 import drawChartLine from './line'
 import drawChartPlot from './plot'
 import {uniqueArray} from '../../lib/array'
-
+import {setupLegend} from '../../actions'
 
 const radius = 3
 
@@ -14,6 +14,9 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  onSelect: (keys) => {
+    dispatch(setupLegend(keys))
+  }
 })
 
 
@@ -27,8 +30,14 @@ class Slope extends React.Component {
   }
 
   render() {
+    const {callByStep, onSelect} = this.props
+
+    const setLegendData = () => {
+      if (callByStep === 3) { onSelect([""]) }
+    }
+
     return (
-      <svg ref="svg"></svg>
+      <svg ref="svg" onClick={setLegendData}></svg>
     )
   }
 

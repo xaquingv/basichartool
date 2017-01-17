@@ -111,7 +111,7 @@ class Section extends React.Component {
           </footer>
         </div>
         {/* end of graph */}
-        
+
       </div>
     );
   }

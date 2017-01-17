@@ -169,6 +169,11 @@ function dataSetup(dataSetup = {}, action) {
   switch(action.type) {
     case 'EDIT_CHART':
       return action.dataSetup
+    case 'SETUP_LEGEND':
+      return {
+        ...dataSetup,
+        legend: action.legendKeys
+      }
     default:
       return dataSetup
   }

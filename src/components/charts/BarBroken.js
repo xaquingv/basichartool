@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
-
+import {setupLegend} from '../../actions'
 
 const barHeight = 72
 
@@ -11,31 +11,43 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  onSelect: (keys) => {
+    dispatch(setupLegend(keys))
+  }
 })
 
 
 class BarBroken extends React.Component {
 
-    componentDidMount() {
-      this.renderChart()
-    }
-    componentDidUpdate() {
-      this.renderChart()
+  componentDidMount() {
+    this.renderChart()
+  }
+  componentDidUpdate() {
+    this.renderChart()
+  }
+
+  render() {
+    const {callByStep, dataChart, onSelect} = this.props
+
+    const setLegendData = () => {
+      if (callByStep === 3) {
+        const legendKeys = dataChart.string1Col
+        onSelect(legendKeys)
+      }
     }
 
-    render() {
-      return (
-        <div className="chart" ref="div">
-          <div ref="bars"></div>
-          <div ref="axis">
-            <div ref="axis_tick"></div>
-            <div ref="axis_mark">50%</div>
-          </div>
-        </div>
-      )
-    }
+    return (
+      <div className="chart" ref="div" onClick={setLegendData}>
+      <div ref="bars"></div>
+      <div ref="axis">
+      <div ref="axis_tick"></div>
+      <div ref="axis_mark">50%</div>
+      </div>
+      </div>
+    )
+  }
 
-    renderChart() {
+  renderChart() {
     // TODO: add multi broken bars as another chart
 
     /* data */

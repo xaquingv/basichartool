@@ -4,13 +4,16 @@ import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 import {uniqueArray} from '../../lib/array'
 import drawChart from './bar'
-
+import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
   dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  onSelect: (keys) => {
+    dispatch(setupLegend(keys))
+  }
 })
 
 
@@ -24,8 +27,17 @@ class Bar100 extends React.Component {
   }
 
   render() {
+    const {callByStep, dataChart, onSelect} = this.props
+
+    const setLegendData = () => {
+      if (callByStep === 3) {
+        const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : dataChart.keys
+        onSelect(legendKeys)
+      }
+    }
+
     return (
-      <div className="chart" ref="div"></div>
+      <div className="chart" ref="div" onClick={setLegendData}></div>
     )
   }
 
@@ -36,6 +48,7 @@ class Bar100 extends React.Component {
     const numbers = data.numbers
     const labelGroup = data.string1Col
     const colorGroup = data.string2Col
+    this.colorKeys = uniqueArray(colorGroup)
 
     const isAnyNumbersLargerThan100 = numbers.find(num => num > 100)
     const domainMax = isAnyNumbersLargerThan100 ? Math.max.apply(null, numbers) : 100
@@ -45,7 +58,7 @@ class Bar100 extends React.Component {
     .range([0, 100])
 
     const scaleColors = d3.scaleOrdinal()
-    .domain(uniqueArray(colorGroup))
+    .domain(this.colorKeys)
     .range(colors)
 
     const dataChart = labelGroup.map((label, i) => ({
@@ -59,6 +72,7 @@ class Bar100 extends React.Component {
         }]
       })
     )
+
 
     /* draw */
     drawChart(this.refs, dataChart, {hasGroupBgColor: true})

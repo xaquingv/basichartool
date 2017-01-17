@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 import {addBarsBackground, drawBarSticks} from './barOnBar'
-
+import {setupLegend} from '../../actions'
 
 const barHeight = 16
 const headSize = 12
@@ -15,29 +15,38 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  onSelect: (keys) => {
+    dispatch(setupLegend(keys))
+  }
 })
 
 
 class ArrowOnBar extends React.Component {
 
   componentDidMount() {
-    //console.log("ArrowOnBar init")
     this.renderChart()
   }
   componentDidUpdate() {
-    //console.log("ArrowOnBar update")
     this.renderChart()
   }
 
   render() {
-    //console.log('render')
+    const {callByStep, dataChart, onSelect} = this.props
+
+    const setLegendData = () => {
+      if (callByStep === 3) {
+        const key = dataChart.keys
+        const legendKeys = ["Change from " + key[0] + " to " + key[1]]
+        onSelect(legendKeys)
+      }
+    }
+
     return (
-      <div className="chart" ref="div"></div>
+      <div className="chart" ref="div" onClick={setLegendData}></div>
     )
   }
 
   renderChart() {
-    //console.log("render chart at step", this.props.callByStep)
 
     /* data */
     const data = this.props.dataChart
@@ -59,6 +68,7 @@ class ArrowOnBar extends React.Component {
         ...getArrowData(d)
       }]
     })
+
 
     /* draw */
     this.drawChart()

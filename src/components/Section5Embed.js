@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import downloadFile from 'react-file-download'
 import htmlTemplate from './charts/template'
-import fetch from 'isomorphic-fetch'
+//import fetch from 'isomorphic-fetch'
 import reqwest from 'reqwest'
 
 const STEP = 5
@@ -84,7 +84,7 @@ function pushToS3ByReqwest(data) {
   })
 }
 
-function pushToS3ByFetch(data) {
+/*function pushToS3ByFetch(data) {
   fetch('https://visuals.gutools.co.uk/embed-uploader?type=chart', {
     method: 'POST',
     body: JSON.stringify({ embed: data.html }),
@@ -99,4 +99,4 @@ function pushToS3ByFetch(data) {
   }).catch((err) => {
     console.log(err)
   })
-}
+}*/

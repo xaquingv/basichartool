@@ -40,7 +40,7 @@ function parseCfgJson(cfg) {
 
   /* charts: cfg for chart selection
   // TODO: sort by order and filter by on/off flag */
-  cfg_charts = cfg.cfg_charts.filter(chart => chart.id).map(chart => {
+  cfg_charts = cfg.cfg_charts.filter(chart => JSON.parse(chart.active)).map(chart => {
 
     // 1. count => 5 features
     let count = {

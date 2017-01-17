@@ -48,6 +48,11 @@ export const selectChart = (chartId) => ({
   type: "SELECT_CHART",
   chartId
 })
+export const setupLegend = (keys) => ({
+  type: "SETUP_LEGEND",
+  legendKeys: keys
+})
+
 
 /* section 4 */
 // changeChartSize

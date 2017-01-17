@@ -2,13 +2,14 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
-
+import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief
+  dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  onSelect: (keys) => dispatch(setupLegend(keys))
 })
 
 
@@ -22,8 +23,14 @@ class Area extends React.Component {
   }
 
   render() {
+    const {callByStep, dataChart, onSelect} = this.props
+
+    const setLegendData = () => {
+      if (callByStep === 3) { onSelect(dataChart.keys) }
+    }
+
     return (
-      <svg ref="svg">
+      <svg ref="svg" onClick={setLegendData}>
         <line ref="line" x1="0" x2="100%" y1="50%" y2="50%"></line>
       </svg>
     )
@@ -32,7 +39,7 @@ class Area extends React.Component {
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart.chart
+    const data = this.props.dataChart
     const dates = data.dateCol
     const numberCols = data.numberCols
 

@@ -2,13 +2,16 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import drawChart from './line'
-
+import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
   dataChart: state.dataBrief.chart
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  onSelect: (keys) => {
+    dispatch(setupLegend(keys))
+  }
 })
 
 
@@ -22,8 +25,14 @@ class Line extends React.Component {
   }
 
   render() {
+    const {callByStep, dataChart, onSelect} = this.props
+
+    const setLegendData = () => {
+      if (callByStep === 3) { onSelect(dataChart.keys) }
+    }
+
     return (
-      <svg ref="svg"></svg>
+      <svg ref="svg" onClick={setLegendData}></svg>
     )
   }
 
@@ -59,10 +68,13 @@ class Line extends React.Component {
     // NOTE: double check if discrete and conti are the same
     // if the same (duplicate), hide the discrete line
     const elLineDiscrete = d3.select("#lineDiscrete")
+    const elLineContiPathD = d3.select("#lineConti path").attr("d")
     if (!elLineDiscrete) {
       return
-    } else if (d3.select("#lineConti path").attr("d") === elLineDiscrete.select("path").attr("d")) {
+    } else if (elLineContiPathD === elLineDiscrete.select("path").attr("d")) {
       elLineDiscrete.classed("d-n", true)
+    } else if (elLineContiPathD !== elLineDiscrete.select("path").attr("d")) {
+      elLineDiscrete.classed("d-n", false)
     }
   }
 }

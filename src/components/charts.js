@@ -1,12 +1,9 @@
-import MapChoropleth      from './charts/MapChoropleth'
-import MapBubble          from './charts/MapBubble'
 import AreaStack100       from './charts/AreaStack100'
 import LineDiscrete       from './charts/LineDiscrete'
 import LineContinuous     from './charts/LineConti'
 import DotPlot            from './charts/DotPlot'
 import ScatterPlot        from './charts/ScatterPlot'
 import Slope              from './charts/SlopeWithPlotLine'
-import Donut              from './charts/Donut'
 import Cols               from './charts/Cols'
 import ColStack           from './charts/ColStack'
 import Bars               from './charts/Bars'
@@ -17,10 +14,13 @@ import BarBroken          from './charts/BarBroken'
 import ArrowOnBar         from './charts/ArrowOnBar'
 import DotPlotOnBar       from './charts/DotPlotOnBar'
 import TickOnBar          from './charts/TickOnBar'
+//import ColHistogram
+//import ColMatrix
 //import LineContiWithPlot  from './charts/LineContiWithPlot'
-//import histogram
-//import colMatrix
-//import treemap
+//import MapChoropleth      from './charts/MapChoropleth'
+//import MapBubble          from './charts/MapBubble'
+//import Donut              from './charts/Donut'
+//import Treemap
 
 // TODO: obj -> arr, sort by config file
 export const chartList = {
@@ -41,9 +41,9 @@ export const chartList = {
   col:           Cols,
   colGroup:      Cols,
   colGStack:     ColStack,
-  colGStack100:  AreaStack100,
-  areaStack100:  AreaStack100,
-  donut:         Donut,
-  mapChoropleth: MapChoropleth,
-  mapBubble:     MapBubble
+  colGStack100:  AreaStack100
+  //areaStack100:  AreaStack100,
+  //donut:         Donut,
+  //mapChoropleth: MapChoropleth,
+  //mapBubble:     MapBubble
 }
