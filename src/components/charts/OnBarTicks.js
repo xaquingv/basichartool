@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
-import {addBarsBackground} from './barOnBar'
+import {addBarsBackground} from './onBar'
 import {setupLegend} from '../../actions'
 
 const barHeight = 16
@@ -15,14 +15,11 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => {
-    dispatch(setupLegend(keys))
-  }
+  onSelect: (keys) => dispatch(setupLegend(keys))
 })
 
 
-
-class Bar extends React.Component {
+class TickOnBar extends React.Component {
 
   componentDidMount() {
     this.renderChart()
@@ -96,4 +93,4 @@ class Bar extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Bar)
+export default connect(mapStateToProps, mapDispatchToProps)(TickOnBar)

@@ -9,9 +9,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => {
-    dispatch(setupLegend(keys))
-  }
+  onSelect: (keys) => dispatch(setupLegend(keys))
 })
 
 

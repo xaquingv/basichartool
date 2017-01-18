@@ -10,9 +10,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => {
-    dispatch(setupLegend(keys))
-  }
+  onSelect: (keys) => dispatch(setupLegend(keys))
 })
 
 
@@ -50,7 +48,7 @@ class BarStack extends React.Component {
     .range([0, 100])
 
     const dataChart = labelGroup.map((group, i) => ({
-        group: group, 
+        group: group,
         value: numberRows[i].map((num, j) => ({
           title: num,
           width: Math.abs(scaleX(num) - scaleX(0)),

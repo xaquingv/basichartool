@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 
-class Line extends React.Component {
+class LinePlot extends React.Component {
 
   shouldComponentUpdate(nextProps) {
     return nextProps.flag
@@ -94,4 +94,4 @@ class Line extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Line)
+export default connect(mapStateToProps, mapDispatchToProps)(LinePlot)

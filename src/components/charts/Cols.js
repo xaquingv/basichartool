@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 
-class Col extends React.Component {
+class Cols extends React.Component {
 
   componentDidMount() {
     this.renderChart()
@@ -87,4 +87,4 @@ class Col extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Col)
+export default connect(mapStateToProps, mapDispatchToProps)(Cols)

@@ -9,13 +9,11 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => {
-    dispatch(setupLegend(keys))
-  }
+  onSelect: (keys) => dispatch(setupLegend(keys))
 })
 
 
-class Line extends React.Component {
+class LineDiscrete extends React.Component {
 
   componentDidMount() {
     this.renderChart()
@@ -63,4 +61,4 @@ class Line extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Line)
+export default connect(mapStateToProps, mapDispatchToProps)(LineDiscrete)

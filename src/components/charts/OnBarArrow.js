@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
-import {addBarsBackground, drawBarSticks} from './barOnBar'
+import {addBarsBackground, drawBarSticks} from './onBar'
 import {setupLegend} from '../../actions'
 
 const barHeight = 16
@@ -15,9 +15,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => {
-    dispatch(setupLegend(keys))
-  }
+  onSelect: (keys) => dispatch(setupLegend(keys))
 })
 
 

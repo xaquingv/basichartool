@@ -11,13 +11,11 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => {
-    dispatch(setupLegend(keys))
-  }
+  onSelect: (keys) => dispatch(setupLegend(keys))
 })
 
 
-class Bar100 extends React.Component {
+class Bars100 extends React.Component {
 
   componentDidMount() {
     this.renderChart()
@@ -79,4 +77,4 @@ class Bar100 extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Bar100)
+export default connect(mapStateToProps, mapDispatchToProps)(Bars100)

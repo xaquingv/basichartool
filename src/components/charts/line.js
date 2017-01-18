@@ -19,7 +19,6 @@ export default function (els, dataChart, scaleX, scaleY) {
   // new
   svg.enter().append("path")
   .attr("fill", "none")
-  // TODO: color from cfg ...
   .attr("stroke", (d, i) => colors[i])
   .attr("stroke-width", "2px")
   .attr("shape-rendering", "auto")
@@ -30,15 +29,3 @@ export default function (els, dataChart, scaleX, scaleY) {
   // remove
   svg.exit().remove()
 }
-
-
-
-/*d3.select(els.path)
-.datum(dataChart)
-.attr("fill", "none")
-.attr("stroke", "#4dc6dd") // c-1: blue light
-.attr("stroke-width", 2)
-.attr("shape-rendering", "auto")
-.attr("stroke-linecap", "square") // or round to render a single point
-.attr("d", line)
-*/

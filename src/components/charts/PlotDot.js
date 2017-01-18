@@ -9,13 +9,11 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => {
-    dispatch(setupLegend(keys))
-  }
+  onSelect: (keys) => dispatch(setupLegend(keys))
 })
 
 
-class Scatter extends React.Component {
+class DotPlot extends React.Component {
 
   componentDidMount() {
     this.renderChart()
@@ -66,4 +64,4 @@ class Scatter extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Scatter)
+export default connect(mapStateToProps, mapDispatchToProps)(DotPlot)

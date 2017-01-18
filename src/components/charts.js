@@ -1,19 +1,19 @@
-import AreaStack100       from './charts/AreaStack100'
 import LineDiscrete       from './charts/LineDiscrete'
 import LineContinuous     from './charts/LineConti'
-import DotPlot            from './charts/DotPlot'
-import ScatterPlot        from './charts/ScatterPlot'
-import Slope              from './charts/SlopeWithPlotLine'
-import Cols               from './charts/Cols'
-import ColStack           from './charts/ColStack'
+import PlotDot            from './charts/PlotDot'
+import PlotScatter        from './charts/PlotScatter'
+import Slopegraph         from './charts/Slopegraph'
 import Bars               from './charts/Bars'
 import BarStack           from './charts/BarStack'
 import BarStack100        from './charts/BarStack100'
-import Bar100             from './charts/Bar100'
-import BarBroken          from './charts/BarBroken'
-import ArrowOnBar         from './charts/ArrowOnBar'
-import DotPlotOnBar       from './charts/DotPlotOnBar'
-import TickOnBar          from './charts/TickOnBar'
+import Bars100            from './charts/Bars100'
+import BrokenBar          from './charts/BrokenBar'
+import OnBarArrow         from './charts/OnBarArrow'
+import OnBarDots          from './charts/OnBarDots'
+import OnBarTicks         from './charts/OnBarTicks'
+import Cols               from './charts/Cols'
+import ColStack           from './charts/ColStack'
+import AreaStack          from './charts/AreaStack'
 //import ColHistogram
 //import ColMatrix
 //import LineContiWithPlot  from './charts/LineContiWithPlot'
@@ -24,26 +24,26 @@ import TickOnBar          from './charts/TickOnBar'
 
 // TODO: obj -> arr, sort by config file
 export const chartList = {
-  lineDiscrete:  LineDiscrete,
-  lineConti:     LineContinuous,
-  dotPlot:       DotPlot,
-  scatterPlot:   ScatterPlot,
-  slope:         Slope,
-  diffArrow:     ArrowOnBar,
-  diffDot:       DotPlotOnBar,
-  tickPlot:      TickOnBar,
-  bar:           Bars,
-  barGroup:      Bars,
-  barGStack:     BarStack,
-  barGStack100:  BarStack100,
-  bar100:        Bar100,
-  barBroken:     BarBroken,
-  col:           Cols,
-  colGroup:      Cols,
-  colGStack:     ColStack,
-  colGStack100:  AreaStack100
-  //areaStack100:  AreaStack100,
-  //donut:         Donut,
-  //mapChoropleth: MapChoropleth,
-  //mapBubble:     MapBubble
+  lineDiscrete:     LineDiscrete,
+  lineConti:        LineContinuous,
+  plotDot:          PlotDot,
+  plotScatter:      PlotScatter,
+  slopegraph:       Slopegraph,
+  onBarDiffArrow:   OnBarArrow,
+  onBarDiffDots:    OnBarDots,
+  onBarTicks:       OnBarTicks,
+  bar:              Bars,
+  barGroup:         Bars,
+  barGroupStack:    BarStack,
+  barGroupStack100: BarStack100,
+  bar100:           Bars100,
+  brokenBroken:     BrokenBar,
+  col:              Cols,
+  colGroup:         Cols,
+  colGroupStack:    ColStack,
+  colGroupStack100: AreaStack,
+  //areaGroupStack: AreaStack,
+  //donut:          Donut,
+  //mapChoropleth:  MapChoropleth,
+  //mapBubble:      MapBubble
 }
