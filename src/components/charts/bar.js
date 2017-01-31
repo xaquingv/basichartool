@@ -1,5 +1,5 @@
 import {d3} from '../../lib/d3-lite'
-import {colors, colorBarBackground} from '../../data/config'
+import {colorBarBackground} from '../../data/config'
 
 const rowHeight = 24
 const barHeightDefault = 16
@@ -33,7 +33,7 @@ export default function (els, dataChart, opt = {}) {
   .style("width", d => d.width + "%")
   // bar styles on chart type
   .style("height", barHeight + "px")
-  .style("background-color", (d, i) => d.color ? d.color : colors[i])
+  .style("background-color", (d, i) => d.color ? d.color : opt.colors[i])
   .style("margin-left", d => d.shift ? d.shift + "%" : false) // accept negative number
   .style("margin-bottom", barMarginBottom + "px")
   .style("display", opt.display ? opt.display : false)

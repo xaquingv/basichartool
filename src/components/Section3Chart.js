@@ -1,15 +1,15 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import './section3Chart.css'
+import {colors} from '../data/config'
+import {selectChart, setKeyColors} from '../actions'
 import {chartList} from './charts'
-import {selectChart} from '../actions'
 
 const STEP = 3
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (chartId) => {
-    dispatch(selectChart(chartId))
-  }
+  onSelect: (chartId) => dispatch(selectChart(chartId)),
+  setupColors: (i) => dispatch(setKeyColors(i))
 })
 
 const mapStateToProps = (state) => ({
@@ -19,6 +19,10 @@ const mapStateToProps = (state) => ({
 
 
 class Section extends React.Component {
+  componentWillUpdate() {
+    // set bf step 3
+    this.props.setupColors(colors)
+  }
 
   render() {
     const {stepActive, selection, onSelect} = this.props

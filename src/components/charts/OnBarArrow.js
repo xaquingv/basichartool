@@ -11,7 +11,8 @@ const headTop = (barHeight - headSize) / 2
 const tickShift = 5
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -48,6 +49,8 @@ class ArrowOnBar extends React.Component {
 
     /* data */
     const data = this.props.dataChart
+    //const colors = this.props.colors
+
     const scaleX = d3.scaleLinear()
     .domain(d3.extent(data.numbers))
     .range([0, 100])
@@ -63,7 +66,7 @@ class ArrowOnBar extends React.Component {
       return [{
         title: nums[0] === nums[1] ? nums[0] : Math.min(nums[0], nums[1]) + " - " + Math.max(nums[0], nums[1]),
         widthCalc: "calc(" + d.width + "% - " + headSize/2 + "px)",
-        ...getArrowData(d)
+        ...getArrowData(d/*, colors*/)
       }]
     })
 
@@ -128,7 +131,7 @@ class ArrowOnBar extends React.Component {
 export default connect(mapStateToProps, mapDispatchToProps)(ArrowOnBar)
 
 
-function getArrowData(d) {
+function getArrowData(d/*, colors*/) {
   switch (true) {
     case d.value[1] - d.value[0] > 0:
     // increase, right

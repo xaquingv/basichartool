@@ -2,10 +2,12 @@ import React from 'react';
 import {connect} from 'react-redux';
 import './section4Panel.css'
 import {chartList} from './charts'
-import ComponentKey from './section4Panel/Key'
 import {d3} from '../lib/d3-lite'
 import scrollTo from '../lib/scrollTo'
-import {metaKeys, default_metaText, colors} from '../data/config'
+import {metaKeys, default_metaText} from '../data/config'
+
+import ComponentKey from './section4Panel/Key'
+import ComponentPalette from './section4Panel/Palette'
 
 const STEP = 4;
 
@@ -52,10 +54,6 @@ class Section extends React.Component {
   render() {
 
     const {stepActive, chartId} = this.props;
-    /*if (chartId) {
-      //console.log("===")
-      console.log(this.props.chartId || "NaN", "is selected")
-    }*/
 
     // TODO: responsive width
     const ComponentChart = chartList[chartId]
@@ -71,11 +69,6 @@ class Section extends React.Component {
     const setupDisplayList = metaKeys.map((key, i) =>
       <span key={key}>{key}</span>
     )
-    const setupPaletteColors = colors
-    ? colors.slice(0, -1).map((color, i) =>
-      <li key={i} style={{backgroundColor: color}}></li>
-    )
-    : null
 
     return (
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section4">
@@ -86,13 +79,7 @@ class Section extends React.Component {
             <span ref="width"></span>x
             <span ref="height"></span>
           </div>
-          <div>Palette colors:
-            <ul className="palette">
-              {setupPaletteColors}
-              {/*<li className="li-custom"><span contentEditable={true}>#000000</span></li>*/}
-              <li className="li-custom"><span>#000000</span></li>
-            </ul>
-          </div>
+          <ComponentPalette />
           <div className="display">Display:{setupDisplayList}</div>
         </div>
 
@@ -113,7 +100,7 @@ class Section extends React.Component {
         {/* end of graph */}
 
       </div>
-    );
+    )
   }
 }
 

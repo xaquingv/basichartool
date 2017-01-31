@@ -169,11 +169,36 @@ function dataSetup(dataSetup = {}, action) {
   switch(action.type) {
     case 'EDIT_CHART':
       return action.dataSetup
-    case 'SETUP_LEGEND':
+    case 'SET_LEGEND':
       return {
         ...dataSetup,
         legend: action.legendKeys
       }
+
+    // TODO: ...
+    case 'UPDATE_DISPLAY':
+      return {
+        ...dataSetup,
+        display: action.displaySwitch
+      }
+    case 'SET_COLORS':
+      return {
+        ...dataSetup,
+        colors: action.colors
+      }
+    case 'PICK_COLOR':
+      return {
+        ...dataSetup,
+        pickColor: action.pickColor
+      }
+    case 'DROP_COLOR':
+      const newColors = {...dataSetup.colors}
+      newColors[action.dropIndex] = dataSetup.pickColor
+      return {
+        ...dataSetup,
+        colors: newColors
+      }
+
     default:
       return dataSetup
   }

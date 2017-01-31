@@ -1,13 +1,13 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {colors} from '../../data/config'
-import {col as drawChart} from './col'
 import {getDomainByDataRange} from './domain'
 import {setupLegend} from '../../actions'
+import drawChart from './col'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -62,6 +62,7 @@ class ColStack extends React.Component {
       ...numberRows[i]
     }))
     const stack = d3.stack().keys(Object.keys(numberRows[0]))
+    const colors = this.props.colors
     const dataChart = stack(dataChartGroup).map((group, i) => ({
       color: colors[i],
       value: group.map((ns, j) => ({
@@ -73,7 +74,7 @@ class ColStack extends React.Component {
     }))
 
     /* draw */
-    drawChart(this.refs, dataChart, {width: scaleX.bandwidth(), id: this.props.id})
+    drawChart(this.refs, dataChart, {width: scaleX.bandwidth(), id: this.props.id, colors})
   }
 }
 

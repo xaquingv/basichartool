@@ -6,7 +6,8 @@ import {getDomainByDataRange} from './domain'
 import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -42,6 +43,7 @@ class BarStack extends React.Component {
     const labelGroup = data.string1Col
     const numberRows = data.numberRows
     const numberRowSums = numberRows.map(ns => ns.reduce((n1, n2) => n1 + n2))
+    const colors = this.props.colors
 
     const scaleX = d3.scaleLinear()
     .domain(getDomainByDataRange(numberRowSums))
@@ -57,7 +59,7 @@ class BarStack extends React.Component {
     }))
 
     /* draw */
-    drawChart(this.refs, dataChart, {display: "inline-block"})
+    drawChart(this.refs, dataChart, {display: "inline-block", colors})
   }
 }
 

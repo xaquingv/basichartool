@@ -5,7 +5,8 @@ import drawChart from './bar'
 import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -40,6 +41,7 @@ class BarStack100 extends React.Component {
     const data = this.props.dataChart
     const groups = data.string1Col
     const numberRows = data.numberRows
+    const colors = this.props.colors
 
     const numberRowSums = numberRows.map(ns => Math.round(ns.reduce((n1, n2) => n1 + n2)*100)/100)
     const scaleX = (i) => d3.scaleLinear()
@@ -58,7 +60,7 @@ class BarStack100 extends React.Component {
     })
 
     /* draw */
-    drawChart(this.refs, dataChart, {display: "inline-block"})
+    drawChart(this.refs, dataChart, {display: "inline-block", colors})
 
     /* validate special */
     // TODO: move to another validatetion file

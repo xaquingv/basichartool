@@ -1,7 +1,7 @@
 import {d3} from '../../lib/d3-lite'
-import {colors} from '../../data/config'
+//import {colors} from '../../data/config'
 
-export function col(els, dataChart, opt = {}) {
+export default function(els, dataChart, opt = {}) {
   // TODO: improve this hack
   const isStack = opt.id.indexOf("Stack") > -1
   //console.log(isStack)
@@ -25,7 +25,7 @@ export function col(els, dataChart, opt = {}) {
   .attr("height", d => d.length)
   .style("cursor", "pointer")
   // col styles on chart type
-  .attr("fill", (d, i) => !isStack ? (d.color ? d.color : colors[i]) : false)
+  .attr("fill", (d, i) => !isStack ? (d.color ? d.color : opt.colors[i]) : false)
   // title tooltip
   .append("title")
   .text(d => d.title)

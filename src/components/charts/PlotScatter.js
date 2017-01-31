@@ -3,11 +3,11 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import drawChart from './plot'
 import {uniqueArray} from '../../lib/array'
-import {colors} from '../../data/config'
 import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -61,6 +61,7 @@ class ScatterPlot extends React.Component {
     .domain(d3.extent(numberCols[1]))
     .range([height, 0])
 
+    const colors = this.props.colors
     const scaleColors = d3.scaleOrdinal()
     .domain(this.colorKeys)
     .range(colors)
@@ -86,7 +87,7 @@ class ScatterPlot extends React.Component {
 
 
     /* draw */
-    drawChart(this.refs, dataChart, scaleX, scaleY, "scatter")
+    drawChart(this.refs, dataChart, scaleX, scaleY, "scatter", colors)
   }
 }
 

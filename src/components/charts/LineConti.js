@@ -5,7 +5,8 @@ import drawChart from './line'
 import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -59,7 +60,7 @@ class Line extends React.Component {
     .range([height, 0])
 
     /* draw */
-    drawChart(this.refs, dataChart, scaleX, scaleY)
+    drawChart(this.refs, dataChart, scaleX, scaleY, this.props.colors)
 
     /* validate special */
     // TODO: move to another validatetion file

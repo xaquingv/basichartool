@@ -10,7 +10,8 @@ const dotSzie = 10
 const dotTop = (barHeight - dotSzie) / 2
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -43,6 +44,7 @@ class DotsOnBar extends React.Component {
 
     /* data */
     const data = this.props.dataChart
+    //const colors = this.props.colors
 
     const scaleX = d3.scaleLinear()
     .domain(d3.extent(data.numbers))
@@ -62,10 +64,10 @@ class DotsOnBar extends React.Component {
     }]))
 
     /* draw */
-    this.drawChart()
+    this.drawChart(/*colors*/)
   }
 
-  drawChart() {
+  drawChart(/*colors*/) {
 
     let gs = addBarsBackground(this.refs.div, this.dataChart, dotSzie/2)
 

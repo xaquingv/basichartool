@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {colors} from '../../data/config'
+//import {colors} from '../../data/config'
 import {addBarsBackground} from './onBar'
 import {setupLegend} from '../../actions'
 
@@ -11,7 +11,8 @@ const tickShift = tickWidth / 2
 const tickBorderRadius = 2
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -44,6 +45,7 @@ class TickOnBar extends React.Component {
 
     /* data */
     const data = this.props.dataChart
+    const colors = this.props.colors
 
     this.dataChart = data.numberRows.map((numbers, i) => {
       const count = {}

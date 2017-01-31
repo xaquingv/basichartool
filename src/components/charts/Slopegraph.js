@@ -10,7 +10,8 @@ import {setupLegend} from '../../actions'
 const radius = 3
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -56,6 +57,7 @@ class Slope extends React.Component {
     // in case of position adjustment due to dots overlapped
 
     // 1a. color change
+    //const colors = this.props.colors
     const dataColor = dataChart.map(d => {
       switch (true) {
         case d[1].y - d[0].y > 0: return colors[0]  // blue-light

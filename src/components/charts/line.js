@@ -1,7 +1,6 @@
 import {d3} from '../../lib/d3-lite'
-import {colors} from '../../data/config'
 
-export default function (els, dataChart, scaleX, scaleY) {
+export default function (els, dataChart, scaleX, scaleY, colors) {
 
   const line = d3.line()
   .defined(d => d.y !== null)
@@ -14,7 +13,9 @@ export default function (els, dataChart, scaleX, scaleY) {
   .data(dataChart)
 
   // update
-  svg.attr("d", d => line(d))
+  svg
+  .attr("stroke", (d, i) => colors[i])
+  .attr("d", d => line(d))
 
   // new
   svg.enter().append("path")

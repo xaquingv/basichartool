@@ -1,12 +1,12 @@
 import {d3} from '../../lib/d3-lite'
-import {colors} from '../../data/config'
+//import {colors} from '../../data/config'
 
 const chartType = {
   scatter: { r: 3, stroke: 0, opacity: 0.5 },
   line:    { r: 3, stroke: 0, opacity: 1 }
 }
 
-export default function(els, dataChart, scaleX, scaleY, who) {
+export default function(els, dataChart, scaleX, scaleY, who, colors) {
 
   // init gs
   let gs =
@@ -17,6 +17,7 @@ export default function(els, dataChart, scaleX, scaleY, who) {
   // update
   gs
   .html("")
+  .style("fill", (d, i) => colors[i])
   .selectAll("circle")
   .data(d => d)
   .enter().append("circle")

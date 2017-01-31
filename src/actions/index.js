@@ -49,13 +49,23 @@ export const selectChart = (chartId) => ({
   chartId
 })
 export const setupLegend = (keys) => ({
-  type: "SETUP_LEGEND",
+  type: "SET_LEGEND",
   legendKeys: keys
 })
-
+export const setKeyColors = (colors) => ({
+  type: "SET_COLORS",
+  colors: colors
+})
 
 /* section 4 */
 // changeChartSize
-// pickColor
+export const pickColor = (color) => ({
+  type: "PICK_COLOR",
+  pickColor: color
+})
+export const dropColorTo = (i) => ({
+  type: "DROP_COLOR",
+  dropIndex: i
+})
 // changeFillColor
 // display

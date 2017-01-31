@@ -5,7 +5,8 @@ import drawChart from './plot'
 import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -60,7 +61,7 @@ class DotPlot extends React.Component {
     .range([height, 0])
 
     /* draw */
-    drawChart(this.refs, dataChart, scaleX, scaleY, "scatter")
+    drawChart(this.refs, dataChart, scaleX, scaleY, "scatter", this.props.colors)
   }
 }
 

@@ -1,11 +1,11 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {colors} from '../../data/config'
 import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -42,7 +42,8 @@ class Area extends React.Component {
     const data = this.props.dataChart
     const dates = data.dateCol
     const numberCols = data.numberCols
-
+    const colors = this.props.colors
+    
     let isNot100 = []
     let maxSum = 0
     const dataChart = dates.map((date, i) => {

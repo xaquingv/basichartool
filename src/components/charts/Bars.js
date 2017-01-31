@@ -1,14 +1,15 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {colors} from '../../data/config'
-import {uniqueArray} from '../../lib/array'
-import drawChart from './bar'
-import {getDomainByDataRange} from './domain'
 import {setupLegend} from '../../actions'
+//import {colors} from '../../data/config'
+import {uniqueArray} from '../../lib/array'
+import {getDomainByDataRange} from './domain'
+import drawChart from './bar'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -53,6 +54,7 @@ class Bars extends React.Component {
     .domain(getDomainByDataRange(data.numbers))
     .range([0, 100])
 
+    const colors = this.props.colors
     const scaleColors = d3.scaleOrdinal()
     .domain(this.colorKeys)
     .range(colors)
@@ -72,7 +74,7 @@ class Bars extends React.Component {
     const getBarHeight = (count) => Math.round((((24 - (count-1)) / 3) * 2) / count)
     const barHeight = getBarHeight(numberRows[0].length)
 
-    drawChart(this.refs, dataChart, {barHeight})
+    drawChart(this.refs, dataChart, {barHeight, colors})
   }
 }
 
