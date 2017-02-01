@@ -22,11 +22,15 @@
   margin: 16px 0 24px;
 }
 
-.display span {
+.display-item {
   cursor: url('../assets/icon/toggle3.svg') 16 16, auto;
 }
-.display span:not(:first-child)::before {
+.display-separator:not(:first-child)::before {
   content: '| ';
+}
+.display-off {
+  opacity: 0.25;
+  text-decoration: line-through;
 }
 
 .palette {
@@ -80,17 +84,17 @@
   margin-bottom: 16px;
 }
 
-.keys {
+.legend {
   line-height: 18px;
   margin-bottom: 12px;
 }
-.key {
+.legend-item {
   white-space: nowrap;
   display: inline-block;
   margin-right: 12px;
   position: relative;
 }
-.key-color {
+.legend-color {
   display: inline-block;
   width: 6px;
   height: 12px;
@@ -101,7 +105,7 @@
   margin: 0 4px 4px 0;
   cursor: url('../assets/icon/colordrop.svg') 12 12, auto;
 }
-.key-label {
+.legend-label {
   pointer-events: all;
   margin-left: 10px; /* 6+4 */
 }

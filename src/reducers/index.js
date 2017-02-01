@@ -165,7 +165,7 @@ function chartId(id = "", action) {
   }
 }
 
-function dataSetup(dataSetup = {}, action) {
+function dataSetup(dataSetup = {colors:[], display:{}, legend:[]}, action) {
   switch(action.type) {
     case 'EDIT_CHART':
       return action.dataSetup
@@ -176,10 +176,17 @@ function dataSetup(dataSetup = {}, action) {
       }
 
     // TODO: ...
-    case 'UPDATE_DISPLAY':
+    case 'SET_DISPLAY':
       return {
         ...dataSetup,
-        display: action.displaySwitch
+        display: action.displaySwitches
+      }
+    case 'UPDATE_DISPLAY':
+      const newSwitches = {...dataSetup.display}
+      newSwitches[action.metaKey] = !newSwitches[action.metaKey]
+      return {
+        ...dataSetup,
+        display: newSwitches
       }
     case 'SET_COLORS':
       return {
@@ -192,7 +199,7 @@ function dataSetup(dataSetup = {}, action) {
         pickColor: action.pickColor
       }
     case 'DROP_COLOR':
-      const newColors = {...dataSetup.colors}
+      const newColors = dataSetup.colors.slice()
       newColors[action.dropIndex] = dataSetup.pickColor
       return {
         ...dataSetup,

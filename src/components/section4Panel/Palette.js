@@ -17,25 +17,30 @@ class Palette extends React.Component {
 
   render() {
     const {step, onPickColor} = this.props
-    // TODO: double check
     if (step !==4) {return null}
 
-    const setupPaletteColors = colors
-    ? colors.slice(0, -1).map((color, i) =>
-      <li key={i} style={{backgroundColor: color}} onClick={()=>onPickColor(color)}></li>
-    )
-    : null
+    // palette colors
+    const defaultPaletteColors =
+      colors.slice(0, -1).map((color, i) =>
+        <li key={i} style={{backgroundColor: color}} onClick={()=>onPickColor(color)}></li>
+      )
 
-    const defaultCustomColor = "#000000"
-    return (
+    // custom color
+    const defaultCustomColor = colors.slice(-1)
+    const editableCustomColor =
+      <li className="li-custom" onClick={()=>onPickColor(defaultCustomColor)}>
+        <span>{defaultCustomColor}</span>
+      </li>
+      //<li className="li-custom"><span contentEditable={true}>#000000</span></li>
+
+    return colors ? (
       <div>Palette colors:
         <ul className="palette">
-          {setupPaletteColors}
-          {/*<li className="li-custom"><span contentEditable={true}>#000000</span></li>*/}
-          <li className="li-custom" onClick={()=>onPickColor(defaultCustomColor)}><span>{defaultCustomColor}</span></li>
+          {defaultPaletteColors}
+          {editableCustomColor}
         </ul>
       </div>
-    )
+    ) : null
   }
 }
 

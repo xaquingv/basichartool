@@ -1,13 +1,13 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {colors} from '../../data/config'
 import {setupLegend} from '../../actions'
 
 const barHeight = 72
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart
+  dataChart: state.dataBrief.chart,
+  colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -78,7 +78,7 @@ class BrokenBar extends React.Component {
     .style("width", d => d.width + "%")
     .style("height", barHeight + "px")
     .style("display", "inline-block")
-    .style("background-color", (d, i) => d ? colors[i] : "transparent")
+    .style("background-color", (d, i) => d ? this.props.colors[i] : "transparent")
   }
 
   drawAxis() {

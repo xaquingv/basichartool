@@ -1,48 +1,49 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import './section4Panel.css'
-import {chartList} from './charts'
 import {d3} from '../lib/d3-lite'
 import scrollTo from '../lib/scrollTo'
 import {metaKeys, default_metaText} from '../data/config'
 
-import ComponentKey from './section4Panel/Key'
+import ComponentSize    from './section4Panel/Size'
+import ComponentLegend  from './section4Panel/Legend'
 import ComponentPalette from './section4Panel/Palette'
+import ComponentDisplay from './section4Panel/Display'
+import {chartList} from './charts'
+
 
 const STEP = 4;
-
-const mapDispatchToProps = (dispatch) => ({
-});
 
 const mapStateToProps = (state) => ({
   step: state.step,
   stepActive: state.stepActive,
   chartId: state.chartId,
-  dataMeta: state.dataTable.meta
+  dataMeta: state.dataTable.meta,
+  dataSetup: state.dataSetup
+});
+
+const mapDispatchToProps = (dispatch) => ({
 });
 
 
 class Section extends React.Component {
+
   shouldComponentUpdate(nextProps) {
     return nextProps.step === STEP
   }
+
   componentDidUpdate() {
+
+    // set meta values and display
     const metaData = this.props.dataMeta
+    const display = this.props.dataSetup.display
     metaKeys.forEach(key => {
       const textIfSourcePatch = (key === "source" && metaData.source ? " | Source: " : "")
       const text = textIfSourcePatch + (metaData[key] || default_metaText[key])
-      d3.select(this.refs[key]).text(text)
+      d3.select(this.refs[key])
+      .classed("d-n", !display[key])
+      .text(text)
     })
-
-    const elSvg = document.querySelector("#section4 svg")
-    if (elSvg) {
-      elSvg.setAttribute("viewBox", "0 0 300 180")
-      elSvg.setAttribute("preserveAspectRatio", "none")
-    }
-
-    const elChart = document.querySelector(".js-chart")
-    d3.select(this.refs.width).text(elChart.offsetWidth)
-    d3.select(this.refs.height).text(elChart.offsetHeight)
 
     // TODO: replace with 1. dispatch scrollSteps
     // to let Navigation.js take care of it ...
@@ -51,36 +52,31 @@ class Section extends React.Component {
     scrollTo(to, null, 1000)
   }
 
+
   render() {
 
-    const {stepActive, chartId} = this.props;
+    const {stepActive, chartId/*, dataSetup*/} = this.props;
+    //console.log(dataSetup)
 
     // TODO: responsive width
     const ComponentChart = chartList[chartId]
     const chartComponent = ComponentChart
     ? (
       <div data-id={chartId} id={chartId+"_edit"} className="chart-edit js-chart">
-        <ComponentKey />
+        <ComponentLegend />
         <ComponentChart id={chartId+"_edit"} callByStep={STEP} width={300} />
       </div>
     )
     : null
-
-    const setupDisplayList = metaKeys.map((key, i) =>
-      <span key={key}>{key}</span>
-    )
 
     return (
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section4">
         <h1>4. Edit your graph</h1>
 
         <div className="setup1">
-          <div>Width x Height:
-            <span ref="width"></span>x
-            <span ref="height"></span>
-          </div>
+          <ComponentSize />
           <ComponentPalette />
-          <div className="display">Display:{setupDisplayList}</div>
+          <ComponentDisplay />
         </div>
 
         <div className="setup2"></div>

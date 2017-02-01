@@ -48,17 +48,25 @@ export const selectChart = (chartId) => ({
   type: "SELECT_CHART",
   chartId
 })
+export const setColors = (colors) => ({
+  type: "SET_COLORS",
+  colors: colors
+})
 export const setupLegend = (keys) => ({
   type: "SET_LEGEND",
   legendKeys: keys
 })
-export const setKeyColors = (colors) => ({
-  type: "SET_COLORS",
-  colors: colors
-})
 
 /* section 4 */
 // changeChartSize
+export const setDisplay = (switches) => ({
+  type: "SET_DISPLAY",
+  displaySwitches: switches
+})
+export const updateDisplay = (key) => ({
+  type: "UPDATE_DISPLAY",
+  metaKey: key
+})
 export const pickColor = (color) => ({
   type: "PICK_COLOR",
   pickColor: color

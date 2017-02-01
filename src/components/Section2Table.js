@@ -6,26 +6,19 @@ import {analyzeData, toggleData, transposeData} from '../actions'
 
 const STEP = 2;
 
-const mapDispatchToProps = (dispatch) => ({
-  onClickCreate: (dataTable, show) => {
-    dispatch(analyzeData(dataTable, show))
-  },
-  onToggle: (i, type) => {
-    //console.log(i, type)
-    dispatch(toggleData({type, index: i}))
-  },
-  onTranspose: () => {
-    dispatch(transposeData())
-  }
-  // TODO:
-  // onChangeFormat: () => {}
-})
-
 const mapStateToProps = (state) => ({
     //step: state.step,
     stepActive: state.stepActive,
     dataTable: state.dataTable,
     show: state.show
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  onTranspose:   ()                => dispatch(transposeData()),
+  onToggle:      (i, type)         => dispatch(toggleData({type, index: i})),
+  onClickCreate: (dataTable, show) => dispatch(analyzeData(dataTable, show)),
+  // TODO:
+  // onChangeFormat: () => {}
 })
 
 

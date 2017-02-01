@@ -44,7 +44,6 @@ class DotsOnBar extends React.Component {
 
     /* data */
     const data = this.props.dataChart
-    //const colors = this.props.colors
 
     const scaleX = d3.scaleLinear()
     .domain(d3.extent(data.numbers))
@@ -64,10 +63,10 @@ class DotsOnBar extends React.Component {
     }]))
 
     /* draw */
-    this.drawChart(/*colors*/)
+    this.drawChart()
   }
 
-  drawChart(/*colors*/) {
+  drawChart() {
 
     let gs = addBarsBackground(this.refs.div, this.dataChart, dotSzie/2)
 

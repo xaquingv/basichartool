@@ -1,33 +1,50 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import './section3Chart.css'
-import {colors} from '../data/config'
-import {selectChart, setKeyColors} from '../actions'
+import {colors, metaKeys} from '../data/config'
+import {selectChart, setColors, setDisplay} from '../actions'
 import {chartList} from './charts'
+
 
 const STEP = 3
 
-const mapDispatchToProps = (dispatch) => ({
-  onSelect: (chartId) => dispatch(selectChart(chartId)),
-  setupColors: (i) => dispatch(setKeyColors(i))
+const mapStateToProps = (state) => ({
+  step: state.step,
+  stepActive: state.stepActive,
+  selection: state.selection,
+  dataMeta: state.dataTable.meta
 })
 
-const mapStateToProps = (state) => ({
-  stepActive: state.stepActive,
-  selection: state.selection
+const mapDispatchToProps = (dispatch) => ({
+  onSelect: (chartId) => dispatch(selectChart(chartId)),
+  setDefaultColors: (colors) => dispatch(setColors(colors)),
+  setDefaultDisplay: (display) => dispatch(setDisplay(display)),
 })
 
 
 class Section extends React.Component {
+
   componentWillUpdate() {
-    // set bf step 3
-    this.props.setupColors(colors)
+    // TODO: check if set bf step 3?
+    const {step, dataMeta, setDefaultColors, setDefaultDisplay} = this.props
+
+    // setup1 palette colors
+    setDefaultColors(colors)
+
+    // setup1 display controls
+    if (step < 3) return
+    const display = {}
+    metaKeys.forEach(key => {
+      display[key] = (key === "standfirst" && !dataMeta[key]) ? false : true
+    })
+    setDefaultDisplay(display)
   }
 
   render() {
     const {stepActive, selection, onSelect} = this.props
 
     // TODO: loop through arr, see charts.js
+    // list of charts
     const chartComponents = Object.keys(chartList).map(chartID => {
       const isSelected = selection.indexOf(chartID) > -1
       const ComponentChart = chartList[chartID]

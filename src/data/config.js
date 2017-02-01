@@ -70,10 +70,10 @@ function parseCfgJson(cfg) {
 }
 
 // TODO: add meta to config file ?
-metaKeys = ["headline", "standfirst", "keys", "source"] // note, ...
+metaKeys = ["headline", "standfirst", "legend", "source"] // note, ...
 default_metaText = {
   "headline":   "Headline ...",
   "standfirst": "Standfirst ...",
-  "keys":       "No keys ...",
+  "legend":     "No keys ...",
   "source":     ""
 }
