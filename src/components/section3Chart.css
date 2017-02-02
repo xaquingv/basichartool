@@ -7,18 +7,9 @@
   margin-bottom: -1px;
   padding: 10px;
   padding-bottom: 5px;
-  cursor: pointer;
 }
 
 /* chart */
-.charts > div > div {
-  /* hotfix to align with svg */
-  height: calc(300px * 0.6);
-  margin-bottom: 8px;
-  overflow: hidden;
-  text-align: left;
-}
-
 svg {
   height: calc(300px * 0.6);
   margin-bottom: 5px;
@@ -28,4 +19,17 @@ svg {
 
 .chart {
   padding: 1px;
+}
+
+/* hotfix to align with svg */
+.charts > div > div {
+  height: calc(300px * 0.6);
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-align: left;
+}
+
+#section3 svg,
+#section3 .chart {
+  cursor: pointer;
 }

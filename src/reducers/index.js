@@ -149,8 +149,8 @@ function dataBrief(dataBrief = {}, action) {
       return dataBrief
   }
 }
-function dataChart(dataChart = {legend: [], scales:{}}, action) {
-  console.log("action", action.type)
+function dataChart(dataChart = {legend: [], scales:{}, indent: 0}, action) {
+  //console.log("action", action.type)
   switch(action.type) {
     case 'ANALYZE_DATA':
       return {
@@ -162,6 +162,12 @@ function dataChart(dataChart = {legend: [], scales:{}}, action) {
         ...dataChart,
         legend: action.legend,
         scales: action.scales
+      }
+    case 'APPEND_YSCALE':
+      return {
+        ...dataChart,
+        indent: action.widthIndent,
+        height: action.height
       }
     default:
       return dataChart

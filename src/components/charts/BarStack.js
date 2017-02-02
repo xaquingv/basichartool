@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {updateChartData} from '../../actions'
-import {getDomainByDataRange} from './domain'
+import {getDomainByDataRange} from '../axis/domain'
 import drawChart from './bar'
 
 const mapStateToProps = (state) => ({

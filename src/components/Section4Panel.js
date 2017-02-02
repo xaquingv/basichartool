@@ -6,9 +6,11 @@ import scrollTo from '../lib/scrollTo'
 import {metaKeys, default_metaText} from '../data/config'
 
 import ComponentSize    from './section4Panel/Size'
-import ComponentLegend  from './section4Panel/Legend'
 import ComponentPalette from './section4Panel/Palette'
 import ComponentDisplay from './section4Panel/Display'
+import ComponentLegend  from './section4Panel/Legend'
+import ComponentAxisX   from './section4Panel/AxisX'
+import ComponentAxisY   from './section4Panel/AxisY'
 import {chartList} from './charts'
 
 
@@ -18,9 +20,10 @@ const mapStateToProps = (state) => ({
   step: state.step,
   stepActive: state.stepActive,
   chartId: state.chartId,
-  dataMeta: state.dataTable.meta,
-  dataSetup: state.dataSetup,
-  //dataChart: state.dataChart
+  svgIndent: state.dataChart.indent,
+  svgHeight: state.dataChart.height,
+  metaData: state.dataTable.meta,
+  display: state.dataSetup.display
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -34,10 +37,22 @@ class Section extends React.Component {
   }
 
   componentDidUpdate() {
+    const {svgIndent, svgHeight, metaData, display} = this.props
+
+    // set svg size
+    const elSvg = document.querySelector("#section4 svg")
+    if (elSvg) {
+      elSvg.setAttribute("viewBox", "0 0 300 180")
+      elSvg.setAttribute("preserveAspectRatio", "none")
+      //console.log("p indent", indent)
+
+      // rescale on axis-y controll
+      elSvg.style.top = 0
+      elSvg.style.height = "calc(" + svgHeight + "% - 2px)"
+      elSvg.style.width = "calc(100% - " + svgIndent + "px)"
+    }
 
     // set meta values and display
-    const metaData = this.props.dataMeta
-    const display = this.props.dataSetup.display
     metaKeys.forEach(key => {
       const textIfSourcePatch = (key === "source" && metaData.source ? " | Source: " : "")
       const text = textIfSourcePatch + (metaData[key] || default_metaText[key])
@@ -57,16 +72,20 @@ class Section extends React.Component {
   render() {
 
     const {stepActive, chartId/*, dataChart*/} = this.props;
-    //console.log(dataChart)
+    //console.log(dataChart.scales)
+    //console.log(dataChart.indent)
 
     // TODO: responsive width
+    const isBarBased = chartId.toLowerCase().indexOf("bar") > -1
     const ComponentChart = chartList[chartId]
     const chartComponent = ComponentChart
     ? (
-      <div data-id={chartId} id={chartId+"_edit"} className="chart-edit js-chart">
-        <ComponentLegend />
+      <div id={chartId+"_edit"} data-id={chartId}
+        className="chart-edit js-chart"
+        style={{paddingBottom: isBarBased ? false : "60%"}}>
+        <ComponentAxisY />
+        <ComponentAxisX />
         <ComponentChart id={chartId+"_edit"} callByStep={STEP} width={300} />
-        {/*<ComponentAxisY />*/}
       </div>
     )
     : null
@@ -88,6 +107,7 @@ class Section extends React.Component {
           <header className="header">
             <div className="headline" ref="headline"></div>
             <div className="standfirst" ref="standfirst"></div>
+            <ComponentLegend />
           </header>
           {chartComponent}
           <footer>

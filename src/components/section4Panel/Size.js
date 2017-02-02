@@ -21,11 +21,11 @@ class Display extends React.Component {
 
   componentDidUpdate() {
 
-    const elSvg = document.querySelector("#section4 svg")
+    /*const elSvg = document.querySelector("#section4 svg")
     if (elSvg) {
       elSvg.setAttribute("viewBox", "0 0 300 180")
       elSvg.setAttribute("preserveAspectRatio", "none")
-    }
+    }*/
 
     const elChart = document.querySelector(".js-chart")
     d3.select(this.refs.width).text(elChart.offsetWidth)

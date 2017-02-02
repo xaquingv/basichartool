@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {updateChartData} from '../../actions'
-import {getDomainByDataRange} from './domain'
+import {getDomainByDataRange} from '../axis/domain'
 import drawChart from './col'
 
 const mapStateToProps = (state) => ({
@@ -48,27 +48,30 @@ class ColStack extends React.Component {
 
     // scale
     this.scale = {}
-    this.scale.x = d3.scaleBand()
-    .domain(labelGroup)
-    .rangeRound([0, width])
-    .paddingInner(0.1)
+
+    // TODO: this.scale.x
 
     this.scale.y = d3.scaleLinear()
     .domain(domain)
     .rangeRound([height, 0])
 
+    const scaleBand = d3.scaleBand()
+    .domain(labelGroup)
+    .rangeRound([0, width])
+    .paddingInner(0.1)
+
+    // chart
     const dataChartGroup = labelGroup.map((date, i) => ({
       group: date,
       ...numberRows[i]
     }))
 
-    // chart
     const stack = d3.stack().keys(Object.keys(numberRows[0]))
     const dataChart = stack(dataChartGroup).map((group, i) => ({
       color: colors[i],
       value: group.map((ns, j) => ({
         title: Math.round((ns[1] - ns[0])*100)/100,
-        group: this.scale.x(labelGroup[j]),
+        group: scaleBand(labelGroup[j]),
         shift: domain[1] > 0 ? this.scale.y(ns[1]) : this.scale.y(ns[0]),
         length: Math.abs(this.scale.y(ns[0]) - this.scale.y(ns[1]))
       }))
@@ -76,7 +79,7 @@ class ColStack extends React.Component {
 
 
     /* draw */
-    drawChart(this.refs, dataChart, {width: this.scale.x.bandwidth(), id, colors})
+    drawChart(this.refs, dataChart, {width: scaleBand.bandwidth(), id, colors})
   }
 }
 

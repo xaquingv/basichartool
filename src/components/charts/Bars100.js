@@ -51,6 +51,7 @@ class Bars100 extends React.Component {
     const domainMax = isAnyNumbersLargerThan100 ? Math.max.apply(null, numbers) : 100
 
     // TODO: scale of axis [0, 100]
+    this.scale = {}
     const scaleX = d3.scaleLinear()
     .domain([0, domainMax])
     .range([0, 100])

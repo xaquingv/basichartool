@@ -77,5 +77,10 @@ export const dropColorTo = (i) => ({
   type: "DROP_COLOR",
   dropIndex: i
 })
+export const appendAxisYScale = (indent, height) => ({
+  type: "APPEND_YSCALE",
+  widthIndent: indent,
+  height: height
+})
 // changeFillColor
 // display

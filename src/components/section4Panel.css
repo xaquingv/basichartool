@@ -18,10 +18,6 @@
   padding: 0 5px;
 }
 
-.chart-edit {
-  margin: 16px 0 24px;
-}
-
 .display-item {
   cursor: url('../assets/icon/toggle3.svg') 16 16, auto;
 }
@@ -68,7 +64,7 @@
   -webkit-font-smoothing: antialiased;
   width: 100%;
   /* temp */
-  max-width: 620px;
+  max-width: 300px;
 }
 .headline {
   color: black;
@@ -80,13 +76,14 @@
 }
 .standfirst {
   font-size: 14px;
+  line-height: 18px;
   margin-top: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .legend {
   line-height: 18px;
-  margin-bottom: 12px;
+  margin-bottom: 24px;
 }
 .legend-item {
   white-space: nowrap;
@@ -110,6 +107,37 @@
   margin-left: 10px; /* 6+4 */
 }
 
+
+
+/* chart playground */
+.chart-edit {
+  color: #bdbdbd; /* n-3 */
+  font-family: 'Guardian Agate Sans 1 Web', monospace;
+  position: relative;
+  margin-bottom: 30px;
+  /*padding-bottom @Section4Panel.js*/
+}
+
+.axis-x {
+  //background: lightblue;
+  //opacity: 0.5;
+  //height: 18px;
+}
+.axis-x-tick {
+  background: #dcdcdc;
+}
+.axis-x-text {
+  top: 6px;
+  //border: 1px solid red;
+}
+.axis-y-grid {
+}
+.axis-y-text {
+}
+/* end of chart playground */
+
+
+
 footer {
   font-size: 12px;
   line-height: 16px;
@@ -121,14 +149,17 @@ footer > div {
   word-break: break-word;
 }
 
+#section4 svg,
 #section4 chart {
-  font-family: 'Guardian Agate Sans 1 Web', monospace;
+  position: absolute;
 }
 #section4 svg {
-  width: 100%;
-  height: 100%;
-  font-family: 'Guardian Agate Sans 1 Web', monospace;
+  /*top @Section4Panel.js*/
+  right: 0;
+  /*width: calc(100% - 2px); @Section4Panel.js*/
+  /*height: calc(100% - 2px); @Section4Panel.js*/
 }
+/* TODO: res calc */
 svg path {
   vector-effect: non-scaling-stroke;
 }
