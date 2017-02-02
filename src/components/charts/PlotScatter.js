@@ -3,15 +3,15 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import drawChart from './plot'
 import {uniqueArray} from '../../lib/array'
-import {setupLegend} from '../../actions'
+import {updateChartData} from '../../actions'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => dispatch(setupLegend(keys))
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
 
 
@@ -25,43 +25,40 @@ class ScatterPlot extends React.Component {
   }
 
   render() {
-    const {callByStep, onSelect} = this.props
-
-    const setLegendData = () => {
+    const {onSelect, callByStep} = this.props
+    const setChartData = () => {
       if (callByStep === 3) {
         const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : [""]
-        onSelect(legendKeys)
+        onSelect(legendKeys, this.scale)
       }
     }
 
     return (
-      <svg ref="svg" onClick={setLegendData}></svg>
+      <svg ref="svg" onClick={setChartData}></svg>
     )
   }
 
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart
+    const {data, width, colors} = this.props
     const names = data.string1Col
     const numberCols = data.numberCols
     const numberRows = data.numberRows
     const colorGroup = data.string2Col
     this.colorKeys = uniqueArray(data.string2Col)
 
-    const width = this.props.width
     const height = width*0.6
 
-    const scaleX = d3.scaleLinear()
+    this.scale = {}
+    this.scale.x = d3.scaleLinear()
     .domain(d3.extent(numberCols[0]))
     .range([0, width])
 
-    const scaleY = d3.scaleLinear()
-    // TODO: pretty domain
+    this.scale.y = d3.scaleLinear()
     .domain(d3.extent(numberCols[1]))
     .range([height, 0])
 
-    const colors = this.props.colors
     const scaleColors = d3.scaleOrdinal()
     .domain(this.colorKeys)
     .range(colors)
@@ -87,7 +84,7 @@ class ScatterPlot extends React.Component {
 
 
     /* draw */
-    drawChart(this.refs, dataChart, scaleX, scaleY, "scatter", colors)
+    drawChart(this.refs, dataChart, this.scale, "scatter", colors)
   }
 }
 

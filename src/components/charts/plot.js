@@ -6,7 +6,7 @@ const chartType = {
   line:    { r: 3, stroke: 0, opacity: 1 }
 }
 
-export default function(els, dataChart, scaleX, scaleY, who, colors) {
+export default function(els, dataChart, scale, who, colors) {
 
   // init gs
   let gs =
@@ -17,12 +17,12 @@ export default function(els, dataChart, scaleX, scaleY, who, colors) {
   // update
   gs
   .html("")
-  .style("fill", (d, i) => colors[i])
+  .attr("fill", (d, i) => colors ? colors[i] : false)
   .selectAll("circle")
   .data(d => d)
   .enter().append("circle")
-  .attr("cx", d => scaleX(d.x))
-  .attr("cy", d => scaleY(d.y))
+  .attr("cx", d => scale.x(d.x))
+  .attr("cy", d => scale.y(d.y))
   .attr("title", d => "(" + d.x+ ", " + d.y + ")")
   // custom on chart type
   .attr("r", chartType[who].r)
@@ -33,12 +33,12 @@ export default function(els, dataChart, scaleX, scaleY, who, colors) {
 
   // new
   gs.enter().append("g")
-  .style("fill", (d, i) => colors[i])
+  .attr("fill", (d, i) => colors ? colors[i] : false)
   .selectAll("circle")
   .data(d => d)
   .enter().append("circle")
-  .attr("cx", d => scaleX(d.x)) //date
-  .attr("cy", d => scaleY(d.y)) //number
+  .attr("cx", d => scale.x(d.x)) //date
+  .attr("cy", d => scale.y(d.y)) //number
   .attr("title", d => d.title ? d.title : "(" + d.x + ", " + d.y + ")")
   // custom on chart type
   .attr("r", chartType[who].r)

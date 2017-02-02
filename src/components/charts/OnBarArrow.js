@@ -2,8 +2,9 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
+import {updateChartData} from '../../actions'
 import {addBarsBackground, drawBarSticks} from './onBar'
-import {setupLegend} from '../../actions'
+
 
 const barHeight = 16
 const headSize = 12
@@ -11,12 +12,12 @@ const headTop = (barHeight - headSize) / 2
 const tickShift = 5
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
-  colors: state.dataSetup.colors
+  data: state.dataChart,
+  //colors: state.dataSetup.colorDiff
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => dispatch(setupLegend(keys))
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
 
 
@@ -30,35 +31,36 @@ class ArrowOnBar extends React.Component {
   }
 
   render() {
-    const {callByStep, dataChart, onSelect} = this.props
-
-    const setLegendData = () => {
+    const {data, onSelect, callByStep} = this.props
+    const setChartData = () => {
       if (callByStep === 3) {
-        const key = dataChart.keys
+        const key = data.keys
         const legendKeys = ["Change from " + key[0] + " to " + key[1]]
-        onSelect(legendKeys)
+        onSelect(legendKeys, this.scale)
       }
     }
 
     return (
-      <div className="chart" ref="div" onClick={setLegendData}></div>
+      <div className="chart" ref="div" onClick={setChartData}></div>
     )
   }
 
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart
-    //const colors = this.props.colors
+    const data = this.props.data
 
-    const scaleX = d3.scaleLinear()
+    // scale
+    this.scale = {}
+    this.scale.x = d3.scaleLinear()
     .domain(d3.extent(data.numbers))
     .range([0, 100])
 
+    // chart
     const dataRows = data.numberRows.map((nums, i) => ({
       value: nums,
-      width: Math.abs(scaleX(nums[1]) - scaleX(nums[0])),
-      shift: scaleX(Math.min(nums[0], nums[1]))
+      width: Math.abs(this.scale.x(nums[1]) - this.scale.x(nums[0])),
+      shift: this.scale.x(Math.min(nums[0], nums[1]))
     }))
 
     this.dataChart = dataRows.map(d => {
@@ -66,7 +68,7 @@ class ArrowOnBar extends React.Component {
       return [{
         title: nums[0] === nums[1] ? nums[0] : Math.min(nums[0], nums[1]) + " - " + Math.max(nums[0], nums[1]),
         widthCalc: "calc(" + d.width + "% - " + headSize/2 + "px)",
-        ...getArrowData(d/*, colors*/)
+        ...getArrowData(d)
       }]
     })
 
@@ -131,7 +133,7 @@ class ArrowOnBar extends React.Component {
 export default connect(mapStateToProps, mapDispatchToProps)(ArrowOnBar)
 
 
-function getArrowData(d/*, colors*/) {
+function getArrowData(d) {
   switch (true) {
     case d.value[1] - d.value[0] > 0:
     // increase, right

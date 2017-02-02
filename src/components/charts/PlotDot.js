@@ -2,15 +2,15 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import drawChart from './plot'
-import {setupLegend} from '../../actions'
+import {updateChartData} from '../../actions'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => dispatch(setupLegend(keys))
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
 
 
@@ -24,21 +24,20 @@ class DotPlot extends React.Component {
   }
 
   render() {
-    const {callByStep, dataChart, onSelect} = this.props
-
-    const setLegendData = () => {
-      if (callByStep === 3) { onSelect(dataChart.keys) }
+    const {data, onSelect, callByStep} = this.props
+    const setChartData = () => {
+      if (callByStep === 3) { onSelect(data.keys, this.scale) }
     }
 
     return (
-      <svg ref="svg" onClick={setLegendData}></svg>
+      <svg ref="svg" onClick={setChartData}></svg>
     )
   }
 
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart
+    const {data, width, colors} = this.props
     const dates = data.dateCol
 
     // TODO: overlap case, see ScatterPlot.js
@@ -48,20 +47,19 @@ class DotPlot extends React.Component {
         y: number
     })))
 
-    const width = this.props.width
     const height = width*0.6
 
-    const scaleX = d3.scaleLinear()
+    this.scale = {}
+    this.scale.x = d3.scaleLinear()
     .domain(d3.extent(dates))
     .range([0, width])
 
-    const scaleY = d3.scaleLinear()
-    // TODO: pretty domain
+    this.scale.y = d3.scaleLinear()
     .domain(d3.extent(data.numbers))
     .range([height, 0])
 
     /* draw */
-    drawChart(this.refs, dataChart, scaleX, scaleY, "scatter", this.props.colors)
+    drawChart(this.refs, dataChart, this.scale, "scatter", colors)
   }
 }
 

@@ -1,15 +1,15 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {setupLegend} from '../../actions'
+import {updateChartData} from '../../actions'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => dispatch(setupLegend(keys))
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
 
 
@@ -23,14 +23,13 @@ class Area extends React.Component {
   }
 
   render() {
-    const {callByStep, dataChart, onSelect} = this.props
-
-    const setLegendData = () => {
-      if (callByStep === 3) { onSelect(dataChart.keys) }
+    const {data, onSelect, callByStep} = this.props
+    const setChartData = () => {
+      if (callByStep === 3) { onSelect(data.keys, this.scale) }
     }
 
     return (
-      <svg ref="svg" onClick={setLegendData}>
+      <svg ref="svg" onClick={setChartData}>
         <line ref="line" x1="0" x2="100%" y1="50%" y2="50%"></line>
       </svg>
     )
@@ -39,13 +38,13 @@ class Area extends React.Component {
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart
+    const {data, width, colors} = this.props
     const dates = data.dateCol
     const numberCols = data.numberCols
-    const colors = this.props.colors
-    
-    let isNot100 = []
+
+    // chart part 1/2
     let maxSum = 0
+    let isNot100 = []
     const dataChart = dates.map((date, i) => {
       const nums = numberCols.map(numbers => numbers[i])
 
@@ -60,7 +59,6 @@ class Area extends React.Component {
       return {date, ...nums}
     })
 
-
     let keys = Object.keys(dataChart[0])
     keys.splice(keys.indexOf("date"), 1)
 
@@ -71,29 +69,28 @@ class Area extends React.Component {
     //console.log(dataChartStack)
     //console.log(stack(dataChart))
 
-
-    /* draw */
-    const width = this.props.width
+    // scale
     const height = width*0.6
-
     const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
-    const scaleX = scaleTime()
+    const domainMax = isNot100.length > 0 ? maxSum : 100
+
+    this.scale = {}
+    this.scale.x = scaleTime()
     .domain(d3.extent(dates))
     .range([0, width])
 
-    //console.log(maxSum)
-    const domainMax = isNot100.length > 0 ? maxSum : 100
-    const scaleY = d3.scaleLinear()
+    this.scale.y = d3.scaleLinear()
     .domain([0, domainMax])
     .range([height, 0])
 
+    // chart part 2/2
     const area = d3.area()
     //.defined(d => {console.log(d); return d})
     // TODO: use curveStepBefore and add 10px for the last step
     //.curve(d3.curveStep/*Before*/)
-    .x((d, i) => scaleX(d.data.date))
-    .y0((d) => scaleY(d[0]))
-    .y1((d) => scaleY(d[1]))
+    .x((d, i) => this.scale.x(d.data.date))
+    .y0((d) => this.scale.y(d[0]))
+    .y1((d) => this.scale.y(d[1]))
 
     let els = this.refs
     if (isNot100.length === 0) {
@@ -103,6 +100,8 @@ class Area extends React.Component {
       .classed("d-n", true)
     }
 
+
+    /* draw */
     // init area
     let svg = d3.select(els.svg)
     //.classed("d-n", false)

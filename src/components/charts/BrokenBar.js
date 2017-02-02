@@ -1,17 +1,18 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {setupLegend} from '../../actions'
+import {updateChartData} from '../../actions'
+
 
 const barHeight = 72
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => dispatch(setupLegend(keys))
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
 
 
@@ -25,17 +26,13 @@ class BrokenBar extends React.Component {
   }
 
   render() {
-    const {callByStep, dataChart, onSelect} = this.props
-
-    const setLegendData = () => {
-      if (callByStep === 3) {
-        const legendKeys = dataChart.string1Col
-        onSelect(legendKeys)
-      }
+    const {data, onSelect, callByStep} = this.props
+    const setChartData = () => {
+      if (callByStep === 3) { onSelect(data.string1Col, this.scale) }
     }
 
     return (
-      <div className="chart" ref="div" onClick={setLegendData}>
+      <div className="chart" ref="div" onClick={setChartData}>
       <div ref="bars"></div>
       <div ref="axis">
       <div ref="axis_tick"></div>
@@ -49,16 +46,19 @@ class BrokenBar extends React.Component {
     // TODO: add multi broken bars as another chart
 
     /* data */
-    const data = this.props.dataChart
+    const data = this.props.data
     const numbers = data.numbers
 
-    const scaleX = d3.scaleLinear()
+    // scale
+    this.scale = {}
+    this.scale.x = d3.scaleLinear()
     .domain([0, numbers.reduce((n1, n2) => n1 + n2)])
     .range([0, 100])
 
+    // chart
     this.dataChart = numbers.map(number => ({
       title: number,
-      width: scaleX(number)
+      width: this.scale.x(number)
     }))
 
     /* draw */

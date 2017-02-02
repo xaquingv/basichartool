@@ -19,7 +19,8 @@ const mapStateToProps = (state) => ({
   stepActive: state.stepActive,
   chartId: state.chartId,
   dataMeta: state.dataTable.meta,
-  dataSetup: state.dataSetup
+  dataSetup: state.dataSetup,
+  //dataChart: state.dataChart
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -55,8 +56,8 @@ class Section extends React.Component {
 
   render() {
 
-    const {stepActive, chartId/*, dataSetup*/} = this.props;
-    //console.log(dataSetup)
+    const {stepActive, chartId/*, dataChart*/} = this.props;
+    //console.log(dataChart)
 
     // TODO: responsive width
     const ComponentChart = chartList[chartId]
@@ -65,6 +66,7 @@ class Section extends React.Component {
       <div data-id={chartId} id={chartId+"_edit"} className="chart-edit js-chart">
         <ComponentLegend />
         <ComponentChart id={chartId+"_edit"} callByStep={STEP} width={300} />
+        {/*<ComponentAxisY />*/}
       </div>
     )
     : null

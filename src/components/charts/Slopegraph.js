@@ -2,22 +2,20 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
+import {uniqueArray} from '../../lib/array'
+import {updateChartData} from '../../actions'
 import drawChartLine from './line'
 import drawChartPlot from './plot'
-import {uniqueArray} from '../../lib/array'
-import {setupLegend} from '../../actions'
 
 const radius = 3
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
-  colors: state.dataSetup.colors
+  data: state.dataChart
+  //colors: state.dataSetup.colorDiff
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => {
-    dispatch(setupLegend(keys))
-  }
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
 
 
@@ -31,21 +29,36 @@ class Slope extends React.Component {
   }
 
   render() {
-    const {callByStep, onSelect} = this.props
-
-    const setLegendData = () => {
-      if (callByStep === 3) { onSelect([""]) }
+    const {onSelect, callByStep} = this.props
+    const setChartData = () => {
+      if (callByStep === 3) { onSelect([""], this.scale) }
     }
 
     return (
-      <svg ref="svg" onClick={setLegendData}></svg>
+      <svg ref="svg" onClick={setChartData}></svg>
     )
   }
 
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart
+    const {data, width, id} = this.props
+    const height = width*0.6
+
+    // scale
+    const scaleXL = d3.scaleLinear() //longer
+    .domain([0, 1])
+    .range([75, width-75])
+    const scaleXS = d3.scaleLinear() //shorter
+    .domain([0, 1])
+    .range([75+radius, width-75-radius])
+
+    this.scale = {}
+    this.scale.y = d3.scaleLinear()
+    .domain(d3.extent(data.numbers))
+    .range([height-radius, radius])
+
+    // chart
     const dataChart = data.numberRows.map((numberRow, i) =>
       numberRow.map((number, j) => ({
         x: j,
@@ -70,39 +83,23 @@ class Slope extends React.Component {
     const dataChartNumberDuplicates =
       getDuplicatNumbers(data.numberCols, dataColor, dataChart.length)
 
-    const width = 300//this.props.width
-    const height = width*0.6
-
-    const scaleXL = d3.scaleLinear() //longer
-    .domain([0, 1])
-    .range([75, width-75])
-    const scaleXS = d3.scaleLinear() //shorter
-    .domain([0, 1])
-    .range([75+radius, width-75-radius])
-
-    const scaleY = d3.scaleLinear()
-    // TODO: pretty domain
-    .domain(d3.extent(data.numbers))
-    .range([height-radius, radius])
-
 
     /* draw */
     const els = this.refs
-
     // line(s)
-    drawChartLine(els, dataChart, scaleXS, scaleY)
+    drawChartLine(els, dataChart, {x: scaleXS, y: this.scale.y})
     // dots (plot)
-    drawChartPlot(els, dataChart, scaleXL, scaleY, "line")
+    drawChartPlot(els, dataChart, {x: scaleXL, y: this.scale.y}, "line")
 
     // 1b. change colors
-    const chartId = this.props.id
-    d3.selectAll("#" + chartId + " path")
+    // TODO: move to dataChart and color in line.js and plot.js?
+    d3.selectAll("#" + id + " path")
     .attr("stroke", (d, i) => dataColor[i])
-    d3.selectAll("#" + chartId + " g")
+    d3.selectAll("#" + id + " g")
     .style("fill", (d, i) => dataColor[i])
 
     // 2b. adjust dot(s) position if overlapped
-    const chartEl = document.querySelector("#" + chartId)
+    const chartEl = document.querySelector("#" + id)
     dataChartNumberDuplicates.forEach(d => {
       const el = chartEl.querySelectorAll("g")[d.rowId].childNodes[d.colId]
       const cx = +el.getAttribute("cx")

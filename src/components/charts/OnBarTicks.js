@@ -1,9 +1,9 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-//import {colors} from '../../data/config'
+import {updateChartData} from '../../actions'
 import {addBarsBackground} from './onBar'
-import {setupLegend} from '../../actions'
+
 
 const barHeight = 16
 const tickWidth = 6
@@ -11,12 +11,12 @@ const tickShift = tickWidth / 2
 const tickBorderRadius = 2
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => dispatch(setupLegend(keys))
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
 
 
@@ -30,23 +30,28 @@ class TickOnBar extends React.Component {
   }
 
   render() {
-    const {callByStep, dataChart, onSelect} = this.props
-
-    const setLegendData = () => {
-      if (callByStep === 3) { onSelect(dataChart.keys) }
+    const {data, onSelect, callByStep} = this.props
+    const setChartData = () => {
+      if (callByStep === 3) { onSelect(data.keys, this.scale) }
     }
 
     return (
-      <div className="chart" ref="div" onClick={setLegendData}></div>
+      <div className="chart" ref="div" onClick={setChartData}></div>
     )
   }
 
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart
-    const colors = this.props.colors
+    const {data, colors} = this.props
 
+    // scale
+    this.scale = {}
+    this.scale.x = d3.scaleLinear()
+    .domain(d3.extent(data.numbers))
+    .range([0, 100])
+
+    // chart
     this.dataChart = data.numberRows.map((numbers, i) => {
       const count = {}
       numbers.forEach(num => count[num] = (count[num] || 0) + 1)
@@ -61,14 +66,10 @@ class TickOnBar extends React.Component {
       .sort((num1, num2) => num1.value - num2.value)
       .sort((num1, num2) => num1.count - num2.count)
     })
-    //console.log(this.dataChart)
 
-    const scaleX = d3.scaleLinear()
-    .domain(d3.extent(data.numbers))
-    .range([0, 100])
 
     /* draw */
-    this.drawChart({scaleX})
+    this.drawChart({scaleX: this.scale.x})
   }
 
   drawChart(opt) {

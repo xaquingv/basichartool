@@ -1,16 +1,16 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
+import {updateChartData} from '../../actions'
 import drawChart from './line'
-import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => dispatch(setupLegend(keys))
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
 
 
@@ -24,43 +24,46 @@ class Line extends React.Component {
   }
 
   render() {
-    const {callByStep, dataChart, onSelect} = this.props
-
-    const setLegendData = () => {
-      if (callByStep === 3) { onSelect(dataChart.keys) }
+    const {data, onSelect, callByStep} = this.props
+    const setChartData = () => {
+      if (callByStep === 3) { onSelect(data.keys, this.scale) }
     }
 
     return (
-      <svg ref="svg" onClick={setLegendData}></svg>
+      <svg ref="svg" onClick={setChartData}></svg>
     )
   }
 
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart
+    const {data, width, colors} = this.props
     const dates = data.dateCol
+
+    const height = width*0.6
+    const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
+
+    // scale
+    this.scale = {}
+    this.scale.x = scaleTime()
+    .domain(d3.extent(dates))
+    .range([0, width])
+
+    this.scale.y = d3.scaleLinear()
+    .domain(d3.extent(data.numbers))
+    .range([height, 0])
+
+    // chart
     const dataChart = data.numberCols.map(numberCol =>
       numberCol.map((number, i) => ({
         x: dates[i],
         y: number
     })))
 
-    const width = this.props.width
-    const height = width*0.6
-
-    const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
-    const scaleX = scaleTime()
-    .domain(d3.extent(dates))
-    .range([0, width])
-
-    const scaleY = d3.scaleLinear()
-    // TODO: pretty domain
-    .domain(d3.extent(data.numbers))
-    .range([height, 0])
 
     /* draw */
-    drawChart(this.refs, dataChart, scaleX, scaleY, this.props.colors)
+    drawChart(this.refs, dataChart, this.scale, colors)
+
 
     /* validate special */
     // TODO: move to another validatetion file

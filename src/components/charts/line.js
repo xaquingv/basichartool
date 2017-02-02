@@ -1,11 +1,11 @@
 import {d3} from '../../lib/d3-lite'
 
-export default function (els, dataChart, scaleX, scaleY, colors) {
+export default function (els, dataChart, scale, colors) {
 
   const line = d3.line()
   .defined(d => d.y !== null)
-  .x(d => Math.round(scaleX(d.x)*100)/100)
-  .y(d => scaleY(d.y));
+  .x(d => Math.round(scale.x(d.x)*100)/100)
+  .y(d => scale.y(d.y));
 
   // init
   let svg = d3.select(els.svg)
@@ -14,13 +14,13 @@ export default function (els, dataChart, scaleX, scaleY, colors) {
 
   // update
   svg
-  .attr("stroke", (d, i) => colors[i])
+  .attr("stroke", (d, i) => colors ? colors[i] : false)
   .attr("d", d => line(d))
 
   // new
   svg.enter().append("path")
   .attr("fill", "none")
-  .attr("stroke", (d, i) => colors[i])
+  .attr("stroke", (d, i) => colors ? colors[i] : false)
   .attr("stroke-width", "2px")
   .attr("shape-rendering", "auto")
   .attr("stroke-linecap", "round") // or square to render a single point

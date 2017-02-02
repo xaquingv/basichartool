@@ -2,17 +2,17 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {uniqueArray} from '../../lib/array'
+import {updateChartData} from '../../actions'
 import {getDomainByDataRange} from './domain'
-import {setupLegend} from '../../actions'
 import drawChart from './col'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => dispatch(setupLegend(keys))
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
 
 
@@ -26,65 +26,65 @@ class Cols extends React.Component {
   }
 
   render() {
-    const {callByStep, dataChart, onSelect} = this.props
-
-    const setLegendData = () => {
+    const {data, onSelect, callByStep} = this.props
+    const setChartData = () => {
       if (callByStep === 3) {
-        const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : dataChart.keys
-        onSelect(legendKeys)
+        const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : data.keys
+        onSelect(legendKeys, this.scale)
       }
     }
 
     return (
-      <svg ref="svg" onClick={setLegendData}></svg>
+      <svg ref="svg" onClick={setChartData}></svg>
     )
   }
 
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart
+    const {data, width, colors, id} = this.props
     const numberRows = data.numberRows
     const labelGroup = data.string1Col.length > 0 ? data.string1Col : data.dateCol
     const colorGroup = data.string2Col
     this.colorKeys = uniqueArray(colorGroup)
 
-    const width = this.props.width
     const height = width*0.6
 
-    let scale = {}
-    scale.x0 = d3.scaleBand()
+    // scale
+    this.scale = {}
+    this.scale.x0 = d3.scaleBand()
     .domain(labelGroup.map((d, i) => i))
     .rangeRound([0, width])
 
-    scale.x1 = d3.scaleBand()
     // TODO: remove temp, use lables instead
+    this.scale.x1 = d3.scaleBand()
     .domain(numberRows[0].map((d, i) => i))
-    .rangeRound([0, scale.x0.bandwidth()])
+    .rangeRound([0, this.scale.x0.bandwidth()])
     .paddingOuter([0.1])
 
-    scale.y = d3.scaleLinear()
+    this.scale.y = d3.scaleLinear()
     .domain(getDomainByDataRange(data.numbers))
     .rangeRound([height, 0])
 
-    const colors = this.props.colors
-    scale.colors = d3.scaleOrdinal()
+    const scaleScolors = d3.scaleOrdinal()
     .domain(this.colorKeys)
     .range(colors)
 
+    // chart
     const dataChart = labelGroup.map((label, i) => ({
-      transform: "translate(" + scale.x0(i) + ",0)",
+      transform: "translate(" + this.scale.x0(i) + ",0)",
       value: numberRows[i].map((num, j) => ({
         title: num,
-        group: scale.x1(j),
-        shift: num > 0 ? scale.y(num) : scale.y(0),
-        length: Math.abs(scale.y(num) - scale.y(0)),
-        color: colorGroup.length !== 0 ? scale.colors(colorGroup[i]) : null
+        group: this.scale.x1(j),
+        shift: num > 0 ? this.scale.y(num) : this.scale.y(0),
+        length: Math.abs(this.scale.y(num) - this.scale.y(0)),
+        color: colorGroup.length !== 0 ? scaleScolors(colorGroup[i]) : null
       }))
     }))
 
+
     /* draw */
-    drawChart(this.refs, dataChart, {width: scale.x1.bandwidth(), id: this.props.id, colors})
+    drawChart(this.refs, dataChart, {width: this.scale.x1.bandwidth(), id, colors})
   }
 }
 

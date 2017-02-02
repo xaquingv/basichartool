@@ -1,17 +1,17 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import drawChart from './bar'
+import {updateChartData} from '../../actions'
 import {getDomainByDataRange} from './domain'
-import {setupLegend} from '../../actions'
+import drawChart from './bar'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => dispatch(setupLegend(keys))
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
 
 
@@ -25,38 +25,40 @@ class BarStack extends React.Component {
   }
 
   render() {
-    const {callByStep, dataChart, onSelect} = this.props
-
-    const setLegendData = () => {
-      if (callByStep === 3) { onSelect(dataChart.keys) }
+    const {data, onSelect, callByStep} = this.props
+    const setChartData = () => {
+      if (callByStep === 3) { onSelect(data.keys, this.scale) }
     }
 
     return (
-      <div className="chart" ref="div" onClick={setLegendData}></div>
+      <div className="chart" ref="div" onClick={setChartData}></div>
     )
   }
 
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart
+    const {data, colors} = this.props
     const labelGroup = data.string1Col
     const numberRows = data.numberRows
     const numberRowSums = numberRows.map(ns => ns.reduce((n1, n2) => n1 + n2))
-    const colors = this.props.colors
 
-    const scaleX = d3.scaleLinear()
+    // scale
+    this.scale = {}
+    this.scale.x = d3.scaleLinear()
     .domain(getDomainByDataRange(numberRowSums))
     .range([0, 100])
 
+    // chart
     const dataChart = labelGroup.map((group, i) => ({
         group: group,
         value: numberRows[i].map((num, j) => ({
           title: num,
-          width: Math.abs(scaleX(num) - scaleX(0)),
-          shift: (num < 0 && j===0) ? scaleX(numberRowSums[i]) : null
+          width: Math.abs(this.scale.x(num) - this.scale.x(0)),
+          shift: (num < 0 && j===0) ? this.scale.x(numberRowSums[i]) : null
         }))
     }))
+
 
     /* draw */
     drawChart(this.refs, dataChart, {display: "inline-block", colors})

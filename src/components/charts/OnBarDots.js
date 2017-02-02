@@ -2,20 +2,20 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
+import {updateChartData} from '../../actions'
 import {addBarsBackground, drawBarSticks} from './onBar'
-import {setupLegend} from '../../actions'
 
 const barHeight = 16
 const dotSzie = 10
 const dotTop = (barHeight - dotSzie) / 2
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
-  colors: state.dataSetup.colors
+  data: state.dataChart,
+  //colors: state.dataSetup.colorDiff
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => dispatch(setupLegend(keys))
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
 
 
@@ -29,35 +29,37 @@ class DotsOnBar extends React.Component {
   }
 
   render() {
-    const {callByStep, dataChart, onSelect} = this.props
-
-    const setLegendData = () => {
-      if (callByStep === 3) { onSelect(dataChart.keys) }
+    const {data, onSelect, callByStep} = this.props
+    const setChartData = () => {
+      if (callByStep === 3) { onSelect(data.keys, this.scale) }
     }
 
     return (
-      <div className="chart" ref="div" onClick={setLegendData}></div>
+      <div className="chart" ref="div" onClick={setChartData}></div>
     )
   }
 
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart
+    const data = this.props.data
 
-    const scaleX = d3.scaleLinear()
+    // scale
+    this.scale = {}
+    this.scale.x = d3.scaleLinear()
     .domain(d3.extent(data.numbers))
     .range([0, 100])
 
+    // chart
     this.dataChart = data.numberRows.map((nums, i) => ([{
-      width: Math.abs(scaleX(nums[1]) - scaleX(nums[0])),
-      shift: scaleX(Math.min(nums[0], nums[1])),
+      width: Math.abs(this.scale.x(nums[1]) - this.scale.x(nums[0])),
+      shift: this.scale.x(Math.min(nums[0], nums[1])),
       dots: nums.map((n, i) => {
         const isOverlapped = nums[0] === nums[1]
         return {
           title: n,
           topCalc: (isOverlapped ? i*dotTop*2 : dotTop) + "px", // 0, 3 (default), 6
-          leftCalc: "calc(" + scaleX(n) + "% - " + (dotSzie/2) + "px)"
+          leftCalc: "calc(" + this.scale.x(n) + "% - " + (dotSzie/2) + "px)"
         }
       })
     }]))

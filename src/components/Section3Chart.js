@@ -29,15 +29,17 @@ class Section extends React.Component {
     const {step, dataMeta, setDefaultColors, setDefaultDisplay} = this.props
 
     // setup1 palette colors
-    setDefaultColors(colors)
-
+    if (step === 2) {
+      setDefaultColors(colors)
+    }
     // setup1 display controls
-    if (step < 3) return
-    const display = {}
-    metaKeys.forEach(key => {
-      display[key] = (key === "standfirst" && !dataMeta[key]) ? false : true
-    })
-    setDefaultDisplay(display)
+    if (step === 3) {
+      const display = {}
+      metaKeys.forEach(key => {
+        display[key] = (key === "standfirst" && !dataMeta[key]) ? false : true
+      })
+      setDefaultDisplay(display)
+    }
   }
 
   render() {

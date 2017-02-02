@@ -32,13 +32,14 @@ export const transposeData = () => ({
 export const toggleData = ({type, index}) => ({
   type: "TOGGLE_DATA",
   target: type,
-  index,
+  index
 })
 export const analyzeData = (dataTable, show) => {
   const summary = summarizeData(dataTable, show)
   return {
     type: "ANALYZE_DATA",
     dataBrief: summary,
+    dataChart: summary.chart,
     selection: selectCharts(summary)
   }
 }
@@ -50,11 +51,12 @@ export const selectChart = (chartId) => ({
 })
 export const setColors = (colors) => ({
   type: "SET_COLORS",
-  colors: colors
+  colors
 })
-export const setupLegend = (keys) => ({
-  type: "SET_LEGEND",
-  legendKeys: keys
+export const updateChartData = (legend, scales) => ({
+  type: "UPDATE_DATA",
+  legend,
+  scales
 })
 
 /* section 4 */

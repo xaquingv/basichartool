@@ -1,20 +1,18 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-//import {colors} from '../../data/config'
 import {uniqueArray} from '../../lib/array'
+import {updateChartData} from '../../actions'
 import drawChart from './bar'
-import {setupLegend} from '../../actions'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => dispatch(setupLegend(keys))
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
-
 
 class Bars100 extends React.Component {
 
@@ -26,41 +24,42 @@ class Bars100 extends React.Component {
   }
 
   render() {
-    const {callByStep, dataChart, onSelect} = this.props
-
-    const setLegendData = () => {
+    const {data, onSelect, callByStep} = this.props
+    const setChartData = () => {
       if (callByStep === 3) {
-        const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : dataChart.keys
-        onSelect(legendKeys)
+        const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : data.keys
+        onSelect(legendKeys, this.scale)
       }
     }
 
     return (
-      <div className="chart" ref="div" onClick={setLegendData}></div>
+      <div className="chart" ref="div" onClick={setChartData}></div>
     )
   }
 
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart
+    const {data, colors} = this.props
     const numbers = data.numbers
     const labelGroup = data.string1Col
     const colorGroup = data.string2Col
+    const isAnyNumbersLargerThan100 = numbers.find(num => num > 100)
     this.colorKeys = uniqueArray(colorGroup)
 
-    const isAnyNumbersLargerThan100 = numbers.find(num => num > 100)
+    // scale
     const domainMax = isAnyNumbersLargerThan100 ? Math.max.apply(null, numbers) : 100
 
+    // TODO: scale of axis [0, 100]
     const scaleX = d3.scaleLinear()
     .domain([0, domainMax])
     .range([0, 100])
 
-    const colors = this.props.colors
     const scaleColors = d3.scaleOrdinal()
     .domain(this.colorKeys)
     .range(colors)
 
+    // chart
     const dataChart = labelGroup.map((label, i) => ({
         group: label,
         value: [{

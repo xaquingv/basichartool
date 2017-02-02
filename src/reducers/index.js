@@ -82,6 +82,8 @@ function dataTable(dataTable = {}, action) {
     case 'CLEAR_DATA':
       return ''
     case 'IMPORT_DATA':
+      // TODO: move meta to dataChart?
+      //console.log(action.dataTable)
       return action.dataTable
 
     case 'TRANSPOSE_DATA':
@@ -147,6 +149,24 @@ function dataBrief(dataBrief = {}, action) {
       return dataBrief
   }
 }
+function dataChart(dataChart = {legend: [], scales:{}}, action) {
+  console.log("action", action.type)
+  switch(action.type) {
+    case 'ANALYZE_DATA':
+      return {
+        ...dataChart,
+        ...action.dataChart
+      }
+    case 'UPDATE_DATA':
+      return {
+        ...dataChart,
+        legend: action.legend,
+        scales: action.scales
+      }
+    default:
+      return dataChart
+  }
+}
 function selection(chartList = [], action) {
   switch(action.type) {
     case 'ANALYZE_DATA':
@@ -167,15 +187,6 @@ function chartId(id = "", action) {
 
 function dataSetup(dataSetup = {colors:[], display:{}, legend:[]}, action) {
   switch(action.type) {
-    case 'EDIT_CHART':
-      return action.dataSetup
-    case 'SET_LEGEND':
-      return {
-        ...dataSetup,
-        legend: action.legendKeys
-      }
-
-    // TODO: ...
     case 'SET_DISPLAY':
       return {
         ...dataSetup,
@@ -218,6 +229,7 @@ const app = combineReducers({
   dataTable,
   show,
   dataBrief,
+  dataChart,
   selection,
   chartId,
   dataSetup

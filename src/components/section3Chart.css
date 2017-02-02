@@ -22,5 +22,10 @@
 svg {
   height: calc(300px * 0.6);
   margin-bottom: 5px;
+  padding: 1px;
   text-align: left;
+}
+
+.chart {
+  padding: 1px;
 }

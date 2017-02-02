@@ -1,19 +1,18 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {setupLegend} from '../../actions'
-//import {colors} from '../../data/config'
 import {uniqueArray} from '../../lib/array'
+import {updateChartData} from '../../actions'
 import {getDomainByDataRange} from './domain'
 import drawChart from './bar'
 
 const mapStateToProps = (state) => ({
-  dataChart: state.dataBrief.chart,
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys) => dispatch(setupLegend(keys))
+  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
 })
 
 
@@ -27,44 +26,45 @@ class Bars extends React.Component {
   }
 
   render() {
-    const {callByStep, dataChart, onSelect} = this.props
-
-    const setLegendData = () => {
+    const {data, onSelect, callByStep} = this.props
+    const setChartData = () => {
       if (callByStep === 3) {
-        const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : dataChart.keys
-        onSelect(legendKeys)
+        const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : data.keys
+        onSelect(legendKeys, this.scale)
       }
     }
 
     return (
-      <div className="chart" ref="div" onClick={setLegendData}></div>
+      <div className="chart" ref="div" onClick={setChartData}></div>
     )
   }
 
   renderChart() {
 
     /* data */
-    const data = this.props.dataChart
+    const {data, colors} = this.props
     const numberRows = data.numberRows
     const labelGroup = data.string1Col
     const colorGroup = data.string2Col
     this.colorKeys = uniqueArray(colorGroup)
 
-    const scaleX = d3.scaleLinear()
+    // scale
+    this.scale = {}
+    this.scale.x = d3.scaleLinear()
     .domain(getDomainByDataRange(data.numbers))
     .range([0, 100])
 
-    const colors = this.props.colors
     const scaleColors = d3.scaleOrdinal()
     .domain(this.colorKeys)
     .range(colors)
 
+    // chart
     const dataChart = labelGroup.map((label, i) => ({
       group: label,
       value: numberRows[i].map(num => ({
         title: num,
-        width: Math.abs(scaleX(num) - scaleX(0)),
-        shift: num > 0 ? scaleX(0) : scaleX(num),
+        width: Math.abs(this.scale.x(num) - this.scale.x(0)),
+        shift: num > 0 ? this.scale.x(0) : this.scale.x(num),
         color: colorGroup.length !== 0 ? scaleColors(colorGroup[i]) : null
       }))
     }))
