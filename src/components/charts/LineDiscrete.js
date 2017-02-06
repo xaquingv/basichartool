@@ -39,14 +39,9 @@ class LineDiscrete extends React.Component {
     /* data */
     const {data, width, colors} = this.props
 
-    const dataChart = data.numberCols.map(numberCol =>
-      numberCol.map((number, i) => ({
-        x: i,
-        y: number
-    })))
-
     const height = width*0.6
 
+    // scale
     this.scale = {}
     this.scale.x = d3.scaleLinear()
     .domain([0, data.rowCount - 1])
@@ -55,6 +50,14 @@ class LineDiscrete extends React.Component {
     this.scale.y = d3.scaleLinear()
     .domain(d3.extent(data.numbers))
     .range([height, 0])
+
+    // chart
+    const dataChart = data.numberCols.map(numberCol =>
+      numberCol.map((number, i) => ({
+        x: i,
+        y: number
+    })))
+
 
     /* draw */
     drawChart(this.refs, dataChart, this.scale, colors)

@@ -7,6 +7,7 @@ const url = 'https://interactive.guim.co.uk/docsdata-test/1Kw1M08x6yybOG8b7JxDvx
 export let cfg_charts
 export let colors, colorBarBackground
 export let metaKeys, default_metaText
+//export let dateFormats
 
 export default function() {
   // TODO: maybe switch fetch

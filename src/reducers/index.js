@@ -66,21 +66,21 @@ function stepActive(stepActive = 1, action) {
   }
 }
 
-function dataInput(dataInput = "", action) {
+/*function dataInput(dataInput = "", action) {
   switch(action.type) {
     case 'CLEAR_DATA':
-      return ''
+      return ""
     case 'INPUT_DATA':
       return action.dataInput
     default:
       return dataInput
   }
-}
+}*/
 
 function dataTable(dataTable = {}, action) {
   switch(action.type) {
     case 'CLEAR_DATA':
-      return ''
+      return ""
     case 'IMPORT_DATA':
       // TODO: move meta to dataChart?
       //console.log(action.dataTable)
@@ -141,14 +141,14 @@ function show(show = {col: [], row: []}, action) {
   }
 }
 
-function dataBrief(dataBrief = {}, action) {
+/*function dataBrief(dataBrief = {}, action) {
   switch(action.type) {
     case 'ANALYZE_DATA':
       return action.dataBrief
     default:
       return dataBrief
   }
-}
+}*/
 function dataChart(dataChart = {legend: [], scales:{}, indent: 0}, action) {
   //console.log("action", action.type)
   switch(action.type) {
@@ -231,10 +231,10 @@ function dataSetup(dataSetup = {colors:[], display:{}, legend:[]}, action) {
 const app = combineReducers({
   step,
   stepActive,
-  dataInput,
+  //dataInput,
   dataTable,
   show,
-  dataBrief,
+  //dataBrief,
   dataChart,
   selection,
   chartId,

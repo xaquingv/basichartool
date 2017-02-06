@@ -3,31 +3,12 @@
 // date: ...
 // https://en.wikipedia.org/wiki/Decimal_mark
 // https://en.wikipedia.org/wiki/Date_format_by_country
-import {d3} from '../lib/d3-lite.js'
 import {uniqueArray} from '../lib/array'
+import {getDateInputFormat} from './typeDate'
 
 //const regexDateSeparators = /\/|-|\.|\s/g
 // the third part equaivalent to /\p{Sc}/
 const regexNumberFormats = /,|%|[\$\xA2-\xA5\u058F\u060B\u09F2\u09F3\u09FB\u0AF1\u0BF9\u0E3F\u17DB\u20A0-\u20BD\uA838\uFDFC\uFE69\uFF04\uFFE0\uFFE1\uFFE5\uFFE6]/g;
-
-const dateFormatExtension = ["%d/%m/%Y", "%d/%m/%y", "%Y%m%d", "%B", "%b", "%H:%M:%S"]
-const dateFormatHijack = ["%Y", "%b-%y", "%b %y", "%Y-%y", "%Y/%y"]
-
-function testDataDateClean(dataClean, formats) {
-  let dateFormat = formats.filter(f => {
-    let parser = d3.timeParse(f)
-    return parser(dataClean[0])
-  })[0]
-
-  let dateParser = d3.timeParse(dateFormat);
-
-  let dataDateClean = dateParser ? dataClean.filter(data => dateParser(data)) : []
-
-  return {
-    dateFormat, dateParser, dataDateClean,
-    isDate: dataDateClean.length === dataClean.length
-  }
-}
 
 
 export default function(dataArr = "", tablePart) {
@@ -88,77 +69,10 @@ export default function(dataArr = "", tablePart) {
 
 
   /* date format */
-  //let charCount = dataClean[0].match(/\w\s|\/|\s|:/g) ? dataClean[0].match(/\D/g).length : 0
-  let numberCount = dataClean[0].match(/\d/g) ? dataClean[0].match(/\d/g).length : 0
-
-  // filter cols with number only
-  let numberMightBeDate = true
-  if (isNumber && !numberFormat/*numberCount>0 && charCount===0*/) {
-    let dataLen = dataClean.length
-
-    let isSameNumberCount = dataClean.filter(d => d.match(/\d/g).length === numberCount).length === dataLen
-    let isInteger = dataClean.filter(d => Number.isInteger(+d) > 0).length === dataLen
-    //console.log("checkD:", dataClean)
-    //console.log("integer", isInteger)
-
-    let thisYear = new Date().getFullYear()
-    let isAllYearsLargerThanThisYear =
-      (numberCount === 4) &&
-      (dataClean.filter(d => parseInt(d, 10) > thisYear).length === dataLen)
-
-    numberMightBeDate =
-      isSameNumberCount &&
-      (numberCount === 4 || numberCount === 8) &&
-      // ex. 1996, 20161008
-      isInteger &&
-      !isAllYearsLargerThanThisYear
-
-    //console.log(dataClean)
-    //console.log(isSameNumberCount)
-    //console.log((numberCount === 4 || numberCount === 8))
-    //console.log(isInteger)
-    //console.log(!isAllYearsLargerThanThisYear)
-  }
-
-  //console.log("date:", !numberFormat && numberMightBeDate)
-  if (!numberFormat && numberMightBeDate) {
-    let isDate
-    let dataDateClean
-    let dateParser
-    let dateFormat
-
-
-    // first attemp - hijack
-    ({dataDateClean, dateParser, dateFormat, isDate} = testDataDateClean(dataClean, dateFormatHijack))
-
-    // second attemp - js default date
-    if (!isDate) {
-      dataDateClean = dataClean.filter(data => {
-        //console.log(data, new Date(data))
-        return !isNaN(new Date(data).getTime())
-      })
-
-      isDate = dataDateClean.length === dataClean.length
-      //console.log(dataDateClean.length, dataClean.length, isDate)
-    }
-
-    // third attemp - custom
-    if (!isDate) {
-      ({dataDateClean, dateParser, dateFormat, isDate} = testDataDateClean(dataClean, dateFormatExtension))
-    }
-    //console.log(dataClean)
-    //console.log("date", isDate)
-    if (isDate) {
-      let dates = dataDateClean.map(str => dateFormat ? dateParser(str) : new Date(str))
-
-      data.types.push("date")
-      data.date = {
-        //values: dates,
-        format: dateFormat ? dateFormat : "",
-        hasDay: dates.filter(date => date.getDate() === 1).length !== dates.length
-        // TODO: how about HMS
-      }
-    }
+  const dataDate = getDateInputFormat(dataClean)
+  if (dataDate.format) {
+    data.types.push("date")
+    data.date = dataDate
   }
 
 

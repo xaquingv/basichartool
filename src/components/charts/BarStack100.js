@@ -43,8 +43,11 @@ class BarStack100 extends React.Component {
     const numberRowSums = numberRows.map(ns => Math.round(ns.reduce((n1, n2) => n1 + n2)*100)/100)
 
     // scale
-    // TODO: scale of axis [0, 100]
-    const scaleX = (i) => d3.scaleLinear()
+    this.scale = {}
+    this.scale.x = d3.scaleLinear()         // scale of axis
+    .range([0, 100])
+
+    const scaleX = (i) => d3.scaleLinear()  // scale of bars
     .domain([0, numberRowSums[i]])
     .range([0, 100])
 

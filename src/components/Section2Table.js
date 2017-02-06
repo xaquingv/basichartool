@@ -26,7 +26,7 @@ class Section extends React.Component {
 
     render() {
         const {/*step,*/ stepActive, dataTable, show, onClickCreate, onToggle, onTranspose/*, ... */} = this.props;
-        //console.log(this.props)
+        //console.log(dataTable)
         const isData = dataTable.body ? true : false;
         const dataTypes = isData ? dataTable.type : [];
         const tableHead = isData ? dataTable.head : [];

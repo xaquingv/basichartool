@@ -49,14 +49,16 @@ export default function(dataInput) {
     // type
     let dataMatch = {
       tab:   dataInput.match(/\t/g),
-      comma: dataInput.match(/\t/g),
+      //comma: dataInput.match(/,f/g),
     };
     let dataType = dataMatch.tab ? "tsv" : "csv";
     // and json?
     // console.log(dataType);
 
     // lines
-    let dataLines = dataInput.split(/[\n|\r]/g);
+    let dataLines = dataInput.split(/\n/g);
+    // let dataLines = dataInput.split(/[\n|\r]/g);
+    // ref: http://stackoverflow.com/questions/10059142/reading-r-carriage-return-vs-n-newline-from-console-with-getc
     // console.log(dataLines);
 
     let dataTableRaw = {

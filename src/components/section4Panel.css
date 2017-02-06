@@ -114,14 +114,17 @@
   color: #bdbdbd; /* n-3 */
   font-family: 'Guardian Agate Sans 1 Web', monospace;
   position: relative;
-  margin-bottom: 30px;
+  /*margin-top @AxisX.js*/
+  /*margin-bottom @AxisX.js*/
   /*padding-bottom @Section4Panel.js*/
 }
 
 .axis-x {
-  //background: lightblue;
-  //opacity: 0.5;
-  //height: 18px;
+  /*top @AxisX.js*/
+  /*test* /
+  height: 30px;
+  background: yellow;
+  */
 }
 .axis-x-tick {
   background: #dcdcdc;

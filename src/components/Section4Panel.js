@@ -32,12 +32,14 @@ const mapDispatchToProps = (dispatch) => ({
 
 class Section extends React.Component {
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps.step === STEP
-  }
+  //shouldComponentUpdate(nextProps) {
+  //  return nextProps.step === STEP
+  //}
 
   componentDidUpdate() {
-    const {svgIndent, svgHeight, metaData, display} = this.props
+
+    const {stepActive, svgIndent, svgHeight, metaData, display} = this.props
+    if (stepActive < STEP) return
 
     // set svg size
     const elSvg = document.querySelector("#section4 svg")
@@ -72,20 +74,37 @@ class Section extends React.Component {
   render() {
 
     const {stepActive, chartId/*, dataChart*/} = this.props;
-    //console.log(dataChart.scales)
-    //console.log(dataChart.indent)
 
     // TODO: responsive width
     const isBarBased = chartId.toLowerCase().indexOf("bar") > -1
     const ComponentChart = chartList[chartId]
     const chartComponent = ComponentChart
     ? (
-      <div id={chartId+"_edit"} data-id={chartId}
-        className="chart-edit js-chart"
-        style={{paddingBottom: isBarBased ? false : "60%"}}>
+      <div id={chartId+"_edit"} data-id={chartId} className="chart-edit js-chart" style={{
+        marginTop: isBarBased ? "30px" : 0,
+        marginBottom: isBarBased ? 0 : "30px",
+        paddingBottom: isBarBased ? false : "60%"
+      }}>
         <ComponentAxisY />
         <ComponentAxisX />
         <ComponentChart id={chartId+"_edit"} callByStep={STEP} width={300} />
+      </div>
+    )
+    : null
+
+    const graphComponent = stepActive >= STEP
+    ? (
+      <div className="graph js-graph">
+        <header className="header">
+          <div className="headline" ref="headline"></div>
+          <div className="standfirst" ref="standfirst"></div>
+          <ComponentLegend />
+        </header>
+        {chartComponent}
+        <footer>
+          Guardian Graphic
+          <span ref="source"></span>
+        </footer>
       </div>
     )
     : null
@@ -103,18 +122,7 @@ class Section extends React.Component {
         <div className="setup2"></div>
 
         {/* any styles inside graph needs to be either included in the template.js or inline */}
-        <div className="graph js-graph">
-          <header className="header">
-            <div className="headline" ref="headline"></div>
-            <div className="standfirst" ref="standfirst"></div>
-            <ComponentLegend />
-          </header>
-          {chartComponent}
-          <footer>
-            Guardian Graphic
-            <span ref="source"></span>
-          </footer>
-        </div>
+        {graphComponent}
         {/* end of graph */}
 
       </div>

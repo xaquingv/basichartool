@@ -1,4 +1,3 @@
-
 /* number apply format*/
 export function numToTxt(num) {
     // filter
@@ -28,7 +27,6 @@ export function numToTxt(num) {
         txt = str[0], // num without negative and float
         dec = str[1] ? "." + str[1] : "",
         len = txt.length;
-
     return len > 3 ?
         //txt.substring(0, len-3) + "," + txt.substring(len-3) + dec :
         txt.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + dec :

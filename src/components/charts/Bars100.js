@@ -50,9 +50,8 @@ class Bars100 extends React.Component {
     // scale
     const domainMax = isAnyNumbersLargerThan100 ? Math.max.apply(null, numbers) : 100
 
-    // TODO: scale of axis [0, 100]
     this.scale = {}
-    const scaleX = d3.scaleLinear()
+    this.scale.x = d3.scaleLinear()
     .domain([0, domainMax])
     .range([0, 100])
 
@@ -65,9 +64,9 @@ class Bars100 extends React.Component {
         group: label,
         value: [{
           title: isAnyNumbersLargerThan100 ?
-            Math.round(scaleX(numbers[i])) + "% (" + numbers[i] + ")" :
+            Math.round(this.scale.x(numbers[i])) + "% (" + numbers[i] + ")" :
             numbers[i] + "%",
-          width: scaleX(numbers[i]),
+          width: this.scale.x(numbers[i]),
           color: colorGroup.length !== 0 ? scaleColors(colorGroup[i]) : null
         }]
       })
