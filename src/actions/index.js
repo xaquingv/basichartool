@@ -69,6 +69,14 @@ export const updateDisplay = (key) => ({
   type: "UPDATE_DISPLAY",
   metaKey: key
 })
+export const updateSize = (size) => ({
+  type: "UPDATE_SIZE",
+  size
+})
+export const updateWidth = (width) => ({
+  type: "UPDATE_WIDTH",
+  width
+})
 export const pickColor = (color) => ({
   type: "PICK_COLOR",
   pickColor: color
@@ -77,10 +85,9 @@ export const dropColorTo = (i) => ({
   type: "DROP_COLOR",
   dropIndex: i
 })
-export const appendAxisYScale = (indent, height) => ({
+export const appendAxisYScale = (indent, height, marginTop) => ({
   type: "APPEND_YSCALE",
   widthIndent: indent,
-  height: height
+  height,
+  marginTop
 })
-// changeFillColor
-// display

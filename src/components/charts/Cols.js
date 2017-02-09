@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {uniqueArray} from '../../lib/array'
 import {updateChartData} from '../../actions'
+import {width, height, viewBox} from '../../data/config'
 import {getDomainByDataRange} from '../axis/domain'
 import drawChart from './col'
 
@@ -35,20 +36,22 @@ class Cols extends React.Component {
     }
 
     return (
-      <svg ref="svg" onClick={setChartData}></svg>
+      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
+        //top: "-1px",
+        width: "calc(100% - " + (data.indent) + "px)",
+        height: data.height + "%"
+      }} onClick={setChartData}></svg>
     )
   }
 
   renderChart() {
 
     /* data */
-    const {data, width, colors, id} = this.props
+    const {data, colors, id} = this.props
     const numberRows = data.numberRows
     const labelGroup = data.string1Col.length > 0 ? data.string1Col : data.dateCol
     const colorGroup = data.string2Col
     this.colorKeys = uniqueArray(colorGroup)
-
-    const height = width*0.6
 
     // scale
     this.scale = {}

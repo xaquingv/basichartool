@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {updateChartData} from '../../actions'
+import {width, height, viewBox} from '../../data/config'
 import {getDomainByDataRange} from '../axis/domain'
 import drawChart from './col'
 
@@ -31,19 +32,22 @@ class ColStack extends React.Component {
     }
 
     return (
-      <svg ref="svg" onClick={setChartData}></svg>
+      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
+        //top: "-1px",
+        width: "calc(100% - " + (data.indent) + "px)",
+        height: data.height + "%"
+      }} onClick={setChartData}></svg>
     )
   }
 
   renderChart() {
 
     /* data */
-    const {data, width, colors, id} = this.props
+    const {data, colors, id} = this.props
     const labelGroup = data.string1Col.length > 0 ? data.string1Col : data.dateCol
     const numberRows = data.numberRows
     const numberRowSums = numberRows.map(ns => ns.reduce((n1, n2) => n1 + n2))
 
-    const height = width*0.6
     const domain = getDomainByDataRange(numberRowSums)
 
     // scale

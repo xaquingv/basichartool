@@ -4,6 +4,7 @@ import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 import {uniqueArray} from '../../lib/array'
 import {updateChartData} from '../../actions'
+import {width, height, viewBox} from '../../data/config'
 import drawChartLine from './line'
 import drawChartPlot from './plot'
 
@@ -29,21 +30,24 @@ class Slope extends React.Component {
   }
 
   render() {
-    const {onSelect, callByStep} = this.props
+    const {data, onSelect, callByStep} = this.props
     const setChartData = () => {
       if (callByStep === 3) { onSelect([""], this.scale) }
     }
 
     return (
-      <svg ref="svg" onClick={setChartData}></svg>
+      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
+        top: "-1px",
+        width: "calc(100% - " + (data.indent) + "px)",
+        height: data.height + "%"
+      }} onClick={setChartData}></svg>
     )
   }
 
   renderChart() {
 
     /* data */
-    const {data, width, id} = this.props
-    const height = width*0.6
+    const {data, id} = this.props
 
     // scale
     const scaleXL = d3.scaleLinear() //longer

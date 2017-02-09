@@ -1,9 +1,11 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import './section5Embed.css'
+
 import downloadFile from 'react-file-download'
 import htmlTemplate from './charts/template'
-//import fetch from 'isomorphic-fetch'
 import reqwest from 'reqwest'
+
 
 const STEP = 5
 const mapDispatchToProps = (dispatch) => ({
@@ -13,9 +15,15 @@ const mapStateToProps = (state) => ({
   stepActive: state.stepActive
 })
 
+const isGuardianVisual = location.origin.indexOf("visuals.gutools.co.uk") > -1
+//console.log("dev mode:", !isGuardianVisual)
+
 
 class Section extends React.Component {
   embed() {
+    // return in dev mode
+    if (!isGuardianVisual) return
+
     const data = getHTMLFileData()
 
     // TODO: push html to s3 server
@@ -46,9 +54,10 @@ class Section extends React.Component {
     const {stepActive} = this.props;
     return (
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section5">
-      <h1>5. Voila, take away your chart</h1>
-      <input type="button" className="button" value="embed" onClick={this.embed.bind(this)} />
-      <input type="button" className="button" value="download HTML" onClick={this.downloadHTML.bind(this)} />
+        <h1>5. Voila, here you go:</h1>
+        <input type="button" className={"button" + (isGuardianVisual ? "" : " btn-off")} value="embed" onClick={this.embed.bind(this)} />
+        <input type="button" className="button" value="download HTML" onClick={this.downloadHTML.bind(this)} />
+        <div className="d-n link js-link">link: <a target="_blank"></a></div>
       </div>
     )
   }
@@ -60,10 +69,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(Section)
 function getHTMLFileData() {
   const elGraph = document.querySelector("#section4 .js-graph")
   const chartId = elGraph.querySelector(".js-chart").dataset.id
-  const htmlGrpah = elGraph.cloneNode(true).outerHTML
+  const elGraphCopy = elGraph.cloneNode(true)
+  elGraphCopy.style.width = "100%"
+
+  const htmlGraph = elGraphCopy.outerHTML
   return {
     id: chartId,
-    html: htmlTemplate(htmlGrpah)
+    html: htmlTemplate(htmlGraph)
   }
 }
 
@@ -76,10 +88,19 @@ function pushToS3ByReqwest(data) {
         embed: data.html
     }),
     success: res => {
-      console.log(res)
+      let elLink = document.querySelector(".js-link")
+      let elLinkA = elLink.querySelector("a")
+      elLink.classList.remove("d-n")
+      elLinkA.href = res
+      elLinkA.textContent = res
+
+      setTimeout(() => {
+        elLink.classList.add("d-n")
+      }, 60000)
+      //console.log(res)
     },
     error: err => {
-      console.log(err)
+      console.warn(err)
     }
   })
 }

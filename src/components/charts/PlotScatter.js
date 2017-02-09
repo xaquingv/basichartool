@@ -4,6 +4,7 @@ import {d3} from '../../lib/d3-lite'
 import drawChart from './plot'
 import {uniqueArray} from '../../lib/array'
 import {updateChartData} from '../../actions'
+import {width, height, viewBox} from '../../data/config'
 
 const mapStateToProps = (state) => ({
   data: state.dataChart,
@@ -25,7 +26,7 @@ class ScatterPlot extends React.Component {
   }
 
   render() {
-    const {onSelect, callByStep} = this.props
+    const {data, onSelect, callByStep} = this.props
     const setChartData = () => {
       if (callByStep === 3) {
         const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : [""]
@@ -34,21 +35,25 @@ class ScatterPlot extends React.Component {
     }
 
     return (
-      <svg ref="svg" onClick={setChartData}></svg>
+      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
+        top: "-4px",
+        width: "calc(100% - " + (data.indent+1) + "px)",
+        height: data.height + "%",
+        padding: "3px",
+        marginTop: data.marginTop + "%"
+      }} onClick={setChartData}></svg>
     )
   }
 
   renderChart() {
 
     /* data */
-    const {data, width, colors} = this.props
+    const {data, colors} = this.props
     const names = data.string1Col
     const numberCols = data.numberCols
     const numberRows = data.numberRows
     const colorGroup = data.string2Col
     this.colorKeys = uniqueArray(data.string2Col)
-
-    const height = width*0.6
 
     this.scale = {}
     this.scale.x = d3.scaleLinear()

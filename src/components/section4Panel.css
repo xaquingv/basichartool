@@ -6,13 +6,17 @@
   color: #333;
   background-color: #f6f6f6; /* n-6 */
   font-family: monospace;
-  padding: 15px 5px;
+  padding: 15px 10px;
 }
 .setup2 {
   margin-bottom: 20px;
 }
 .setup1 div {
-  line-height: 30px;
+  line-height: 24px;
+  margin-bottom: 6px;
+}
+.setup1 div:last-child {
+  margin-bottom: 0;
 }
 .setup1 span {
   padding: 0 5px;
@@ -30,7 +34,7 @@
 }
 
 .palette {
-  margin: 0 0 10px;
+  margin: 5px 0;
   padding-left: 0;
 }
 .palette li {
@@ -38,6 +42,7 @@
   height: 32px;
   border-radius: 1px;
   padding: 0;
+  margin-bottom: 10px;
   display: inline-block;
   vertical-align: middle;
   cursor: url('../assets/icon/colorize.svg') 12 12, pointer;
@@ -54,7 +59,15 @@
     text-align: center;
     cursor: text;
     border: 1px solid black;
+    line-height: 30px;
 }
+
+.test {
+  font-size: 13px;
+  font-family: 'Guardian Agate Sans 1 Web', monospace;
+  visibility: hidden;
+}
+
 
 /* TOTHINK: temp or not, sync with template */
 .graph {
@@ -62,9 +75,7 @@
   font-size: 13px;
   font-family: 'Guardian Text Sans Web', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
   -webkit-font-smoothing: antialiased;
-  width: 100%;
-  /* temp */
-  max-width: 300px;
+  transition: all 1s ease-out;
 }
 .headline {
   color: black;
@@ -107,44 +118,10 @@
   margin-left: 10px; /* 6+4 */
 }
 
-
-
-/* chart playground */
-.chart-edit {
-  color: #bdbdbd; /* n-3 */
-  font-family: 'Guardian Agate Sans 1 Web', monospace;
-  position: relative;
-  /*margin-top @AxisX.js*/
-  /*margin-bottom @AxisX.js*/
-  /*padding-bottom @Section4Panel.js*/
-}
-
-.axis-x {
-  /*top @AxisX.js*/
-  /*test* /
-  height: 30px;
-  background: yellow;
-  */
-}
-.axis-x-tick {
-  background: #dcdcdc;
-}
-.axis-x-text {
-  top: 6px;
-  //border: 1px solid red;
-}
-.axis-y-grid {
-}
-.axis-y-text {
-}
-/* end of chart playground */
-
-
-
 footer {
   font-size: 12px;
   line-height: 16px;
-  margin-top: 8px;
+  margin-top: 16px;
   padding-top: 8px;
   border-top: 1px dotted #bdbdbd; /*n-3*/
 }
@@ -157,12 +134,31 @@ footer > div {
   position: absolute;
 }
 #section4 svg {
-  /*top @Section4Panel.js*/
   right: 0;
-  /*width: calc(100% - 2px); @Section4Panel.js*/
-  /*height: calc(100% - 2px); @Section4Panel.js*/
 }
-/* TODO: res calc */
+
 svg path {
+  stroke-linejoin: round;
+  /* for all but IE, use scale calc in template */
   vector-effect: non-scaling-stroke;
 }
+/* end of TOTHINK*/
+
+
+/* chart playground */
+.axis-x {
+  //height: 30px;
+  //background-color: yellow;
+}
+.axis-y {
+  //background-color: red;
+}
+.axis-x-text {
+  //top: 6px;
+  //border: 1px solid red;
+  //background-color: black !important;
+}
+.axis-y-grid span {
+  //background-color: yellow;
+}
+/* end of chart playground */

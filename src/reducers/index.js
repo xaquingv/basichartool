@@ -149,7 +149,7 @@ function show(show = {col: [], row: []}, action) {
       return dataBrief
   }
 }*/
-function dataChart(dataChart = {legend: [], scales:{}, indent: 0}, action) {
+function dataChart(dataChart = {legend: [], scales:{}, indent: 0, marginTop: 0}, action) {
   //console.log("action", action.type)
   switch(action.type) {
     case 'ANALYZE_DATA':
@@ -167,7 +167,8 @@ function dataChart(dataChart = {legend: [], scales:{}, indent: 0}, action) {
       return {
         ...dataChart,
         indent: action.widthIndent,
-        height: action.height
+        height: action.height,
+        marginTop: action.marginTop
       }
     default:
       return dataChart
@@ -191,7 +192,7 @@ function chartId(id = "", action) {
   }
 }
 
-function dataSetup(dataSetup = {colors:[], display:{}, legend:[]}, action) {
+function dataSetup(dataSetup = {colors:[], display:{}, legend:[], size:{}, width: "300px"}, action) {
   switch(action.type) {
     case 'SET_DISPLAY':
       return {
@@ -204,6 +205,16 @@ function dataSetup(dataSetup = {colors:[], display:{}, legend:[]}, action) {
       return {
         ...dataSetup,
         display: newSwitches
+      }
+    case 'UPDATE_SIZE':
+      return {
+        ...dataSetup,
+        size: action.size
+      }
+    case 'UPDATE_WIDTH':
+      return {
+        ...dataSetup,
+        width: action.width
       }
     case 'SET_COLORS':
       return {

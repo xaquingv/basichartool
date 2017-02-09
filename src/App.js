@@ -8,14 +8,6 @@ import Section4 from './components/Section4Panel';
 import Section5 from './components/Section5Embed';
 
 
-const navList = [
-    "1. Import",
-    "2. Toggle",
-    "3. Select",
-    "4. Edit",
-    "5. Download"
-];
-
 const App = () => (
   <div>
         <Section1 />
@@ -23,9 +15,7 @@ const App = () => (
         <Section3 />
         <Section4 />
         <Section5 />
-        <Navigation
-            list={navList}
-        />
+        <Navigation />
     </div>
 );
 

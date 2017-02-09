@@ -54,7 +54,7 @@ class Section extends React.Component {
       return isSelected
       ? (
         <div key={chartID} id={chartID} onClick={() => onSelect(chartID)}>
-          <ComponentChart id={chartID} callByStep={STEP} width={300}/>{chartID}
+          <ComponentChart id={chartID} callByStep={STEP} />{chartID}
         </div>
       )
       : null

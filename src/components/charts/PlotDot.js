@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import drawChart from './plot'
 import {updateChartData} from '../../actions'
+import {width, height, viewBox} from '../../data/config'
 
 const mapStateToProps = (state) => ({
   data: state.dataChart,
@@ -30,17 +31,22 @@ class DotPlot extends React.Component {
     }
 
     return (
-      <svg ref="svg" onClick={setChartData}></svg>
+      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
+        top: "-4px",
+        width: "calc(100% - " + (data.indent+1) + "px)",
+        height: data.height + "%",
+        padding: "3px",
+        marginTop: data.marginTop + "%"
+      }} onClick={setChartData}></svg>
     )
   }
 
   renderChart() {
 
     /* data */
-    const {data, width, colors} = this.props
+    const {data, colors} = this.props
     const dates = data.dateCol
 
-    const height = width*0.6
     const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
 
     // scale

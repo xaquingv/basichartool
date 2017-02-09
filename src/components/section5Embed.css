@@ -1,0 +1,8 @@
+.link {
+  font-family: monospace;
+  font-size: 12px;
+  margin-top: 15px;
+}
+.link a {
+  color: #333;
+}

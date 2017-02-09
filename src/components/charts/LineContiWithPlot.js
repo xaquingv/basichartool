@@ -3,9 +3,10 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
+import {uniqueArray} from '../../lib/array'
+import {width, height} from '../../data/config'
 import {drawLine} from './line'
 import {drawPlot} from './plot'
-import {uniqueArray} from '../../lib/array'
 
 /*
   data spec
@@ -14,9 +15,6 @@ import {uniqueArray} from '../../lib/array'
   - date: no-repeat
   - number*: any range, min 3
 */
-
-const width = 320;
-const height = width*0.6;
 
 const mapStateToProps = (state) => ({
   dataChart: state.dataBrief

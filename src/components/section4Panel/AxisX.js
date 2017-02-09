@@ -1,17 +1,11 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {d3} from '../../lib/d3-lite'
-import {numToTxt} from '../../lib/format'
-import {getDateTextFormat, dateNumToTxt} from '../../data/typeDate'
+import {getTickSteps, getTickTexts, getTickTextWidths} from '../axis/tickX'
+
 
 const mapStateToProps = (state) => ({
   id: state.chartId,
-  scales: state.dataChart.scales,
-  indent: state.dataChart.indent,
-  hasDay: state.dataChart.dateHasDay,
-  format: state.dataChart.dateFormat,
-  rowLen: state.dataChart.rowCount,
-  dates: state.dataChart.dateCol
+  dataChart: state.dataChart,
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -21,22 +15,24 @@ const mapDispatchToProps = (dispatch) => ({
 class AxisX extends React.Component {
 
   render() {
-    const {id, scales, indent} = this.props
+    const {id, dataChart} = this.props
+    const {scales, indent, dateCol, string1Col, dateHasDay, dateFormat, rowCount} = dataChart
 
     if (!scales.x) return null
-    console.log("id:", id, "x indext", indent)
 
     /* data */
-    const isBarBased = id.toLowerCase().indexOf("bar") > -1 ? true : false
+    const isBarBased = id.toLowerCase().indexOf("bar") > -1
+    const isPlot = id.toLowerCase().indexOf("plot") > -1
 
+    const dates = dateCol || string1Col
     const axisX = scales.x.copy().range([0, 100])
-    const ticks = this.getTickSteps(isBarBased, axisX)
-    const texts = this.getTickTexts(isBarBased, ticks, axisX.domain())
-    //console.log(ticks)
+    const ticks = getTickSteps(id, isBarBased, dates, dateFormat, rowCount, axisX)
+    const texts = getTickTexts(id, isBarBased, dates, dateFormat, dateHasDay, axisX.domain(), ticks)
 
-    const tickData = ticks.map((tick, i) => ({
+    const tickData = getTickTextWidths(texts).map((width, i) => ({
+      pos: Math.round(axisX(ticks[i])*100)/100,
       txt: texts[i],
-      pos: Math.round(axisX(tick)*100)/100
+      txtWidth: width
     }))
 
 
@@ -45,105 +41,34 @@ class AxisX extends React.Component {
       <div key={"tick" + i} className="axis-x-tick" style={{
         position: "absolute",
         top: isBarBased ? "24px" : "1px",
-        left: tick.pos + "%",
+        left: "calc(" + tick.pos + "% + " + (isPlot ? -2 : 0) + "px)",
         width: "1px",
         height: "5px",
+        backgroundColor: "#dcdcdc"
       }}></div>
     )
 
-    //const len_1 = ticks.length - 1
-    const width = tickData[1].pos - tickData[0].pos
-    const shift = width / 2
-    /*const getAdjustWidth = (i) => {
-      switch(i) {
-        case 0:
-          return "calc(" + (shift+ticks[0].pos) + "% + " + indent + "px)"
-        case len_1:
-          return shift + (100-ticks[len_1].pos) + "%"
-        default:
-          return width + "%"
-      }
-    }*/
     const drawAxisTexts = tickData.map((tick, i) =>
       <div key={"text" + i}  className="axis-x-text" style={{
         position: "absolute",
-        left: /*i===0 ? (-indent)+"px" :*/ (tick.pos-shift)+"%",
-        width: width + "%",//getAdjustWidth(i), // TODO: max-width and recalc left?
-        lineHeight: "18px",
+        top: "8px",
+        left: "calc(" + (tick.pos - tick.txtWidth/2) + "% + " + (isPlot ? -2 : 0) + "px)",
+        width: tick.txtWidth + "%",
+        lineHeight: "14px",
+        paddingTop: "2px",
         textAlign: "center"
       }}><span>{tick.txt}</span></div>
     )
 
     return (
-      <div className="axis-x" style={{
+      <div className="axis-x" data-y-indent={isBarBased ? 0:indent} data-x-bottom={!isBarBased} style={{
         position: "absolute",
         top: isBarBased ? "-30px" : "calc(100% - 1px)", // due to svg padding: 1px
         // TODO: onBar axis-x margin left/right
-        right: "2px",
-        width: "calc(100% - " + (isBarBased ? 3 : indent) + "px)",
+        right: "1px",
+        width: "calc(100% - " + (isBarBased ? 1 : indent) + "px)",
       }}>{drawAxisTicks}{drawAxisTexts}</div>
     )
-  }
-
-  getTickSteps(isBarBased, axisX) {
-    const {id, dates, rowLen} = this.props
-
-    switch (true) {
-      case ["brokenBar"].includes(id):
-        axisX.domain([0, 100]) // override domain
-        return [50]
-
-      case ["bar100", "barGroupStack100"].includes(id):
-        axisX.domain([0, 100]) // override domain
-        return [0, 25, 50, 75, 100]
-
-      // TODO: add 0 to id.indexOf("bar") ?
-
-      case (isBarBased || rowLen > 7):
-        return axisX.ticks(5)
-
-      default:
-        return dates
-    }
-  }
-
-  getTickTexts(isBarBased, ticks, domain) {
-    const {id, dates, hasDay, format} = this.props
-
-    let texts, year // to remove repeat years
-    switch (true) {
-      // bar based
-      case isBarBased || id==="plotScatter":
-        texts = ticks.map(tick => numToTxt(tick))
-        break
-
-      // not bar based
-      case hasDay:
-        const dateObjToTxt = id==="lineDiscrete" ? d3.timeFormat("%d/%m %Y") : d3.timeFormat(getDateTextFormat(domain))
-        texts = ticks.map((tick) => {
-          const val = id==="lineDiscrete" ? dates[tick] : tick
-          const tic = dateObjToTxt(val).replace(year, "").trim()
-          console.log(tick, val, tic)
-          year = val.getFullYear()
-          return tic
-        })
-        break
-
-      case !isBarBased:
-        texts = ticks.map(tick => {
-          const val = id==="lineDiscrete" ? dates[tick] : tick
-          const txt = dateNumToTxt(val, format, hasDay)
-          const tic = txt.replace(year, "").trim()
-          year = txt.match(/[0-9]{4}/g)
-          return tic
-        })
-        break
-
-      default:
-        console.errror("axis-x need another condition?")
-    }
-
-    return texts
   }
 }
 

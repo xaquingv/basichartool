@@ -5,44 +5,46 @@ import {numToTxt} from '../../lib/format'
 import {getDomainExtend} from '../axis/domain'
 
 
-const space = 5
+const space = 6
 
 const mapStateToProps = (state) => ({
   id: state.chartId,
-  scale: state.dataChart.scales
+  scale: state.dataChart.scales,
+  unit: state.dataTable.meta.unit,
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setAxisYScale: (indent, height) => dispatch(appendAxisYScale(indent, height))
+  setAxisYScale: (indent, height, margin) => dispatch(appendAxisYScale(indent, height, margin))
 })
 
 
 class AxisY extends React.Component {
-  updateAxisYScale() {
-    const {scale, setAxisYScale} = this.props
+  updateAxisYScale(test) {
+    const {id, scale, setAxisYScale} = this.props
     if (!scale.y) return
 
-    const els = [...document.querySelectorAll(".axis-y span")]
+    const els = [...document.querySelectorAll(".axis-y-grid span")].slice(0, -1)
     const widths = els.map(el => el.offsetWidth)
-    const indent = Math.max.apply(null, widths) + space
-    setAxisYScale(indent, this.svgHeight)
+    const isPlot = id.toLowerCase().indexOf("plot") > -1
+    const indent = Math.max.apply(null, widths) + space + (isPlot ? 3 : 0)
+    setAxisYScale(indent, this.svgHeight, this.svgMarginTop) // for react update
   }
 
   componentDidMount() {
-    this.updateAxisYScale()
+    // NOTE: to avoid calc bf style applied ?
+    setTimeout(() => this.updateAxisYScale(1), 0)
   }
   componentDidUpdate() {
-    this.updateAxisYScale()
+    this.updateAxisYScale(2)
   }
 
   render() {
-    const {id, scale} = this.props
+    const {id, scale, unit} = this.props
     if (!scale.y) return null
 
     /* data */
     let axisY = scale.y.copy().range([100, 0])
-    let ticks = axisY.ticks(5)
-    //console.log("org:", axisY.domain(), ticks)
+    let ticks = id === "colGroupStack100" ? [0, 25, 50, 75, 100] : axisY.ticks(5)
 
     // extend for lines and plots but cols
     let extend = {}
@@ -50,15 +52,17 @@ class AxisY extends React.Component {
       extend = getDomainExtend(axisY.domain(), ticks)
       axisY.domain(extend.domain)
       ticks = extend.ticks
-      //console.log("ext:", extend.domain, ticks, extend.height)
     }
     this.svgHeight = extend.height ? extend.height : 100
+    this.svgMarginTop = extend.marginTop ? extend.marginTop : 0
 
     const tickData = ticks.map(tick => ({
         val: tick,
         txt: numToTxt(tick),
         pos: Math.round(axisY(tick)*100)/100
     }))
+    // add unit to last tick text
+    tickData[tickData.length-1].txt += unit ? " " + unit : ""
 
     const indexTick0 = ticks.indexOf(0)
     const indexTickSolidGrid = indexTick0 > -1 ? indexTick0 : 0

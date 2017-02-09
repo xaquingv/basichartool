@@ -3,7 +3,17 @@ import {connect} from 'react-redux';
 import './navigation.css';
 import {changeStep} from '../actions';
 import scrollTo from '../lib/scrollTo';
-import logo from '../assets/logo.svg';
+//import logo from '../assets/logo.svg';
+
+const navList = [
+    "1. Import",
+    "2. Toggle",
+    "3. Select",
+    "4. Edit",
+    "5. Download"
+];
+
+const marginTop = 60
 
 //TODO: scroll and switch step
 
@@ -24,7 +34,7 @@ class Navigation extends React.Component {
   };
 
   animateScroll = () => {
-    const to = document.querySelector("#section" + this.props.step).offsetTop - 80;
+    const to = document.querySelector("#section" + this.props.step).offsetTop - marginTop;
     scrollTo(to, null, 1000);
   };
 
@@ -35,18 +45,18 @@ class Navigation extends React.Component {
 
   render() {
     //console.log("props:", this.props);
-    const {step, stepActive, list, onClickStep} = this.props;
+    const {step, stepActive, onClickStep} = this.props;
     return (
       <nav className="nav">
         <ul className="ul-flex l-section">
           <li>Step</li>
-          {list.map((li, index) => <li
+          {navList.map((li, index) => <li
             key={"step"+(index+1)}
             ref={(node) => this.node = node}
             className={"li step" + ((step===index+1)?" li-focus":"") + ((stepActive>=index+1)?"":" pe-n")}
             onClick={()=>onClickStep(index+1)}>{li}
           </li>)}
-          <li><img src={logo} className="logo" alt="logo" /></li>
+          {/*<li><img src={logo} className="logo" alt="logo" /></li>*/}
         </ul>
       </nav>
     );

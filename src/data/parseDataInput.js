@@ -2,7 +2,7 @@ import getDataTable from '../data/getDataTable'
 import {swapArray} from '../lib/array'
 
 // meta keys
-const META_KEYS = ["headline", "standfirst", "source", "type", "keys", "page"]
+const META_KEYS = ["headline", "standfirst", "source", "unit", "note", "page", "#"]
 
 
 /*

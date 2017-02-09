@@ -21,14 +21,22 @@
 }
 
 .ul-flex li {
-    padding: 10px 0 5px 0;
+    padding: 8px 5px 0;
+    /* hack for res */
+    height: 24px;
+    line-height: 22px;
+    overflow-y: hidden;
 }
 .ul-flex li:first-child {
-    margin-right: 10px;
+    /* hack for res */
+    padding-left: 0;
+    padding-right: 8px;
+    margin-right: 8px;
+    width: 40px;
 }
-.ul-flex li:last-child {
+/*.ul-flex li:last-child {
     margin-left: 10px;
-}
+}*/
 
 .li {
     color: #dcdcdc;

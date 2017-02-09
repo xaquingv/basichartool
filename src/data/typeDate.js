@@ -15,7 +15,7 @@ const formatList = [
   //"%d/%m/%Y", "%d/%m/%y"      // extend
   // -> parse sp.1
   "%d-%b-%y", "%d %b %Y",
-  "%Y%m%d",                     // extend
+  //"%Y%m%d",                   // -> parse sp.4
   "%Y-%m-%dT%H:%M:%S%Z",        // iso format timestamp
   "%m/%d/%y %H:%M",
   "%m/%d/%y %I:%M %p",
@@ -39,8 +39,9 @@ export function getDateInputFormat(data) {
   const dateFormat =
   testDateFormatSp1(data) ||
   testDateFormatSp2(data) ||
+  testDateFormats(data, formatList, 5) ||
   testDateFormatSp3(data) ||
-  testDateFormats(data, formatList)
+  testDateFormatSp4(data)
   //console.log("date format:", dateFormat ? dateFormat : null)
 
   const dateHasDay = dateFormat.indexOf("%d") > -1 || dateFormat.indexOf("%H") > -1
@@ -53,18 +54,19 @@ export function getDateInputFormat(data) {
 }
 
 
-function testDateFormats(data, formats) {
+function testDateFormats(data, formats, who) {
   let dateParser
   let dateFormat = formats.find(f => {
     dateParser = d3.timeParse(f)
     return dateParser(data[0])
   })
+
   return dateFormat && data.every(d => dateParser(d)) ? dateFormat : ""
 }
 
-// formats: "%m/%d/%Y", "%m/%d/%y" vs. "%d/%m/%Y", "%d/%m/%y"
+// format(s): "%m/%d/%Y", "%m/%d/%y" vs. "%d/%m/%Y", "%d/%m/%y"
 function testDateFormatSp1(data) {
-  let format = testDateFormats(data, formatSp1)
+  let format = testDateFormats(data, formatSp1, 1)
   if (format) {
     const isMonthFirst = data.every(d => d.split("/")[0] <= 12)
     const isDaySecond = data.some(d => d.split("/")[1] > 12)
@@ -76,22 +78,34 @@ function testDateFormatSp1(data) {
   return format ? format : ""
 }
 
-// formats: "%Y"
+// format(s): "%Y"
 function testDateFormatSp2(data) {
   // format
-  const isYear = testDateFormats(data, ["%Y"]) === "%Y"
+  const format = "%Y"
+  const isYear = testDateFormats(data, [format], 2) === format
   // filter, strict
   const is4Digits = data.every(d => d.length === 4)
-  return isYear && is4Digits ? "%Y" : ""
+  return isYear && is4Digits ? format : ""
 }
 
-// formats: "%Y Q*", "Q* %Y"
+// format(s): ""%Y%m%d""
+function testDateFormatSp4(data) {
+  // format
+  const format = "%Y%m%d"
+  const isYmd = testDateFormats(data, [format], 4) === format
+  // filter, strict
+  const isMonth = data.every(ymd => {const m = ymd.slice(4, 6); return m >= 1 && m <= 12})
+  const isDay = data.every(ymd => {const d = ymd.slice(6); return d >= 1 && d <= 31})
+  return isYmd && isMonth && isDay ? format : ""
+}
+
+// format(s): "%Y Q*", "Q* %Y"
 function testDateFormatSp3(data) {
   // filter
   const isSp3 = data.every(d => (d[0] === "Q" || d[5] === "Q") && d.length === 7)
   // format without Q
   const dataYear = data.map(d => d.replace(/Q([1-4])/g, "").trim())
-  const isYear = testDateFormats(dataYear, ["%Y"]) === "%Y"
+  const isYear = testDateFormats(dataYear, ["%Y"], 3) === "%Y"
   return isSp3 && isYear ? "Q*" : ""
 }
 
@@ -129,38 +143,6 @@ export function getDateScaleValues(dates, format, hasDay) {
 
 
 /* 3. dates to label texts */
-/*export function getDateLabelTexts(dates, format, hasDay) {
-  const parser = d3.timeParse(format)
-  const dateParsed = dates.map(d => parser(d))
-
-  let toText
-  switch (true) {
-
-    case ["%Y"].includes(format):
-      return dates
-
-    case ["Q*"].includes(format):
-      const isQFisrt = dates[0][0] === ("Q")
-      return isQFisrt ? dates : dates.map(d => d.slice(-2) + " " + d.slice(0, -3))
-
-    case ["%Y-%y", "%Y/%y"].includes(format):
-      return dates.map(d => d.replace("/", "-"))
-
-    case ["%b", "%B"].includes(format):
-      toText = d3.timeFormat("%b")
-      return dateParsed.map(d => toText(d))
-
-    /* %b %Y x 4 sets * /
-    case !hasDay:
-      toText = d3.timeFormat("%b %Y")
-      return dateParsed.map(d => toText(d))
-
-    // dynamic formats
-    default:
-      return null
-  }
-}*/
-
 export function dateNumToTxt(value, format, hasDay) {
 
   let year = value.toString().split(".")[0]
@@ -206,12 +188,12 @@ export function getDateTextFormat(domain) {
   const diffHour  = domain[1].getHours() - domain[0].getHours()
 
   switch (true) {
-    case diffYear  > 4: return "%Y"      //console.log("[Y] 2017")
-    case diffYear  > 0: return "%b %Y"   //console.log("[M] Feb 2017")
-    case diffMonth > 4: return "%b"      //console.log("[M] Feb")
-    case diffMonth > 0: return "%d/%m %Y"   //console.log("[M] 15/02")
-    case diffDay   > 0: return "%d %I%p" //console.log("[D] 15 6pm")
-    case diffHour  > 0: return "%H:%M"   //console.log("[H] 18:30")
+    case diffYear  > 4: return "%Y"       //console.log("[Y] 2017")
+    case diffYear  > 0: return "%b %Y"    //console.log("[M] Feb 2017")
+    case diffMonth > 4: return "%b"       //console.log("[M] Feb")
+    case diffMonth > 0: return "%d/%m %Y" //console.log("[M] 15/02")
+    case diffDay   > 0: return "%d %I%p"  //console.log("[D] 15 6pm")
+    case diffHour  > 0: return "%H:%M"    //console.log("[H] 18:30")
     default: console.error("a new time format is required!")
   }
 }

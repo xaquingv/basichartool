@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import drawChart from './line'
+import {width, height, viewBox} from '../../data/config'
 import {updateChartData} from '../../actions'
 
 const mapStateToProps = (state) => ({
@@ -30,16 +31,20 @@ class LineDiscrete extends React.Component {
     }
 
     return (
-      <svg ref="svg" onClick={setChartData}></svg>
+      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
+        top: "-2px",
+        width: "calc(100% - " + (data.indent+1) + "px)",
+        height: data.height + "%",
+        padding: "1px",
+        marginTop: data.marginTop + "%"
+      }} onClick={setChartData}></svg>
     )
   }
 
   renderChart() {
 
     /* data */
-    const {data, width, colors} = this.props
-
-    const height = width*0.6
+    const {data, colors} = this.props
 
     // scale
     this.scale = {}

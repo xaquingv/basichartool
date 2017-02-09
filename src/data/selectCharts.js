@@ -11,7 +11,7 @@ export default function(feature) {
     /* check1: count */
     const cfgCountTypes = Object.keys(cfg.count)
     const isCountPassed = cfgCountTypes.filter(key => {
-      //if (cfg.chart==="diffDot") console.log(key, feature.count[key], cfg.count[key])
+      //if (cfg.chart==="lineDiscrete") console.log(key, feature.count[key], cfg.count[key])
       return feature.count[key] >= cfg.count[key][0] && feature.count[key] <= cfg.count[key][1]
     }).length === cfgCountTypes.length
 
@@ -26,7 +26,7 @@ export default function(feature) {
     }).length === cfgValueTypes.length
     //console.log("=>", cfg.chart, isValuePassed)
 
-    //console.log("=>", isCountPassed && isValuePassed)
+    //if (cfg.chart==="lineDiscrete") console.log("=>", isCountPassed, isValuePassed, isCountPassed && isValuePassed)
     return isCountPassed && isValuePassed
   }).map(cfg => cfg.chart)
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {colors} from '../../data/config'
+import {colors, width, height} from '../../data/config'
 
 
 const mapStateToProps = (state) => ({
@@ -40,8 +40,6 @@ class Donut extends React.Component {
     .sort(null)
     .value(d => d)
 
-    const width = 300//this.props.width
-    const height = width*0.6
     const radius = Math.min(width, height) / 2
 
     const arc = d3.arc()

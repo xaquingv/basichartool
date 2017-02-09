@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {updateChartData} from '../../actions'
+import {width, height, viewBox} from '../../data/config'
 
 const mapStateToProps = (state) => ({
   data: state.dataChart,
@@ -29,7 +30,11 @@ class Area extends React.Component {
     }
 
     return (
-      <svg ref="svg" onClick={setChartData}>
+      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
+        top: "-1px",
+        width: "calc(100% - " + (data.indent) + "px)",
+        height: data.height + "%"
+      }} onClick={setChartData}>
         <line ref="line" x1="0" x2="100%" y1="50%" y2="50%"></line>
       </svg>
     )
@@ -38,7 +43,7 @@ class Area extends React.Component {
   renderChart() {
 
     /* data */
-    const {data, width, colors} = this.props
+    const {data, colors} = this.props
     const dates = data.dateCol
     const numberCols = data.numberCols
 
@@ -70,7 +75,6 @@ class Area extends React.Component {
     //console.log(stack(dataChart))
 
     // scale
-    const height = width*0.6
     const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
     const domainMax = isNot100.length > 0 ? maxSum : 100
 

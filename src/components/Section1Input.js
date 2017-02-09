@@ -55,7 +55,7 @@ class Section extends React.Component {
         <textarea className="textarea" placeholder="Paste your csv/tsv dataset ..." ref={node=>textarea=node}></textarea>
         <div className="row-flex">
           <input type="button" className="button btn-import" value="Import" onClick={()=>onClickImport(textarea)}/>
-          <input type="button" className="button" value="Clear" onClick={()=>onClickClear(textarea, textInput)}/>
+          <input type="button" className="button btn-clear" value="Clear" onClick={()=>onClickClear(textarea, textInput)}/>
         </div>
       </div>
     );
