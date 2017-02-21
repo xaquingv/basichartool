@@ -32,7 +32,7 @@ class BrokenBar extends React.Component {
     }
 
     return (
-      <div className="chart" ref="div" onClick={setChartData}>
+      <div className="canvas" ref="div" onClick={setChartData}>
       <div ref="bars"></div>
       <div ref="axis">
       <div ref="axis_tick"></div>

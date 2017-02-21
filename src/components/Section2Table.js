@@ -83,6 +83,10 @@ class Section extends React.Component {
                   onClick={() => onClickCreate(dataTable, show)}
                 />
                 </div>
+
+                {/* test hidden ground */}
+                <span className="test ff-data js-test-x"></span>
+                <span className="test ff-ss js-test-y"></span>
             </div>
         );
     }

@@ -10,7 +10,7 @@ const space = 6
 const mapStateToProps = (state) => ({
   id: state.chartId,
   scale: state.dataChart.scales,
-  unit: state.dataTable.meta.unit,
+  unit: state.dataTable.meta.unit
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -18,14 +18,13 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 
-class AxisY extends React.Component {
+class AxisYScale extends React.Component {
   updateAxisYScale(test) {
-    const {id, scale, setAxisYScale} = this.props
+    const {scale, setAxisYScale, isPlot} = this.props
     if (!scale.y) return
 
     const els = [...document.querySelectorAll(".axis-y-grid span")].slice(0, -1)
     const widths = els.map(el => el.offsetWidth)
-    const isPlot = id.toLowerCase().indexOf("plot") > -1
     const indent = Math.max.apply(null, widths) + space + (isPlot ? 3 : 0)
     setAxisYScale(indent, this.svgHeight, this.svgMarginTop) // for react update
   }
@@ -40,6 +39,7 @@ class AxisY extends React.Component {
 
   render() {
     const {id, scale, unit} = this.props
+    //console.log("y scale")
     if (!scale.y) return null
 
     /* data */
@@ -96,4 +96,4 @@ class AxisY extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AxisY)
+export default connect(mapStateToProps, mapDispatchToProps)(AxisYScale)

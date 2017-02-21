@@ -157,11 +157,15 @@ function dataChart(dataChart = {legend: [], scales:{}, indent: 0, marginTop: 0},
         ...dataChart,
         ...action.dataChart
       }
+
+    /* TODO: clean up */
     case 'UPDATE_DATA':
       return {
         ...dataChart,
         legend: action.legend,
-        scales: action.scales
+        scales: action.scales,
+        margin: action.margin //|| {left: 0, right: 0},
+        //indent: action.margin.left
       }
     case 'APPEND_YSCALE':
       return {
@@ -170,6 +174,8 @@ function dataChart(dataChart = {legend: [], scales:{}, indent: 0, marginTop: 0},
         height: action.height,
         marginTop: action.marginTop
       }
+    /* end of clean up */
+
     default:
       return dataChart
   }

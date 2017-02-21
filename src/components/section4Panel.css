@@ -62,20 +62,17 @@
     line-height: 30px;
 }
 
-.test {
-  font-size: 13px;
-  font-family: 'Guardian Agate Sans 1 Web', monospace;
-  visibility: hidden;
-}
-
-
 /* TOTHINK: temp or not, sync with template */
 .graph {
   color: #767676; /*n-2*/
   font-size: 13px;
   font-family: 'Guardian Text Sans Web', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
   -webkit-font-smoothing: antialiased;
+  /* editor only */
   transition: all 1s ease-out;
+}
+.chart {
+  position: relative;
 }
 .headline {
   color: black;
@@ -91,7 +88,6 @@
   margin-top: 12px;
   margin-bottom: 12px;
 }
-
 .legend {
   line-height: 18px;
   margin-bottom: 24px;
@@ -103,25 +99,34 @@
   position: relative;
 }
 .legend-color {
+  position: absolute;
+  top: 1px;
   display: inline-block;
   width: 6px;
   height: 12px;
   border-radius: 2px;
-  position: absolute;
-  top: 1px;
   /* to help selection, no need in templates */
   margin: 0 4px 4px 0;
   cursor: url('../assets/icon/colordrop.svg') 12 12, auto;
 }
 .legend-label {
-  pointer-events: all;
   margin-left: 10px; /* 6+4 */
+  pointer-events: all;
 }
-
+.axis-x,
+.axis-y {
+  color: #bdbdbd; /* n-3 */
+  font-family: 'Guardian Agate Sans 1 Web', monospace;
+}
+.label {
+  color: #333;
+  line-height: 18px;
+  vertical-align: top;
+}
 footer {
   font-size: 12px;
   line-height: 16px;
-  margin-top: 16px;
+  margin-top: 6px;
   padding-top: 8px;
   border-top: 1px dotted #bdbdbd; /*n-3*/
 }
@@ -129,14 +134,10 @@ footer > div {
   word-break: break-word;
 }
 
-#section4 svg,
-#section4 chart {
-  position: absolute;
-}
 #section4 svg {
+  position: absolute;
   right: 0;
 }
-
 svg path {
   stroke-linejoin: round;
   /* for all but IE, use scale calc in template */
@@ -157,6 +158,9 @@ svg path {
   //top: 6px;
   //border: 1px solid red;
   //background-color: black !important;
+}
+.axis-x-tick {
+  //height: 180px !important;
 }
 .axis-y-grid span {
   //background-color: yellow;

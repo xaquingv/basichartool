@@ -1,5 +1,5 @@
 import {d3} from '../../lib/d3-lite'
-import {colorBarBackground} from '../../data/config'
+import {colorBarBackground, width} from '../../data/config'
 
 const rowHeight = 24
 const barHeightDefault = 16
@@ -14,18 +14,16 @@ export default function (els, dataChart, opt = {}) {
   const groupHeight = opt.barHeight ? (barHeight + barMarginBottom) * barCountInGroup : barHeightDefault
   const groupMarginBottom = rowHeight - groupHeight
 
+  // bar group
   d3.select(els.div)
-  .html("")
-  // group
   .selectAll(".group")
+  .html("")
   .data(dataChart)
-  .enter().append("div")
-  .attr("class", "group")
   .style("height", groupHeight + "px")
   .style("margin-bottom", groupMarginBottom + "px")
   .style("background-color", opt.hasGroupBgColor ? colorBarBackground : false)
-  // bars
-  .selectAll("div")
+  // bar
+  .selectAll(".bar")
   .data(d => d.value)
   .enter().append("div")
   .attr("class", "bar")
@@ -43,7 +41,7 @@ export default function (els, dataChart, opt = {}) {
   // NOTE: check and fix if any width is less than 0.5 pixel which is not displayed except value is 0
   // check
   const widths = dataChart
-  .map(group => group.value.map(bar => Math.round(bar.width*300)/100).find(width => width < 0.5))
+  .map(group => group.value.map(bar => Math.round(bar.width*width)/100).find(width => width < 0.5))
   .filter(width => width !== undefined)
 
   const tooSmall = widths.length > 0

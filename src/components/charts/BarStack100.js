@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {updateChartData} from '../../actions'
+import ComponentRow from './BarBase'
 import drawChart from './bar'
 
 const mapStateToProps = (state) => ({
@@ -25,12 +26,18 @@ class BarStack100 extends React.Component {
 
     render() {
       const {data, onSelect, callByStep} = this.props
+
       const setChartData = () => {
         if (callByStep === 3) { onSelect(data.keys, this.scale) }
       }
 
+      const isLabel = callByStep === 4
       return (
-        <div className="chart" ref="div" onClick={setChartData}></div>
+        <div className="canvas" ref="div" onClick={setChartData}>
+          {data.string1Col.map((label, i) =>
+          <ComponentRow isLabel={isLabel} label={label} width={data.string1Width} key={i}/>
+          )}
+        </div>
       )
     }
 
@@ -38,7 +45,6 @@ class BarStack100 extends React.Component {
 
     /* data */
     const {data, colors} = this.props
-    const groups = data.string1Col
     const numberRows = data.numberRows
     const numberRowSums = numberRows.map(ns => Math.round(ns.reduce((n1, n2) => n1 + n2)*100)/100)
 
@@ -52,11 +58,10 @@ class BarStack100 extends React.Component {
     .range([0, 100])
 
     // chart
-    const dataChart = groups.map((group, i) => {
+    const dataChart = numberRows.map((numRow, i) => {
       const scale = scaleX(i)
       return {
-        group: group,
-        value: numberRows[i].map(num => ({
+        value: numRow.map(num => ({
           title: Math.round(scale(num)) + "% (" + num + ")",
           width: scale(num)
         }))

@@ -44,7 +44,7 @@ class Line extends React.Component {
   renderChart() {
 
     /* data */
-    const {data, colors} = this.props
+    const {data, colors, callByStep} = this.props
     const dates = data.dateCol
 
     const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
@@ -75,15 +75,16 @@ class Line extends React.Component {
     // TODO: move to another validatetion file
     // NOTE: double check if discrete and conti are the same
     // if the same (duplicate), hide the discrete line
+    if (callByStep === 4) return
     const elLineDiscrete = d3.select("#lineDiscrete")
     const elLineContiPathD = d3.select("#lineConti path").attr("d")
     if (!elLineDiscrete) {
       return
     } else if (elLineContiPathD === elLineDiscrete.select("path").attr("d")) {
       elLineDiscrete.classed("d-n", true)
-    } else if (elLineContiPathD !== elLineDiscrete.select("path").attr("d")) {
+    } /*else if (elLineContiPathD !== elLineDiscrete.select("path").attr("d")) {
       elLineDiscrete.classed("d-n", false)
-    }
+    }*/
   }
 }
 

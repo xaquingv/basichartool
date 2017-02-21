@@ -4,6 +4,7 @@ import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 import {updateChartData} from '../../actions'
 import {addBarsBackground, drawBarSticks} from './onBar'
+import ComponentRow from './BarBase'
 
 
 const barHeight = 16
@@ -17,10 +18,10 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
+  onSelect: (keys, scale, margins) => dispatch(updateChartData(keys, scale, margins))
 })
 
-
+// TODO: still res issue to sort out
 class ArrowOnBar extends React.Component {
 
   componentDidMount() {
@@ -32,16 +33,27 @@ class ArrowOnBar extends React.Component {
 
   render() {
     const {data, onSelect, callByStep} = this.props
+    //console.log(callByStep)
+    //console.log(this.margin, "(this)")
+    //console.log(data.margin, "(data)")
+
+    // step 3
     const setChartData = () => {
       if (callByStep === 3) {
         const key = data.keys
         const legendKeys = ["Change from " + key[0] + " to " + key[1]]
-        onSelect(legendKeys, this.scale)
+        onSelect(legendKeys, this.scale, this.margin)
       }
     }
 
+    // step 4
+    const isLabel = callByStep === 4
     return (
-      <div className="chart" ref="div" onClick={setChartData}></div>
+      <div className="canvas" ref="div" onClick={setChartData}>
+        {data.string1Col.map((label, i) =>
+        <ComponentRow isLabel={isLabel} label={label} width={data.string1Width} key={i}/>
+        )}
+      </div>
     )
   }
 
@@ -80,14 +92,17 @@ class ArrowOnBar extends React.Component {
     // NOTE: fix pixel out of bar issue (range [0, 3px])
     // due to extrem even values at two ends
     // which causes faulty layout on iOS mobile
-    this.fixPixelOutOfLayout()
+    this.fixPixelOutOfLayoutOnce()
   }
 
   drawChart() {
     // group and background bars
     // margin 0 at two ends due to un-pre-calculat-able pixel shift
     // patch fix in fixPixelOutOfLayout()
-    let gs = addBarsBackground(this.refs.div, this.dataChart, 0)
+    let margin = this.margin ? this.margin : this.props.data.margin
+    margin = margin ? margin : {left: 0, right: 0}
+
+    let gs = addBarsBackground(this.refs.div, this.dataChart, margin.left, margin.right)
 
     // arrow - line
     drawBarSticks(gs)
@@ -105,8 +120,11 @@ class ArrowOnBar extends React.Component {
     .style("transform", d => d.isEven ? "rotate(45deg)" : false)
   }
 
-  fixPixelOutOfLayout(chartId) {
-    const elChart = document.querySelector("#" + this.props.id + " .chart")
+  fixPixelOutOfLayoutOnce(chartId) {
+    // run once
+    if (this.margin || this.props.data.margin) return
+
+    const elChart = document.querySelector("#" + this.props.id + " .canvas")
     const chartWidth = elChart.offsetWidth
     const elKicks = [...elChart.querySelectorAll(".js-kick")]
 
@@ -117,16 +135,17 @@ class ArrowOnBar extends React.Component {
     const tickRotate = Math.ceil((tickShift*Math.sqrt(2) /* 45deg  rotation */ - tickShift)*10) / 10
     const ls = elKicks.map(el => el.offsetLeft - (el.classList.contains("is-even") ? tickRotate : 0)).filter(left => left < 0)
     const rs = elKicks.map(el => el.offsetLeft + tickShift*2 + (el.classList.contains("is-even") ? tickRotate : 0)).filter(right => right > chartWidth)
-    const groupMarginLeft  = ls.length === 0 ? 0 : Math.abs(Math.min(...ls))
-    const groupMarginRight = rs.length === 0 ? 0 : Math.max(...rs) - chartWidth
+    const groupMarginLeft  = ls.length === 0 ? 0 : Math.ceil(Math.abs(Math.min(...ls)))
+    const groupMarginRight = rs.length === 0 ? 0 : Math.ceil(Math.max(...rs) - chartWidth)
 
     // test2: return if kicks don't break layout
     if (groupMarginLeft === 0 && groupMarginRight === 0) return
 
     // fix
-    const elGroups = [...elChart.querySelectorAll(".group")]
+    const elGroups = [...elChart.querySelectorAll(".shape")]
     elGroups.forEach(el => el.style.margin = "0 " + groupMarginRight + "px 0 " + groupMarginLeft + "px")
-    //console.log("groupMargin:", groupMargin)
+    this.margin = {left: groupMarginLeft, right: groupMarginRight}
+    console.log("margin:", groupMarginLeft, groupMarginRight)
   }
 }
 
@@ -137,6 +156,7 @@ function getArrowData(d) {
   switch (true) {
     case d.value[1] - d.value[0] > 0:
     // increase, right
+    //console.log("shift:", d.shift)
     return {
       color: colors[0],
       headTop: headTop,

@@ -53,6 +53,9 @@
 .fw-n { font-weight: normal; }
 .ws-n { white-space: nowrap; }
 
+.ff-ss   {font-family: 'Guardian Text Sans Web', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;}
+.ff-data {font-family: 'Guardian Agate Sans 1 Web', monospace;}
+
 /* index.css */
 body {
   margin: 0;

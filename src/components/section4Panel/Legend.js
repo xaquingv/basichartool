@@ -5,7 +5,8 @@ import {dropColorTo} from '../../actions'
 
 const mapStateToProps = (state) => ({
   dataSetup: state.dataSetup,
-  legend: state.dataChart.legend
+  legend: state.dataChart.legend,
+  dataChart: state.dataChart
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -16,10 +17,16 @@ const mapDispatchToProps = (dispatch) => ({
 class Legend extends React.Component {
 
   render() {
-    const {legend, dataSetup, onDropColor} = this.props
+    const {dataChart, dataSetup, onDropColor, isBarBased} = this.props
+    const {legend, string1Width} = dataChart
+
     const length = legend.length
     const colors = dataSetup.colors
     const display = dataSetup.display.legend
+
+    const chartWidth = dataSetup.size.w || 300
+    const labelWidth = string1Width
+    const marginLeft = isBarBased && (labelWidth <= chartWidth/3) ? labelWidth : 0
 
     let drawLegend = null
     // TODO: add contentEditable component to label spans
@@ -37,7 +44,7 @@ class Legend extends React.Component {
     }
 
     return (
-      <div className={"legend" + (display ? "" : " d-n")}>{drawLegend}</div>
+      <div className={"legend" + (display ? "" : " d-n")} style={{marginLeft: marginLeft}}>{drawLegend}</div>
     )
   }
 }

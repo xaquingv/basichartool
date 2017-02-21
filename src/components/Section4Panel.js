@@ -5,27 +5,26 @@ import {d3} from '../lib/d3-lite'
 import scrollTo from '../lib/scrollTo'
 import {metaKeys, default_metaText, ratio} from '../data/config'
 import {updateSize} from '../actions'
-
-import ComponentSize    from './section4Panel/Size'
-import ComponentResponsive    from './section4Panel/Responsive'
-import ComponentPalette from './section4Panel/Palette'
-import ComponentDisplay from './section4Panel/Display'
-import ComponentLegend  from './section4Panel/Legend'
-import ComponentAxisX   from './section4Panel/AxisX'
-import ComponentAxisY   from './section4Panel/AxisY'
-
 import {chartList} from './charts'
-import axisXAndSvgResponsive from './section4Panel/axisXTextAndSvgResponsive'
+
+import ComponentSize        from './section4Panel/Size'
+import ComponentResponsive  from './section4Panel/Responsive'
+import ComponentPalette     from './section4Panel/Palette'
+import ComponentDisplay     from './section4Panel/Display'
+import ComponentLegend      from './section4Panel/Legend'
+import ComponentXAxis       from './section4Panel/AxisX'
+import ComponentYAxis       from './section4Panel/AxisY'
+import axisXResponsive      from './section4Panel/axisXTextAndSvgResponsive'
+import axisYResponsive      from './section4Panel/axisYTextResponsive'
 
 const STEP = 4;
+
 
 const mapStateToProps = (state) => ({
   step: state.step,
   stepActive: state.stepActive,
   chartId: state.chartId,
-  svgIndent: state.dataChart.indent,
-  svgHeight: state.dataChart.height,
-  scales: state.dataChart.scales,
+  chartData: state.dataChart,
   metaData: state.dataTable.meta,
   display: state.dataSetup.display,
   graphWidth: state.dataSetup.width,
@@ -39,7 +38,7 @@ const mapDispatchToProps = (dispatch) => ({
 class Section extends React.Component {
 
   componentDidUpdate() {
-    const {stepActive, metaData, display, setSize, scales} = this.props
+    const {stepActive, metaData, display, setSize, chartData} = this.props
     if (stepActive < STEP) return
 
     /* header */
@@ -58,10 +57,17 @@ class Section extends React.Component {
     // set chart size to setup1
     const elChart = document.querySelector(".js-chart")
     setTimeout(() => setSize({w: elChart.offsetWidth, h: elChart.offsetHeight}), 1000)
+    // NOTE: setTimeout due to css transition
 
-    // res axis-x label posiiton
-    // setTimeout due to css transition
-    if (scales.x) { setTimeout(() => axisXAndSvgResponsive(), 1000) }
+    // axes
+    // res y labels and x axis' label posiitons
+    const {scales, string1Width} = chartData
+    if (scales.x) {
+      setTimeout(() => {
+        axisYResponsive(string1Width)
+        axisXResponsive()
+      }, 1000)
+    }
 
 
     /* navigation */
@@ -74,23 +80,24 @@ class Section extends React.Component {
 
   render() {
 
-    const {stepActive, chartId, graphWidth} = this.props;
+    const {stepActive, chartId, graphWidth, chartData} = this.props;
 
     // TODO: responsive width
+    const isOnBar = chartId.indexOf("onBar") > -1
     const isBarBased = chartId.toLowerCase().indexOf("bar") > -1
+    const isPlot = chartId.toLowerCase().indexOf("plot") > -1
     const ComponentChart = chartList[chartId]
     const chartComponent = ComponentChart
     ? (
-      <div id={chartId+"_edit"} data-id={chartId} className="chart-edit js-chart" style={{
-        marginTop: isBarBased ? "30px" : 0,
+      <div
+        data-id={chartId} data-res-y={chartData.string1IsRes && isBarBased} className="chart js-chart" style={{
+        marginTop: isBarBased ? "24px" : 0,
         marginBottom: isBarBased ? 0 : "30px",
-        paddingBottom: isBarBased ? false : (ratio*100) + "%", /*TODO*/
-        position: "relative",
-        color: "#bdbdbd", /* n-3 */
-        fontFamily: "'Guardian Agate Sans 1 Web', monospace"
+        paddingBottom: isBarBased ? "1px" : (ratio*100) + "%",
+        // 1px for barBasaed to keep chart's height
       }}>
-        <ComponentAxisY />
-        <ComponentAxisX />
+        <ComponentXAxis isBarBased={isBarBased} isOnBar={isOnBar} isPlot={isPlot}/>
+        <ComponentYAxis isPlot={isPlot}/>
         <ComponentChart id={chartId+"_edit"} callByStep={STEP} />
       </div>
     )
@@ -102,7 +109,7 @@ class Section extends React.Component {
         <header className="header">
           <div className="headline" ref="headline"></div>
           <div className="standfirst" ref="standfirst"></div>
-          <ComponentLegend />
+          <ComponentLegend isBarBased={isBarBased}/>
         </header>
         {chartComponent}
         <footer ref="source"></footer>
@@ -127,8 +134,6 @@ class Section extends React.Component {
         {/* any styles inside graph needs to be either included in the template.js or inline */}
         {graphComponent}
         {/* end of graph */}
-
-        <span className="test js-test"></span>
       </div>
     )
   }

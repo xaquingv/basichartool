@@ -17,7 +17,7 @@
   text-align: left; /* for chart */
 }
 
-#section3 .chart,
+#section3 .canvas,
 #section3 svg {
   cursor: pointer;
 }
@@ -30,13 +30,25 @@
   margin-bottom: 5px;
   box-sizing: border-box;
 }
-#section3 #plotDot svg,
-#section3 #plotScatter svg {
+#plotDot svg,
+#plotScatter svg {
   margin-left: -3px;
   margin-bottom: 3px;
 }
-#section3 #lineConti svg,
-#section3 #lineDiscrete svg {
+#lineConti svg,
+#lineDiscrete svg {
   margin-left: -1px;
   margin-bottom: 4px;
+}
+
+/* temp: disable charts */
+#col,
+#colGroup,
+#colGroupStack,
+#colGroupStack,
+#slopegraph,
+#brokenBar {
+  opacity: 0.3;
+  background-color: #eaeaea;
+  pointer-events: none;
 }

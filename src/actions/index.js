@@ -53,10 +53,11 @@ export const setColors = (colors) => ({
   type: "SET_COLORS",
   colors
 })
-export const updateChartData = (legend, scales) => ({
+export const updateChartData = (legend, scales, margin) => ({
   type: "UPDATE_DATA",
   legend,
-  scales
+  scales,
+  margin
 })
 
 /* section 4 */

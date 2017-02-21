@@ -4,10 +4,12 @@ import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 import {updateChartData} from '../../actions'
 import {addBarsBackground, drawBarSticks} from './onBar'
+import ComponentRow from './BarBase'
 
 const barHeight = 16
 const dotSzie = 10
 const dotTop = (barHeight - dotSzie) / 2
+const margin = dotSzie/2
 
 const mapStateToProps = (state) => ({
   data: state.dataChart,
@@ -15,7 +17,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
+  onSelect: (keys, scale, margins) => dispatch(updateChartData(keys, scale, margins))
 })
 
 
@@ -30,12 +32,20 @@ class DotsOnBar extends React.Component {
 
   render() {
     const {data, onSelect, callByStep} = this.props
+
+    // step 3
     const setChartData = () => {
-      if (callByStep === 3) { onSelect(data.keys, this.scale) }
+      if (callByStep === 3) { onSelect(data.keys, this.scale, {left: margin, right: margin}) }
     }
 
+    // step 4
+    const isLabel = callByStep === 4
     return (
-      <div className="chart" ref="div" onClick={setChartData}></div>
+      <div className="canvas" ref="div" onClick={setChartData}>
+        {data.string1Col.map((label, i) =>
+        <ComponentRow isLabel={isLabel} label={label} width={data.string1Width} key={i}/>
+        )}
+      </div>
     )
   }
 
@@ -70,7 +80,7 @@ class DotsOnBar extends React.Component {
 
   drawChart() {
 
-    let gs = addBarsBackground(this.refs.div, this.dataChart, dotSzie/2)
+    let gs = addBarsBackground(this.refs.div, this.dataChart, margin)
 
     // line that connects dots
     drawBarSticks(gs)

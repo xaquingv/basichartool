@@ -33,7 +33,6 @@ class ColStack extends React.Component {
 
     return (
       <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
-        //top: "-1px",
         width: "calc(100% - " + (data.indent) + "px)",
         height: data.height + "%"
       }} onClick={setChartData}></svg>

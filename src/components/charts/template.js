@@ -57,6 +57,9 @@ export default function(graph) {
         font-family: "Guardian Text Sans Web", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
         -webkit-font-smoothing: antialiased;
       }
+      .chart {
+        position: relative;
+      }
       .headline {
         color: black;
         font-size: 18px;
@@ -82,32 +85,38 @@ export default function(graph) {
         position: relative;
       }
       .legend-color {
+        position: absolute;
+        top: 1px;
         display: inline-block;
         width: 6px;
         height: 12px;
         margin-right: 4px;
         border-radius: 2px;
-        position: absolute;
-        top: 1px;
       }
       .legend-label {
-        pointer-events: all;
         margin-left: 10px;
       }
+      .axis-x,
+      .axis-y {
+        color: #bdbdbd; /* n-3 */
+        font-family: 'Guardian Agate Sans 1 Web', monospace;
+      }
+      .label {
+        color: #333;
+        line-height: 18px;
+        vertical-align: top;
+      }
       svg {
+        position: absolute;
         right: 0;
-        padding: 1px;
       }
       svg path {
         stroke-linejoin: round;
       }
-      svg, chart {
-        position: absolute;
-      }
       footer {
         font-size: 12px;
         line-height: 16px;
-        margin-top: 16px;
+        margin-top: 6px;
         padding-top: 8px;
         border-top: 1px dotted #bdbdbd; /*n-3*/
       }
@@ -131,6 +140,11 @@ export default function(graph) {
 
   <body>
     <script>
+      var elChart = document.querySelector(".js-chart")
+      var elAxisX = document.querySelector(".axis-x")
+      var indentL = parseInt(elAxisX.dataset.lIndent, 10) || 0
+      var extendR = parseInt(elAxisX.dataset.rIndent, 10) || 0
+
       // handle event
       var timeout = null
       window.addEventListener('resize', function(evt) {
@@ -138,6 +152,7 @@ export default function(graph) {
         timeout = window.setTimeout(function() {
           iframeMessenger.resize()  // 1.
           rescaleSvgElements()      // 2.
+          updateYLabelWidths()
           updateXAxisTextPosition() // 3.
           timeout = null
         }, 200)
@@ -145,6 +160,7 @@ export default function(graph) {
 
       iframeMessenger.resize()  // 1.
       rescaleSvgElements()      // 2.
+      updateYLabelWidths()
       updateXAxisTextPosition() // 3.
 
       /* 1. iframe resize */
@@ -166,12 +182,33 @@ export default function(graph) {
           circles.forEach(function(circle) { circle.setAttribute("r", r); })
       }}
 
+      /* ... */
+      function updateYLabelWidths() {
+        if (elChart.getAttribute("data-res-y") === "false") return
+
+        const elRows = [...elChart.querySelectorAll(".row")]
+        const elGroups = [...elChart.querySelectorAll(".group")]
+        const elLegend = document.querySelector(".legend")
+        const labelWidth = elChart.querySelector(".label").offsetWidth
+        const chartWidth = elChart.offsetWidth
+        const isInline = labelWidth <= chartWidth/3
+
+        elRows.forEach(el => {
+          el.style.height = isInline ? "24px" : "auto"
+        })
+        elGroups.forEach(el => {
+          el.style.width = isInline ? "calc(" + 100 + "% - " + labelWidth + "px)" : "100%"
+          el.style.display = isInline ? "inline-block" : "block"
+        })
+
+        elAxisX.style.width = "calc(100% - " + ((isInline ? labelWidth : 0) + indentL + extendR + 1) + "px)"
+        elLegend.style.marginLeft = isInline ? labelWidth + "px" : 0
+      }
+
       /* 3. x axis label position update */
       function updateXAxisTextPosition() {
         var elsTick = document.querySelectorAll(".axis-x-tick")
         var elsText = document.querySelectorAll(".axis-x-text")
-        var elAxisX = document.querySelector(".axis-x")
-        var elChart = document.querySelector(".js-chart")
         var elTest = document.querySelector(".js-test-res")
 
         // 1. default width / left
@@ -186,9 +223,10 @@ export default function(graph) {
           el.style.textAlign = "center"
           return txtWidth
         })
+        elTest.textContent = ""
 
         var isMultiLine = txtWidths.find(w => w > maxWidth)
-        var isBarBased = elChart.getAttribute("id").toLowerCase().indexOf("bar") > -1
+        var isBarBased = elChart.getAttribute("data-id").toLowerCase().indexOf("bar") > -1
 
         // 2. adjust width if multi lines
         if (isMultiLine) {
@@ -202,16 +240,16 @@ export default function(graph) {
 
         // 3. adjust two ends if out of frame
         var iLast = elsTick.length - 1
-        var indent = parseInt(elAxisX.dataset.yIndent, 10)
+        var indent = parseInt(elAxisX.dataset.yIndent, 10) + indentL
         var textStrLeft = (indent + elsTick[0].offsetLeft) - elsText[0].offsetWidth / 2
-        var textEndRight = (axisXWidth - elsTick[iLast].offsetLeft) - elsText[iLast].offsetWidth / 2
+        var textEndRight = (axisXWidth + extendR - elsTick[iLast].offsetLeft) - elsText[iLast].offsetWidth / 2
         if (textStrLeft < 0) {
           elsText[0].style.left = ((isBarBased ? 0 : 1) - indent) + "px"
           elsText[0].style.textAlign = "left"
         }
         if (textEndRight < 0) {
           elsText[iLast].style.left = "auto"
-          elsText[iLast].style.right = "-1px"
+          elsText[iLast].style.right = (-1) - extendR + "px"
           elsText[iLast].style.textAlign = "right"
         }
 

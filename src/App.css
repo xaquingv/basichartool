@@ -75,3 +75,8 @@ h1 {
 [contenteditable="true"]:hover {
   border-bottom: 1px dotted #333;
 }
+
+.test {
+  font-size: 13px;
+  visibility: hidden;
+}

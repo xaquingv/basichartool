@@ -1,5 +1,6 @@
 import {d3} from '../lib/d3-lite'
 import {uniqueArray, swapArray} from '../lib/array'
+import {width} from '../data/config'
 import getDataType from './detectDataType'
 import {getDateScaleValues} from './typeDate'
 
@@ -108,9 +109,20 @@ export default function(dataTable, show) {
   const numberData = cols.filter(col => col.type === "number")
   //console.log(dateData)
 
+  const space = 12
+  const elTest = document.querySelector(".js-test-y")
+  const rowGroup = string1Col.length > 0 ? string1Col : dateData.string
+  const string1Width = Math.max.apply(null, rowGroup.map(str => {
+    elTest.textContent = str
+    return elTest.offsetWidth
+  })) + space
+  const string1IsRes = string1Width > width/3
+
   const chart = {
     rowCount: count.row,
-    string1Col, string2Col,
+    rowGroup,
+    string1Col, string1Width, string1IsRes,
+    string2Col,
     dateCol: dateData.values,
     dateHasDay: dateData.hasDay,
     dateFormat: dateData.format,

@@ -44,7 +44,7 @@ class LineDiscrete extends React.Component {
   renderChart() {
 
     /* data */
-    const {data, colors} = this.props
+    const {id, data, colors, callByStep} = this.props
 
     // scale
     this.scale = {}
@@ -66,6 +66,9 @@ class LineDiscrete extends React.Component {
 
     /* draw */
     drawChart(this.refs, dataChart, this.scale, colors)
+
+    if (callByStep === 4) return
+    d3.select("#"+id).classed("d-n", false)
   }
 }
 

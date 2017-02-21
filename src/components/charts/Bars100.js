@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {uniqueArray} from '../../lib/array'
 import {updateChartData} from '../../actions'
+import ComponentRow from './BarBase'
 import drawChart from './bar'
 
 const mapStateToProps = (state) => ({
@@ -25,6 +26,7 @@ class Bars100 extends React.Component {
 
   render() {
     const {data, onSelect, callByStep} = this.props
+
     const setChartData = () => {
       if (callByStep === 3) {
         const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : data.keys
@@ -32,8 +34,13 @@ class Bars100 extends React.Component {
       }
     }
 
+    const isLabel = callByStep === 4
     return (
-      <div className="chart" ref="div" onClick={setChartData}></div>
+      <div className="canvas" ref="div" onClick={setChartData}>
+        {data.string1Col.map((label, i) =>
+        <ComponentRow isLabel={isLabel} label={label} width={data.string1Width} key={i}/>
+        )}
+      </div>
     )
   }
 
@@ -61,7 +68,6 @@ class Bars100 extends React.Component {
 
     // chart
     const dataChart = labelGroup.map((label, i) => ({
-        group: label,
         value: [{
           title: isAnyNumbersLargerThan100 ?
             Math.round(this.scale.x(numbers[i])) + "% (" + numbers[i] + ")" :

@@ -9,27 +9,29 @@ const barMarginBottom = 8     //style1
 const stickHeight = 4
 const stickTop = (barHeight - stickHeight) / 2
 
-export function addBarsBackground(el, dataChart, margin) {
+export function addBarsBackground(el, dataChart, marginLeft, marginRight = marginLeft) {
 
   let barBackground =
   d3.select(el)
-  .html("")
   .selectAll(".group")
+  .html("")
   .data(dataChart)
-  .enter().append("div")
-  .style("margin-bottom", barMarginBottom + "px") //style 1
-  .style("background-color", colorBarBackground)  //style 1
-  //.style("margin-bottom", barMarginBottom + "px")   //style 2
-  //.style("border-bottom", "1px dotted " + colorBarBackground) // style 2
+  .style("margin-bottom", barMarginBottom + "px")             //style 1
+  .style("background-color", colorBarBackground)              //style 1
+//.style("margin-bottom", barMarginBottom + "px")             //style 2
+//.style("border-bottom", "1px dotted " + colorBarBackground) //style 2
   .append("div")
-  .attr("class", "group")
-  .style("height", barHeight + "px") //style1
-  //.style("height", barHeightHalf + "px") //style2
+  .attr("class", "shape")
   .style("position", "relative")
-  // margin used to avoid pixel out of canvas
+  .style("height", barHeight + "px")                          //style 1
+//.style("height", barHeightHalf + "px")                      //style 2
+
+  // NOTE: margin used to avoid pixel out of canvas
   // ex. half tick / dot size / extra customisation in case of arrow
   // see fixPixelOutOfLayout() in ArrowOnBar.js
-  .style("margin", "0 " + margin + "px")
+  .style("margin-left", marginLeft + "px")
+  .style("margin-right", marginRight + "px")
+
   .selectAll("div")
   .data(d => d)
   .enter()

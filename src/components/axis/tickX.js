@@ -84,7 +84,7 @@ export function getTickTexts(id, isBarBased, dates, format, hasDay, domain, tick
 
 export function getTickTextWidths(texts) {
 
-  const el = document.querySelector(".js-test")
+  const el = document.querySelector(".js-test-x")
   return texts.map(txt => {
     el.textContent = txt
     const width = Math.ceil(el.offsetWidth * 100 / 200)

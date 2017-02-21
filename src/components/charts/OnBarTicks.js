@@ -3,12 +3,13 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {updateChartData} from '../../actions'
 import {addBarsBackground} from './onBar'
+import ComponentRow from './BarBase'
 
 
 const barHeight = 16
 const tickWidth = 6
-const tickShift = tickWidth / 2
 const tickBorderRadius = 2
+const margin = tickWidth / 2
 
 const mapStateToProps = (state) => ({
   data: state.dataChart,
@@ -16,7 +17,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
+  onSelect: (keys, scale, margins) => dispatch(updateChartData(keys, scale, margins))
 })
 
 
@@ -31,12 +32,20 @@ class TickOnBar extends React.Component {
 
   render() {
     const {data, onSelect, callByStep} = this.props
+
+    // step 3
     const setChartData = () => {
-      if (callByStep === 3) { onSelect(data.keys, this.scale) }
+      if (callByStep === 3) { onSelect(data.keys, this.scale, {left: margin, right: margin}) }
     }
 
+    // step 4
+    const isLabel = callByStep === 4
     return (
-      <div className="chart" ref="div" onClick={setChartData}></div>
+      <div className="canvas" ref="div" onClick={setChartData}>
+        {data.rowGroup.map((label, i) =>
+        <ComponentRow isLabel={isLabel} label={label} width={data.string1Width} key={i}/>
+        )}
+      </div>
     )
   }
 
@@ -74,7 +83,7 @@ class TickOnBar extends React.Component {
 
   drawChart(opt) {
 
-    let gs = addBarsBackground(this.refs.div, this.dataChart, tickShift)
+    let gs = addBarsBackground(this.refs.div, this.dataChart, margin)
 
     // ticks
     gs.append("div")
@@ -85,7 +94,7 @@ class TickOnBar extends React.Component {
     .style("height", d => (barHeight/d.count) + "px")
     .style("position", "absolute")
     .style("top", d => (barHeight * (d.index-1) / d.count) + "px")
-    .style("left", d => "calc(" + opt.scaleX(d.value) + "% - " + tickShift + "px)")
+    .style("left", d => "calc(" + opt.scaleX(d.value) + "% - " + margin + "px)")
     //.style("border-radius", tickBorderRadius + "px")
     .style("border-top-right-radius",    d => d.index === 1       ? tickBorderRadius + "px" : false)
     .style("border-top-left-radius",     d => d.index === 1       ? tickBorderRadius + "px" : false)
