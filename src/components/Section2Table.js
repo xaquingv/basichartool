@@ -26,7 +26,6 @@ class Section extends React.Component {
 
     render() {
         const {/*step,*/ stepActive, dataTable, show, onClickCreate, onToggle, onTranspose/*, ... */} = this.props;
-        //console.log(dataTable)
         const isData = dataTable.body ? true : false;
         const dataTypes = isData ? dataTable.type : [];
         const tableHead = isData ? dataTable.head : [];
@@ -54,7 +53,7 @@ class Section extends React.Component {
                         {/*<span contentEditable={true}>*/}
                         {/* how about use text input ? */}
                           {type.list[0].toUpperCase() +
-                          (type.format!=="" ? " : " + type.format : "")}
+                          (type.format ? " : " + type.format : "")}
                         {/*</span>*/}
                       </th>
                       )}

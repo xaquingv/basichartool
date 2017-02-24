@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {appendAxisYScale} from '../../actions'
-import {numToTxt} from '../../lib/format'
+import {numToTxt, appendFormatToNum} from '../../data/typeNumber'
 import {getDomainExtend} from '../axis/domain'
 
 
@@ -10,6 +10,7 @@ const space = 6
 const mapStateToProps = (state) => ({
   id: state.chartId,
   scale: state.dataChart.scales,
+  numFormat: state.dataChart.numberFormat,
   unit: state.dataTable.meta.unit
 })
 
@@ -38,7 +39,7 @@ class AxisYScale extends React.Component {
   }
 
   render() {
-    const {id, scale, unit} = this.props
+    const {id, scale, numFormat, unit} = this.props
     //console.log("y scale")
     if (!scale.y) return null
 
@@ -62,7 +63,10 @@ class AxisYScale extends React.Component {
         pos: Math.round(axisY(tick)*100)/100
     }))
     // add unit to last tick text
-    tickData[tickData.length-1].txt += unit ? " " + unit : ""
+    //tickData[tickData.length-1].txt += unit ? " " + unit : ""
+    const is100 = id.indexOf("100") > -1
+    const textLast = tickData[tickData.length-1].txt
+    tickData[tickData.length-1].txt = appendFormatToNum(textLast, unit, numFormat, is100, false, false)
 
     const indexTick0 = ticks.indexOf(0)
     const indexTickSolidGrid = indexTick0 > -1 ? indexTick0 : 0

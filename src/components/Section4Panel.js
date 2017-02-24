@@ -63,6 +63,8 @@ class Section extends React.Component {
     // res y labels and x axis' label posiitons
     const {scales, string1Width} = chartData
     if (scales.x) {
+      axisYResponsive(string1Width)
+      axisXResponsive()
       setTimeout(() => {
         axisYResponsive(string1Width)
         axisXResponsive()

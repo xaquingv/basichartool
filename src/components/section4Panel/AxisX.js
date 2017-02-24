@@ -1,7 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {getTickSteps, getTickTexts, getTickTextWidths} from '../axis/tickX'
 import {d3} from '../../lib/d3-lite'
+import {appendFormatToNum} from '../../data/typeNumber'
+import {getTickSteps, getTickTexts, getTickTextWidths} from '../axis/tickX'
 
 
 const mapStateToProps = (state) => ({
@@ -30,12 +31,12 @@ class AxisX extends React.Component {
     if (!scales.x) return null
 
     /* data */
-    const dates = dateCol || string1Col
+    const dataX = dateCol || string1Col
     const axisX = scales.x.copy().range([0, 100])
-    const ticks = getTickSteps(id, isBarBased, dates, dateFormat, rowCount, axisX)
-    const texts = getTickTexts(id, isBarBased, dates, dateFormat, dateHasDay, axisX.domain(), ticks)
+    const ticks = getTickSteps(id, isBarBased, dataX, dateFormat, rowCount, axisX)
+    const texts = getTickTexts(id, isBarBased, dataX, dateFormat, dateHasDay, axisX.domain(), ticks)
     const is100 = id.indexOf("100") > -1
-    if ((unit&&isBarBased) || is100) { texts[0] += unit || "%" }
+    texts[0] = appendFormatToNum(texts[0], unit, dataChart.numberFormat, is100, isBarBased, true) // true - isX
 
     const tickData = getTickTextWidths(texts).map((width, i) => ({
       pos: Math.round(axisX(ticks[i])*100)/100,

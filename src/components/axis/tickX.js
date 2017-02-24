@@ -1,5 +1,5 @@
 import {d3} from '../../lib/d3-lite'
-import {numToTxt} from '../../lib/format'
+import {numToTxt} from '../../data/typeNumber'
 import {getDateTextFormat, dateNumToTxt} from '../../data/typeDate'
 
 let isMarked = false

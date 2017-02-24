@@ -4,10 +4,12 @@
   - scale in time (JS DATE format) or linear (NUMBER)
   - label as STRING in different formats
 */
-
-// ref: https://docs.google.com/spreadsheets/d/1Y9_YUvjYvc0sRjKIUQDsmyQ8D656XYw0RsseQXBFnNQ (examples)
+ // ref: https://docs.google.com/spreadsheets/d/1Y9_YUvjYvc0sRjKIUQDsmyQ8D656XYw0RsseQXBFnNQ (examples)
 // cfg: https://docs.google.com/spreadsheets/d/1Kw1M08x6yybOG8b7JxDvxIbtdffFzCsB0xQ7UuLuzh8/edit#gid=1819233225
+
 import {d3} from '../lib/d3-lite.js'
+
+//const regexDateSeparators = /\/|-|\.|\s/g, the third part equaivalent to /\p{Sc}/
 
 const formatList = [
   // time
@@ -35,7 +37,7 @@ const formatSp1 = [
 ]
 
 /* 1. input format */
-export function getDateInputFormat(data) {
+export function getDateAnalysis(data) {
   const dateFormat =
   testDateFormatSp1(data) ||
   testDateFormatSp2(data) ||
@@ -46,13 +48,13 @@ export function getDateInputFormat(data) {
 
   const dateHasDay = dateFormat.indexOf("%d") > -1 || dateFormat.indexOf("%H") > -1
   return {
+    valid: dateFormat ? true : false,
     format: dateFormat,
     hasDay: dateHasDay
   //scaleX: dateHasDay ? "time" : "linear",
   //values: getDateValues(dataClean, dateFormat, dateHasDay)
   }
 }
-
 
 function testDateFormats(data, formats, who) {
   let dateParser

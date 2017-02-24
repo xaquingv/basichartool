@@ -11,7 +11,8 @@ export default function(dataTableRaw) {
 
     let list = output.types
     let type = list[0]
-    let format = (type.indexOf("string") === -1) ? output[type] : {format:""}
+    let format = output[type]
+    //(type.indexOf("string") === -1) ? output[type] : {format:""}
 
     return {list, ...format}
   })
@@ -23,7 +24,7 @@ export default function(dataTableRaw) {
   })
 
   /* 3. dataTableDraw: type, head, body, flag */
-  let dataTableDraw = { flag:{}};
+  let dataTableDraw = { flag: {} }
 
   // detect if first row is label:
   // - head types doesn't match body types or

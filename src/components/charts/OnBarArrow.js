@@ -145,7 +145,7 @@ class ArrowOnBar extends React.Component {
     const elGroups = [...elChart.querySelectorAll(".shape")]
     elGroups.forEach(el => el.style.margin = "0 " + groupMarginRight + "px 0 " + groupMarginLeft + "px")
     this.margin = {left: groupMarginLeft, right: groupMarginRight}
-    console.log("margin:", groupMarginLeft, groupMarginRight)
+    //console.log("margin:", groupMarginLeft, groupMarginRight)
   }
 }
 
