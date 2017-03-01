@@ -22,12 +22,13 @@ export default function() {
     //console.log(err, json)
 
     if (err) {
-      console.log("Ohoh! backup config file is used due to ...", err)
+      console.log("Ohoh! backup config file is used due to ... probably connection issue!?", err)
       parseCfgJson(jsonBackup)
     } else {
       console.log("Good, config file is properly loaded from spreadsheet!")
       //console.log(json.sheets)
       parseCfgJson(json.sheets)
+      //parseCfgJson(jsonBackup)
     }
   })
 }
@@ -35,20 +36,24 @@ export default function() {
 function parseCfgJson(cfg) {
 
   /* colors: guardian's pre-defined colors */
-  colors = cfg.colors
+  colors = cfg.COLORS
   .filter(c => c.type === "all")
   .sort((c1, c2) => c1.order - c2.order).map(c => c.code)
 
-  colorBarBackground = cfg.colors.find(c => c.type === "barBackground").code || "#f1f1f1"
+  colorBarBackground = cfg.COLORS
+  .find(c => c.type === "barBackground").code || "#f1f1f1"
 
   // TODO: add map colors, see mapData.js
-
+  // ...
 
   /* charts: cfg for chart selection
   // TODO: sort by order and filter by on/off flag */
-  cfg_charts = cfg.cfg_charts.filter(chart => JSON.parse(chart.active)).map(chart => {
+  cfg_charts = cfg.CFG_CHARTS
+  .filter(chart => JSON.parse(chart.active))
+  .map(chart => {
 
-    // 1. count => 5 features
+    // 1. count => 5 features:
+    // row, date, number, string1, string2
     let count = {
       row: JSON.parse(chart.row.replace("Infinity", '"Infinity"'))
     };
@@ -56,10 +61,11 @@ function parseCfgJson(cfg) {
       count[feature] = JSON.parse(chart[feature])
     })
 
-    // 2. value => 5 features
+    // 2. value => 5 features:
+    // date_hasRepeat, number_hasNull, number_rangeType, numberH_format, string1_hasRepeat
     const value = {
-    //string1_format: chart.string1_format.trim() !== "" ? chart.string1_format : null,
       numberH_format: chart.numberH_format.trim() !== "" ? chart.numberH_format : null
+    //string1_format: chart.string1_format.trim() !== "" ? chart.string1_format : null
     };
     ["date_hasRepeat", "string1_hasRepeat", "number_hasNull", "number_rangeType"].forEach(feature => {
       value[feature] = chart[feature].trim() !== "" ? JSON.parse(chart[feature]) : null
