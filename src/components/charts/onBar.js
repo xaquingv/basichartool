@@ -13,7 +13,7 @@ export function addBarsBackground(el, dataChart, marginLeft, marginRight = margi
 
   let barBackground =
   d3.select(el)
-  .selectAll(".group")
+  .selectAll(".bars")
   .html("")
   .data(dataChart)
   .style("margin-bottom", barMarginBottom + "px")             //style 1

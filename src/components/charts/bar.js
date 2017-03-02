@@ -16,7 +16,7 @@ export default function (els, dataChart, opt = {}) {
 
   // bar group
   d3.select(els.div)
-  .selectAll(".group")
+  .selectAll(".bars")
   .html("")
   .data(dataChart)
   .style("height", groupHeight + "px")

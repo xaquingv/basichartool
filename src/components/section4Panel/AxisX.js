@@ -9,6 +9,7 @@ const mapStateToProps = (state) => ({
   id: state.chartId,
   dataChart: state.dataChart,
   chartSize: state.dataSetup.size,
+  chartColors: state.dataSetup.colors,
   unit: state.dataTable.meta.unit
 })
 
@@ -25,10 +26,11 @@ class AxisX extends React.Component {
   }
 
   render() {
-    const {id, dataChart, chartSize, isBarBased, isOnBar, isPlot, unit} = this.props
+    const {id, dataChart, chartSize/*, chartColors, */,isBarBased, isOnBar, isPlot, unit} = this.props
     const {scales, indent, dateCol, string1Col, string1Width, dateHasDay, dateFormat, rowCount} = dataChart
 
     if (!scales.x) return null
+    //console.log(chartColors)
 
     /* data */
     const dataX = dateCol || string1Col
@@ -101,9 +103,7 @@ class AxisX extends React.Component {
     margin = margin ? margin : {left: 0, right: 0}
     //console.log(margin)
 
-    d3.selectAll("#section4 .group")
-    .insert("div",":first-child")
-    .attr("class", "grid")
+    d3.selectAll("#section4 .grid")
     .style("position", "relative")
     .style("margin-left", margin.left + "px")
     .style("margin-right", (margin.right + 1) + "px")

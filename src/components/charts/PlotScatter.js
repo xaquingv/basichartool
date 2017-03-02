@@ -48,7 +48,7 @@ class ScatterPlot extends React.Component {
   renderChart() {
 
     /* data */
-    const {data, colors} = this.props
+    const {data, colors, callByStep} = this.props
     const names = data.string1Col
     const numberCols = data.numberCols
     const numberRows = data.numberRows
@@ -89,7 +89,7 @@ class ScatterPlot extends React.Component {
 
 
     /* draw */
-    drawChart(this.refs, dataChart, this.scale, "scatter", colors)
+    drawChart(this.refs, dataChart, this.scale, "scatter", colors, callByStep)
   }
 }
 

@@ -1,12 +1,21 @@
 import {d3} from '../../lib/d3-lite'
-//import {colors} from '../../data/config'
+import {width} from '../../data/config'
 
 const chartType = {
   scatter: { r: 3, stroke: 0, opacity: 0.5 },
   line:    { r: 3, stroke: 0, opacity: 1 }
 }
 
-export default function(els, dataChart, scale, who, colors) {
+export default function(els, dataChart, scale, who, colors, step) {
+  // data
+  // TODO: double check render seq
+  let r = chartType[who].r
+  // responsive r
+  if (step === 4) {
+    const elSvg = document.querySelector("#section4 svg")
+    const svgWidth = elSvg.getBoundingClientRect().width
+    r = Math.round(chartType[who].r*width*10/svgWidth)/10
+  }
 
   // init gs
   let gs =
@@ -25,7 +34,7 @@ export default function(els, dataChart, scale, who, colors) {
   .attr("cy", d => scale.y(d.y))
   .attr("title", d => "(" + d.x+ ", " + d.y + ")")
   // custom on chart type
-  .attr("r", chartType[who].r)
+  .attr("r", r)
   .attr("fill", d => d.color ? d.color : false)
   .attr("fill-opacity", d => d.y !== null ? chartType[who].opacity : 0)
   .attr("stroke-width", chartType[who].stroke)
@@ -41,7 +50,7 @@ export default function(els, dataChart, scale, who, colors) {
   .attr("cy", d => scale.y(d.y)) //number
   .attr("title", d => d.title ? d.title : "(" + d.x + ", " + d.y + ")")
   // custom on chart type
-  .attr("r", chartType[who].r)
+  .attr("r", r)
   .attr("fill", d => d.color ? d.color : false)
   .attr("fill-opacity", d => d.y !== null ? chartType[who].opacity : 0)
   .attr("stroke-width", chartType[who].stroke)

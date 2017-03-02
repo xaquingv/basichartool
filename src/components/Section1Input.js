@@ -45,14 +45,14 @@ class Section extends React.Component {
 
     return (
       <div className="section" id="section1" ref={(node) => this.node = node}>
-        <h1>1. Import data or *html file <span className="f-app">samples</span></h1>
-        <div className="row-flex p-r">
-          <input type="text" className="text" placeholder="Enter url of your json/csv/tsv/html file ..." ref={node=>textInput=node} onChange={this.openFile.bind(this)}/>
+        <h1>1. Import data {/*or *html file {/*<span className="f-app">samples</span>*/}</h1>
+        {/*<div className="row-flex p-r">
+          <input type="text" className="text" placeholder="Enter url of your html file ..." ref={node=>textInput=node} onChange={this.openFile.bind(this)}/>
           <input type="file" className="file o-0" value="" onChange={this.chooseFile.bind(this)} />
           <label className="button file-shell">Choose a file</label>
-        </div>
-        <p>or copy &</p>
-        <textarea className="textarea" placeholder="Paste your csv/tsv dataset ..." ref={node=>textarea=node}></textarea>
+        </div>*/}
+        <p>Copy & paste </p>
+        <textarea className="textarea" placeholder="your csv/tsv dataset here ..." ref={node=>textarea=node}></textarea>
         <div className="row-flex">
           <input type="button" className="button btn-import" value="Import" onClick={()=>onClickImport(textarea)}/>
           <input type="button" className="button btn-clear" value="Clear" onClick={()=>onClickClear(textarea, textInput)}/>

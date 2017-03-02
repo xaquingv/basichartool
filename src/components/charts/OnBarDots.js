@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {colors} from '../../data/config'
+//import {colors} from '../../data/config'
 import {updateChartData} from '../../actions'
 import {addBarsBackground, drawBarSticks} from './onBar'
 import ComponentRow from './BarBase'
@@ -13,6 +13,7 @@ const margin = dotSzie/2
 
 const mapStateToProps = (state) => ({
   data: state.dataChart,
+  colors: state.dataSetup.colors
   //colors: state.dataSetup.colorDiff
 })
 
@@ -80,6 +81,7 @@ class DotsOnBar extends React.Component {
 
   drawChart() {
 
+    const colors = this.props.colors
     let gs = addBarsBackground(this.refs.div, this.dataChart, margin)
 
     // line that connects dots

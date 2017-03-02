@@ -80,10 +80,10 @@ export default function() {
   /* svg circle */
   const elSvg = document.querySelector("#section4 svg")
   if (elSvg) {
-    var svgWidth = elSvg.getBoundingClientRect().width
+    const svgWidth = elSvg.getBoundingClientRect().width
     // plot chart
-    var r = Math.round(3*width*10/svgWidth)/10
-    var circles = [...elSvg.querySelectorAll("circle")]
+    const r = Math.round(3*width*10/svgWidth)/10
+    const circles = [...elSvg.querySelectorAll("circle")]
     circles.forEach((circle) => circle.setAttribute("r", r))
   }
 }

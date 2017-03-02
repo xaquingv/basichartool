@@ -92,3 +92,39 @@ export const appendAxisYScale = (indent, height, marginTop) => ({
   height,
   marginTop
 })
+// edit panel 1
+export const updateCustomColor = (colorInput) => {
+  return {
+    type: "UPDATE_COLOR_INPUT",
+    colorInput
+}}
+// edit panel 2
+export const updateXTicks = (xTicks) => ({
+  type: "UPDATE_X_TICKS",
+  xTicks
+})
+export const updateYTicks = (yTicks) => ({
+  type: "UPDATE_Y_TICKS",
+  yTicks
+})
+export const updateXRange = (xRange) => ({
+  type: "UPDATE_X_RANGE",
+  xRange
+})
+export const updateYRange = (yRange) => ({
+  type: "UPDATE_Y_RANGE",
+  yRange
+})
+// chart
+export const updateXLabels = (xLabels) => ({
+  type: "UPDATE_X_LABELS",
+  xLabels
+})
+export const updateYLabels = (yLabels) => ({
+  type: "UPDATE_Y_LABELS",
+  yLabels
+})
+export const updateLegends = (legends) => ({
+  type: "UPDATE_LEGENDS",
+  legends
+})

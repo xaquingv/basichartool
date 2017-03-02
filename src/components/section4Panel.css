@@ -54,12 +54,20 @@
   margin-right: 10px;
 }
 .palette .li-custom {
-    width: 106px;
-    box-sizing: border-box;
-    text-align: center;
-    cursor: text;
-    border: 1px solid black;
-    line-height: 30px;
+  width: 106px;
+  box-sizing: border-box;
+  line-height: 30px;
+  border: 2px solid black;
+}
+.li-custom input {
+  background-color: transparent;
+  font-family: monospace;
+  font-size: 13px;
+  text-align: center;
+  width: 60px;
+  margin-left: 20px;
+  border: 0;
+  outline: 0;
 }
 
 /* TOTHINK: temp or not, sync with template */

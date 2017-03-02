@@ -105,6 +105,7 @@ class Section extends React.Component {
     )
     : null
 
+    // TODO: move headline, standfirst, source to a component
     const graphComponent = stepActive >= STEP
     ? (
       <div className="graph js-graph" style={{width: graphWidth}}>

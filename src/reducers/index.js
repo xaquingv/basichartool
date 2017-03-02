@@ -245,6 +245,53 @@ function dataSetup(dataSetup = {colors:[], display:{}, legend:[], size:{}, width
   }
 }
 
+function dataEditable(dataEditable = {}, action) {
+  switch(action.type) {
+    case 'UPDATE_COLOR_INPUT':
+      return {
+        ...dataEditable,
+        colorInput: action.colorInput
+      }
+    case 'UPDATE_X_TICKS':
+      return {
+        ...dataEditable,
+        xTicks: action.xTicks
+      }
+    case 'UPDATE_Y_TICKS':
+      return {
+        ...dataEditable,
+        yTicks: action.yTicks
+      }
+    case 'UPDATE_X_RANGE':
+      return {
+        ...dataEditable,
+        xRange: action.xRange
+      }
+    case 'UPDATE_Y_RANGE':
+      return {
+        ...dataEditable,
+        yRange: action.yRange
+      }
+    case 'UPDATE_X_LABELS':
+      return {
+        ...dataEditable,
+        xLabels: action.xLabels
+      }
+    case 'UPDATE_Y_LABELS':
+      return {
+        ...dataEditable,
+        yLabels: action.yLabels
+      }
+    case 'UPDATE_LEGENDS':
+      return {
+        ...dataEditable,
+        legends: action.legends
+      }
+    default:
+      return dataEditable
+  }
+}
+
 const app = combineReducers({
   step,
   stepActive,
@@ -255,7 +302,8 @@ const app = combineReducers({
   dataChart,
   selection,
   chartId,
-  dataSetup
+  dataSetup,
+  dataEditable
 });
 
 export default app

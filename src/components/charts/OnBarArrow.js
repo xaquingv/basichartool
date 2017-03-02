@@ -92,7 +92,8 @@ class ArrowOnBar extends React.Component {
     // NOTE: fix pixel out of bar issue (range [0, 3px])
     // due to extrem even values at two ends
     // which causes faulty layout on iOS mobile
-    this.fixPixelOutOfLayoutOnce()
+    // TODO: fix render and update issue
+    //this.fixPixelOutOfLayoutOnce()
   }
 
   drawChart() {

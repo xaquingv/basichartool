@@ -30,7 +30,10 @@ class Row extends React.Component {
         display: (isInline && isLabel) ? "inline-block" : "block",
         width: (isInline && isLabel) ? "calc(" + 100 + "% - " + width + "px)" : "100%",
         position: "relative"
-      }}></div>
+      }}>
+        <div className="grid"></div>
+        <div className="bars"></div>
+      </div>
 
     return (
       <div className="row" style={{
