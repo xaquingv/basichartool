@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {colors} from '../../data/config'
 import {pickColor, updateCustomColor} from '../../actions'
 
+
 const regexHex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i
 
 const mapStateToProps = (state) => ({
@@ -41,8 +42,6 @@ class Palette extends React.Component {
           value={this.colorInput}
         />
       </li>
-    //<li className="li-custom" style={{backgroundColor: this.colorStyle}} onClick={()=>onPickColor(this.colorStyle)}>
-    //<input style={{color:this.getTextColor()}}
 
     return colors ? (
       <div>Palette colors:
@@ -52,13 +51,6 @@ class Palette extends React.Component {
         </ul>
       </div>
     ) : null
-  }
-
-  getTextColor() {
-    // TODO: if color too bright, change text color to #333
-    //console.log(color)
-    //const color = this.colorStyle
-    return "#f6f6f6"
   }
 
   // custom color events

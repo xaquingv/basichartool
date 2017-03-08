@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {dropColorTo} from '../../actions'
+import ComponentEditor from './Editor'
 
 
 const mapStateToProps = (state) => ({
@@ -29,16 +30,23 @@ class Legend extends React.Component {
     const marginLeft = isBarBased && (labelWidth <= chartWidth/3) ? labelWidth : 0
 
     let drawLegend = null
-    // TODO: add contentEditable component to label spans
 
+    // case: no color keys
     if (length === 1) {
-      drawLegend = <span>{legend}</span>
-
-    } else if (length > 1) {
+      drawLegend = <ComponentEditor text={legend[0]} />
+      //<span>{legend}</span>
+    }
+    // case: with color keys
+    else if (length > 1) {
       drawLegend = legend.map((label, i) =>
         <div className="legend-item" key={i}>
-          <span className="legend-color" style={{backgroundColor: colors[i]}} onClick={()=>onDropColor(i)}></span>
-          <span className="legend-label">{label}</span>
+          <span className="legend-color"
+            style={{backgroundColor: colors[i]}}
+            onClick={()=>onDropColor(i)}>
+          </span>
+          <span className="legend-label">
+            <ComponentEditor text={label} />
+          </span>
         </div>
       )
     }

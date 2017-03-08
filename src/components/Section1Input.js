@@ -13,10 +13,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onClickImport: (textarea) => {
-    dispatch(importData(textarea.value));
+    dispatch(importData(textarea.value))
   },
-  onClickClear: (textarea, textInput) => {
-    [textarea, textInput].forEach(input => input.value= "");
+  onClickClear: (textarea/*, textInput*/) => {
+    //[textarea, textInput].forEach(input => input.value= "")
+    textarea.value= ""
     dispatch(clearData());
   }
 });

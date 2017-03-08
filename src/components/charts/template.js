@@ -64,7 +64,6 @@ export default function(graph) {
         color: black;
         font-size: 18px;
         font-family: 'Guardian Egyptian Web', Georgia, serif;
-        font-weight: 600;
         line-height: 24px;
         margin-bottom: 12px;
       }

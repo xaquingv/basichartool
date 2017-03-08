@@ -72,6 +72,19 @@ function getHTMLFileData() {
   const elGraphCopy = elGraph.cloneNode(true)
   elGraphCopy.style.width = "100%"
 
+  // remove editors' elements created by Draft.js and
+  // replace them with content only (a list of spans)
+  const elEditors = [...elGraphCopy.querySelectorAll(".DraftEditor-root")]
+  elEditors.forEach(elEditor => {
+    const elParent = elEditor.parentNode
+    const elContent = elEditor.querySelector("span").parentNode.innerHTML
+    elParent.removeChild(elEditor)
+    elParent.innerHTML = elContent
+
+    // TODO: remove data attributes
+    //...
+  })
+
   const htmlGraph = elGraphCopy.outerHTML
   return {
     id: chartId,

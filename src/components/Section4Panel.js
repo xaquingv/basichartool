@@ -1,9 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import './section4Panel.css'
-import {d3} from '../lib/d3-lite'
 import scrollTo from '../lib/scrollTo'
-import {metaKeys, default_metaText, ratio} from '../data/config'
+import {default_metaText, ratio} from '../data/config'
 import {updateSize} from '../actions'
 import {chartList} from './charts'
 
@@ -11,14 +10,15 @@ import ComponentSize        from './section4Panel/Size'
 import ComponentResponsive  from './section4Panel/Responsive'
 import ComponentPalette     from './section4Panel/Palette'
 import ComponentDisplay     from './section4Panel/Display'
+import ComponentEditor      from './section4Panel/Editor'
 import ComponentLegend      from './section4Panel/Legend'
 import ComponentXAxis       from './section4Panel/AxisX'
 import ComponentYAxis       from './section4Panel/AxisY'
 import axisXResponsive      from './section4Panel/axisXTextAndSvgResponsive'
 import axisYResponsive      from './section4Panel/axisYTextResponsive'
 
-const STEP = 4;
 
+const STEP = 4;
 
 const mapStateToProps = (state) => ({
   step: state.step,
@@ -36,24 +36,18 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class Section extends React.Component {
+  getMetaText(type) {
+    const metaData = this.props.metaData
+    const textIfSourcePatch = metaData.source ? " | Source: " : ""
+    const textCredit = (type === "source" ? "Guardian Graphic" + textIfSourcePatch : "")
+    return textCredit + (metaData[type] || default_metaText[type])
+  }
 
   componentDidUpdate() {
-    const {stepActive, metaData, display, setSize, chartData} = this.props
+    const {stepActive, setSize, chartData} = this.props
     if (stepActive < STEP) return
 
-    /* header */
-    // set meta values and display
-    metaKeys.forEach(key => {
-      const textIfSourcePatch = metaData.source ? " | Source: " : ""
-      const textCredit = (key === "source" ? "Guardian Graphic" + textIfSourcePatch : "")
-      const text = textCredit + (metaData[key] || default_metaText[key])
-      d3.select(this.refs[key])
-      .classed("d-n", !display[key])
-      .text(text)
-    })
-
-
-    /* chart */
+    /* chart, for responsive */
     // set chart size to setup1
     const elChart = document.querySelector(".js-chart")
     setTimeout(() => setSize({w: elChart.offsetWidth, h: elChart.offsetHeight}), 1000)
@@ -71,7 +65,6 @@ class Section extends React.Component {
       }, 1000)
     }
 
-
     /* navigation */
     // TODO: replace with 1. dispatch scrollSteps
     // to let Navigation.js take care of it or ...
@@ -82,7 +75,7 @@ class Section extends React.Component {
 
   render() {
 
-    const {stepActive, chartId, graphWidth, chartData} = this.props;
+    const {stepActive, chartId, graphWidth, chartData, display} = this.props;
 
     // TODO: responsive width
     const isOnBar = chartId.indexOf("onBar") > -1
@@ -105,17 +98,27 @@ class Section extends React.Component {
     )
     : null
 
-    // TODO: move headline, standfirst, source to a component
     const graphComponent = stepActive >= STEP
     ? (
       <div className="graph js-graph" style={{width: graphWidth}}>
+        {/* header */}
         <header className="header">
-          <div className="headline" ref="headline"></div>
-          <div className="standfirst" ref="standfirst"></div>
+          <div className={"headline" + (display["headline"] ? "" : " d-n")} >
+            <ComponentEditor text={this.getMetaText("headline")} bold={true} />
+          </div>
+          <div className={"standfirst" + (display["standfirst"] ? "" : " d-n")}>
+            <ComponentEditor text={this.getMetaText("standfirst")} />
+          </div>
           <ComponentLegend isBarBased={isBarBased}/>
         </header>
+
+        {/* main: graph / chart */}
         {chartComponent}
-        <footer ref="source"></footer>
+
+        {/* footer */}
+        <footer className={display["source"] ? "" : " d-n"}>
+          <ComponentEditor text={this.getMetaText("source")} />
+        </footer>
         <span className="test js-test-res"></span>
       </div>
     )

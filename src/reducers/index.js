@@ -245,12 +245,20 @@ function dataSetup(dataSetup = {colors:[], display:{}, legend:[], size:{}, width
   }
 }
 
-function dataEditable(dataEditable = {}, action) {
+function dataEditable(dataEditable = {metaText:{}}, action) {
   switch(action.type) {
     case 'UPDATE_COLOR_INPUT':
       return {
         ...dataEditable,
         colorInput: action.colorInput
+      }
+    /*case 'UPDATE_META_TEXT':
+      console.log(action)
+      let newMetaText = dataEditable.metaText
+      newMetaText[action.type] = action.text
+      return {
+        ...dataEditable,
+        metaText: newMetaText
       }
     case 'UPDATE_X_TICKS':
       return {
@@ -286,7 +294,7 @@ function dataEditable(dataEditable = {}, action) {
       return {
         ...dataEditable,
         legends: action.legends
-      }
+      }*/
     default:
       return dataEditable
   }

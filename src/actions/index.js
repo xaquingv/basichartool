@@ -99,7 +99,7 @@ export const updateCustomColor = (colorInput) => {
     colorInput
 }}
 // edit panel 2
-export const updateXTicks = (xTicks) => ({
+/*export const updateXTicks = (xTicks) => ({
   type: "UPDATE_X_TICKS",
   xTicks
 })
@@ -128,3 +128,8 @@ export const updateLegends = (legends) => ({
   type: "UPDATE_LEGENDS",
   legends
 })
+export const updateMetaText = (meta, text) => ({
+  type: "UPDATE_META_TEXT",
+  meta,
+  text
+})*/

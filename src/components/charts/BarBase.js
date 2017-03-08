@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+//import ComponentEditor from '../section4Panel/Editor'
 
 
 const mapStateToProps = (state) => ({
@@ -24,6 +25,7 @@ class Row extends React.Component {
       }}>{label}</div>
     )
     : null
+    // }}><ComponentEditor text={label} /></div>
 
     const groupComponent =
       <div className="group" style={{

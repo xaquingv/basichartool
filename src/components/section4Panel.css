@@ -82,11 +82,14 @@
 .chart {
   position: relative;
 }
+.header {
+  margin-bottom: 30px;
+}
 .headline {
   color: black;
   font-size: 18px;
   font-family: 'Guardian Egyptian Web', Georgia, serif;
-  font-weight: 600;
+  //font-weight: 600;
   line-height: 24px;
   margin-bottom: 12px;
 }
@@ -98,7 +101,6 @@
 }
 .legend {
   line-height: 18px;
-  margin-bottom: 24px;
 }
 .legend-item {
   white-space: nowrap;
@@ -121,6 +123,7 @@
   margin-left: 10px; /* 6+4 */
   pointer-events: all;
 }
+
 .axis-x,
 .axis-y {
   color: #bdbdbd; /* n-3 */

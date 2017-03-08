@@ -63,19 +63,6 @@ h1 {
   min-width: 160px;
 }
 
-
-[contenteditable="true"] {
-  min-width: 10px;
-  border-bottom: 1px solid transparent;
-}
-[contenteditable="true"]:focus {
-  outline: none;
-  border-bottom: 1px solid transparent;
-}
-[contenteditable="true"]:hover {
-  border-bottom: 1px dotted #333;
-}
-
 .test {
   font-size: 13px;
   visibility: hidden;
