@@ -53,16 +53,12 @@ class Section extends React.Component {
     setTimeout(() => setSize({w: elChart.offsetWidth, h: elChart.offsetHeight}), 1000)
     // NOTE: setTimeout due to css transition
 
-    // axes
-    // res y labels and x axis' label posiitons
-    const {scales, string1Width} = chartData
-    if (scales.x) {
-      axisYResponsive(string1Width)
-      axisXResponsive()
-      setTimeout(() => {
-        axisYResponsive(string1Width)
-        axisXResponsive()
-      }, 1000)
+    // axes res
+    // x-text-top/bottom (with ticks), y-text (with ticks), and y-label's posiitons
+    if (chartData.scales.x) {
+      axisYResponsive(chartData.string1Width)
+      setTimeout(() => axisXResponsive(), 1000)
+      // delay due to transition animation
     }
 
     /* navigation */
@@ -92,7 +88,7 @@ class Section extends React.Component {
         // 1px for barBasaed to keep chart's height
       }}>
         <ComponentXAxis isBarBased={isBarBased} isOnBar={isOnBar} isPlot={isPlot}/>
-        <ComponentYAxis isPlot={isPlot}/>
+        <ComponentYAxis />
         <ComponentChart id={chartId+"_edit"} callByStep={STEP} />
       </div>
     )

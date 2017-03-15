@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {updateChartData} from '../../actions'
 import {width, height, viewBox} from '../../data/config'
-import {getDomainByDataRange} from '../axis/domain'
+import {getDomainByDataRange} from '../../data/calcScaleDomain'
 import drawChart from './col'
 
 const mapStateToProps = (state) => ({

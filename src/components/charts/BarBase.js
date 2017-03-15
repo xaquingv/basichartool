@@ -1,10 +1,11 @@
 import React from 'react'
 import {connect} from 'react-redux'
-//import ComponentEditor from '../section4Panel/Editor'
+import ComponentEditor from '../section4Panel/Editor'
 
 
 const mapStateToProps = (state) => ({
-  data: state.dataChart,
+  isInline: !state.dataChart.string1IsRes,
+  labelWidth: state.dataChart.string1Width
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -14,23 +15,23 @@ const mapDispatchToProps = (dispatch) => ({
 class Row extends React.Component {
 
   render() {
-    const {data, isLabel, label, width} = this.props
-    const isInline = !data.string1IsRes
+    const {isInline, isLabel, label, labelWidth} = this.props
 
     const labelComponent = isLabel
     ? (
       <div className="label" style={{
         display: "inline-block",
-        width: width
-      }}>{label}</div>
+        width: labelWidth
+      }}>
+        <ComponentEditor text={label} type="yLabel"/>
+      </div>
     )
     : null
-    // }}><ComponentEditor text={label} /></div>
 
     const groupComponent =
       <div className="group" style={{
         display: (isInline && isLabel) ? "inline-block" : "block",
-        width: (isInline && isLabel) ? "calc(" + 100 + "% - " + width + "px)" : "100%",
+        width: (isInline && isLabel) ? "calc(" + 100 + "% - " + labelWidth + "px)" : "100%",
         position: "relative"
       }}>
         <div className="grid"></div>

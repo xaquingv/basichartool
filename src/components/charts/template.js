@@ -100,6 +100,9 @@ export default function(graph) {
         color: #bdbdbd; /* n-3 */
         font-family: 'Guardian Agate Sans 1 Web', monospace;
       }
+      .axis-top-text {
+        white-space: nowrap;
+      }
       .label {
         color: #333;
         line-height: 18px;

@@ -129,6 +129,9 @@
   color: #bdbdbd; /* n-3 */
   font-family: 'Guardian Agate Sans 1 Web', monospace;
 }
+.axis-top-text {
+  white-space: nowrap;
+}
 .label {
   color: #333;
   line-height: 18px;
@@ -168,12 +171,12 @@ svg path {
 .axis-x-text {
   //top: 6px;
   //border: 1px solid red;
-  //background-color: black !important;
+  //background-color: yellow !important;
 }
 .axis-x-tick {
   //height: 180px !important;
 }
-.axis-y-grid span {
+.axis-y-text {
   //background-color: yellow;
 }
 /* end of chart playground */

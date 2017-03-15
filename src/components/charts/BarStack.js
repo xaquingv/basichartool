@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {updateChartData} from '../../actions'
-import {getDomainByDataRange} from '../axis/domain'
+import {getDomainByDataRange} from '../../data/calcScaleDomain'
 import ComponentRow from './BarBase'
 import drawChart from './bar'
 
@@ -36,7 +36,7 @@ class BarStack extends React.Component {
     return (
       <div className="canvas" ref="div" onClick={setChartData}>
         {data.string1Col.map((label, i) =>
-        <ComponentRow isLabel={isLabel} label={label} width={data.string1Width} key={i}/>
+        <ComponentRow isLabel={isLabel} label={label} key={i}/>
         )}
       </div>
     )

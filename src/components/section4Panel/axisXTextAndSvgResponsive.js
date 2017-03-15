@@ -1,6 +1,7 @@
 import {width} from '../../data/config'
 
 export default function() {
+  //console.log("res x")
 
   const elsTick = document.querySelectorAll(".axis-x-tick")
   const elsText = document.querySelectorAll(".axis-x-text")

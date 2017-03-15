@@ -1,20 +1,87 @@
-import getDataTable from '../data/getDataTable'
+import getDataTable from '../data/parseDataTableRaw'
 import {swapArray} from '../lib/array'
 
 // meta keys
 const META_KEYS = ["headline", "standfirst", "source", "unit", "note", "page", "#"]
 
-
 /*
 detect file format => CSV with , or \t or | OR JSON
 === validatation 1 ===
-string => rows (based on the format)
-rows => meta, body rows; ps. remove empty rows, wt about empty cols
+string => (line) rows (based on the format)
+rows => meta and (data) rows
+rows => cols; ps. remove empty rows and cols
 === validatation 2 ===
-detect data type(s) of body rows
-return meta, body, head (possible types)
+detect
+- if data has headers, and
+- data type(s) of all body cols
+=> flag, head, type, body
 */
 
+export default function(dataInput) {
+    /* dataInput (raw input string to lines) */
+    // detect file type
+    const dataMatch = {
+      tab: dataInput.match(/\t/g),
+      //comma: dataInput.match(/,f/g),
+    }
+    // TODO: csv with comma in quotes ("hi, sth. like this") is not parsed and json?
+    const dataType = dataMatch.tab ? "tsv" : "csv"
+    // string => lines
+    const dataLines = dataInput.split(/\n/g)
+    // let dataLines = dataInput.split(/[\n|\r]/g);
+    // ref: http://stackoverflow.com/questions/10059142/reading-r-carriage-return-vs-n-newline-from-console-with-getc
+    // console.log(dataLines);
+
+
+    /* dataTableRaw */
+    let dataTableRaw = {
+      meta: {}, // [1]
+      rows: [], // [1]
+      cols: [], // [2]
+    }
+
+    /* 1. meta , rows */
+    // parse from data input
+    dataLines.forEach(row => {
+      switch(dataType) {
+        case "tsv": row = row.split("\t"); break
+        case "csv": row = row.split(",");  break
+        case "json": console.log("add a parser"); break
+        default: console.log("need a new type:", dataType)
+      }
+      parseRow(dataTableRaw, row)
+    });
+
+
+    /* 2. cols */
+    // init cols and clean both cols and rows
+    dataTableRaw.cols = swapArray(dataTableRaw.rows)
+
+    // detect empty cols
+    const emptyCols = dataTableRaw.cols
+    .map((col, idx) => ({col, idx}))
+    .filter(d => d.col.every(val => val === null))
+    .map(d => d.idx)
+    // remove empty cols from both cols and rows data
+    emptyCols.forEach((iEmpty, iAdjust) => dataTableRaw.cols.splice(iEmpty-iAdjust, 1))
+    dataTableRaw.rows.forEach(row => emptyCols.forEach((iEmpty, iAdjust) => row.splice(iEmpty-iAdjust, 1)))
+
+
+    /* 3. flag, head, type, body (of dataTableDraw) */
+    // add properties from parseDataTableRaw.js including dataTableRaw and dataTableDraw
+    const dataTable = getDataTable(dataTableRaw)
+    /*
+    console.log("input -> table")
+    // in this file
+    console.log("dataTableRaw: parse from dataInput (this file)")
+    console.log(dataTableRaw)
+    // in parseDataTableRaw.js
+    console.log("dataTable: parse for table view and transformations (getDataTable.js)")
+    console.log(dataTable)
+    */
+
+    return dataTable
+}
 
 // Check if a row is meta data
 function isMetaKeys(col) {
@@ -40,66 +107,9 @@ function parseRow(dataTableRaw, row) {
     // col0 is the key if this row is meta data
     case isMetaKeys(col0): dataTableRaw.meta[col0] = row[1]; break
     case isNotEmpty(row): dataTableRaw.rows.push(row); break
-    default: /*console.log("empty row")*/
+    default: // console.log("empty row")
   }
 }
-
-export default function(dataInput) {
-    // type
-    let dataMatch = {
-      tab: dataInput.match(/\t/g),
-      //comma: dataInput.match(/,f/g),
-    }
-    let dataType = dataMatch.tab ? "tsv" : "csv"
-    // and json?
-    // console.log(dataType);
-
-    // lines
-    let dataLines = dataInput.split(/\n/g)
-    // let dataLines = dataInput.split(/[\n|\r]/g);
-    // ref: http://stackoverflow.com/questions/10059142/reading-r-carriage-return-vs-n-newline-from-console-with-getc
-    // console.log(dataLines);
-
-    let dataTableRaw = {
-      meta: {}, // [1]
-      rows: [], // [1]
-      cols: [], // [2]
-    }
-
-
-    /* 1. meta , rows */
-    dataLines.forEach(row => {
-      switch(dataType) {
-        case "tsv": row = row.split("\t"); break
-        case "csv": row = row.split(",");  break
-        case "json": console.log("add a parser"); break
-        default: console.log("need a new type:", dataType)
-      }
-      parseRow(dataTableRaw, row)
-    });
-
-
-    /* 2. cols */
-    // init cols
-    dataTableRaw.cols = swapArray(dataTableRaw.rows)
-
-    // detect empty cols
-    const emptyCols = dataTableRaw.cols
-    .map((col, idx) => ({col, idx}))
-    .filter(d => d.col.every(val => val === null))
-    .map(d => d.idx)
-    // remove empty cols from both cols and rows data
-    emptyCols.forEach((iEmpty, iAdjust) => dataTableRaw.cols.splice(iEmpty-iAdjust, 1))
-    dataTableRaw.rows.forEach(row => emptyCols.forEach((iEmpty, iAdjust) => row.splice(iEmpty-iAdjust, 1)))
-
-
-    /* 3. dataTableDraw: type, head, body, flag */
-    // including dataTableRaw and dataTableDraw
-    const dataTable = getDataTable(dataTableRaw)
-    //console.log(dataTable)
-    return dataTable
-}
-
 
 /*
 //http://stackoverflow.com/questions/3710204/how-to-check-if-a-string-is-a-valid-json-string-in-javascript-without-using-try

@@ -38,7 +38,7 @@ class Bars100 extends React.Component {
     return (
       <div className="canvas" ref="div" onClick={setChartData}>
         {data.string1Col.map((label, i) =>
-        <ComponentRow isLabel={isLabel} label={label} width={data.string1Width} key={i}/>
+        <ComponentRow isLabel={isLabel} label={label} key={i}/>
         )}
       </div>
     )

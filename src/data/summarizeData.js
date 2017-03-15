@@ -1,6 +1,6 @@
 import {uniqueArray, swapArray} from '../lib/array'
-import {width} from '../data/config'
 import getDataType from './detectDataType'
+import {getString1DataRes}  from './calcAxisYText'
 import {getDateScaleValues} from './typeDate'
 import {getNumberRangeType} from './typeNumber'
 
@@ -84,31 +84,30 @@ export default function(dataTable, show) {
   const string1Data = count.string1 > 0 ? cols.find(col => col.type === "string1") : []
   const string1Col = count.string1 > 0 ? string1Data.values : []
   const string2Col = count.string2 > 0 ? cols.find(col => col.type === "string2").values : []
+  const rowGroup = string1Col.length > 0 ? string1Col : dateData.string
   // TODO: think of string * have multi cols?
 
-  // pre calc for string / label res of axis y
-  const space = 12
-  const elTest = document.querySelector(".js-test-y")
-  const rowGroup = string1Col.length > 0 ? string1Col : dateData.string
-  const string1Width = Math.max.apply(null, rowGroup.map(str => {
-    elTest.textContent = str
-    return elTest.offsetWidth
-  })) + space
-  const string1IsRes = string1Width > width/3
 
   /* aka. dataChart */
   // for render charts
+
   const chart = {
-    rowCount: count.row,
+    // count
     rowGroup,
-    string1Col, string1Width, string1IsRes,
-    string2Col,
-    dateCol: dateData.values,
-    dateHasDay: dateData.hasDay,
-    dateFormat: dateData.format,
-    numberCols: numberData.map(col => col.values),
+    rowCount:     count.row,
+    // string and
+    // pre calc for string / label res of axis y
+    string1Col, string2Col,
+    ...getString1DataRes(rowGroup),
+    // date
+    dateCol:      dateData.values,
+    dateString:   dateData.string,
+    dateHasDay:   dateData.hasDay,
+    dateFormat:   dateData.format,
+    // number
+    numberCols:   numberData.map(col => col.values),
     numberFormat: numberData.length === 1 ? numberData[0].format : null,
-    keys: numberData.map(col => col.header ? col.header : "unknown title")
+    keys:         numberData.map(col => col.header ? col.header : "unknown title")
     // NOTE: in case header is null, also see getDataTable.js
     // TODO: keys turn into colGroup?
   }

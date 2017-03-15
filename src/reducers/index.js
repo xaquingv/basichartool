@@ -1,31 +1,5 @@
 import { combineReducers } from 'redux';
-import getNewDataTable from '../data/getDataTable';
-
-// function dummyReducer(prevState = {}, action) {
-//     switch (action.type) {
-//     case 'GO_TO_BED':
-//       // return {
-//       //   ...prevState,
-//       //   sleeping: true,
-//       // };
-//       return Object.assign(
-//         {},
-//         prevState,
-//         stomach: prevState.stomach,
-//         {sleeping: true}
-//       );
-//     case 'EAT_SOMETHING':
-//       if (prevState.sleeping) {
-//         // cannot eat and sleep
-//       }
-//       return {
-//         ...prevState,
-//         stomach: [...prevState.stomach, action.food],
-//       };
-//     default:
-//       return prevState;
-//     }
-// }
+import getNewDataTable from '../data/parseDataTableRaw';
 
 function step(step = 1, action) {
   switch(action.type) {
@@ -49,6 +23,7 @@ function step(step = 1, action) {
       return step
   }
 }
+
 function stepActive(stepActive = 1, action) {
   switch(action.type) {
     // sections
@@ -66,24 +41,12 @@ function stepActive(stepActive = 1, action) {
   }
 }
 
-/*function dataInput(dataInput = "", action) {
-  switch(action.type) {
-    case 'CLEAR_DATA':
-      return ""
-    case 'INPUT_DATA':
-      return action.dataInput
-    default:
-      return dataInput
-  }
-}*/
-
 function dataTable(dataTable = {}, action) {
   switch(action.type) {
     case 'CLEAR_DATA':
       return ""
     case 'IMPORT_DATA':
       // TODO: move meta to dataChart?
-      //console.log(action.dataTable)
       return action.dataTable
 
     case 'TRANSPOSE_DATA':
@@ -128,12 +91,6 @@ function show(show = {col: [], row: []}, action) {
         newVal,
         ...show[target].slice(index + 1),
       ]
-
-      //console.log('Toggling ', target, index);
-      //console.log('new val ', newVal);
-      //console.log(show[target][index]);
-      //console.log(newShow[target][index]);
-      //console.dir(newShow);
       return newShow
 
     default:
@@ -141,45 +98,54 @@ function show(show = {col: [], row: []}, action) {
   }
 }
 
-/*function dataBrief(dataBrief = {}, action) {
-  switch(action.type) {
-    case 'ANALYZE_DATA':
-      return action.dataBrief
-    default:
-      return dataBrief
-  }
-}*/
 function dataChart(dataChart = {legend: [], scales:{}, indent: 0, marginTop: 0}, action) {
-  //console.log("action", action.type)
   switch(action.type) {
+    // reset
     case 'ANALYZE_DATA':
       return {
         ...dataChart,
         ...action.dataChart
       }
 
-    /* TODO: clean up */
-    case 'UPDATE_DATA':
+    /* TODO: rename and clean up */
+    case 'APPEND_DATA':
       return {
         ...dataChart,
         legend: action.legend,
         scales: action.scales,
-        margin: action.margin //|| {left: 0, right: 0},
-        //indent: action.margin.left
+        margin: action.margin
       }
+
+    // res y
     case 'APPEND_YSCALE':
       return {
         ...dataChart,
         indent: action.widthIndent,
-        height: action.height,
-        marginTop: action.marginTop
+        height: action.height,// || dataChart.height,
+        marginTop: action.marginTop,// || dataChart.marginTop
       }
     /* end of clean up */
+
+    // res editor
+    case 'UPDATE_YLABEL_RES':
+      return {
+        ...dataChart,
+        string1IsRes: action.isRes,
+        string1Width: action.widthLabel
+      }
+    case 'UPDATE_YLABEL_CHANGE':
+      const newLabelGroup = dataChart.rowGroup
+      newLabelGroup[action.index] = action.label
+      return {
+        ...dataChart,
+        rowGroup: newLabelGroup
+      }
 
     default:
       return dataChart
   }
 }
+
 function selection(chartList = [], action) {
   switch(action.type) {
     case 'ANALYZE_DATA':
@@ -245,32 +211,22 @@ function dataSetup(dataSetup = {colors:[], display:{}, legend:[], size:{}, width
   }
 }
 
-function dataEditable(dataEditable = {metaText:{}}, action) {
+function dataEditable(dataEditable = {}, action) {
   switch(action.type) {
+    // reset
+    case 'SELECT_CHART':
+      return {}
+    // update
     case 'UPDATE_COLOR_INPUT':
       return {
         ...dataEditable,
         colorInput: action.colorInput
       }
-    /*case 'UPDATE_META_TEXT':
-      console.log(action)
-      let newMetaText = dataEditable.metaText
-      newMetaText[action.type] = action.text
-      return {
-        ...dataEditable,
-        metaText: newMetaText
-      }
-    case 'UPDATE_X_TICKS':
-      return {
-        ...dataEditable,
-        xTicks: action.xTicks
-      }
-    case 'UPDATE_Y_TICKS':
-      return {
-        ...dataEditable,
-        yTicks: action.yTicks
-      }
-    case 'UPDATE_X_RANGE':
+    case 'UPDATE_AXIS':
+      const newDataEditable = dataEditable.slice()
+      newDataEditable[action.target] = action.data
+      return newDataEditable
+    /*case 'UPDATE_X_RANGE':
       return {
         ...dataEditable,
         xRange: action.xRange
@@ -279,21 +235,6 @@ function dataEditable(dataEditable = {metaText:{}}, action) {
       return {
         ...dataEditable,
         yRange: action.yRange
-      }
-    case 'UPDATE_X_LABELS':
-      return {
-        ...dataEditable,
-        xLabels: action.xLabels
-      }
-    case 'UPDATE_Y_LABELS':
-      return {
-        ...dataEditable,
-        yLabels: action.yLabels
-      }
-    case 'UPDATE_LEGENDS':
-      return {
-        ...dataEditable,
-        legends: action.legends
       }*/
     default:
       return dataEditable
@@ -303,10 +244,8 @@ function dataEditable(dataEditable = {metaText:{}}, action) {
 const app = combineReducers({
   step,
   stepActive,
-  //dataInput,
-  dataTable,
   show,
-  //dataBrief,
+  dataTable,
   dataChart,
   selection,
   chartId,

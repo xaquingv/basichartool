@@ -1,6 +1,6 @@
-import {d3} from '../../lib/d3-lite'
-import {numToTxt} from '../../data/typeNumber'
-import {getDateTextFormat, dateNumToTxt} from '../../data/typeDate'
+import {d3} from '../lib/d3-lite'
+import {numToTxt} from './typeNumber'
+import {getDateTextFormat, dateNumToTxt} from './typeDate'
 
 let isMarked = false
 const markSymbol = "*"
@@ -34,6 +34,10 @@ export function getTickSteps(id, isBarBased, dates, format, rowCount, axisX) {
     // most bar and all line/plot cases
     case (isBarBased || rowCount > 7):
       return axisX.ticks(5)
+
+    // rowCount < 7
+    case ["lineDiscrete"].includes(id):
+      return axisX.ticks(dates.length-1)
 
     default:
       return dates

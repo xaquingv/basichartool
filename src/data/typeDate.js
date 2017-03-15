@@ -146,7 +146,6 @@ export function getDateScaleValues(dates, format, hasDay) {
 
 /* 3. dates to label texts */
 export function dateNumToTxt(value, format, hasDay) {
-
   let year = value.toString().split(".")[0]
   let deci = value % 1 // get decimal portion
   let date, toText

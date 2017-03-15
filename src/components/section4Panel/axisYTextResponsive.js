@@ -1,4 +1,5 @@
 export default function(labelWidth) {
+  //console.log("res y")
 
   const el = document.querySelector(".js-chart")
   if (!el.dataset.resY) return

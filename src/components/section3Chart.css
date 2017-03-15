@@ -7,8 +7,11 @@
   margin-bottom: -1px;
   padding: 10px;
   padding-bottom: 5px;
+  pointer-events: none;
 }
-
+.charts > div > * {
+  pointer-events: all;
+}
 /* hotfix to align with svg */
 .charts > div > div {
   height: 180px; /* width = 300, ratio = 0.6 */

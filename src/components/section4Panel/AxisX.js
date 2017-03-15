@@ -2,14 +2,14 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {appendFormatToNum} from '../../data/typeNumber'
-import {getTickSteps, getTickTexts, getTickTextWidths} from '../axis/tickX'
+import {getTickSteps, getTickTexts, getTickTextWidths} from '../../data/calcAxisXTick'
+import ComponentEditor from './Editor'
 
 
 const mapStateToProps = (state) => ({
   id: state.chartId,
   dataChart: state.dataChart,
   chartSize: state.dataSetup.size,
-  chartColors: state.dataSetup.colors,
   unit: state.dataTable.meta.unit
 })
 
@@ -26,13 +26,13 @@ class AxisX extends React.Component {
   }
 
   render() {
-    const {id, dataChart, chartSize/*, chartColors, */,isBarBased, isOnBar, isPlot, unit} = this.props
+    const {id, dataChart, chartSize, isBarBased, isOnBar, isPlot, unit} = this.props
     const {scales, indent, dateCol, string1Col, string1Width, dateHasDay, dateFormat, rowCount} = dataChart
 
     if (!scales.x) return null
-    //console.log(chartColors)
 
     /* data */
+    // init
     const dataX = dateCol || string1Col
     const axisX = scales.x.copy().range([0, 100])
     const ticks = getTickSteps(id, isBarBased, dataX, dateFormat, rowCount, axisX)
@@ -40,6 +40,15 @@ class AxisX extends React.Component {
     const is100 = id.indexOf("100") > -1
     texts[0] = appendFormatToNum(texts[0], unit, dataChart.numberFormat, is100, isBarBased, true) // true - isX
 
+    /*/ map to props if not available
+    console.log("xTick:", dataEditable.xTicks)
+    console.log("ticks:", ticks)
+    console.log("xText:", dataEditable.xTexts)
+    console.log("texts:", texts)
+    console.log("range:", dataEditable.domain)
+    console.log("range:", axisX.domain())*/
+
+    // wrap for drawing
     const tickData = getTickTextWidths(texts).map((width, i) => ({
       pos: Math.round(axisX(ticks[i])*100)/100,
       txt: texts[i],
@@ -49,6 +58,7 @@ class AxisX extends React.Component {
 
     const chartWidth = chartSize.w || 300
     const marginLeft = string1Width > chartWidth/3 ? 1 : string1Width+1
+
 
     /* draw */
     const drawAxisTicks = tickData.map((tick, i) =>
@@ -63,7 +73,9 @@ class AxisX extends React.Component {
     )
 
     const drawAxisTexts = tickData.map((tick, i) =>
-      <div key={"text" + i}  className="axis-x-text" style={{
+      <div key={"text" + i}
+        className={"axis-x-text" + (isBarBased ? " axis-top-text" : "")}
+        style={{
         position: "absolute",
         top: "8px",
         left: "calc(" + (tick.pos - tick.txtWidth/2) + "% + " + (isPlot ? -2 : 0) + "px)",
@@ -71,7 +83,9 @@ class AxisX extends React.Component {
         lineHeight: "14px",
         paddingTop: "2px",
         textAlign: "center"
-      }}><span>{tick.txt}</span></div>
+      }}>
+        <ComponentEditor text={tick.txt} type="xTexts" />
+      </div>
     )
 
     let margin = dataChart.margin
@@ -89,15 +103,16 @@ class AxisX extends React.Component {
         // NOTE: onBar axis-x margin left/right
         width: "calc(100% - " + ((isBarBased ? marginLeft : indent) + (isOnBar ? margin.left+margin.right : 0)) + "px)",
         marginRight: isOnBar ? margin.right + "px" : 0
-      }}>{drawAxisTicks}{drawAxisTexts}</div>
+      }}>
+        {drawAxisTicks}
+        {drawAxisTexts}
+      </div>
     )
   }
 
   renderGrid() {
-    //console.log("renderGrid() enter")
     const {isBarBased, dataChart} = this.props
     if (!isBarBased || this.grid.length === 0) return
-    //console.log("renderGrid() render ...")
 
     let margin = dataChart.margin
     margin = margin ? margin : {left: 0, right: 0}

@@ -1,5 +1,5 @@
-import {d3} from '../../lib/d3-lite'
-import {ratio} from '../../data/config'
+import {d3} from '../lib/d3-lite'
+import {ratio} from './config'
 
 // bars
 export function getDomainByDataRange(dataArr) {

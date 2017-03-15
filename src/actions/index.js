@@ -16,10 +16,10 @@ export const activeStep = (stepActive) => ({
 export const clearData = () => ({
   type: "CLEAR_DATA",
 })
-export const inputData = (dataInput) => ({
+/*export const inputData = (dataInput) => ({
   type: "INPUT_DATA",
   dataInput
-})
+})*/
 export const importData = (dataInput) => ({
   type: "IMPORT_DATA",
   dataTable: dataInput === "" ? {} : parseDataInput(dataInput)
@@ -34,6 +34,7 @@ export const toggleData = ({type, index}) => ({
   target: type,
   index
 })
+// analyze data to get a selection of charts
 export const analyzeData = (dataTable, show) => {
   const summary = summarizeData(dataTable, show)
   return {
@@ -54,14 +55,13 @@ export const setColors = (colors) => ({
   colors
 })
 export const updateChartData = (legend, scales, margin) => ({
-  type: "UPDATE_DATA",
+  type: "APPEND_DATA",
   legend,
   scales,
   margin
 })
 
 /* section 4 */
-// changeChartSize
 export const setDisplay = (switches) => ({
   type: "SET_DISPLAY",
   displaySwitches: switches
@@ -86,27 +86,37 @@ export const dropColorTo = (i) => ({
   type: "DROP_COLOR",
   dropIndex: i
 })
-export const appendAxisYScale = (indent, height, marginTop) => ({
+// texts on y axis with ticks
+export const appendAxisYScaleRes = (widthIndent, height, marginTop) => ({
   type: "APPEND_YSCALE",
-  widthIndent: indent,
   height,
-  marginTop
+  marginTop,
+  widthIndent
 })
+// label on y axis (no ticks)
+export const updateAxisYLabelRes = (dataRes) => ({
+  type: "UPDATE_YLABEL_RES",
+  isRes: dataRes.string1IsRes,
+  widthLabel: dataRes.string1Width
+})
+export const updateAxisYLabelChange = (dataChange) => ({
+  type: "UPDATE_YLABEL_CHANGE",
+  ...dataChange
+})
+
 // edit panel 1
-export const updateCustomColor = (colorInput) => {
-  return {
-    type: "UPDATE_COLOR_INPUT",
-    colorInput
-}}
+export const updateCustomColor = (colorInput) => ({
+  type: "UPDATE_COLOR_INPUT",
+  colorInput
+})
 // edit panel 2
-/*export const updateXTicks = (xTicks) => ({
-  type: "UPDATE_X_TICKS",
-  xTicks
+export const updateEditorData = (type, data) => ({
+  type: "UPDATE_AXIS",
+  target: type,
+  data
 })
-export const updateYTicks = (yTicks) => ({
-  type: "UPDATE_Y_TICKS",
-  yTicks
-})
+
+/*/ range is in fact domain
 export const updateXRange = (xRange) => ({
   type: "UPDATE_X_RANGE",
   xRange
@@ -114,22 +124,4 @@ export const updateXRange = (xRange) => ({
 export const updateYRange = (yRange) => ({
   type: "UPDATE_Y_RANGE",
   yRange
-})
-// chart
-export const updateXLabels = (xLabels) => ({
-  type: "UPDATE_X_LABELS",
-  xLabels
-})
-export const updateYLabels = (yLabels) => ({
-  type: "UPDATE_Y_LABELS",
-  yLabels
-})
-export const updateLegends = (legends) => ({
-  type: "UPDATE_LEGENDS",
-  legends
-})
-export const updateMetaText = (meta, text) => ({
-  type: "UPDATE_META_TEXT",
-  meta,
-  text
 })*/

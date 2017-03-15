@@ -1,11 +1,11 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {appendAxisYScale} from '../../actions'
+import {appendAxisYScaleRes} from '../../actions'
 import {numToTxt, appendFormatToNum} from '../../data/typeNumber'
-import {getDomainExtend} from '../axis/domain'
+import {getDomainExtend} from '../../data/calcScaleDomain'
+import {getAxisYTextWidth} from '../../data/calcAxisYText'
+import ComponentEditor from './Editor'
 
-
-const space = 6
 
 const mapStateToProps = (state) => ({
   id: state.chartId,
@@ -15,19 +15,18 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setAxisYScale: (indent, height, margin) => dispatch(appendAxisYScale(indent, height, margin))
+  setAxisYScale: (indent, height, margin) => dispatch(appendAxisYScaleRes(indent, height, margin))
 })
 
 
 class AxisYScale extends React.Component {
   updateAxisYScale(test) {
-    const {scale, setAxisYScale, isPlot} = this.props
+    const {scale, setAxisYScale, id} = this.props
     if (!scale.y) return
 
-    const els = [...document.querySelectorAll(".axis-y-grid span")].slice(0, -1)
-    const widths = els.map(el => el.offsetWidth)
-    const indent = Math.max.apply(null, widths) + space + (isPlot ? 3 : 0)
-    setAxisYScale(indent, this.svgHeight, this.svgMarginTop) // for react update
+    // for react update
+    const indent = getAxisYTextWidth(id)
+    setAxisYScale(indent, this.svgHeight, this.svgMarginTop)
   }
 
   componentDidMount() {
@@ -40,7 +39,6 @@ class AxisYScale extends React.Component {
 
   render() {
     const {id, scale, numFormat, unit} = this.props
-    //console.log("y scale")
     if (!scale.y) return null
 
     /* data */
@@ -65,19 +63,23 @@ class AxisYScale extends React.Component {
     // add unit to last tick text
     //tickData[tickData.length-1].txt += unit ? " " + unit : ""
     const is100 = id.indexOf("100") > -1
-    const textLast = tickData[tickData.length-1].txt
-    tickData[tickData.length-1].txt = appendFormatToNum(textLast, unit, numFormat, is100, false, false)
+    const iLast = tickData.length-1
+    const textLast = tickData[iLast].txt
+    tickData[iLast].txt = appendFormatToNum(textLast, unit, numFormat, is100, false, false)
 
     const indexTick0 = ticks.indexOf(0)
     const indexTickSolidGrid = indexTick0 > -1 ? indexTick0 : 0
 
 
     /* draw */
-    const drawAxisText = (text) =>
+    const drawAxisText = (text, i) =>
       <span className="axis-y-text" style={{
         display: "inline-block",
         width: false,
-      }}>{text}</span>
+      }}>
+        <ComponentEditor text={text} type="yTexts" isTop={i===iLast}/>
+      </span>
+      //{text}
 
     const drawAxis = tickData.map((tick, i) =>
       <div key={i} className="axis-y-grid" style={{
@@ -87,7 +89,7 @@ class AxisYScale extends React.Component {
         borderBottom: "1px #dcdcdc " + (i===indexTickSolidGrid ? "solid" : "dotted"),
         marginTop: "-19px",
         lineHeight: "18px"
-      }}>{drawAxisText(tick.txt)}</div>
+      }}>{drawAxisText(tick.txt, i)}</div>
     )
 
     return (
