@@ -54,7 +54,7 @@ export const setColors = (colors) => ({
   type: "SET_COLORS",
   colors
 })
-export const updateChartData = (legend, scales, margin) => ({
+export const appendChartData = (legend, scales, margin) => ({
   type: "APPEND_DATA",
   legend,
   scales,
@@ -103,6 +103,11 @@ export const updateAxisYLabelChange = (dataChange) => ({
   type: "UPDATE_YLABEL_CHANGE",
   ...dataChange
 })
+export const appendAxisData = (type, dataAxis) => ({
+  type: "APPEND_AXIS",
+  target: type, // x or y
+  dataAxis
+})
 
 // edit panel 1
 export const updateCustomColor = (colorInput) => ({
@@ -110,18 +115,14 @@ export const updateCustomColor = (colorInput) => ({
   colorInput
 })
 // edit panel 2
-export const updateEditorData = (type, data) => ({
+export const updateAxisDataOnTypes = (type1, type2, dataTarget) => ({
   type: "UPDATE_AXIS",
+  target1: type1, // x or y
+  target2: type2, // ticks or range§
+  dataTarget
+})
+export const updateScaleRange = (type, range) =>({
+  type: "UPDATE_RANGE",
   target: type,
-  data
+  range  
 })
-
-/*/ range is in fact domain
-export const updateXRange = (xRange) => ({
-  type: "UPDATE_X_RANGE",
-  xRange
-})
-export const updateYRange = (yRange) => ({
-  type: "UPDATE_Y_RANGE",
-  yRange
-})*/

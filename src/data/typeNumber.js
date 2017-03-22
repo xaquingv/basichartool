@@ -17,13 +17,13 @@ const regexCurrencies = /[\$\xA2-\xA5\u058F\u060B\u09F2\u09F3\u09FB\u0AF1\u0BF9\
 /* 1. input format */
 /* detect numbers and format types if any */
 export function getNumberAnalysis(data) {
-  //console.log("data:", data)
+  // console.log("data:", data)
 
   let format = data[0].match(regexNumFormats);
   let values = data
   .map(d => d.replace(regexNumFormats, ""))  // remove formats
-  .filter(d => !isNaN(d !== "" ? d : NaN))      // if is number
-  .map(d => parseFloat(d))                      // str to num data type
+  .filter(d => !isNaN(d !== "" ? d : NaN))   // if is number
+  .map(d => parseFloat(d))                   // str to num data type
 
   let isNumber = values.length === data.length;
   format = (isNumber && format) ? format[0] : null

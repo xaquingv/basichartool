@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {updateChartData} from '../../actions'
+import {appendChartData} from '../../actions'
 import {width, height, viewBox} from '../../data/config'
 import drawChart from './line'
 
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
+  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
 })
 
 
@@ -26,8 +26,9 @@ class Line extends React.Component {
 
   render() {
     const {data, onSelect, callByStep} = this.props
+    const keys = data.numberOnly ? data.keys.slice(1, data.keys.length) : data.keys
     const setChartData = () => {
-      if (callByStep === 3) { onSelect(data.keys, this.scale) }
+      if (callByStep === 3) { onSelect(keys, this.scale) }
     }
 
     return (
@@ -45,24 +46,25 @@ class Line extends React.Component {
 
     /* data */
     const {data, colors, callByStep} = this.props
-    const dates = data.dateCol
-
+    const dataX = data.dateCol || data.numberCols[0]
+    const numbers = data.numberOnly ? data.numbersButC1 : data.numbers
+    const numberCols = data.numberOnly ? data.numberCols.slice(1, data.numberCols.length) : data.numberCols
     const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
 
     // scale
     this.scale = {}
     this.scale.x = scaleTime()
-    .domain(d3.extent(dates))
+    .domain(d3.extent(dataX))
     .range([0, width])
 
     this.scale.y = d3.scaleLinear()
-    .domain(d3.extent(data.numbers))
+    .domain(d3.extent(numbers))
     .range([height, 0])
 
     // chart
-    const dataChart = data.numberCols.map(numberCol =>
+    const dataChart = numberCols.map(numberCol =>
       numberCol.map((number, i) => ({
-        x: dates[i],
+        x: dataX[i],
         y: number
     })))
 
@@ -71,20 +73,20 @@ class Line extends React.Component {
     drawChart(this.refs, dataChart, this.scale, colors)
 
 
-    /* validate special */
     // TODO: move to another validatetion file
-    // NOTE: double check if discrete and conti are the same
+    /* validate special */
+    // double check if discrete and conti are the same
     // if the same (duplicate), hide the discrete line
     if (callByStep === 4) return
-    const elLineDiscrete = d3.select("#lineDiscrete")
-    const elLineContiPathD = d3.select("#lineConti path").attr("d")
-    if (!elLineDiscrete) {
+    // ps. d3.select() is not null while the ele doesn't exist
+    // that's why there r both document* and d3*
+    const pathDiscrete = document.querySelector("#lineDiscrete path")
+    const pathContinue = document.querySelector("#lineContinue path")
+    if (!pathDiscrete) {
       return
-    } else if (elLineContiPathD === elLineDiscrete.select("path").attr("d")) {
-      elLineDiscrete.classed("d-n", true)
-    } /*else if (elLineContiPathD !== elLineDiscrete.select("path").attr("d")) {
-      elLineDiscrete.classed("d-n", false)
-    }*/
+    } else if (pathDiscrete.getAttribute("d") === pathContinue.getAttribute("d")) {
+      d3.select("#lineDiscrete").classed("d-n", true)
+    }
   }
 }
 

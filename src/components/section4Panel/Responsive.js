@@ -1,6 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {updateWidth} from '../../actions'
+import {updateWidth, updateSize} from '../../actions'
+import axisXResponsive from './axisXTextAndSvgResponsive'
+import axisYResponsive from './axisYTextResponsive'
 
 /*const widths = [
   {val: 300, txt: "300px"},
@@ -10,30 +12,45 @@ import {updateWidth} from '../../actions'
 ]*/
 
 const mapStateToProps = (state) => ({
-  width: state.dataSetup.width
+  widthChart: state.dataSetup.width,
+  widthLabel: state.dataChart.string1Width,
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setWidth: (width) => dispatch(updateWidth(width))
+  setWidth: (width) => dispatch(updateWidth(width)),
+  setSize: (size) => dispatch(updateSize(size))
 })
 
 
-class Display extends React.Component {
+class Responsive extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return nextProps.widthChart !== this.props.widthChart
+  }
+  componentDidUpdate() {
+    const {widthLabel, setSize} = this.props
+    // delay due to transition animation
+    setTimeout(() => {
+      const elChart = document.querySelector(".js-chart")
+      setSize({w: elChart.offsetWidth, h: elChart.offsetHeight})
+      axisYResponsive(widthLabel)
+      axisXResponsive()
+    }, 1000)
+  }
 
   render() {
-    const {width, setWidth} = this.props
+    const {widthChart, setWidth} = this.props
 
     return (
       <div>Responsive:
         <span style={{color: "#ccc"}}>
-        <span onClick={()=>setWidth("300px")} style={{color: width === "300px" ? "black" : false}} className="c-p">300</span>-
-        <span onClick={()=>setWidth("620px")} style={{color: width === "620px" ? "black" : false}} className="c-p">620</span>-
-        <span onClick={()=>setWidth("860px")} style={{color: width === "860px" ? "black" : false}} className="c-p">860</span>
+        <span onClick={()=>setWidth("300px")} style={{color: widthChart === "300px" ? "black" : false}} className="c-p">300</span>-
+        <span onClick={()=>setWidth("620px")} style={{color: widthChart === "620px" ? "black" : false}} className="c-p">620</span>-
+        <span onClick={()=>setWidth("860px")} style={{color: widthChart === "860px" ? "black" : false}} className="c-p">860</span>
         </span>px ||
-        <span onClick={()=>setWidth("100%")} style={{color: width === "100%" ? "black" : "#ccc"}} className="c-p">free</span>
+        <span onClick={()=>setWidth("100%")} style={{color: widthChart === "100%" ? "black" : "#ccc"}} className="c-p">free</span>
       </div>
     )
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Display)
+export default connect(mapStateToProps, mapDispatchToProps)(Responsive)

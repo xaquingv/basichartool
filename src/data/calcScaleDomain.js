@@ -1,5 +1,5 @@
 import {d3} from '../lib/d3-lite'
-import {ratio} from './config'
+//import {ratio} from './config'
 
 // bars
 export function getDomainByDataRange(dataArr) {
@@ -18,7 +18,7 @@ export function getDomainByDataRange(dataArr) {
 //export function getDomainExtent(dataArr) {}
 
 // axis_y_number
-export function getDomainExtend(domain, ticks) {
+export function getDomainExtend(domain, ticks/*, yRange*/) {
 
   let extDomain = domain.slice()
   let extTicks = ticks.slice()
@@ -41,15 +41,12 @@ export function getDomainExtend(domain, ticks) {
   const step = Math.ceil(extTicks.length / 8)
   extTicks = extTicks.filter((t, i) => i%step ===0)
 
-  const height = Math.round(((domain[1] - domain[0]) / (extDomain[1] - extDomain[0]))*10000)/100
-  const marginTop = Math.round(((extDomain[1] - domain[1]) / (extDomain[1] - extDomain[0]))*10000)*ratio/100
-
-  //console.log("pre", domain, ticks)
-  //console.log("cur", extDomain, extTicks, height, marginTop)
+  //console.log("===")
+  //console.log("[pre]", domain, ticks)
+  //console.log("[cur]", extDomain, extTicks)
   return {
-    domain: extDomain,
-    ticks: extTicks,
-    height,
-    marginTop
+    // to avoid float precision issue in domian and ticks
+    domain: extDomain.map(d => parseFloat(d.toFixed(8))),
+    ticks: extTicks.map(t => parseFloat(t.toFixed(8))),
   }
 }

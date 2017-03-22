@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {appendAxisYScaleRes} from '../../actions'
+import {appendAxisYScaleRes, appendAxisData} from '../../actions'
+import {ratio} from '../../data/config'
 import {numToTxt, appendFormatToNum} from '../../data/typeNumber'
 import {getDomainExtend} from '../../data/calcScaleDomain'
 import {getAxisYTextWidth} from '../../data/calcAxisYText'
@@ -9,65 +10,95 @@ import ComponentEditor from './Editor'
 
 const mapStateToProps = (state) => ({
   id: state.chartId,
-  scale: state.dataChart.scales,
+  scales: state.dataChart.scales,
+  axisRanges: state.dataChart.ranges,
+  axis: state.dataEditable.axis,
   numFormat: state.dataChart.numberFormat,
   unit: state.dataTable.meta.unit
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setAxisYScale: (indent, height, margin) => dispatch(appendAxisYScaleRes(indent, height, margin))
+  setAxisYScale: (indent, height, margin) => dispatch(appendAxisYScaleRes(indent, height, margin)),
+  setAxisYTicks: (type, axisData) => dispatch(appendAxisData(type, axisData))
 })
 
 
-class AxisYScale extends React.Component {
-  updateAxisYScale(test) {
-    const {scale, setAxisYScale, id} = this.props
-    if (!scale.y) return
+class AxisY extends React.Component {
+  updateAxisYScale() {
+    const {scales, setAxisYScale, id} = this.props
+    if (!scales.y) return
 
     // for react update
     const indent = getAxisYTextWidth(id)
     setAxisYScale(indent, this.svgHeight, this.svgMarginTop)
   }
 
-  componentDidMount() {
-    // NOTE: to avoid calc bf style applied ?
-    setTimeout(() => this.updateAxisYScale(1), 0)
-  }
-  componentDidUpdate() {
-    this.updateAxisYScale(2)
-  }
-
-  render() {
-    const {id, scale, numFormat, unit} = this.props
-    if (!scale.y) return null
-
-    /* data */
-    let axisY = scale.y.copy().range([100, 0])
-    let ticks = id === "colGroupStack100" ? [0, 25, 50, 75, 100] : axisY.ticks(5)
+  setAxisData() {
+    const {id, scales} = this.props
+    this.axisY = scales.y.copy().range([100, 0])
+    this.ticks = id === "colGroupStack100" ? [0, 25, 50, 75, 100] : this.axisY.ticks(5)
 
     // extend for lines and plots but cols
-    let extend = {}
     if (id.indexOf("col") === -1) {
-      extend = getDomainExtend(axisY.domain(), ticks)
-      axisY.domain(extend.domain)
-      ticks = extend.ticks
+      const extend = getDomainExtend(this.axisY.domain(), this.ticks)
+      this.axisY.domain(extend.domain)
+      this.ticks = extend.ticks
     }
-    this.svgHeight = extend.height ? extend.height : 100
-    this.svgMarginTop = extend.marginTop ? extend.marginTop : 0
 
-    const tickData = ticks.map(tick => ({
+    this.axisData = {range: this.axisY.domain(), ticks: this.ticks}
+  }
+  resetAxisData() {
+    this.axisY.domain(this.props.axis.y.range)
+    this.ticks = this.props.axis.y.ticks
+  }
+
+  // mounting
+  componentDidMount() {
+    if (!this.props.axis) {
+      this.props.setAxisYTicks("y", this.axisData)
+    }
+    setTimeout(() => this.updateAxisYScale(), 0)
+  }
+  // updating
+  componentDidUpdate() {
+    if (!this.props.axis) {
+      this.props.setAxisYTicks("y", this.axisData)
+    }
+    this.updateAxisYScale()
+  }
+
+
+  render() {
+    if (!this.props.scales.y) return null
+
+    /* data */
+    const {id, numFormat, unit, axis, axisRanges} = this.props
+    if (!axis) {
+      this.setAxisData()
+    } else {
+      this.resetAxisData()
+    }
+    const domain = this.axisY.domain()
+    const height = Math.round(((axisRanges.y[1] - axisRanges.y[0]) / (domain[1] - domain[0]))*10000)/100
+    const marginTop = Math.round(((domain[1] - axisRanges.y[1]) / (domain[1] - domain[0]))*10000)*ratio/100
+
+    this.svgHeight = /*extend.*/height ? /*extend.*/height : 100
+    this.svgMarginTop = /*extend.*/marginTop ? /*extend.*/marginTop : 0
+
+    // wrap for drawing
+    const tickData = this.ticks.map(tick => ({
         val: tick,
         txt: numToTxt(tick),
-        pos: Math.round(axisY(tick)*100)/100
+        pos: Math.round(this.axisY(tick)*100)/100
     }))
+
     // add unit to last tick text
-    //tickData[tickData.length-1].txt += unit ? " " + unit : ""
     const is100 = id.indexOf("100") > -1
     const iLast = tickData.length-1
     const textLast = tickData[iLast].txt
     tickData[iLast].txt = appendFormatToNum(textLast, unit, numFormat, is100, false, false)
 
-    const indexTick0 = ticks.indexOf(0)
+    const indexTick0 = this.ticks.indexOf(0)
     const indexTickSolidGrid = indexTick0 > -1 ? indexTick0 : 0
 
 
@@ -79,7 +110,6 @@ class AxisYScale extends React.Component {
       }}>
         <ComponentEditor text={text} type="yTexts" isTop={i===iLast}/>
       </span>
-      //{text}
 
     const drawAxis = tickData.map((tick, i) =>
       <div key={i} className="axis-y-grid" style={{
@@ -102,4 +132,4 @@ class AxisYScale extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AxisYScale)
+export default connect(mapStateToProps, mapDispatchToProps)(AxisY)

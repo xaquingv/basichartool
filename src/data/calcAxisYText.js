@@ -5,10 +5,12 @@ const spaceTickText = 6
 
 export function getString1DataRes(rowGroup) {
   const elTest = document.querySelector(".js-test-y")
-  const string1Width = Math.max.apply(null, rowGroup.map(str => {
-    elTest.textContent = str
-    return elTest.offsetWidth
-  })) + spaceLabel
+  const string1Width = rowGroup ?
+    Math.max.apply(null, rowGroup.map(str => {
+      elTest.textContent = str
+      return elTest.offsetWidth
+    })) + spaceLabel :
+    0
   const string1IsRes = string1Width > width/3
 
   return {

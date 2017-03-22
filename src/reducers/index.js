@@ -85,7 +85,6 @@ function show(show = {col: [], row: []}, action) {
       const newVal = show[target][index] ? false : true
 
       let newShow = { ...show }
-
       newShow[target] = [
         ...show[target].slice(0, index),
         newVal,
@@ -98,22 +97,34 @@ function show(show = {col: [], row: []}, action) {
   }
 }
 
-function dataChart(dataChart = {legend: [], scales:{}, indent: 0, marginTop: 0}, action) {
+function dataChart(dataChart = {/*legend: [], scales:{}, indent: 0, marginTop: 0*/}, action) {
   switch(action.type) {
     // reset
     case 'ANALYZE_DATA':
+      //console.log("reset chart data")
+      //console.log(dataChart)
+      //console.log(action.dataChart)
+      const resetDataChart = {legend: [], scales:{}, margin: undefined, indent: 0, marginTop: 0}
       return {
-        ...dataChart,
-        ...action.dataChart
+        //...dataChart,
+        ...resetDataChart,
+        ...action.dataChart,
+        //margin: {},
       }
 
     /* TODO: rename and clean up */
     case 'APPEND_DATA':
+      //if(action.scales.x) console.log(action.scales.x.domain())
+      //if(action.scales.y) console.log(action.scales.y.domain())
       return {
         ...dataChart,
         legend: action.legend,
         scales: action.scales,
-        margin: action.margin
+        margin: action.margin,
+        ranges: {
+          x: action.scales.x ? action.scales.x.domain() : null,
+          y: action.scales.y ? action.scales.y.domain() : null
+        }
       }
 
     // res y
@@ -134,11 +145,21 @@ function dataChart(dataChart = {legend: [], scales:{}, indent: 0, marginTop: 0},
         string1Width: action.widthLabel
       }
     case 'UPDATE_YLABEL_CHANGE':
-      const newLabelGroup = dataChart.rowGroup
+      let newLabelGroup = dataChart.rowGroup
       newLabelGroup[action.index] = action.label
       return {
         ...dataChart,
         rowGroup: newLabelGroup
+      }
+
+    case 'UPDATE_RANGE':
+      //console.log(dataChart.scales[action.target].domain())
+      let newScales = {...dataChart.scales}
+      newScales[action.target].domain(action.range)
+      //console.log(newScales[action.target].domain())
+      return {
+        ...dataChart,
+        scales: newScales
       }
 
     default:
@@ -172,7 +193,7 @@ function dataSetup(dataSetup = {colors:[], display:{}, legend:[], size:{}, width
         display: action.displaySwitches
       }
     case 'UPDATE_DISPLAY':
-      const newSwitches = {...dataSetup.display}
+      let newSwitches = {...dataSetup.display}
       newSwitches[action.metaKey] = !newSwitches[action.metaKey]
       return {
         ...dataSetup,
@@ -199,7 +220,7 @@ function dataSetup(dataSetup = {colors:[], display:{}, legend:[], size:{}, width
         pickColor: action.pickColor
       }
     case 'DROP_COLOR':
-      const newColors = dataSetup.colors.slice()
+      let newColors = dataSetup.colors.slice()
       newColors[action.dropIndex] = dataSetup.pickColor
       return {
         ...dataSetup,
@@ -222,20 +243,25 @@ function dataEditable(dataEditable = {}, action) {
         ...dataEditable,
         colorInput: action.colorInput
       }
-    case 'UPDATE_AXIS':
-      const newDataEditable = dataEditable.slice()
-      newDataEditable[action.target] = action.data
-      return newDataEditable
-    /*case 'UPDATE_X_RANGE':
+    case 'APPEND_AXIS':
+      //console.log("=>", dataEditable.axis ? dataEditable[action.target] : dataEditable.axis)
+      // mutate !?
+      let appendAxis = dataEditable.axis || {x: {}, y: {}}
+      appendAxis[action.target] = action.dataAxis || {ticks:[], range:[]}
+      //console.log("=>", action.target, appendAxis[action.target])
       return {
         ...dataEditable,
-        xRange: action.xRange
+        axis: appendAxis
       }
-    case 'UPDATE_Y_RANGE':
+    case 'UPDATE_AXIS':
+      let updateAxis = {...dataEditable.axis}
+      //console.log("update", updateAxis[action.target1][action.target2])
+      updateAxis[action.target1][action.target2] = action.dataTarget
+      //console.log("update", action.dataTarget)
       return {
         ...dataEditable,
-        yRange: action.yRange
-      }*/
+        axis: updateAxis
+      }
     default:
       return dataEditable
   }

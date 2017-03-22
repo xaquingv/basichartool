@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import './section4Panel.css'
 import scrollTo from '../lib/scrollTo'
 import {default_metaText, ratio} from '../data/config'
-import {updateSize} from '../actions'
 import {chartList} from './charts'
 
 import ComponentSize        from './section4Panel/Size'
@@ -12,11 +11,11 @@ import ComponentPalette     from './section4Panel/Palette'
 import ComponentDisplay     from './section4Panel/Display'
 import ComponentEditor      from './section4Panel/Editor'
 import ComponentLegend      from './section4Panel/Legend'
+import ComponentSetAxis     from './section4Panel/SetAxis'
 import ComponentXAxis       from './section4Panel/AxisX'
 import ComponentYAxis       from './section4Panel/AxisY'
 import axisXResponsive      from './section4Panel/axisXTextAndSvgResponsive'
 import axisYResponsive      from './section4Panel/axisYTextResponsive'
-
 
 const STEP = 4;
 
@@ -28,11 +27,11 @@ const mapStateToProps = (state) => ({
   metaData: state.dataTable.meta,
   display: state.dataSetup.display,
   graphWidth: state.dataSetup.width,
-});
+  axis: state.dataEditable.axis
+})
 
 const mapDispatchToProps = (dispatch) => ({
-  setSize: (size) => dispatch(updateSize(size))
-});
+})
 
 
 class Section extends React.Component {
@@ -44,21 +43,15 @@ class Section extends React.Component {
   }
 
   componentDidUpdate() {
-    const {stepActive, setSize, chartData} = this.props
+    const {stepActive, chartData} = this.props
     if (stepActive < STEP) return
 
-    /* chart, for responsive */
-    // set chart size to setup1
-    const elChart = document.querySelector(".js-chart")
-    setTimeout(() => setSize({w: elChart.offsetWidth, h: elChart.offsetHeight}), 1000)
-    // NOTE: setTimeout due to css transition
-
-    // axes res
+    /* chart axes responsive */
     // x-text-top/bottom (with ticks), y-text (with ticks), and y-label's posiitons
+    // due to tick or text/label editing
     if (chartData.scales.x) {
       axisYResponsive(chartData.string1Width)
-      setTimeout(() => axisXResponsive(), 1000)
-      // delay due to transition animation
+      axisXResponsive()
     }
 
     /* navigation */
@@ -73,10 +66,10 @@ class Section extends React.Component {
 
     const {stepActive, chartId, graphWidth, chartData, display} = this.props;
 
-    // TODO: responsive width
     const isOnBar = chartId.indexOf("onBar") > -1
     const isBarBased = chartId.toLowerCase().indexOf("bar") > -1
     const isPlot = chartId.toLowerCase().indexOf("plot") > -1
+
     const ComponentChart = chartList[chartId]
     const chartComponent = ComponentChart
     ? (
@@ -87,12 +80,11 @@ class Section extends React.Component {
         paddingBottom: isBarBased ? "1px" : (ratio*100) + "%",
         // 1px for barBasaed to keep chart's height
       }}>
-        <ComponentXAxis isBarBased={isBarBased} isOnBar={isOnBar} isPlot={isPlot}/>
         <ComponentYAxis />
+        <ComponentXAxis isBarBased={isBarBased} isOnBar={isOnBar} isPlot={isPlot}/>
         <ComponentChart id={chartId+"_edit"} callByStep={STEP} />
       </div>
-    )
-    : null
+    ) : null
 
     const graphComponent = stepActive >= STEP
     ? (
@@ -107,35 +99,38 @@ class Section extends React.Component {
           </div>
           <ComponentLegend isBarBased={isBarBased}/>
         </header>
-
         {/* main: graph / chart */}
         {chartComponent}
-
         {/* footer */}
         <footer className={display["source"] ? "" : " d-n"}>
           <ComponentEditor text={this.getMetaText("source")} />
         </footer>
         <span className="test js-test-res"></span>
       </div>
-    )
-    : null
+    ) : null
 
-    return (
-      <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section4">
-        <h1>4. Edit your graph</h1>
-
-        <div className="setup1">
+    const setupComponent = stepActive >= STEP
+    ? (
+      <div className="setup row-flex">
+        <div className="setup-p1">
           <ComponentSize />
           <ComponentResponsive />
           <ComponentPalette />
           <ComponentDisplay />
         </div>
+        <div className="setup-p2">
+          <ComponentSetAxis type="x"/>
+          <ComponentSetAxis type="y"/>
+        </div>
+      </div>
+    ) : null
 
-        <div className="setup2"></div>
-
-        {/* any styles inside graph needs to be either included in the template.js or inline */}
+    return (
+      <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section4">
+        <h1>4. Edit your graph</h1>
+        {setupComponent}
         {graphComponent}
-        {/* end of graph */}
+        {/* any styles inside graph needs to be either included in the template.js or inline */}
       </div>
     )
   }

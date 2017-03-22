@@ -7,6 +7,7 @@ import {chartList} from './charts'
 
 
 const STEP = 3
+const msg = "Sorry, no results! Please check your dataset or contact visual team."
 
 const mapStateToProps = (state) => ({
   step: state.step,
@@ -64,7 +65,7 @@ class Section extends React.Component {
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section3">
         <h1>3. Select a visualization</h1>
         <div className="charts">
-          {chartComponents}
+          {selection.length > 0 ? chartComponents : msg}
         </div>
       </div>
     )

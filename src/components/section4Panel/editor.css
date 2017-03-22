@@ -3,6 +3,7 @@
 .DraftEditor-root div {
   min-width: 2px; /* to keep visibility */
   display: inline-block;
+  cursor: text;
 }
 
 [contenteditable] span {
@@ -18,4 +19,7 @@
 }
 .axis-top-text [contenteditable] {
   white-space: nowrap !important;
+}
+.setup-p2 [contenteditable] span {
+  border-bottom: 2px solid #333;
 }

@@ -3,16 +3,17 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import drawChart from './plot'
 import {uniqueArray} from '../../lib/array'
-import {updateChartData} from '../../actions'
+import {appendChartData} from '../../actions'
 import {width, height, viewBox} from '../../data/config'
 
 const mapStateToProps = (state) => ({
   data: state.dataChart,
+  axis: state.dataEditable.axis,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
+  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
 })
 
 
@@ -48,16 +49,20 @@ class ScatterPlot extends React.Component {
   renderChart() {
 
     /* data */
-    const {data, colors, callByStep} = this.props
+    const {data, colors, axis, callByStep} = this.props
     const names = data.string1Col
     const numberCols = data.numberCols
     const numberRows = data.numberRows
     const colorGroup = data.string2Col
+    const domain = callByStep === 4 && axis ? axis.x.range : d3.extent(numberCols[0])
+    // using axis.x.range due to editable range @setup2, section 4
+
     this.colorKeys = uniqueArray(data.string2Col)
 
+    // scale
     this.scale = {}
     this.scale.x = d3.scaleLinear()
-    .domain(d3.extent(numberCols[0]))
+    .domain(domain)
     .range([0, width])
 
     this.scale.y = d3.scaleLinear()
@@ -75,6 +80,7 @@ class ScatterPlot extends React.Component {
     //numberRows.forEach(n => { count["x"+n[0]+"y"+n[1]] = (count["x"+n[0]+"y"+n[1]] || 0 ) + 1 })
     //console.log(count)
 
+    // chart
     const dataChart = [numberRows.map((n, i) => {
       //const countOverlap = count["x"+n[0]+"y"+n[1]]
       //const isOverlapped = countOverlap > 1

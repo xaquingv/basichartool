@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
-import {updateChartData} from '../../actions'
+import {appendChartData} from '../../actions'
 import {addBarsBackground, drawBarSticks} from './onBar'
 import ComponentRow from './BarBase'
 
@@ -13,13 +13,15 @@ const headTop = (barHeight - headSize) / 2
 const tickShift = 5
 
 const mapStateToProps = (state) => ({
+  selectedChartId: state.chartId,
   data: state.dataChart,
-  //colors: state.dataSetup.colorDiff
+  axis: state.dataEditable.axis
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale, margins) => dispatch(updateChartData(keys, scale, margins))
+  onSelect: (keys, scale, margins) => dispatch(appendChartData(keys, scale, margins))
 })
+
 
 // TODO: still res issue to sort out
 class ArrowOnBar extends React.Component {
@@ -33,16 +35,17 @@ class ArrowOnBar extends React.Component {
 
   render() {
     const {data, onSelect, callByStep} = this.props
-    //console.log(callByStep)
-    //console.log(this.margin, "(this)")
-    //console.log(data.margin, "(data)")
+    if (callByStep === 4) { this.margin = data.margin }
+    //console.log("render:", callByStep)
+    //console.log("[this]", this.margin)
+    //console.log("[data]", data.margin)
 
     // step 3
     const setChartData = () => {
       if (callByStep === 3) {
         const key = data.keys
         const legendKeys = ["Change from " + key[0] + " to " + key[1]]
-        onSelect(legendKeys, this.scale, this.margin)
+        onSelect(legendKeys, this.scale, this.margin/*{left: margin, right: margin}*/)
       }
     }
 
@@ -60,12 +63,14 @@ class ArrowOnBar extends React.Component {
   renderChart() {
 
     /* data */
-    const data = this.props.data
+    const {data, axis, callByStep} = this.props
+    const domain = callByStep === 4 && axis ? axis.x.range : d3.extent(data.numbers)
+    // using axis.x.range due to editable range @setup2, section 4
 
     // scale
     this.scale = {}
     this.scale.x = d3.scaleLinear()
-    .domain(d3.extent(data.numbers))
+    .domain(domain)
     .range([0, 100])
 
     // chart
@@ -93,16 +98,14 @@ class ArrowOnBar extends React.Component {
     // due to extrem even values at two ends
     // which causes faulty layout on iOS mobile
     // TODO: fix render and update issue
-    //this.fixPixelOutOfLayoutOnce()
+    this.fixPixelOutOfLayoutOnce()
   }
 
   drawChart() {
     // group and background bars
     // margin 0 at two ends due to un-pre-calculat-able pixel shift
     // patch fix in fixPixelOutOfLayout()
-    let margin = this.margin ? this.margin : this.props.data.margin
-    margin = margin ? margin : {left: 0, right: 0}
-
+    let margin = this.props.data.margin ? this.margin : {left: 0, right: 0}
     let gs = addBarsBackground(this.refs.div, this.dataChart, margin.left, margin.right)
 
     // arrow - line
@@ -121,16 +124,19 @@ class ArrowOnBar extends React.Component {
     .style("transform", d => d.isEven ? "rotate(45deg)" : false)
   }
 
-  fixPixelOutOfLayoutOnce(chartId) {
-    // run once
-    if (this.margin || this.props.data.margin) return
+  fixPixelOutOfLayoutOnce() {
+    // set once with one chart data
+    if (this.props.data.margin) return
 
     const elChart = document.querySelector("#" + this.props.id + " .canvas")
     const chartWidth = elChart.offsetWidth
     const elKicks = [...elChart.querySelectorAll(".js-kick")]
 
     // test1: return if no kicks
-    if (elKicks.length === 0) return
+    if (elKicks.length === 0) {
+      this.margin = {left: 0, right: 0}
+      return
+    }
 
     // NOTE: additional tick shift due to rotation
     const tickRotate = Math.ceil((tickShift*Math.sqrt(2) /* 45deg  rotation */ - tickShift)*10) / 10
@@ -140,12 +146,16 @@ class ArrowOnBar extends React.Component {
     const groupMarginRight = rs.length === 0 ? 0 : Math.ceil(Math.max(...rs) - chartWidth)
 
     // test2: return if kicks don't break layout
-    if (groupMarginLeft === 0 && groupMarginRight === 0) return
+    if (groupMarginLeft === 0 && groupMarginRight === 0) {
+      this.margin = {left: 0, right: 0}
+      return
+    }
 
     // fix
     const elGroups = [...elChart.querySelectorAll(".shape")]
     elGroups.forEach(el => el.style.margin = "0 " + groupMarginRight + "px 0 " + groupMarginLeft + "px")
     this.margin = {left: groupMarginLeft, right: groupMarginRight}
+    //console.log("fix!")
     //console.log("margin:", groupMarginLeft, groupMarginRight)
   }
 }

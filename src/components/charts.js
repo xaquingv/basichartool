@@ -1,5 +1,5 @@
 import LineDiscrete       from './charts/LineDiscrete'
-import LineContinuous     from './charts/LineConti'
+import LineContinue     from './charts/LineContinue'
 import PlotDot            from './charts/PlotDot'
 import PlotScatter        from './charts/PlotScatter'
 import Slopegraph         from './charts/Slopegraph'
@@ -25,7 +25,7 @@ import AreaStack          from './charts/AreaStack'
 // TODO: obj -> arr, sort by config file
 export const chartList = {
   lineDiscrete:     LineDiscrete,
-  lineConti:        LineContinuous,
+  lineContinue:     LineContinue,
   plotDot:          PlotDot,
   plotScatter:      PlotScatter,
   onBarDiffArrow:   OnBarArrow,

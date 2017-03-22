@@ -3,9 +3,7 @@ export function uniqueArray(arr) {
 }
 
 export function swapArray(arr) {
-  return arr[0].map((col, i) =>
-    arr.map(row => row[i])
-  )
+  return arr[0].map((col, i) => arr.map(row => row[i]))
 }
 /*
 let cols = rows[0].map(() => [] )

@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
+import {appendAxisData} from '../../actions'
 import {appendFormatToNum} from '../../data/typeNumber'
 import {getTickSteps, getTickTexts, getTickTextWidths} from '../../data/calcAxisXTick'
 import ComponentEditor from './Editor'
@@ -10,48 +11,75 @@ const mapStateToProps = (state) => ({
   id: state.chartId,
   dataChart: state.dataChart,
   chartSize: state.dataSetup.size,
-  unit: state.dataTable.meta.unit
+  unit: state.dataTable.meta.unit,
+  axis: state.dataEditable.axis
 })
 
 const mapDispatchToProps = (dispatch) => ({
+    initAxisXTicks: (type, axisData) => dispatch(appendAxisData(type, axisData))
 })
 
 
 class AxisX extends React.Component {
+  setAxisData() {
+    const {id, dataChart, isBarBased} = this.props
+    const {scales, dateCol, string1Col, dateFormat, dateHasDay, rowCount, numberCols} = dataChart
+
+    this.dataX = dateCol || (string1Col.length !== 0 ? string1Col : numberCols[0])
+    this.axisX = scales.x.copy()
+    .domain(["bar100", "barGroupStack100", "brokenBar"].includes(id) ? [0, 100] : scales.x.domain()) // ui range @setup2
+    .range([0, 100]) // d3 range
+
+    this.ticks = getTickSteps(id, isBarBased, this.dataX, dateFormat, rowCount, this.axisX)
+    this.texts = getTickTexts(id, isBarBased, this.dataX, dateFormat, dateHasDay, this.axisX.domain(), this.ticks)
+
+    const isDate = this.ticks[0].toString() !== this.texts[0]
+    this.axisData = {range: this.axisX.domain(), ticks: this.ticks, texts: this.texts, isDate}
+  }
+  resetAxisData() {
+    const {id, dataChart, isBarBased} = this.props
+    const {dateFormat, dateHasDay} = dataChart
+
+    this.axisX.domain(this.props.axis.x.range)
+    this.ticks = this.props.axis.x.ticks
+    this.texts = getTickTexts(id, isBarBased, this.dataX, dateFormat, dateHasDay, this.axisX.domain(), this.ticks)
+  }
+
+  // mounting
   componentDidMount() {
     this.renderGrid()
+    if (!this.props.axis) {
+      this.props.initAxisXTicks("x", this.axisData)
+    }
   }
+  // updating
   componentDidUpdate() {
     this.renderGrid()
+    if (!this.props.axis) {
+      this.props.initAxisXTicks("x", this.axisData)
+    }
   }
 
-  render() {
-    const {id, dataChart, chartSize, isBarBased, isOnBar, isPlot, unit} = this.props
-    const {scales, indent, dateCol, string1Col, string1Width, dateHasDay, dateFormat, rowCount} = dataChart
 
-    if (!scales.x) return null
+  render() {
+    if (!this.props.dataChart.scales.x) return null
 
     /* data */
-    // init
-    const dataX = dateCol || string1Col
-    const axisX = scales.x.copy().range([0, 100])
-    const ticks = getTickSteps(id, isBarBased, dataX, dateFormat, rowCount, axisX)
-    const texts = getTickTexts(id, isBarBased, dataX, dateFormat, dateHasDay, axisX.domain(), ticks)
-    const is100 = id.indexOf("100") > -1
-    texts[0] = appendFormatToNum(texts[0], unit, dataChart.numberFormat, is100, isBarBased, true) // true - isX
+    const {id, dataChart, chartSize, isBarBased, isOnBar, isPlot, unit, axis} = this.props
+    const {indent, string1Width} = dataChart
 
-    /*/ map to props if not available
-    console.log("xTick:", dataEditable.xTicks)
-    console.log("ticks:", ticks)
-    console.log("xText:", dataEditable.xTexts)
-    console.log("texts:", texts)
-    console.log("range:", dataEditable.domain)
-    console.log("range:", axisX.domain())*/
+    if (!axis) {
+      this.setAxisData()
+    } else {
+      this.resetAxisData()
+    }
+    const is100 = id.indexOf("100") > -1
+    this.texts[0] = appendFormatToNum(this.texts[0], unit, dataChart.numberFormat, is100, isBarBased, true) // true - isX
 
     // wrap for drawing
-    const tickData = getTickTextWidths(texts).map((width, i) => ({
-      pos: Math.round(axisX(ticks[i])*100)/100,
-      txt: texts[i],
+    const tickData = getTickTextWidths(this.texts).map((width, i) => ({
+      pos: Math.round(this.axisX(this.ticks[i])*100)/100,
+      txt: this.texts[i],
       txtWidth: width
     }))
     this.grid = tickData.map(d => d.pos)
@@ -119,6 +147,7 @@ class AxisX extends React.Component {
     //console.log(margin)
 
     d3.selectAll("#section4 .grid")
+    .html("")
     .style("position", "relative")
     .style("margin-left", margin.left + "px")
     .style("margin-right", (margin.right + 1) + "px")

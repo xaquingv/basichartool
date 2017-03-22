@@ -5,21 +5,23 @@ import {getDateTextFormat, dateNumToTxt} from './typeDate'
 let isMarked = false
 const markSymbol = "*"
 
-export function getTickSteps(id, isBarBased, dates, format, rowCount, axisX) {
-
+export function getTickSteps(id, isBarBased, dataX, format, rowCount, axisX) {
+  // TODO: add case description to this switch
   switch (true) {
     case ["brokenBar"].includes(id):
-      axisX.domain([0, 100]) // override chart domain
       return [50]
 
     case ["bar100", "barGroupStack100"].includes(id):
-      axisX.domain([0, 100]) // override chart domain
       return [0, 25, 50, 75, 100]
 
     // TODO: add 0 to id.indexOf("bar") ?
 
+    // most bar and all line/plot cases
+    case ["lineContinue, plotDot"].includes(id) || isBarBased || rowCount > 7:
+      return axisX.ticks(5)
+
     case !format:
-      let ticks = dates
+      let ticks = dataX
       .map((tick, index) => ({tick, index}))
       .filter(d => d.tick.indexOf(markSymbol) > -1)
       .map(d => d.index)
@@ -31,22 +33,17 @@ export function getTickSteps(id, isBarBased, dates, format, rowCount, axisX) {
 
       return isMarked ? ticks : axisX.ticks(5)
 
-    // most bar and all line/plot cases
-    case (isBarBased || rowCount > 7):
-      return axisX.ticks(5)
-
     // rowCount < 7
     case ["lineDiscrete"].includes(id):
-      return axisX.ticks(dates.length-1)
+      return axisX.ticks(dataX.length)
 
     default:
-      return dates
+      return dataX
   }
 }
 
 
-export function getTickTexts(id, isBarBased, dates, format, hasDay, domain, ticks) {
-
+export function getTickTexts(id, isBarBased, dataX, format, hasDay, domain, ticks) {
   let texts
   let year // to remove repeat years
 
@@ -60,7 +57,7 @@ export function getTickTexts(id, isBarBased, dates, format, hasDay, domain, tick
     case hasDay:
       const dateObjToTxt = id==="lineDiscrete" ? d3.timeFormat("%d/%m %Y") : d3.timeFormat(getDateTextFormat(domain))
       texts = ticks.map((tick) => {
-        const val = id==="lineDiscrete" ? dates[tick] : tick
+        const val = id==="lineDiscrete" ? dataX[tick] : tick
         const tic = dateObjToTxt(val).replace(year, "").trim()
         year = val.getFullYear()
         //console.log(tick, val, tic)
@@ -70,8 +67,8 @@ export function getTickTexts(id, isBarBased, dates, format, hasDay, domain, tick
 
     case !isBarBased:
       texts = ticks.map(tick => {
-        const val = id==="lineDiscrete" ? dates[tick] : tick
-        const txt = format ? dateNumToTxt(val, format, hasDay) : (isMarked ? val.replace(markSymbol, "").trim() : val)
+        const val = id==="lineDiscrete" ? dataX[tick] : tick
+        const txt = format ? dateNumToTxt(val, format, hasDay) : (isMarked ? val.replace(markSymbol, "").trim() : val.toString())
         const tic = txt.replace(year, "").trim()
         year = txt.match(/[0-9]{4}/g)
         return tic

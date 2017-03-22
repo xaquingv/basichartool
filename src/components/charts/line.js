@@ -18,7 +18,9 @@ export default function (els, dataChart, scale, colors) {
   .attr("d", d => line(d))
 
   // new
-  svg.enter().append("path")
+  svg.enter()
+  .append("path")
+  //.insert("path", ":first-child")
   .attr("fill", "none")
   .attr("stroke", (d, i) => colors ? colors[i] : false)
   .attr("stroke-width", "2px")

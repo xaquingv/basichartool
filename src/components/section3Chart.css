@@ -38,19 +38,19 @@
   margin-left: -3px;
   margin-bottom: 3px;
 }
-#lineConti svg,
+#lineContinue svg,
 #lineDiscrete svg {
   margin-left: -1px;
   margin-bottom: 4px;
 }
 
 /* temp: disable charts */
-#col,
-#colGroup,
-#colGroupStack,
-#colGroupStack,
-#slopegraph,
-#brokenBar {
+#col > *,
+#colGroup > *,
+#colGroupStack > *,
+#colGroupStack > *,
+#slopegraph > *,
+#brokenBar > *{
   opacity: 0.3;
   background-color: #eaeaea;
   pointer-events: none;

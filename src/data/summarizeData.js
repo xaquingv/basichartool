@@ -79,12 +79,14 @@ export default function(dataTable, show) {
   }))
 
   // data of 3 (4) types
-  const numberData = cols.filter(col => col.type === "number")
-  const dateData = count.date > 0 ? cols.find(col => col.type === "date") : []
+  const numberData  = cols.filter(col => col.type === "number")
+  const numberCols  = numberData.map(col => col.values)
+  const numbers     = numberCols.reduce((col1, col2) => col1.concat(col2))
+  const dateData    = count.date > 0 ? cols.find(col => col.type === "date") : []
   const string1Data = count.string1 > 0 ? cols.find(col => col.type === "string1") : []
-  const string1Col = count.string1 > 0 ? string1Data.values : []
-  const string2Col = count.string2 > 0 ? cols.find(col => col.type === "string2").values : []
-  const rowGroup = string1Col.length > 0 ? string1Col : dateData.string
+  const string1Col  = count.string1 > 0 ? string1Data.values : []
+  const string2Col  = count.string2 > 0 ? cols.find(col => col.type === "string2").values : []
+  const rowGroup    = count.string1 > 0 ? string1Col : (dateData.string : [])
   // TODO: think of string * have multi cols?
 
 
@@ -105,14 +107,16 @@ export default function(dataTable, show) {
     dateHasDay:   dateData.hasDay,
     dateFormat:   dateData.format,
     // number
-    numberCols:   numberData.map(col => col.values),
-    numberFormat: numberData.length === 1 ? numberData[0].format : null,
-    keys:         numberData.map(col => col.header ? col.header : "unknown title")
+    numberCols, numbers,
+    numberRows:   swapArray(numberCols),
+    numbersButC1: numbers.slice(-(numbers.length-count.row)),
+    numberFormat: count.number === 1 ? numberData[0].format : null,
+    numberOnly:   count.date === 0 && count.string1 === 0,
+    // key (legned)
     // NOTE: in case header is null, also see getDataTable.js
     // TODO: keys turn into colGroup?
+    keys:         numberData.map(col => col.header ? col.header : "unknown title")
   }
-  chart.numberRows = swapArray(chart.numberCols)
-  chart.numbers = chart.numberCols.reduce((col1, col2) => col1.concat(col2))
 
   // for chart selection
   const value = {

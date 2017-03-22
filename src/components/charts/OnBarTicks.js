@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
-import {updateChartData} from '../../actions'
+import {appendChartData} from '../../actions'
 import {addBarsBackground} from './onBar'
 import ComponentRow from './BarBase'
 
@@ -13,11 +13,12 @@ const margin = tickWidth / 2
 
 const mapStateToProps = (state) => ({
   data: state.dataChart,
+  axis: state.dataEditable.axis,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale, margins) => dispatch(updateChartData(keys, scale, margins))
+  onSelect: (keys, scale, margins) => dispatch(appendChartData(keys, scale, margins))
 })
 
 
@@ -52,12 +53,14 @@ class TickOnBar extends React.Component {
   renderChart() {
 
     /* data */
-    const {data, colors} = this.props
+    const {data, colors, axis, callByStep} = this.props
+    const domain = callByStep === 4 && axis ? axis.x.range : d3.extent(data.numbers)
+    // using axis.x.range due to editable range @setup2, section 4
 
     // scale
     this.scale = {}
     this.scale.x = d3.scaleLinear()
-    .domain(d3.extent(data.numbers))
+    .domain(domain)
     .range([0, 100])
 
     // chart

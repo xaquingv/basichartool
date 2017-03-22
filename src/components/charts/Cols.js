@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {uniqueArray} from '../../lib/array'
-import {updateChartData} from '../../actions'
+import {appendChartData} from '../../actions'
 import {width, height, viewBox} from '../../data/config'
 import {getDomainByDataRange} from '../../data/calcScaleDomain'
 import drawChart from './col'
@@ -13,7 +13,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
+  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
 })
 
 

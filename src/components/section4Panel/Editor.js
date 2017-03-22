@@ -1,7 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import './editor.css'
-import {updateAxisYLabelRes, updateAxisYLabelChange, appendAxisYScaleRes} from '../../actions'
+import {uniqueArray} from '../../lib/array.js'
+import {updateAxisYLabelRes, updateAxisYLabelChange, appendAxisYScaleRes, updateAxisDataOnTypes, updateScaleRange} from '../../actions'
 import {getAxisYLabelRes, getAxisYLabelChange, getAxisYTextWidth} from '../../data/calcAxisYText'
 import axisXResponsive from './axisXTextAndSvgResponsive'
 //import axisYResponsive from './axisYTextResponsive'
@@ -15,12 +16,16 @@ import {Editor, EditorState, ContentState, convertFromHTML, RichUtils, Modifier}
 const mapStateToProps = (state) => ({
   chartId: state.chartId,
   yLabels: state.dataChart.rowGroup,
-  yIndent: state.dataChart.indent
+  yIndent: state.dataChart.indent,
+  dataRanges: state.dataChart.ranges,
+  axis: state.dataEditable.axis
 })
 const mapDispatchToProps = (dispatch) => ({
     setAxisYLabelRes: (isRes, width) => dispatch(updateAxisYLabelRes(isRes, width)),
     setAxisYLabelChange: (dataChange) => dispatch(updateAxisYLabelChange(dataChange)),
-    setAxisYScale: (indent) => dispatch(appendAxisYScaleRes(indent))
+    setAxisYScale: (indent) => dispatch(appendAxisYScaleRes(indent)),
+    setAxisDataOnTypes: (target1, target2, dataTarget) => dispatch(updateAxisDataOnTypes(target1, target2, dataTarget)),
+    setAxisScaleRange: (target, range) => dispatch(updateScaleRange(target, range))
 })
 
 
@@ -34,11 +39,12 @@ class InlineEditor extends React.Component {
   }
 
   modifyContentStateReplace(editorState, contentState, prevText, nextText, style="") {
+    // ref: https://github.com/react-component/editor-mention/blob/db5cfa300ebc773f70e304c46c7b9a0c48b5f00d/src/utils/insertMention.jsx
     return Modifier.replaceText(
       contentState,
       editorState.getSelection().merge({
         anchorOffset: 0,
-        focusOffset: prevText.length-1,
+        focusOffset: prevText.length,
       }),
       nextText,
       [nextText, style]
@@ -47,7 +53,6 @@ class InlineEditor extends React.Component {
 
   constructor(props) {
     super(props)
-    this.isBlur = false
 
     // init editorState
     const editorState = this.createEditorState(props.text)
@@ -67,15 +72,21 @@ class InlineEditor extends React.Component {
   onChange(editorState, who) {
     const contentState = editorState.getCurrentContent()
     const content = contentState.getPlainText().trim()
+    const type = this.props.type
 
-    // if blur, prevent second update
-    if (this.isBlur && content==="") {
-      this.isBlur = false
+    // if blur, prevent second update by input change
+    // TODO: debug and remove this weird hack
+    if (this.contentReplacement) {
+      this.cancelOnChange = true
+      this.contentReplacement = undefined
+    } else if (this.cancelOnChange) {
+      this.cancelOnChange = false
       return
     }
 
-    // if res due to text content changes
-    switch (this.props.type) {
+    // 1. update store data or
+    // 2. res due to text content changes
+    switch (type) {
 
       case "xTexts":
         setTimeout(() => axisXResponsive(), 10) // update after onChange ?
@@ -114,42 +125,54 @@ class InlineEditor extends React.Component {
     return this.setState({editorState})
   }
 
-
-  onFocus() {
-    this.isBlur = false
-    //this.refs.editor.focus()
-  }
-
   /* case 2a: editor out of focus handler */
   onBlur(e) {
-    this.isBlur = true
     const editorState = this.state.editorState
     const contentState = editorState.getCurrentContent()
     const content = contentState.getPlainText()
     const isContentEmpty = content.trim() === ""
-    const axisType = this.props.type
+    const axisType = this.props.type || ""
 
-    // insert text if content is empty but contentReplacement is not
-    const contentReplacement = isContentEmpty && (!axisType || axisType.indexOf("Text")>-1) ? "*" : undefined
-    /*let contentReplacement = undefined
-    if (isContentEmpty) {
-      switch (true) {
-        // call by a meta content editor such as headline, legend, ...
-        case (!axisType): contentReplacement = "* required"; break
-        // call by a text editor on y axis with ticks
-        case (axisType.indexOf("Text") > -1): contentReplacement = "*"; break
-        // those that can have empty content ex:
-        // call by a label editor on y axis (no ticks)
-        default: // console.log("empty content is acceptable")
+    this.contentReplacement = undefined
+
+    /* call by a meta or a text with ticks in the graph */
+    if (isContentEmpty && (axisType.indexOf("Text") > -1 || !axisType)) {
+      this.contentReplacement = "*"
+    }
+
+    /* call by ticks or range in setup 2 */
+    else if (axisType.indexOf("Tick") > -1 || axisType.indexOf("Range") > -1) {
+      const {axis, dataRanges} = this.props
+      const axisTypeData = axis[axisType[0]]
+
+      let axisTarget = axisType.slice(1, axisType.length).toLowerCase()
+      let contentOld = /*axisTypeData.isDate ? axisTypeData.texts.join(", ") :*/ axisTypeData[axisTarget].join(", ")
+      //console.log(contentOld)
+      // content no change
+      if (content === contentOld) return
+
+      // content changed
+      // data preprocess: input str -> arr -> sort (number) -> remove duplicates
+      const dataTarget = uniqueArray(content.split(",").map(d => parseFloat(d)).sort((n1, n2) => n1 - n2))
+      const validation = validate(axisTarget, dataTarget, dataRanges[axisType[0]], axis[axisType[0]].range)
+      const contentNew = dataTarget.join(", ")
+
+      // update ticks or range if vaild
+      // replace content with new/old content if changed
+      if (validation) {
+        this.props.setAxisDataOnTypes(axisType[0], axisTarget, dataTarget)
+        this.contentReplacement = contentNew !== content ? contentNew : undefined
+      } else {
+        this.contentReplacement = contentOld
       }
-    }*/
+    }
 
     let newEditorState = editorState
-    if (isContentEmpty && contentReplacement) {
+    if (this.contentReplacement) {
       const style = this.props.bold ? "BOLD" : ""
-      const contentStateReplace = this.modifyContentStateReplace(editorState, contentState, content, contentReplacement, style)
+      const contentStateReplace = this.modifyContentStateReplace(editorState, contentState, content, this.contentReplacement, style)
       newEditorState = EditorState.push(editorState, contentStateReplace, 'insert-characters')
-      // TODO: blur after text replacement
+      // TODO: blur after text replacement ?
     }
 
     this.onChange(newEditorState, "blur")
@@ -186,7 +209,6 @@ class InlineEditor extends React.Component {
         handleKeyCommand={this.handleKeyCommand.bind(this)}
         handleReturn={this.handleReturn.bind(this)}
         onBlur={this.onBlur.bind(this)}
-        onFocus={this.onFocus.bind(this)}
         spellCheck={true}
         stripPastedStyles={true}
       />
@@ -195,3 +217,23 @@ class InlineEditor extends React.Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(InlineEditor)
+
+
+function validate(axisType, input, dataRange, axisRange) {
+  switch(axisType) {
+    case "ticks":
+      return (
+        input.length > 0 &&
+        input[0] >= axisRange[0] &&
+        input[input.length-1] <= axisRange[1]
+      )
+    case "range":
+      return (
+        input.length === 2 &&
+        input[0] <= dataRange[0] &&
+        input[1] >= dataRange[1]
+      )
+    default:
+      console.warn("validation not available!")
+  }
+}

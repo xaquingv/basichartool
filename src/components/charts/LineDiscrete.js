@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import drawChart from './line'
 import {width, height, viewBox} from '../../data/config'
-import {updateChartData} from '../../actions'
+import {appendChartData} from '../../actions'
 
 const mapStateToProps = (state) => ({
   data: state.dataChart,
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(updateChartData(keys, scale))
+  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
 })
 
 
@@ -26,8 +26,9 @@ class LineDiscrete extends React.Component {
 
   render() {
     const {data, onSelect, callByStep} = this.props
+    const keys = data.numberOnly ? data.keys.slice(1, data.keys.length) : data.keys
     const setChartData = () => {
-      if (callByStep === 3) { onSelect(data.keys, this.scale) }
+      if (callByStep === 3) { onSelect(keys, this.scale) }
     }
 
     return (
@@ -45,9 +46,12 @@ class LineDiscrete extends React.Component {
 
     /* data */
     const {id, data, colors, callByStep} = this.props
+    //const numbers = data.numberOnly ? data.numbersButC1 : data.numbers
+    //const numCols = data.numberCols.slice(1, data.numberCols.length)
 
     // scale
     this.scale = {}
+    // NOTE: x can be date, string, or number?
     this.scale.x = d3.scaleLinear()
     .domain([0, data.rowCount - 1])
     .range([0, width])

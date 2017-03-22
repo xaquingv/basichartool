@@ -148,7 +148,7 @@ export function getDateScaleValues(dates, format, hasDay) {
 export function dateNumToTxt(value, format, hasDay) {
   let year = value.toString().split(".")[0]
   let deci = value % 1 // get decimal portion
-  let date, toText
+  let date, month, toText
 
   switch (true) {
 
@@ -163,15 +163,17 @@ export function dateNumToTxt(value, format, hasDay) {
       return value + "-" + (value+1).toString().slice(-2)
 
     case ["%b", "%B"].includes(format):
-      date = new Date(year, deci*12 || 0)
+      month = parseInt(deci*12, 10) + 1
+      date = new Date(year, month || 0)
       toText = d3.timeFormat("%b")
       return toText(date)
 
     /* %b %Y x 4 sets */
     case !hasDay:
-      date = new Date(year, deci*12 || 0)
+      month = parseInt(deci*12, 10) + 1
+      date = new Date(year, month || 0)
       toText = d3.timeFormat("%b %Y")
-      //console.log(value, year, deci, date, toText(date))
+      //console.log(value, year, deci, month, date, toText(date))
       return toText(date)
 
     // dynamic formats
