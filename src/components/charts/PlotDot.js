@@ -47,7 +47,9 @@ class DotPlot extends React.Component {
 
     /* data */
     const {data, colors, axis, callByStep} = this.props
-    const dates = data.dateCol || data.numberCols[0]
+    const dates =
+    data.dateCol || data.numberCols[0]
+    //data.dateCol || (data.string1Col.length !== 0 ? data.string1Col : data.numberCols[0])
     const numbers = data.numberOnly ? data.numbersButC1 : data.numbers
     const numberCols = data.numberOnly ? data.numberCols.slice(1, data.numberCols.length) : data.numberCols
     const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear

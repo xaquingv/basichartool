@@ -115,14 +115,15 @@ export const updateCustomColor = (colorInput) => ({
   colorInput
 })
 // edit panel 2
-export const updateAxisDataOnTypes = (type1, type2, dataTarget) => ({
+export const updateAxisDataOnTypes = (type1, type2, dataTarget, dataTargetExtra) => ({
   type: "UPDATE_AXIS",
   target1: type1, // x or y
   target2: type2, // ticks or range§
-  dataTarget
+  dataTarget,
+  dataTargetExtra
 })
 export const updateScaleRange = (type, range) =>({
   type: "UPDATE_RANGE",
   target: type,
-  range  
+  range
 })

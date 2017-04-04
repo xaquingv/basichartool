@@ -64,7 +64,7 @@ export default function() {
     const txt1ToLastR = elsText[iLast-1].offsetLeft + elsText[iLast-1].offsetWidth
     if (txt1ToLastR > txt0ToLastL) {
       elsText[iLast].style.backgroundColor = "red"
-      console.warn("[str] text overlapped!")
+      //console.warn("[str] text overlapped!")
     }
   }
 

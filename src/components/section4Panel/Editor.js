@@ -1,8 +1,10 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import './editor.css'
+import {d3} from '../../lib/d3-lite'
 import {uniqueArray} from '../../lib/array.js'
 import {updateAxisYLabelRes, updateAxisYLabelChange, appendAxisYScaleRes, updateAxisDataOnTypes, updateScaleRange} from '../../actions'
+import {getDateScaleValues} from '../../data/typeDate'
 import {getAxisYLabelRes, getAxisYLabelChange, getAxisYTextWidth} from '../../data/calcAxisYText'
 import axisXResponsive from './axisXTextAndSvgResponsive'
 //import axisYResponsive from './axisYTextResponsive'
@@ -18,13 +20,15 @@ const mapStateToProps = (state) => ({
   yLabels: state.dataChart.rowGroup,
   yIndent: state.dataChart.indent,
   dataRanges: state.dataChart.ranges,
+  dateFormat: state.dataChart.dateFormat,
+  dateHasDay: state.dataChart.dateHasDay,
   axis: state.dataEditable.axis
 })
 const mapDispatchToProps = (dispatch) => ({
     setAxisYLabelRes: (isRes, width) => dispatch(updateAxisYLabelRes(isRes, width)),
     setAxisYLabelChange: (dataChange) => dispatch(updateAxisYLabelChange(dataChange)),
     setAxisYScale: (indent) => dispatch(appendAxisYScaleRes(indent)),
-    setAxisDataOnTypes: (target1, target2, dataTarget) => dispatch(updateAxisDataOnTypes(target1, target2, dataTarget)),
+    setAxisDataOnTypes: (target1, target2, dataTarget, dataTargetExtra) => dispatch(updateAxisDataOnTypes(target1, target2, dataTarget, dataTargetExtra)),
     setAxisScaleRange: (target, range) => dispatch(updateScaleRange(target, range))
 })
 
@@ -127,6 +131,7 @@ class InlineEditor extends React.Component {
 
   /* case 2a: editor out of focus handler */
   onBlur(e) {
+    //console.log(e.target)
     const editorState = this.state.editorState
     const contentState = editorState.getCurrentContent()
     const content = contentState.getPlainText()
@@ -142,25 +147,68 @@ class InlineEditor extends React.Component {
 
     /* call by ticks or range in setup 2 */
     else if (axisType.indexOf("Tick") > -1 || axisType.indexOf("Range") > -1) {
-      const {axis, dataRanges} = this.props
+      const {axis, dataRanges, dateFormat} = this.props
       const axisTypeData = axis[axisType[0]]
+      const isDate = axisTypeData.edits ? true : false
 
       let axisTarget = axisType.slice(1, axisType.length).toLowerCase()
-      let contentOld = /*axisTypeData.isDate ? axisTypeData.texts.join(", ") :*/ axisTypeData[axisTarget].join(", ")
-      //console.log(contentOld)
+      let contentOld = isDate ?
+        axisTypeData.edits[axisTarget].join(", ") :
+        axisTypeData[axisTarget].join(", ")
+
       // content no change
       if (content === contentOld) return
 
       // content changed
       // data preprocess: input str -> arr -> sort (number) -> remove duplicates
-      const dataTarget = uniqueArray(content.split(",").map(d => parseFloat(d)).sort((n1, n2) => n1 - n2))
-      const validation = validate(axisTarget, dataTarget, dataRanges[axisType[0]], axis[axisType[0]].range)
-      const contentNew = dataTarget.join(", ")
+      let dataTarget = isDate ?
+        uniqueArray(content.split(",").map(d => d.trim())) :
+        uniqueArray(content.split(",").map(d => parseFloat(d)).sort((n1, n2) => n1 - n2))
+      let dataTargetExtra = null
+      let contentNew = dataTarget.join(", ")
 
       // update ticks or range if vaild
       // replace content with new/old content if changed
+      if (isDate) {
+        let dataParsed
+        //console.log(axisTypeData.edits)
+
+        switch(axisTypeData.edits.value) {
+          case "index":
+            dataParsed = dataTarget
+            .map(txt => ({txt, val: axisTypeData.edits.dates.findIndex(d => txt === d)}))
+            // Note: for tick texts that can't be indexed, index returns -1
+            // this change is then not valid and will fail the validation step
+            break
+          case "number":
+            dataParsed = getDateScaleValues(dataTarget, dateFormat, false, true)
+            .map((val, i) => ({txt: dataTarget[i], val}))
+            break
+          case "timestamp":
+            const parser = d3.timeParse(dateFormat)
+            dataParsed = dataTarget
+            .map(txt => ({txt, val: parser(txt) || new Date(txt)}))
+            break
+          default:
+            //console.log("add new case")
+        }
+        dataParsed.sort((n1, n2) => n1.val - n2.val)
+        dataTarget = dataParsed.map(d => d.val)
+        dataTargetExtra = dataParsed.map(d => d.txt)
+        contentNew = dataTargetExtra.join(", ")
+
+        /*console.log(dataParsed)
+        console.log(contentOld)
+        console.log(content, "(content)")
+        console.log(contentNew)
+        console.log("update", axisTypeData[axisTarget], "(old)")
+        console.log("update", dataTarget, "(new)")*/
+      }
+
+      const validation = validate(axisTarget, dataTarget, axisTypeData.range, dataRanges[axisType[0]])
       if (validation) {
-        this.props.setAxisDataOnTypes(axisType[0], axisTarget, dataTarget)
+        // TODO: update edits.ticks !? <= contentOld issue
+        this.props.setAxisDataOnTypes(axisType[0], axisTarget, dataTarget, dataTargetExtra)
         this.contentReplacement = contentNew !== content ? contentNew : undefined
       } else {
         this.contentReplacement = contentOld
@@ -199,7 +247,6 @@ class InlineEditor extends React.Component {
     return 'not-handled'
   }
 
-
   render() {
     return (
       <Editor
@@ -219,15 +266,19 @@ class InlineEditor extends React.Component {
 export default connect(mapStateToProps, mapDispatchToProps)(InlineEditor)
 
 
-function validate(axisType, input, dataRange, axisRange) {
+function validate(axisType, input, axisRange, dataRange) {
   switch(axisType) {
     case "ticks":
+      //console.log(input.length > 0, input[0] >= axisRange[0], input[input.length-1] <= axisRange[1])
       return (
         input.length > 0 &&
         input[0] >= axisRange[0] &&
         input[input.length-1] <= axisRange[1]
       )
     case "range":
+      //console.log(input.length > 0)
+      //console.log(input[0] <= axisRange[0], input[0], axisRange[0])
+      //console.log(input[input.length-1] >= axisRange[1], input[input.length-1], axisRange[1])
       return (
         input.length === 2 &&
         input[0] <= dataRange[0] &&

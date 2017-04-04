@@ -48,7 +48,7 @@
 #col > *,
 #colGroup > *,
 #colGroupStack > *,
-#colGroupStack > *,
+#colGroupStack100 > *,
 #slopegraph > *,
 #brokenBar > *{
   opacity: 0.3;

@@ -244,20 +244,19 @@ function dataEditable(dataEditable = {}, action) {
         colorInput: action.colorInput
       }
     case 'APPEND_AXIS':
-      //console.log("=>", dataEditable.axis ? dataEditable[action.target] : dataEditable.axis)
       // mutate !?
       let appendAxis = dataEditable.axis || {x: {}, y: {}}
       appendAxis[action.target] = action.dataAxis || {ticks:[], range:[]}
-      //console.log("=>", action.target, appendAxis[action.target])
       return {
         ...dataEditable,
         axis: appendAxis
       }
     case 'UPDATE_AXIS':
       let updateAxis = {...dataEditable.axis}
-      //console.log("update", updateAxis[action.target1][action.target2])
       updateAxis[action.target1][action.target2] = action.dataTarget
-      //console.log("update", action.dataTarget)
+      if (action.dataTargetExtra) {
+        updateAxis[action.target1].edits[action.target2] = action.dataTargetExtra
+      }
       return {
         ...dataEditable,
         axis: updateAxis

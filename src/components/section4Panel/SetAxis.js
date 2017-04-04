@@ -6,8 +6,7 @@ import ComponentEditor from './Editor'
 const mapStateToProps = (state) => ({
   id: state.chartId,
   step: state.step,
-  dataEditable: state.dataEditable,
-  dataChart: state.dataChart
+  dataEditable: state.dataEditable
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -32,25 +31,17 @@ class SetAxis extends React.Component {
     }
     if (!hasEditorAxisT && !hasEditorRange) {return null}
 
-    const axisT = dataEditable.axis[type]
-    const ticks = /*axisT.isDate ? axisT.texts.join(", ") :*/ axisT.ticks.join(", ")
+    const dataT = dataEditable.axis[type]
+    const axisT = dataT.edits ? dataT.edits : dataT
     const range = axisT.range.join(", ")
-    if (axisT.isDate) {
-      console.log("TODO: map ticks with texts", id)
-      console.log("[str]", axisT.ticks.map(i => this.props.dataChart.dateString[i]))
-      console.log("[txt]", axisT.texts)
-      console.log("[tic]", axisT.ticks)
-      console.log(this.props.dataChart.dateString)
-    }
+    const ticks = axisT.ticks.join(", ")
 
-    //console.log("("+id+")", type+"-axis:", hasEditorAxisT[type], "range:", hasEditorRange[type])
-    const editorRange = hasEditorRange[type]
-    ? (
-      <span className="ws-n">
-        <span className="mr-10">Range:</span>[
-        <ComponentEditor text={range} type={type+"Range"} />]
+    const editorRange = (
+      <span className={"ws-n" + (hasEditorRange[type] ? "" : " o-disable")}>
+        <span className="mr-10">Range:</span>
+        [{hasEditorRange[type] ? <ComponentEditor text={range} type={type+"Range"} /> : range}]
       </span>
-    ) : null
+    )
 
     return hasEditorAxisT[type]
     ? (
@@ -58,7 +49,7 @@ class SetAxis extends React.Component {
         <span className="ws-pl">
           <span className="mr-10">{type.toUpperCase()}-Ticks:</span>
           <ComponentEditor text={ticks} type={type+"Ticks"} />
-          {hasEditorRange[type] ? <span className="">; </span> : null}
+          <span>; </span>
         </span>
         {editorRange}
       </div>

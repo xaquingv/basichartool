@@ -69,6 +69,7 @@
 .p-r { position: relative; }
 .c-p { cursor: pointer; }
 .o-0 { opacity: 0; }
+.o-disable {opacity: 0.25; }
 .pe-n { pointer-events: none; }
 .fw-n { font-weight: normal; }
 .ws-n { white-space: nowrap; }

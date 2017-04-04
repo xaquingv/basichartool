@@ -130,6 +130,5 @@ export default function(dataTable, show) {
 
 
   const output = {count, value, chart}
-  //console.log(output)
   return output
 }

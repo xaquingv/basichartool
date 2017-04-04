@@ -3,9 +3,10 @@
   - input with a list of format specifiers
   - scale in time (JS DATE format) or linear (NUMBER)
   - label as STRING in different formats
+  ref:
+  - https://docs.google.com/spreadsheets/d/1Y9_YUvjYvc0sRjKIUQDsmyQ8D656XYw0RsseQXBFnNQ
+  - https://docs.google.com/spreadsheets/d/1Kw1M08x6yybOG8b7JxDvxIbtdffFzCsB0xQ7UuLuzh8/edit#gid=1819233225
 */
- // ref: https://docs.google.com/spreadsheets/d/1Y9_YUvjYvc0sRjKIUQDsmyQ8D656XYw0RsseQXBFnNQ (examples)
-// cfg: https://docs.google.com/spreadsheets/d/1Kw1M08x6yybOG8b7JxDvxIbtdffFzCsB0xQ7UuLuzh8/edit#gid=1819233225
 
 import {d3} from '../lib/d3-lite.js'
 
@@ -15,8 +16,9 @@ const formatList = [
   // time
   //"%m/%d/%Y", "%m/%d/%y",     // vs.
   //"%d/%m/%Y", "%d/%m/%y"      // extend
-  // -> parse sp.1
+                                // -> parse sp.1 (*)
   "%d-%b-%y", "%d %b %Y",
+  "%d %b",
   //"%Y%m%d",                   // -> parse sp.4
   "%Y-%m-%dT%H:%M:%S%Z",        // iso format timestamp
   "%m/%d/%y %H:%M",
@@ -90,6 +92,16 @@ function testDateFormatSp2(data) {
   return isYear && is4Digits ? format : ""
 }
 
+// format(s): "%Y Q*", "Q* %Y"
+function testDateFormatSp3(data) {
+  // filter
+  const isSp3 = data.every(d => (d[0] === "Q" || d[5] === "Q") && d.length === 7)
+  // format without Q
+  const dataYear = data.map(d => d.replace(/Q([1-4])/g, "").trim())
+  const isYear = testDateFormats(dataYear, ["%Y"], 3) === "%Y"
+  return isSp3 && isYear ? "Q*" : ""
+}
+
 // format(s): ""%Y%m%d""
 function testDateFormatSp4(data) {
   // format
@@ -101,25 +113,14 @@ function testDateFormatSp4(data) {
   return isYmd && isMonth && isDay ? format : ""
 }
 
-// format(s): "%Y Q*", "Q* %Y"
-function testDateFormatSp3(data) {
-  // filter
-  const isSp3 = data.every(d => (d[0] === "Q" || d[5] === "Q") && d.length === 7)
-  // format without Q
-  const dataYear = data.map(d => d.replace(/Q([1-4])/g, "").trim())
-  const isYear = testDateFormats(dataYear, ["%Y"], 3) === "%Y"
-  return isSp3 && isYear ? "Q*" : ""
-}
-
 
 /* 2. dates to scale values */
-export function getDateScaleValues(dates, format, hasDay) {
-  const parser = d3.timeParse(format)
-  const dateParsed = dates.map(d => parser(d))
+export function getDateScaleValues(dates, format, hasDay, isEditor = false) {
+  let parser
+  let getDateParsed = (parser) => dates.map(d => parser(d))
 
   switch (true) {
-
-    // d3.scaleLinear
+    /* d3.scaleLinear, return number */
     case ["%Y"].includes(format):
       return dates.map(d => +d)
 
@@ -131,15 +132,18 @@ export function getDateScaleValues(dates, format, hasDay) {
       return dates.map(d => +d.slice(0, 4))
 
     case ["%b", "%B"].includes(format):
-      return dateParsed.map(d => d.getMonth())
+      parser = d3.timeParse(!isEditor ? format : "%b")
+      return getDateParsed(parser).map(d => d.getMonth())
 
-    /* %b %Y x 4 sets */
+    // %b %Y x 4 sets
     case !hasDay:
-      return dateParsed.map(d => d.getFullYear() + d.getMonth()/12)
+      parser = d3.timeParse(!isEditor ? format : "%b %Y")
+      return getDateParsed(parser).map(d => d.getFullYear() + d.getMonth()/12)
 
-    // d3.scaleTime
+    /* d3.scaleTime, return timestamp */
     default:
-      return dateParsed
+      parser = d3.timeParse(format)
+      return getDateParsed(parser)
   }
 }
 
@@ -163,20 +167,19 @@ export function dateNumToTxt(value, format, hasDay) {
       return value + "-" + (value+1).toString().slice(-2)
 
     case ["%b", "%B"].includes(format):
-      month = parseInt(deci*12, 10) + 1
-      date = new Date(year, month || 0)
+      date = new Date(2017, value)
       toText = d3.timeFormat("%b")
       return toText(date)
 
-    /* %b %Y x 4 sets */
+    // %b %Y x 4 sets
     case !hasDay:
-      month = parseInt(deci*12, 10) + 1
+      month = Math.round(parseFloat(deci*12))
       date = new Date(year, month || 0)
       toText = d3.timeFormat("%b %Y")
       //console.log(value, year, deci, month, date, toText(date))
       return toText(date)
 
-    // dynamic formats
+    /* dynamic formats, see below */
     default:
       return null
   }
@@ -194,7 +197,7 @@ export function getDateTextFormat(domain) {
     case diffYear  > 4: return "%Y"       //console.log("[Y] 2017")
     case diffYear  > 0: return "%b %Y"    //console.log("[M] Feb 2017")
     case diffMonth > 4: return "%b"       //console.log("[M] Feb")
-    case diffMonth > 0: return "%d/%m %Y" //console.log("[M] 15/02")
+    case diffMonth > 0: return "%d %b"    //console.log("[M] 15 Feb")
     case diffDay   > 0: return "%d %I%p"  //console.log("[D] 15 6pm")
     case diffHour  > 0: return "%H:%M"    //console.log("[H] 18:30")
     default: console.error("a new time format is required!")

@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {appendAxisData} from '../../actions'
 import {appendFormatToNum} from '../../data/typeNumber'
-import {getTickSteps, getTickTexts, getTickTextWidths} from '../../data/calcAxisXTick'
+import {getTickSteps, getTickTexts, getTickTextWidths, getTickDataEditable} from '../../data/calcAxisXTick'
 import ComponentEditor from './Editor'
 
 
@@ -23,8 +23,9 @@ const mapDispatchToProps = (dispatch) => ({
 class AxisX extends React.Component {
   setAxisData() {
     const {id, dataChart, isBarBased} = this.props
-    const {scales, dateCol, string1Col, dateFormat, dateHasDay, rowCount, numberCols} = dataChart
+    const {scales, dateCol, string1Col, dateString, dateFormat, dateHasDay, rowCount, numberCols} = dataChart
 
+    // TODO: dataX should come with scales, assign in charts
     this.dataX = dateCol || (string1Col.length !== 0 ? string1Col : numberCols[0])
     this.axisX = scales.x.copy()
     .domain(["bar100", "barGroupStack100", "brokenBar"].includes(id) ? [0, 100] : scales.x.domain()) // ui range @setup2
@@ -33,9 +34,12 @@ class AxisX extends React.Component {
     this.ticks = getTickSteps(id, isBarBased, this.dataX, dateFormat, rowCount, this.axisX)
     this.texts = getTickTexts(id, isBarBased, this.dataX, dateFormat, dateHasDay, this.axisX.domain(), this.ticks)
 
-    const isDate = this.ticks[0].toString() !== this.texts[0]
-    this.axisData = {range: this.axisX.domain(), ticks: this.ticks, texts: this.texts, isDate}
+    const isDate = this.ticks[0].toString() !== this.texts[0].replace(",", "")
+    const range = this.axisX.domain()
+    const edits = isDate ? getTickDataEditable(id, this.ticks, this.texts, dateString || string1Col, range, dateFormat) : undefined
+    this.axisData = {range, ticks: this.ticks, texts: this.texts, edits}
   }
+
   resetAxisData() {
     const {id, dataChart, isBarBased} = this.props
     const {dateFormat, dateHasDay} = dataChart
@@ -52,6 +56,7 @@ class AxisX extends React.Component {
       this.props.initAxisXTicks("x", this.axisData)
     }
   }
+
   // updating
   componentDidUpdate() {
     this.renderGrid()
