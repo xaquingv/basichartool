@@ -156,6 +156,13 @@
   line-height: 18px;
   vertical-align: top;
 }
+.label-x {
+  font-size: 12px;
+}
+.label-x span {
+  word-break: break-word
+}
+
 footer {
   font-size: 12px;
   line-height: 16px;
@@ -170,6 +177,7 @@ footer > div {
 #section4 svg {
   position: absolute;
   right: 0;
+  top: -1px;
 }
 svg path {
   stroke-linejoin: round;
@@ -197,5 +205,12 @@ svg path {
 }
 .axis-y-text {
   //background-color: yellow;
+}
+.label-x {
+  //height: 30px;
+  //background: yellow;
+}
+.label-x div{
+  //background: red;
 }
 /* end of chart playground */

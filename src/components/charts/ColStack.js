@@ -34,7 +34,7 @@ class ColStack extends React.Component {
     return (
       <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
         width: "calc(100% - " + (data.indent) + "px)",
-        height: data.height + "%"
+        height: "calc(" + data.height + "% + 1px)"
       }} onClick={setChartData}></svg>
     )
   }
@@ -51,16 +51,14 @@ class ColStack extends React.Component {
 
     // scale
     this.scale = {}
-
-    // TODO: this.scale.x
-
     this.scale.y = d3.scaleLinear()
     .domain(domain)
-    .rangeRound([height, 0])
+    .range([height, 0])
 
+    // b/n label groups
     const scaleBand = d3.scaleBand()
     .domain(labelGroup)
-    .rangeRound([0, width])
+    .range([0, width])
     .paddingInner(0.1)
 
     // chart

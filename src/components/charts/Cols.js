@@ -38,7 +38,7 @@ class Cols extends React.Component {
     return (
       <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
         width: "calc(100% - " + (data.indent) + "px)",
-        height: data.height + "%"
+        height: "calc(" + data.height + "% + 1px)"
       }} onClick={setChartData}></svg>
     )
   }
@@ -54,39 +54,41 @@ class Cols extends React.Component {
 
     // scale
     this.scale = {}
-    this.scale.x0 = d3.scaleBand()
-    .domain(labelGroup.map((d, i) => i))
-    .rangeRound([0, width])
-
-    // TODO: remove temp, use lables instead
-    this.scale.x1 = d3.scaleBand()
-    .domain(numberRows[0].map((d, i) => i))
-    .rangeRound([0, this.scale.x0.bandwidth()])
-    .paddingOuter([0.1])
-
     this.scale.y = d3.scaleLinear()
     .domain(getDomainByDataRange(data.numbers))
-    .rangeRound([height, 0])
+    .range([height, 0])
 
-    const scaleScolors = d3.scaleOrdinal()
+    // b/n label groups
+    const scaleBandGroups = d3.scaleBand()
+    .domain(labelGroup.map((d, i) => i))
+    .range([0, width])
+    .paddingInner([0.1])
+
+    // b/n colors in a group
+    const scaleBandColors = d3.scaleBand()
+    .domain(numberRows[0].map((d, i) => i))
+    .range([0, scaleBandGroups.bandwidth()])
+    .paddingInner([0.05])
+
+    const scaleColors = d3.scaleOrdinal()
     .domain(this.colorKeys)
     .range(colors)
 
     // chart
     const dataChart = labelGroup.map((label, i) => ({
-      transform: "translate(" + this.scale.x0(i) + ",0)",
+      transform: "translate(" + scaleBandGroups(i) + ",0)",
       value: numberRows[i].map((num, j) => ({
         title: num,
-        group: this.scale.x1(j),
+        group: scaleBandColors(j),
         shift: num > 0 ? this.scale.y(num) : this.scale.y(0),
         length: Math.abs(this.scale.y(num) - this.scale.y(0)),
-        color: colorGroup.length !== 0 ? scaleScolors(colorGroup[i]) : null
+        color: colorGroup.length !== 0 ? scaleColors(colorGroup[i]) : null
       }))
     }))
 
 
     /* draw */
-    drawChart(this.refs, dataChart, {width: this.scale.x1.bandwidth(), id, colors})
+    drawChart(this.refs, dataChart, {width: scaleBandColors.bandwidth(), id, colors})
   }
 }
 

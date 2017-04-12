@@ -6,8 +6,8 @@ import {uniqueArray} from '../../lib/array.js'
 import {updateAxisYLabelRes, updateAxisYLabelChange, appendAxisYScaleRes, updateAxisDataOnTypes, updateScaleRange} from '../../actions'
 import {getDateScaleValues} from '../../data/typeDate'
 import {getAxisYLabelRes, getAxisYLabelChange, getAxisYTextWidth} from '../../data/calcAxisYText'
-import axisXResponsive from './axisXTextAndSvgResponsive'
-//import axisYResponsive from './axisYTextResponsive'
+import responsiveXTexts from './axisXTextAndSvgResponsive'
+import responsiveXLabel from './axisXLabelResponsive'
 
 /* editor ref: draftjs.org/docs
 /* example: https://github.com/facebook/draft-js/blob/master/examples/draft-0-10-0/convertFromHTML/convert.html */
@@ -17,11 +17,11 @@ import {Editor, EditorState, ContentState, convertFromHTML, RichUtils, Modifier}
 
 const mapStateToProps = (state) => ({
   chartId: state.chartId,
-  yLabels: state.dataChart.rowGroup,
   yIndent: state.dataChart.indent,
   dataRanges: state.dataChart.ranges,
   dateFormat: state.dataChart.dateFormat,
   dateHasDay: state.dataChart.dateHasDay,
+  labels: state.dataChart.rowGroup,
   axis: state.dataEditable.axis
 })
 const mapDispatchToProps = (dispatch) => ({
@@ -90,19 +90,22 @@ class InlineEditor extends React.Component {
 
     // 1. update store data or
     // 2. res due to text content changes
+    let dataLabelChange
+    const {labels, setAxisYLabelRes, setAxisYLabelChange} = this.props
     switch (type) {
 
-      case "xTexts":
-        setTimeout(() => axisXResponsive(), 10) // update after onChange ?
-        break
-
+      case "xLabel":
       case "yLabel":
-        const {yLabels, setAxisYLabelRes, setAxisYLabelChange} = this.props
-        const dataLabelChange = getAxisYLabelChange(yLabels)
+        dataLabelChange = getAxisYLabelChange(labels)
         if (dataLabelChange) {
           setAxisYLabelRes(getAxisYLabelRes())
           setAxisYLabelChange(dataLabelChange)
+          responsiveXLabel()
         }
+        break
+
+      case "xTexts":
+        setTimeout(() => responsiveXTexts(), 10) // update after onChange ?
         break
 
       case "yTexts":

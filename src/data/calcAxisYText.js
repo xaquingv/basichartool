@@ -1,6 +1,6 @@
 import {width} from '../data/config'
 
-const spaceLabel = 12
+const spaceLabel = 8
 const spaceTickText = 6
 
 export function getString1DataRes(rowGroup) {
@@ -44,8 +44,9 @@ export function getAxisYLabelChange(oldLabels) {
 }
 
 export function getAxisYTextWidth(chartId) {
-  const els = [...document.querySelectorAll(".axis-y-text")].slice(0, -1)
-  const widths = els.map(el => el.offsetWidth)
+  const elsAll = [...document.querySelectorAll(".axis-y-text")]
+  const elsAdj = chartId.includes("col") ? elsAll : elsAll.slice(0, -1)
+  const widths = elsAdj.map(el => el.offsetWidth)
   const isPlot = chartId.toLowerCase().indexOf("plot") > -1
   const indent = Math.max.apply(null, widths) + spaceTickText + (isPlot ? 3 : 0)
   return indent

@@ -45,12 +45,12 @@
 }
 
 /* temp: disable charts */
-#col > *,
+/*#col > *,
 #colGroup > *,
-#colGroupStack > *,
+#colGroupStack > *, */
 #colGroupStack100 > *,
 #slopegraph > *,
-#brokenBar > *{
+#brokenBar > * {
   opacity: 0.3;
   background-color: #eaeaea;
   pointer-events: none;

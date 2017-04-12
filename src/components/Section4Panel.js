@@ -5,17 +5,19 @@ import scrollTo from '../lib/scrollTo'
 import {default_metaText, ratio} from '../data/config'
 import {chartList} from './charts'
 
-import ComponentSize        from './section4Panel/Size'
-import ComponentResponsive  from './section4Panel/Responsive'
-import ComponentPalette     from './section4Panel/Palette'
-import ComponentDisplay     from './section4Panel/Display'
-import ComponentEditor      from './section4Panel/Editor'
-import ComponentLegend      from './section4Panel/Legend'
-import ComponentSetAxis     from './section4Panel/SetAxis'
-import ComponentXAxis       from './section4Panel/AxisX'
-import ComponentYAxis       from './section4Panel/AxisY'
-import axisXResponsive      from './section4Panel/axisXTextAndSvgResponsive'
-import axisYResponsive      from './section4Panel/axisYTextResponsive'
+import ComponentSize       from './section4Panel/Size'
+import ComponentResponsive from './section4Panel/Responsive'
+import ComponentPalette    from './section4Panel/Palette'
+import ComponentDisplay    from './section4Panel/Display'
+import ComponentEditor     from './section4Panel/Editor'
+import ComponentLegend     from './section4Panel/Legend'
+import ComponentXLabel     from './section4Panel/LabelX'
+import ComponentSetAxis    from './section4Panel/SetAxis'
+import ComponentXAxis      from './section4Panel/AxisX'
+import ComponentYAxis      from './section4Panel/AxisY'
+import responsiveXTexts    from './section4Panel/axisXTextAndSvgResponsive'
+import responsiveXLabel    from './section4Panel/axisXLabelResponsive'
+import responsiveYTexts    from './section4Panel/axisYTextResponsive'
 
 const STEP = 4;
 
@@ -43,15 +45,16 @@ class Section extends React.Component {
   }
 
   componentDidUpdate() {
-    const {stepActive, chartData} = this.props
+    const {stepActive, chartId, chartData} = this.props
     if (stepActive < STEP) return
 
     /* chart axes responsive */
     // x-text-top/bottom (with ticks), y-text (with ticks), and y-label's posiitons
     // due to tick or text/label editing
-    if (chartData.scales.x) {
-      axisYResponsive(chartData.string1Width)
-      axisXResponsive()
+    if (chartData.scales.x || chartId.includes("col")) {
+      responsiveYTexts(chartData.string1Width)
+      responsiveXTexts()
+      responsiveXLabel()
     }
 
     /* navigation */
@@ -83,6 +86,7 @@ class Section extends React.Component {
         <ComponentYAxis />
         <ComponentXAxis isBarBased={isBarBased} isOnBar={isOnBar} isPlot={isPlot}/>
         <ComponentChart id={chartId+"_edit"} callByStep={STEP} />
+        <ComponentXLabel />
       </div>
     ) : null
 

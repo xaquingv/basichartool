@@ -108,6 +108,12 @@ export default function(graph) {
         line-height: 18px;
         vertical-align: top;
       }
+      .label-x {
+        font-size: 12px;
+      }
+      .label-x span {
+        word-break: break-word
+      }
       svg {
         position: absolute;
         right: 0;
@@ -144,26 +150,29 @@ export default function(graph) {
     <script>
       var elChart = document.querySelector(".js-chart")
       var elAxisX = document.querySelector(".axis-x")
-      var indentL = parseInt(elAxisX.dataset.lIndent, 10) || 0
-      var extendR = parseInt(elAxisX.dataset.rIndent, 10) || 0
+      var elsText = elAxisX ? elAxisX.querySelectorAll(".axis-x-text") : []
+      var indentL = elAxisX ? parseInt(elAxisX.dataset.lIndent, 10) : 0
+      var extendR = elAxisX ? parseInt(elAxisX.dataset.rIndent, 10) : 0
+
+      // responsive
+      function responsive() {
+        iframeMessenger.resize()  // 1
+        rescaleSvgElements()      // 2
+        updateYLabelWidths()      // 3
+        updateXAxisTextPosition() // 4
+        updateChartHeight()       // 5
+      }
+      responsive()
 
       // handle event
       var timeout = null
       window.addEventListener('resize', function(evt) {
         if (timeout) window.clearTimeout(timeout)
         timeout = window.setTimeout(function() {
-          iframeMessenger.resize()  // 1.
-          rescaleSvgElements()      // 2.
-          updateYLabelWidths()
-          updateXAxisTextPosition() // 3.
+          responsive()
           timeout = null
         }, 200)
       });
-
-      iframeMessenger.resize()  // 1.
-      rescaleSvgElements()      // 2.
-      updateYLabelWidths()
-      updateXAxisTextPosition() // 3.
 
       /* 1. iframe resize */
       // iframeMessenger for embed in guardian's page
@@ -184,7 +193,7 @@ export default function(graph) {
           circles.forEach(function(circle) { circle.setAttribute("r", r); })
       }}
 
-      /* ... */
+      /* 3. y label width update */
       function updateYLabelWidths() {
         if (elChart.getAttribute("data-res-y") === "false") return
 
@@ -207,13 +216,15 @@ export default function(graph) {
         elLegend.style.marginLeft = isInline ? labelWidth + "px" : 0
       }
 
-      /* 3. x axis label position update */
+      /* 4. x axis text position update */
+      var isBarBased = elChart.getAttribute("data-id").toLowerCase().indexOf("bar") > -1
       function updateXAxisTextPosition() {
-        var elsTick = document.querySelectorAll(".axis-x-tick")
-        var elsText = document.querySelectorAll(".axis-x-text")
+        if (!elAxisX) return
+
+        var elsTick = elAxisX.querySelectorAll(".axis-x-tick")
         var elTest = document.querySelector(".js-test-res")
 
-        // 1. default width / left
+        // a. default width / left
         var axisXWidth = elAxisX.offsetWidth
         var maxWidth = elsTick[1].offsetLeft - elsTick[0].offsetLeft
         var txtWidths = [].slice.call(elsText).map((el, i) => {
@@ -227,10 +238,8 @@ export default function(graph) {
         })
         elTest.textContent = ""
 
+        // b. adjust width if multi lines
         var isMultiLine = txtWidths.find(w => w > maxWidth)
-        var isBarBased = elChart.getAttribute("data-id").toLowerCase().indexOf("bar") > -1
-
-        // 2. adjust width if multi lines
         if (isMultiLine) {
           [].slice.call(elsText).forEach((el, i) => {
             var txtWidth = el.querySelector("span").offsetWidth + 1
@@ -240,7 +249,7 @@ export default function(graph) {
           })
         }
 
-        // 3. adjust two ends if out of frame
+        // c. adjust two ends if out of frame
         var iLast = elsTick.length - 1
         var indent = parseInt(elAxisX.dataset.yIndent, 10) + indentL
         var textStrLeft = (indent + elsTick[0].offsetLeft) - elsText[0].offsetWidth / 2
@@ -254,13 +263,17 @@ export default function(graph) {
           elsText[iLast].style.right = (-1) - extendR + "px"
           elsText[iLast].style.textAlign = "right"
         }
+      }
 
-        // 4. update height if not bar based charts
-        if (!isBarBased) {
-          var heights = [].slice.call(elsText).map(el => Math.ceil(el.offsetHeight))
-          var maxHeight = Math.max.apply(null, heights)
-          elChart.style.marginBottom = (maxHeight + 14) + "px"
-        }
+      /* chart height update */
+      function updateChartHeight() {
+        var elsLabel = document.querySelectorAll(".label-x .label")
+        if (!isBarBased && !elsLabel) return
+
+        var elsAll = [].slice.call(elsText).concat([].slice.call(elsLabel))
+        var heights = elsAll.map(el => Math.ceil(el.offsetHeight))
+        var maxHeight = Math.max.apply(null, heights)
+        elChart.style.marginBottom = (maxHeight + 14) + "px"
       }
     </script>
   </body>
