@@ -1,52 +1,61 @@
 /* general setup */
 #root {
-    padding: 0 20px;
-    box-sizing: border-box;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 h1 {
-    font-size: 1.75rem;
+  font-size: 1.75rem;
+  margin-bottom: 0;
 }
 .f-app {
-    font-size: 1rem;
-    font-weight: normal;
+  font-size: 1rem;
+  font-weight: normal;
 }
 
 .section {
-    margin: 60px auto 60px;
-    max-width: 1284px;/*1024px;*/
-    width: 100%;
-    min-height: calc(100vh - 120px);
+  margin: 60px auto 60px;
+  max-width: 1284px;/*1024px;*/
+  width: 100%;
+  min-height: calc(100vh - 120px);
 }
 .section-full {
-    margin-top: 80px;
-    margin-bottom: 60px;
-    max-width: 1284px;
-    width: 100%;
-    height: calc(100vh - 140px);
+  margin-top: 80px;
+  margin-bottom: 60px;
+  max-width: 1284px;
+  width: 100%;
+  height: calc(100vh - 140px);
 }
 #section5 {
-    min-height: 100px;
+  min-height: 100px;
 }
 
 .l-section {
-    /* layout like all sections */
-    max-width: 1284px;/*1024px;*/
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
+  /* layout like all sections */
+  max-width: 1284px;/*1024px;*/
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+.instruction {
+  color: #767676;
+  font-family: monospace;
+  line-height: 20px;
+  margin: 15px 0;
+}
+
 
 /* buttons */
 .button {
-    font-size: 14px;
-    background-color: white;
-    width: 20%;
-    min-width: 140px;
-    outline: 0;
-    padding: 8px;
-    border: 1px solid #333;
-    cursor: pointer;
+  font-size: 14px;
+  background-color: white;
+  width: 20%;
+  min-width: 140px;
+  outline: 0;
+  padding: 8px;
+  border: 1px solid #333;
+  cursor: pointer;
 }
 .btn-off {
   opacity: 0.25;

@@ -49,7 +49,7 @@ class Bars extends React.Component {
   renderChart() {
 
     /* data */
-    const {data, colors} = this.props
+    const {data, colors, callByStep} = this.props
     const numberRows = data.numberRows
     const colorGroup = data.string2Col
     this.colorKeys = uniqueArray(colorGroup)
@@ -79,7 +79,7 @@ class Bars extends React.Component {
     const getBarHeight = (count) => Math.round((((24 - (count-1)) / 3) * 2) / count)
     const barHeight = getBarHeight(numberRows[0].length)
 
-    drawChart(this.refs, dataChart, {barHeight, colors})
+    drawChart(this.refs, dataChart, {barHeight, colors, callByStep})
   }
 }
 

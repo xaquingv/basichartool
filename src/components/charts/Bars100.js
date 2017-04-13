@@ -47,7 +47,7 @@ class Bars100 extends React.Component {
   renderChart() {
 
     /* data */
-    const {data, colors} = this.props
+    const {data, colors, callByStep} = this.props
     const numbers = data.numbers
     const labelGroup = data.string1Col
     const colorGroup = data.string2Col
@@ -80,7 +80,7 @@ class Bars100 extends React.Component {
 
 
     /* draw */
-    drawChart(this.refs, dataChart, {hasGroupBgColor: true, colors})
+    drawChart(this.refs, dataChart, {hasGroupBgColor: true, colors, callByStep})
   }
 }
 

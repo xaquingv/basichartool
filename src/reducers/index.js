@@ -97,25 +97,18 @@ function show(show = {col: [], row: []}, action) {
   }
 }
 
-function dataChart(dataChart = {/*legend: [], scales:{}, indent: 0, marginTop: 0*/}, action) {
+function dataChart(dataChart = {}, action) {
   switch(action.type) {
     // reset
     case 'ANALYZE_DATA':
-      //console.log("reset chart data")
-      //console.log(dataChart)
-      //console.log(action.dataChart)
       const resetDataChart = {legend: [], scales:{}, margin: undefined, indent: 0, marginTop: 0}
       return {
-        //...dataChart,
         ...resetDataChart,
         ...action.dataChart,
-        //margin: {},
       }
 
     /* TODO: rename and clean up */
     case 'APPEND_DATA':
-      //if(action.scales.x) console.log(action.scales.x.domain())
-      //if(action.scales.y) console.log(action.scales.y.domain())
       return {
         ...dataChart,
         legend: action.legend,
@@ -153,10 +146,8 @@ function dataChart(dataChart = {/*legend: [], scales:{}, indent: 0, marginTop: 0
       }
 
     case 'UPDATE_RANGE':
-      //console.log(dataChart.scales[action.target].domain())
       let newScales = {...dataChart.scales}
       newScales[action.target].domain(action.range)
-      //console.log(newScales[action.target].domain())
       return {
         ...dataChart,
         scales: newScales
@@ -187,6 +178,13 @@ function chartId(id = "", action) {
 
 function dataSetup(dataSetup = {colors:[], display:{}, legend:[], size:{}, width: "300px"}, action) {
   switch(action.type) {
+    // reset
+    case 'SELECT_CHART':
+      return {
+        ...dataSetup,
+        pickColor: ""//dataSetup.colors[0]//"#000000"
+      }
+    // setup
     case 'SET_DISPLAY':
       return {
         ...dataSetup,
@@ -221,7 +219,7 @@ function dataSetup(dataSetup = {colors:[], display:{}, legend:[], size:{}, width
       }
     case 'DROP_COLOR':
       let newColors = dataSetup.colors.slice()
-      newColors[action.dropIndex] = dataSetup.pickColor
+      newColors[action.dropIndex] = dataSetup.pickColor ? dataSetup.pickColor : dataSetup.colors[action.dropIndex]
       return {
         ...dataSetup,
         colors: newColors

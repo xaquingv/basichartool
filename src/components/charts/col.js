@@ -1,10 +1,12 @@
 import {d3} from '../../lib/d3-lite'
-//import {colors} from '../../data/config'
+import {isHighlight, dropColorToHighlight} from '../section4Panel/paletteDropColorHack'
 
 export default function(els, dataChart, opt = {}) {
-  // TODO: improve this hack
   const isStack = opt.id.indexOf("Stack") > -1
-  //console.log(isStack)
+
+  // HACK: for highlight event
+  const isOneColor = isHighlight(opt.callByStep)
+  if (isOneColor) { dataChart.map((d, i) => {d.value[0].index = i; return d}) }
 
   d3.select(els.svg)
   .html("")
@@ -23,9 +25,11 @@ export default function(els, dataChart, opt = {}) {
   .attr("y", d => d.shift)
   .attr("width", opt.width)
   .attr("height", d => d.length)
-  .style("cursor", "pointer")
   // col styles on chart type
   .attr("fill", (d, i) => !isStack ? (d.color ? d.color : opt.colors[i]) : false)
+  // HACK: color highlight
+  .attr("class", d => isOneColor ? "c-d c"+d.index : "")
+  .on("click", (d, i) => { if (isOneColor) {dropColorToHighlight(d.index, "fill")} })
   // title tooltip
   .append("title")
   .text(d => d.title)

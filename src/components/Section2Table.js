@@ -5,6 +5,7 @@ import {analyzeData, toggleData, transposeData} from '../actions'
 
 
 const STEP = 2;
+const instruction = "Toggle first col/row to show and hide them respectively, or transpose this dataset with a click on T."
 
 const mapStateToProps = (state) => ({
     //step: state.step,
@@ -34,6 +35,7 @@ class Section extends React.Component {
         return (
             <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section2">
                 <h1>2. Toggle your dataset</h1>
+                <p className="instruction">Instruction: {instruction}</p>
                 <div className={isData?"":" o-0"}>
 
                 {/* table */}

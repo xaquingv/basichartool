@@ -1,13 +1,14 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import './section3Chart.css'
-import {colors, metaKeys} from '../data/config'
+import {colors, metaKeys, chartNames} from '../data/config'
 import {selectChart, setColors, setDisplay} from '../actions'
 import {chartList} from './charts'
 
 
 const STEP = 3
-const msg = "Sorry, no results! Please check your dataset or contact visual team."
+const instruction = "Click on a visualization for editing."
+const messageError = "Sorry, no results! Please check your dataset or contact visual team."
 
 const mapStateToProps = (state) => ({
   step: state.step,
@@ -55,7 +56,7 @@ class Section extends React.Component {
       return isSelected
       ? (
         <div key={chartID} id={chartID} onClick={() => onSelect(chartID)}>
-          <ComponentChart id={chartID} callByStep={STEP} />{chartID}
+          <ComponentChart id={chartID} callByStep={STEP} />{chartNames[chartID]}
         </div>
       )
       : null
@@ -64,8 +65,9 @@ class Section extends React.Component {
     return (
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section3">
         <h1>3. Select a visualization</h1>
+        <p className="instruction">Instruction: {instruction}</p>
         <div className="charts">
-          {selection.length > 0 ? chartComponents : msg}
+          {selection.length > 0 ? chartComponents : messageError}
         </div>
       </div>
     )

@@ -12,9 +12,9 @@ import App from './App'
 //const middleware = applyMiddleware(logger())
 const store = createStore(reducers/*, middleware*/)
 
-render(
-    <Provider store={store}>
-      <App />
-    </Provider>,
-    document.getElementById('root')
+render (
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
 )

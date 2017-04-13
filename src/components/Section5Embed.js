@@ -8,6 +8,8 @@ import reqwest from 'reqwest'
 
 
 const STEP = 5
+const instruction = "Note that the embed link button is only avaiable via the Guardian's visual tool."
+
 const mapDispatchToProps = (dispatch) => ({
 })
 
@@ -55,6 +57,7 @@ class Section extends React.Component {
     return (
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section5">
         <h1>5. Voila, here you go:</h1>
+        <p className="instruction">{instruction}</p>
         <input type="button" className={"button" + (isGuardianVisual ? "" : " btn-off")} value="embed" onClick={this.embed.bind(this)} />
         <input type="button" className="button" value="download HTML" onClick={this.downloadHTML.bind(this)} />
         <div className="d-n link js-link">link: <a target="_blank"></a></div>

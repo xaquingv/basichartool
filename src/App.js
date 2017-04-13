@@ -10,13 +10,13 @@ import Section5 from './components/Section5Embed';
 
 const App = () => (
   <div>
-        <Section1 />
-        <Section2 />
-        <Section3 />
-        <Section4 />
-        <Section5 />
-        <Navigation />
-    </div>
+    <Section1 />
+    <Section2 />
+    <Section3 />
+    <Section4 />
+    <Section5 />
+    <Navigation />
+  </div>
 );
 
 export default App;

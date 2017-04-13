@@ -46,7 +46,7 @@ class Cols extends React.Component {
   renderChart() {
 
     /* data */
-    const {data, colors, id} = this.props
+    const {data, colors, id, callByStep} = this.props
     const numberRows = data.numberRows
     const labelGroup = data.string1Col.length > 0 ? data.string1Col : data.dateCol
     const colorGroup = data.string2Col
@@ -88,7 +88,7 @@ class Cols extends React.Component {
 
 
     /* draw */
-    drawChart(this.refs, dataChart, {width: scaleBandColors.bandwidth(), id, colors})
+    drawChart(this.refs, dataChart, {width: scaleBandColors.bandwidth(), id, colors, callByStep})
   }
 }
 

@@ -68,6 +68,7 @@
 .d-n { display: none !important; }
 .p-r { position: relative; }
 .c-p { cursor: pointer; }
+.c-d { cursor: url('./assets/icon/colordrop.svg') 12 12, auto;}
 .o-0 { opacity: 0; }
 .o-disable {opacity: 0.25; }
 .pe-n { pointer-events: none; }
@@ -75,6 +76,7 @@
 .ws-n { white-space: nowrap; }
 .ws-pl { white-space: pre-line; }
 .mr-10 { margin-right: 10px; }
+.ml-10 { margin-left: 10px; }
 
 .ff-ss   {font-family: 'Guardian Text Sans Web', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;}
 .ff-data {font-family: 'Guardian Agate Sans 1 Web', monospace;}

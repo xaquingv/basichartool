@@ -12,6 +12,7 @@ export const viewBox = "0 0 " + width + " " + height
 export let cfg_charts
 export let colors, colorBarBackground
 export let metaKeys, default_metaText
+export let chartNames = {}
 
 
 export default function() {
@@ -78,7 +79,13 @@ function parseCfgJson(cfg) {
     }
   })
 
-  //console.log(colors, cfg_charts)
+  cfg.CFG_CHART_DEF
+  .filter(chart => chart.num)
+  .forEach(chart => chartNames[chart.id] = chart.name)
+
+  //console.log(colors)
+  //console.log(cfg_charts)
+  //console.log(chartNames)
 }
 
 // TODO: add meta to config file ?

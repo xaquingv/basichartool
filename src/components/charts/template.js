@@ -153,6 +153,7 @@ export default function(graph) {
       var elsText = elAxisX ? elAxisX.querySelectorAll(".axis-x-text") : []
       var indentL = elAxisX ? parseInt(elAxisX.dataset.lIndent, 10) : 0
       var extendR = elAxisX ? parseInt(elAxisX.dataset.rIndent, 10) : 0
+      var isBarBased = elChart.getAttribute("data-id").toLowerCase().indexOf("bar") > -1
 
       // responsive
       function responsive() {
@@ -217,7 +218,6 @@ export default function(graph) {
       }
 
       /* 4. x axis text position update */
-      var isBarBased = elChart.getAttribute("data-id").toLowerCase().indexOf("bar") > -1
       function updateXAxisTextPosition() {
         if (!elAxisX) return
 
@@ -268,12 +268,12 @@ export default function(graph) {
       /* chart height update */
       function updateChartHeight() {
         var elsLabel = document.querySelectorAll(".label-x .label")
-        if (!isBarBased && !elsLabel) return
-
-        var elsAll = [].slice.call(elsText).concat([].slice.call(elsLabel))
-        var heights = elsAll.map(el => Math.ceil(el.offsetHeight))
-        var maxHeight = Math.max.apply(null, heights)
-        elChart.style.marginBottom = (maxHeight + 14) + "px"
+        if (!isBarBased && elsLabel) {
+          var elsAll = [].slice.call(elsText).concat([].slice.call(elsLabel))
+          var heights = elsAll.map(el => Math.ceil(el.offsetHeight))
+          var maxHeight = Math.max.apply(null, heights)
+          elChart.style.marginBottom = (maxHeight + 14) + "px"
+        }
       }
     </script>
   </body>

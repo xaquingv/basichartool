@@ -1,5 +1,6 @@
 import {d3} from '../../lib/d3-lite'
 import {colorBarBackground, width} from '../../data/config'
+import {isHighlight, dropColorToHighlight} from '../section4Panel/paletteDropColorHack'
 
 const rowHeight = 24
 const barHeightDefault = 16
@@ -14,6 +15,10 @@ export default function (els, dataChart, opt = {}) {
   const groupHeight = opt.barHeight ? (barHeight + barMarginBottom) * barCountInGroup : barHeightDefault
   const groupMarginBottom = rowHeight - groupHeight
 
+  // HACK: for highlight event
+  const isOneColor = isHighlight(opt.callByStep)
+  if (isOneColor) { dataChart.map((d, i) => {d.value[0].index = i; return d}) }
+
   // bar group
   d3.select(els.div)
   .selectAll(".bars")
@@ -26,7 +31,7 @@ export default function (els, dataChart, opt = {}) {
   .selectAll(".bar")
   .data(d => d.value)
   .enter().append("div")
-  .attr("class", "bar")
+  .attr("class", d => "bar" + (isOneColor ? " c-d c"+d.index : ""))
   .attr("title", d => d.title)
   .style("width", d => d.width + "%")
   // bar styles on chart type
@@ -35,6 +40,8 @@ export default function (els, dataChart, opt = {}) {
   .style("margin-left", d => d.shift ? d.shift + "%" : false) // accept negative number
   .style("margin-bottom", barMarginBottom + "px")
   .style("display", opt.display ? opt.display : false)
+  // HACK: color highlight
+  .on("click", (d, i) => { if (isOneColor) {dropColorToHighlight(d.index, "backgroundColor")} })
 
 
   // TODO: value is 0 vs. null

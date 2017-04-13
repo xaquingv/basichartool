@@ -3,9 +3,9 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 import {appendChartData} from '../../actions'
+import {dropColorOnShape} from '../section4Panel/paletteDropColorHack'
 import {addBarsBackground, drawBarSticks} from './onBar'
 import ComponentRow from './BarBase'
-
 
 const barHeight = 16
 const headSize = 12
@@ -105,15 +105,21 @@ class ArrowOnBar extends React.Component {
     // group and background bars
     // margin 0 at two ends due to un-pre-calculat-able pixel shift
     // patch fix in fixPixelOutOfLayout()
+    let callBy = this.props.callByStep
     let margin = this.props.data.margin ? this.margin : {left: 0, right: 0}
     let gs = addBarsBackground(this.refs.div, this.dataChart, margin.left, margin.right)
 
     // arrow - line
-    drawBarSticks(gs)
+    drawBarSticks(gs, callBy)
 
     // arrow - head
     gs.append("div")
-    .attr("class", d => "head" + (d.isKick ? " js-kick" : "") + (d.isEven ? " is-even" : ""))
+    .attr("class", d =>
+      "head c" + d.color.replace("#", "") +
+      (d.isKick ? " js-kick" : "") +
+      (d.isEven ? " is-even" : "") +
+      (callBy === 4 ? " c-d" : "")
+    )
     .attr("title", d => d.title)
     .style("position", "absolute")
     .style("top", d => d.headTop + "px")
@@ -122,6 +128,7 @@ class ArrowOnBar extends React.Component {
     .style("border-color", d => d.borderColors)
     .style("border-style", "solid")
     .style("transform", d => d.isEven ? "rotate(45deg)" : false)
+    .on("click", (d, i) => dropColorOnShape(d.color.replace("#", ""), d.isEven))
   }
 
   fixPixelOutOfLayoutOnce() {

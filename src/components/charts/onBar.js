@@ -1,5 +1,6 @@
 import {d3} from '../../lib/d3-lite'
-import {colors, colorBarBackground} from '../../data/config'
+import {colorBarBackground} from '../../data/config'
+import {dropColorOnShape} from '../section4Panel/paletteDropColorHack'
 
 const barHeight = 16
 const barMarginBottom = 8     //style1
@@ -40,15 +41,16 @@ export function addBarsBackground(el, dataChart, marginLeft, marginRight = margi
 }
 
 
-export function drawBarSticks(el) {
+export function drawBarSticks(el, callByStep, bgColor) {
 
   el.append("div")
-  .attr("class", "line")
+  .attr("class", d => "line c" + (d.color ? d.color.replace("#", "") : "stick") + (callByStep===4 ? " c-d" : ""))
   .attr("title", d => d.title ? d.title : false)
   .style("width", d => d.width ? d.width + "%" : d.widthCalc)
   .style("height", stickHeight + "px")
   .style("position", "absolute")
   .style("top", stickTop + "px")
   .style("left", d => d.shift ? d.shift + "%" : d.lineLeftCalc)
-  .style("background-color", d => d.color ? d.color : colors[6])
+  .style("background-color", d => d.color ? d.color : bgColor)
+  .on("click", (d, i) => dropColorOnShape((d.color ? d.color.replace("#", "") : "stick"), d.isEven))
 }

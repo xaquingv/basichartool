@@ -7,6 +7,7 @@ import fetchConfig from '../data/config'
 
 //const STEP = 1;
 // read https://facebook.github.io/react/docs/forms.html
+const instruction = "Type your data or copy & paste it from a spreadsheet."
 
 const mapStateToProps = (state) => ({
 });
@@ -52,8 +53,8 @@ class Section extends React.Component {
           <input type="file" className="file o-0" value="" onChange={this.chooseFile.bind(this)} />
           <label className="button file-shell">Choose a file</label>
         </div>*/}
-        <p>Copy & paste </p>
-        <textarea className="textarea" placeholder="your csv/tsv dataset here ..." ref={node=>textarea=node}></textarea>
+        <p className="instruction">Instruction: {instruction}</p>
+        <textarea className="textarea" placeholder="your csv/tsv dataset goes here ..." ref={node=>textarea=node}></textarea>
         <div className="row-flex">
           <input type="button" className="button btn-import" value="Import" onClick={()=>onClickImport(textarea)}/>
           <input type="button" className="button btn-clear" value="Clear" onClick={()=>onClickClear(textarea, textInput)}/>

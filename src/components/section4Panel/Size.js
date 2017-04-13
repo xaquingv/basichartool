@@ -16,7 +16,7 @@ class Display extends React.Component {
 
   render() {
     const {size, width} = this.props
-
+    
     return (
       <div>Width * Height: {width + (width === "100%" ? " width" : " * " + size.h + "px")}</div>
     )

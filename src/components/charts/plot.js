@@ -32,7 +32,7 @@ export default function(els, dataChart, scale, who, colors, step) {
   .enter().append("circle")
   .attr("cx", d => scale.x(d.x))
   .attr("cy", d => scale.y(d.y))
-  .attr("title", d => "(" + d.x+ ", " + d.y + ")")
+  .attr("title", d => d.title ? d.title : "(" + d.x + ", " + d.y + ")")
   // custom on chart type
   .attr("r", r)
   .attr("fill", d => d.color ? d.color : false)
@@ -41,7 +41,8 @@ export default function(els, dataChart, scale, who, colors, step) {
   .attr("stroke", "white")
 
   // new
-  gs.enter().append("g")
+  gs.enter()
+  .append("g")
   .attr("fill", (d, i) => colors ? colors[i] : false)
   .selectAll("circle")
   .data(d => d)

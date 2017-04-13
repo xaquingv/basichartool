@@ -12,21 +12,18 @@ export default function (els, dataChart, scale, colors) {
   .selectAll("path")
   .data(dataChart)
 
-  // update
-  svg
-  .attr("stroke", (d, i) => colors ? colors[i] : false)
-  .attr("d", d => line(d))
-
   // new
   svg.enter()
   .append("path")
   //.insert("path", ":first-child")
   .attr("fill", "none")
-  .attr("stroke", (d, i) => colors ? colors[i] : false)
   .attr("stroke-width", "2px")
   .attr("shape-rendering", "auto")
   .attr("stroke-linecap", "round") // or square to render a single point
   .attr("stroke-opacity", .75)
+  // update
+  .merge(svg)
+  .attr("stroke", (d, i) => colors ? colors[i] : false)
   .attr("d", d => line(d))
 
   // remove

@@ -31,11 +31,14 @@ class DotsOnBar extends React.Component {
   }
 
   render() {
-    const {data, onSelect, callByStep} = this.props
+    const {data, onSelect, colors, callByStep} = this.props
 
     // step 3
     const setChartData = () => {
-      if (callByStep === 3) { onSelect(data.keys, this.scale, {left: margin, right: margin}) }
+      if (callByStep === 3) {
+        onSelect(data.keys, this.scale, {left: margin, right: margin})
+        d3.select("#section4 .canvas").attr("data-bg-color", colors[6])
+      }
     }
 
     // step 4
@@ -82,11 +85,13 @@ class DotsOnBar extends React.Component {
 
   drawChart() {
 
-    const colors = this.props.colors
+    const {colors, callByStep} = this.props
     let gs = addBarsBackground(this.refs.div, this.dataChart, margin)
 
     // line that connects dots
-    drawBarSticks(gs)
+    const elCanvas = d3.select("#section4 .canvas")
+    const bgColor = (callByStep === 4 && elCanvas ? elCanvas.attr("data-bg-color") : colors[6]) || colors[6]
+    drawBarSticks(gs, callByStep, bgColor)
 
     // dots
     gs.selectAll(".dot")
