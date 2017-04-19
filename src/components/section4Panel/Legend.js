@@ -5,6 +5,7 @@ import ComponentEditor from './Editor'
 
 
 const mapStateToProps = (state) => ({
+  id: state.chartId,
   dataSetup: state.dataSetup,
   legend: state.dataChart.legend,
   dataChart: state.dataChart
@@ -18,8 +19,9 @@ const mapDispatchToProps = (dispatch) => ({
 class Legend extends React.Component {
 
   render() {
-    const {dataChart, dataSetup, onDropColor, isBarBased} = this.props
+    const {id, dataChart, dataSetup, onDropColor} = this.props
     const {legend, string1Width} = dataChart
+    const isBarBased = id.includes("broken") ? false : this.props.isBarBased
 
     const length = legend.length
     const colors = dataSetup.colors
@@ -42,7 +44,7 @@ class Legend extends React.Component {
         <div className="legend-item" key={i}>
           <span className="legend-color"
             style={{backgroundColor: colors[i]}}
-            onClick={()=>onDropColor(i)}>
+            onDoubleClick={()=>onDropColor(i)}>
           </span>
           <span className="legend-label">
             <ComponentEditor text={label} />

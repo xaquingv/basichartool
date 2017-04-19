@@ -68,7 +68,7 @@
 .d-n { display: none !important; }
 .p-r { position: relative; }
 .c-p { cursor: pointer; }
-.c-d { cursor: url('./assets/icon/colordrop.svg') 12 12, auto;}
+.c-d { cursor: url('./assets/icon/colordrop.svg') 12 12, auto !important;}
 .o-0 { opacity: 0; }
 .o-disable {opacity: 0.25; }
 .pe-n { pointer-events: none; }

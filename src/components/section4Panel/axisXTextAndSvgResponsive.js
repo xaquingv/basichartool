@@ -9,6 +9,19 @@ export default function() {
   const elChart = document.querySelector(".js-chart")
   const elTest = document.querySelector(".js-test-x")
 
+
+  /* update chart height */
+  const isAxisXBottom = elAxisX ? (elAxisX.dataset.xBottom==="true") : false
+  if (isAxisXBottom) {
+    // calc max text height
+    const heights = [].slice.call(elsText).map(el => Math.ceil(el.offsetHeight))
+    const maxHeight = Math.max.apply(null, heights)
+    elChart.style.marginBottom = (maxHeight + 14) + "px"
+  } else {
+    elChart.style.marginBottom = 0
+  }
+
+
   /* update text position */
   if (!elsTick[1]) return
   const axisXWidth = elAxisX.offsetWidth
@@ -68,15 +81,6 @@ export default function() {
     }
   }
 
-  /* update chart height */
-  if (!isBarBased) {
-    // calc max text height
-    const heights = [].slice.call(elsText).map(el => Math.ceil(el.offsetHeight))
-    const maxHeight = Math.max.apply(null, heights)
-    elChart.style.marginBottom = (maxHeight + 14) + "px"
-  } else {
-    elChart.style.marginBottom = 0
-  }
 
   /* svg circle */
   const elSvg = document.querySelector("#section4 svg")

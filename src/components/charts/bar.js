@@ -15,9 +15,11 @@ export default function (els, dataChart, opt = {}) {
   const groupHeight = opt.barHeight ? (barHeight + barMarginBottom) * barCountInGroup : barHeightDefault
   const groupMarginBottom = rowHeight - groupHeight
 
-  // HACK: for highlight event
+  // HACK: for events
+  //const cc = clickcancel()
+  const isAnnotate = opt.callByStep === 4 && barHeight === barHeightDefault
   const isOneColor = isHighlight(opt.callByStep)
-  if (isOneColor) { dataChart.map((d, i) => {d.value[0].index = i; return d}) }
+  if (isOneColor || isAnnotate) { dataChart.map((d, i) => d.value.map(dv => dv.index = i)) }
 
   // bar group
   d3.select(els.div)
@@ -31,7 +33,11 @@ export default function (els, dataChart, opt = {}) {
   .selectAll(".bar")
   .data(d => d.value)
   .enter().append("div")
-  .attr("class", d => "bar" + (isOneColor ? " c-d c"+d.index : ""))
+  .attr("class", (d, i) =>
+    "bar" +
+    (isAnnotate ? " f-bar b"+d.index+i : "") +
+    (isOneColor ? " c-d c"+d.index : "")
+  )
   .attr("title", d => d.title)
   .style("width", d => d.width + "%")
   // bar styles on chart type
@@ -40,8 +46,32 @@ export default function (els, dataChart, opt = {}) {
   .style("margin-left", d => d.shift ? d.shift + "%" : false) // accept negative number
   .style("margin-bottom", barMarginBottom + "px")
   .style("display", opt.display ? opt.display : false)
+  //.call(cc)
   // HACK: color highlight
-  .on("click", (d, i) => { if (isOneColor) {dropColorToHighlight(d.index, "backgroundColor")} })
+  //cc
+  .on("dblclick", (d, i) => {
+    if (isOneColor) {
+      dropColorToHighlight(d.index, "backgroundColor")
+    }
+    if (isAnnotate) {
+      const el = document.querySelector(".bar.b"+d.index+i)
+      el.blur()
+    }
+  })
+  // HACK: annotation
+  //cc
+  .on("click", (d, i) => { if (isAnnotate) {
+    const el = document.querySelector(".bar.b"+d.index+i)
+    el.setAttribute("contenteditable", true)
+    el.addEventListener("keydown", onEnter)
+    el.focus()
+  }})
+  .on("blur", (d, i) => { if (isAnnotate) {
+    const el = document.querySelector(".bar.b"+d.index+i)
+    el.setAttribute("contenteditable", false)
+    el.removeEventListener("keydown", onEnter)
+    el.innerHTML = el.textContent
+  }})
 
 
   // TODO: value is 0 vs. null
@@ -54,4 +84,15 @@ export default function (els, dataChart, opt = {}) {
   const tooSmall = widths.length > 0
   if (tooSmall) { console.warn("one of bar widths is too small") }
   // fix ...
+}
+
+
+// event
+function onEnter(e) {
+  console.log("key", e.key)
+  if (e.key === "Enter") {
+    e.preventDefault()
+    e.stopPropagation()
+    e.target.blur()
+  }
 }

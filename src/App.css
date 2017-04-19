@@ -12,6 +12,23 @@ h1 {
   font-size: 1rem;
   font-weight: normal;
 }
+.f-bar {
+  font-family: 'Guardian Agate Sans 1 Web', monospace;
+  color: #f1f1f1; /* n-5 */
+  text-align: right;
+  line-height: 16px;
+  width: 100%;
+  white-space: nowrap;
+  overflow-x: hidden;
+  cursor: text;
+  box-sizing: border-box;
+  vertical-align: top;
+}
+.f-bar:hover,
+.f-bar:focus {
+  outline: 0;
+  border-bottom: 2px solid #333;
+}
 
 .section {
   margin: 60px auto 60px;

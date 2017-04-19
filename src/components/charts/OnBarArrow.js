@@ -128,7 +128,7 @@ class ArrowOnBar extends React.Component {
     .style("border-color", d => d.borderColors)
     .style("border-style", "solid")
     .style("transform", d => d.isEven ? "rotate(45deg)" : false)
-    .on("click", (d, i) => dropColorOnShape(d.color.replace("#", ""), d.isEven))
+    .on("dblclick", (d, i) => dropColorOnShape(d.color.replace("#", ""), d.isEven))
   }
 
   fixPixelOutOfLayoutOnce() {

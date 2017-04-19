@@ -44,7 +44,7 @@ class BarStack100 extends React.Component {
     renderChart() {
 
     /* data */
-    const {data, colors} = this.props
+    const {data, colors, callByStep} = this.props
     const numberRows = data.numberRows
     const numberRowSums = numberRows.map(ns => Math.round(ns.reduce((n1, n2) => n1 + n2)*100)/100)
 
@@ -70,7 +70,7 @@ class BarStack100 extends React.Component {
 
 
     /* draw */
-    drawChart(this.refs, dataChart, {display: "inline-block", colors})
+    drawChart(this.refs, dataChart, {display: "inline-block", colors, callByStep})
 
 
     /* validate special */

@@ -303,7 +303,7 @@
     },
     {
       "num": "17a",
-      "id": "brokenBar",
+      "id": "brokenBar100",
       "row": "[2, 10]",
       "date": "[0, 0]",
       "string1": "[1, 2]",
@@ -321,7 +321,7 @@
     },
     {
       "num": "17b",
-      "id": "brokenBar",
+      "id": "brokenBar100",
       "row": "[1, 1]",
       "date": "[0, 0]",
       "string1": "[0, 1]",
@@ -388,7 +388,7 @@
       "date_max": "100",
       "string1_hasRepeat": " ",
       "string1_format": "",
-      "active": "true",
+      "active": "false",
       "key": "plot"
     },
     {
@@ -448,7 +448,7 @@
     {
       "num": "13b",
       "id": "lineDiscrete",
-      "row": "[75, Infinity]",
+      "row": "[25, Infinity]",
       "date": "[0, 0]",
       "string1": "[0, 1]",
       "string2": "[0, 0]",
@@ -498,6 +498,190 @@
       "string1_format": "",
       "active": "true",
       "key": ""
+    }
+  ],
+  "CFG_CHART_DEF": [
+    {
+      "num": "1",
+      "id": "bar",
+      "name": "Bars",
+      "data relationship / usage": "comparison of count, ranking",
+      "description": "If you want to compare one variable across multiple categories, like income in different professions or rent in different London boroughs"
+    },
+    {
+      "num": "2",
+      "id": "barGroup",
+      "name": "Grouped bars",
+      "data relationship / usage": "comparison of count in categories",
+      "description": "If you want to compare the value of a bunch variables across multiple categories, like age (the variables) distribution by region (the categories)"
+    },
+    {
+      "num": "3",
+      "id": "barGroupStack",
+      "name": "Stacked bars",
+      "data relationship / usage": "breakdown in categories",
+      "description": "If you want to compare how several categories break down, like number of refugees coming to European countries by country of origin"
+    },
+    {
+      "num": "4",
+      "id": "barGroupStack100",
+      "name": "Stacked percentage bars",
+      "data relationship / usage": "proportional/breakdown",
+      "description": "If the breakdown of your categories adds up to 100%, like the racial makeup of police departments"
+    },
+    {
+      "num": "5",
+      "id": "bar100",
+      "name": "Percentage bars",
+      "data relationship / usage": "proportional",
+      "description": "If you want to compare percentages on several categories, like percentage of female CEOs by industry"
+    },
+    {
+      "num": "",
+      "id": "barDiff*",
+      "name": "",
+      "data relationship / usage": "diff b/n 1 positive and 1 negative sets",
+      "description": ""
+    },
+    {
+      "num": "6",
+      "id": "onBarDiffArrow",
+      "name": "Arrow chart",
+      "data relationship / usage": "diff b/n 2 time points, ranking",
+      "description": "If you want to show change in two points in time, like the change in female labour force in different professions from 1980 to today"
+    },
+    {
+      "num": "7",
+      "id": "onBarDiffDots",
+      "name": "Dot difference chart",
+      "data relationship / usage": "diff b/n 2 categories",
+      "description": "..."
+    },
+    {
+      "num": "8",
+      "id": "onBarTicks",
+      "name": "Ticks",
+      "data relationship / usage": "comparison",
+      "description": "..."
+    },
+    {
+      "num": "",
+      "id": "onBarStrip",
+      "name": "Strip plot",
+      "data relationship / usage": "distribution",
+      "description": ""
+    },
+    {
+      "num": "",
+      "id": "onBarDots",
+      "name": "",
+      "data relationship / usage": "comparison",
+      "description": ""
+    },
+    {
+      "num": "9",
+      "id": "col",
+      "name": "Columns",
+      "data relationship / usage": "comparison (over time)",
+      "description": "Vertical version of a bar chart. One variable across multiple categories, like income in different professions or rent in different London boroughs\nor If you want to compare a variable over time, like the NHS budget"
+    },
+    {
+      "num": "10",
+      "id": "colGroup",
+      "name": "Grouped columns",
+      "data relationship / usage": "comparison (over time)",
+      "description": "Vertical version of grouped bars. A set variables across multiple categories, like age (the variables) distribution by region (the categories) \nor If you want to compare multiple variables over time"
+    },
+    {
+      "num": "11",
+      "id": "colGroupStack",
+      "name": "Stacked columns",
+      "data relationship / usage": "breakdown (over time)",
+      "description": "Vertical version of stacked bars. How several categories break down, like number of refugees coming to European countries by country of origin\nor If you want to see the trend of something over time as well as its breakdown"
+    },
+    {
+      "num": "12",
+      "id": "colGroupStack100",
+      "name": "Stacked percentage columns",
+      "data relationship / usage": "change over time, ex. survey",
+      "description": "If you want to see the evolution in the makeup of something, like in the percentage of females in tenure-track positions in academia"
+    },
+    {
+      "num": "",
+      "id": "colHistogram",
+      "name": "",
+      "data relationship / usage": "distribution, frequency over quantitative ranges",
+      "description": ""
+    },
+    {
+      "num": " ",
+      "id": "areaGroupStack",
+      "name": "Stacked area",
+      "data relationship / usage": "change over time",
+      "description": ""
+    },
+    {
+      "num": "13",
+      "id": "lineContinue",
+      "name": "Line",
+      "data relationship / usage": "trend/change over time, distribution",
+      "description": "If you want to see a trend over time. If you have missing data, it will show the gaps"
+    },
+    {
+      "num": "14",
+      "id": "lineDiscrete",
+      "name": "Discrete line",
+      "data relationship / usage": "trend/change over time",
+      "description": "If you want to see trend over time, you may be missing dates but you want a continuous evenly spaced line, like in a stock chart"
+    },
+    {
+      "num": "15",
+      "id": "plotDot",
+      "name": "Dot plot",
+      "data relationship / usage": "trend/change (over time), distribution",
+      "description": "If you want to see the trend of a set of categories that only have discrete values over time, like vote percentages per party on individual polls"
+    },
+    {
+      "num": "16",
+      "id": "plotScatter",
+      "name": "Scatter plot",
+      "data relationship / usage": "correlation within 2 categories",
+      "description": "If you want to show the correlation between two different variables, like percent voting Trump and percent of college graduates by county"
+    },
+    {
+      "num": " ",
+      "id": "geoChoropleth",
+      "name": "Choropleth map",
+      "data relationship / usage": "spatial",
+      "description": "If you want to see the geographic variation of a variable that comes in percentages, like poverty level. Warning! \nDoes it look like a population density map? If so, talk to the Data team or Visuals."
+    },
+    {
+      "num": " ",
+      "id": "geoBubble",
+      "name": "Bubble map",
+      "data relationship / usage": "spatial",
+      "description": "If you want to compare the value and the geographic variation of a variable, like number of people in death row of Warning! \nDoes it look like a population density map? If so, talk to the Data team or Visuals."
+    },
+    {
+      "num": "17",
+      "id": "brokenBar100",
+      "name": "Single broken bar",
+      "data relationship / usage": "proportional/breakdown",
+      "description": ""
+    },
+    {
+      "num": " ",
+      "id": "donut",
+      "name": "Donut",
+      "data relationship / usage": "proportional/breakdown",
+      "description": ""
+    },
+    {
+      "num": "18",
+      "id": "slopegraph",
+      "name": "Slopegraph",
+      "data relationship / usage": "diff b/n 2, ranking",
+      "description": "If you want to compare the before and after of a set of categories, like unemployment data in EU countries pre and post financial crisis"
     }
   ]
 }

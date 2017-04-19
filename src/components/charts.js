@@ -7,7 +7,7 @@ import Bars               from './charts/Bars'
 import BarStack           from './charts/BarStack'
 import BarStack100        from './charts/BarStack100'
 import Bars100            from './charts/Bars100'
-import BrokenBar          from './charts/BrokenBar'
+import BrokenBar100       from './charts/BrokenBar100'
 import OnBarArrow         from './charts/OnBarArrow'
 import OnBarDots          from './charts/OnBarDots'
 import OnBarTicks         from './charts/OnBarTicks'
@@ -36,7 +36,7 @@ export const chartList = {
   barGroupStack:    BarStack,
   barGroupStack100: BarStack100,
   bar100:           Bars100,
-  brokenBar:        BrokenBar,
+  brokenBar100:     BrokenBar100,
   col:              Cols,
   colGroup:         Cols,
   colGroupStack:    ColStack,

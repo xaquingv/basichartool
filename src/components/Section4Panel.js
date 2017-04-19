@@ -69,9 +69,9 @@ class Section extends React.Component {
 
     const {stepActive, chartId, graphWidth, chartData, display} = this.props;
 
-    const isOnBar = chartId.indexOf("onBar") > -1
-    const isBarBased = chartId.toLowerCase().indexOf("bar") > -1
-    const isPlot = chartId.toLowerCase().indexOf("plot") > -1
+    const isOnBar = chartId.includes("onBar")
+    const isBarBased = chartId.toLowerCase().includes("bar") //&& !chartId.includes("broken")
+    const isPlot = chartId.toLowerCase().includes("plot")
 
     const ComponentChart = chartList[chartId]
     const chartComponent = ComponentChart

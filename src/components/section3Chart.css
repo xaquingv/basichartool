@@ -43,14 +43,13 @@
   margin-left: -1px;
   margin-bottom: 4px;
 }
+#brokenBar100 .bar {
+  margin-top: 48px;
+}
 
 /* temp: disable charts */
-/*#col > *,
-#colGroup > *,
-#colGroupStack > *, */
 #colGroupStack100 > *,
-#slopegraph > *,
-#brokenBar > * {
+#slopegraph > * {
   opacity: 0.3;
   background-color: #eaeaea;
   pointer-events: none;

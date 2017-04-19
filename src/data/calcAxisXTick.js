@@ -12,7 +12,7 @@ export function getTickSteps(id, isBarBased, dataX, format, rowCount, axisX) {
   switch (true) {
 
     /* bars */
-    case ["brokenBar"].includes(id):
+    case ["brokenBar100"].includes(id):
       //console.log("broken bars", "(50)")
       return [50]
 

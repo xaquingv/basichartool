@@ -33,11 +33,13 @@ class BrokenBar extends React.Component {
 
     return (
       <div className="canvas" ref="div" onClick={setChartData}>
-      <div ref="bars"></div>
-      <div ref="axis">
-      <div ref="axis_tick"></div>
-      <div ref="axis_mark">50%</div>
-      </div>
+        <div className="bar" ref="bars"></div>
+        {/*
+        <div className="tic" ref="axis">
+          <div ref="axis_tick"></div>
+          <div ref="axis_mark">50%</div>
+        </div>
+        */}
       </div>
     )
   }
@@ -69,7 +71,7 @@ class BrokenBar extends React.Component {
   drawChart() {
     d3.select(this.refs.bars)
     .html("")
-    .style("padding-top", 48 + "px") // override
+    //.style("padding-top", 48 + "px") // override
     .style("height", barHeight + "px")
     .selectAll("div")
     .data(this.dataChart)

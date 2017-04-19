@@ -52,5 +52,5 @@ export function drawBarSticks(el, callByStep, bgColor) {
   .style("top", stickTop + "px")
   .style("left", d => d.shift ? d.shift + "%" : d.lineLeftCalc)
   .style("background-color", d => d.color ? d.color : bgColor)
-  .on("click", (d, i) => dropColorOnShape((d.color ? d.color.replace("#", "") : "stick"), d.isEven))
+  .on("dblclick", (d, i) => dropColorOnShape((d.color ? d.color.replace("#", "") : "stick"), d.isEven))
 }

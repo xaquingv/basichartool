@@ -28,7 +28,7 @@ class AxisX extends React.Component {
     // TODO: dataX should come with scales, assign in charts
     this.dataX = dateCol || (string1Col.length !== 0 ? string1Col : numberCols[0])
     this.axisX = scales.x.copy()
-    .domain(["bar100", "barGroupStack100", "brokenBar"].includes(id) ? [0, 100] : scales.x.domain()) // ui range @setup2
+    .domain(id.includes("100") ? [0, 100] : scales.x.domain()) // ui range @setup2
     .range([0, 100]) // d3 range
 
     this.ticks = getTickSteps(id, isBarBased, this.dataX, dateFormat, rowCount, this.axisX)
@@ -70,8 +70,10 @@ class AxisX extends React.Component {
     if (!this.props.dataChart.scales.x) return null
 
     /* data */
-    const {id, dataChart, chartSize, isBarBased, isOnBar, isPlot, unit, axis} = this.props
+    const {id, dataChart, chartSize, isOnBar, isPlot, unit, axis} = this.props
     const {indent, string1Width} = dataChart
+    const isBrokenBar = id.includes("broken")
+    const isBarBased = isBrokenBar ? false : this.props.isBarBased
 
     if (!axis) {
       this.setAxisData()
@@ -132,7 +134,7 @@ class AxisX extends React.Component {
       style={{
         position: "absolute",
         top: isBarBased ? "-30px" : "calc(100% - 1px)", // due to svg padding: 1px
-        right: "1px",
+        right: isBrokenBar ? 0 : "1px",
         // NOTE: onBar axis-x margin left/right
         width: "calc(100% - " + ((isBarBased ? marginLeft : indent) + (isOnBar ? margin.left+margin.right : 0)) + "px)",
         marginRight: isOnBar ? margin.right + "px" : 0
@@ -167,7 +169,7 @@ class AxisX extends React.Component {
     .style("background-color", d =>
       (d===0 && margin.left===0) || (d===100 && margin.right === 0) ?
       "transparent" :
-      "rgba(255, 255, 255, 0.8)"
+      "rgba(255, 255, 255, 0.5)"
     )
   }
 }

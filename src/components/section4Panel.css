@@ -5,6 +5,7 @@
 .setup {
   margin: 20px 0;
   cursor: default;
+  user-select: none;
 }
 .setup-p1,
 .setup-p2 {

@@ -39,9 +39,9 @@ class Responsive extends React.Component {
     // delay due to transition animation
     setTimeout(() => {
       const elChart = document.querySelector(".js-chart")
+      setSize({w: elChart.offsetWidth, h: elChart.offsetHeight})
       axisYResponsive(widthLabel)
       axisXResponsive()
-      setSize({w: elChart.offsetWidth, h: elChart.offsetHeight})
     }, 1000)
   }
 

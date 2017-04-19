@@ -46,6 +46,15 @@ export default function(graph) {
         font-style: normal;
         font-stretch: normal;
       }
+      .f-bar {
+        font-family: 'Guardian Agate Sans 1 Web', monospace;
+        color: #f1f1f1; /* n-5 */
+        text-align: right;
+        line-height: 16px;
+        min-width: 2px;
+        white-space: nowrap;
+        overflow-x: hidden;
+      }
 
       html { -webkit-font-smoothing: antialiased; }
       .d-n { display: none; }
@@ -268,7 +277,8 @@ export default function(graph) {
       /* chart height update */
       function updateChartHeight() {
         var elsLabel = document.querySelectorAll(".label-x .label")
-        if (!isBarBased && elsLabel) {
+        var isAxisXBottom = elAxisX ? (elAxisX.dataset.xBottom==="true") : false
+        if (isAxisXBottom || elsLabel.length > 0) {
           var elsAll = [].slice.call(elsText).concat([].slice.call(elsLabel))
           var heights = elsAll.map(el => Math.ceil(el.offsetHeight))
           var maxHeight = Math.max.apply(null, heights)
