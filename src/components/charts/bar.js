@@ -89,7 +89,7 @@ export default function (els, dataChart, opt = {}) {
 
 // event
 function onEnter(e) {
-  console.log("key", e.key)
+  //console.log("key", e.key)
   if (e.key === "Enter") {
     e.preventDefault()
     e.stopPropagation()

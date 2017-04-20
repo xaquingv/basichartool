@@ -83,12 +83,12 @@ export default function(dataTable, show) {
   const numberCols  = numberData.map(col => col.values)
   const numbers     = numberCols.reduce((col1, col2) => col1.concat(col2))
   const dateData    = count.date > 0 ? cols.find(col => col.type === "date") : []
-  const string1Data = count.string1 > 0 ? cols.find(col => col.type === "string1") : []
-  const string1Col  = count.string1 > 0 ? string1Data.values : []
+  const string1Data = count.string1 > 0 ? cols.filter(col => col.type === "string1") : []
+  const string1Col  = count.string1 > 0 ? string1Data[0].values : []
+  const string3Col  = count.string1 > 1 ? string1Data[1].values : null
   const string2Col  = count.string2 > 0 ? cols.find(col => col.type === "string2").values : []
   const rowGroup    = count.string1 > 0 ? string1Col : (dateData.string : [])
-  // TODO: think of string * have multi cols?
-
+  // NOTE: think of string * have multi cols?
 
   /* aka. dataChart */
   // for render charts
@@ -99,7 +99,7 @@ export default function(dataTable, show) {
     rowCount:     count.row,
     // string and
     // pre calc for string / label res of axis y
-    string1Col, string2Col,
+    string1Col, string2Col, string3Col,
     ...getString1DataRes(rowGroup),
     // date
     dateCol:      dateData.values,
@@ -121,8 +121,8 @@ export default function(dataTable, show) {
   // for chart selection
   const value = {
     date_hasRepeat:    count.date > 0 ? uniqueArray(chart.dateCol).length !== count.row : false,
-    string1_hasRepeat: count.string1 > 0 ? string1Data.hasRepeat : false,
-    string1_format:    count.string1 > 0 ? string1Data.format : false, // TODO: code/name or bin
+    string1_hasRepeat: count.string1 > 0 ? string1Data[0].hasRepeat : false,
+    string1_format:    count.string1 > 0 ? string1Data[0].format : false, // TODO: code/name or bin
     numberH_format:    getDataType(chart.keys).types[0],
     number_rangeType:  getNumberRangeType(chart.numbers),
     number_hasNull:    chart.numbers.indexOf(null) > -1

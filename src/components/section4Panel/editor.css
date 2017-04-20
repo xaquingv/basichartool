@@ -23,3 +23,10 @@
 .setup-p2 [contenteditable] span {
   border-bottom: 2px solid #333;
 }
+
+.txt[contenteditable]:hover,
+.txt[contenteditable]:focus {
+  outline: none;
+  border-bottom: 2px solid #333;
+  box-sizing: border-box;
+}

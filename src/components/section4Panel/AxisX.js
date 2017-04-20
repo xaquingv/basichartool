@@ -70,10 +70,8 @@ class AxisX extends React.Component {
     if (!this.props.dataChart.scales.x) return null
 
     /* data */
-    const {id, dataChart, chartSize, isOnBar, isPlot, unit, axis} = this.props
+    const {id, dataChart, chartSize, isOnBar, isPlot, unit, axis, isBarBased} = this.props
     const {indent, string1Width} = dataChart
-    const isBrokenBar = id.includes("broken")
-    const isBarBased = isBrokenBar ? false : this.props.isBarBased
 
     if (!axis) {
       this.setAxisData()
@@ -92,7 +90,7 @@ class AxisX extends React.Component {
     this.grid = tickData.map(d => d.pos)
 
     const chartWidth = chartSize.w || 300
-    const marginLeft = string1Width > chartWidth/3 ? 1 : string1Width+1
+    const marginLeft = id.includes("broken") || (string1Width > chartWidth/3) ? 1 : string1Width+1
 
 
     /* draw */
@@ -134,7 +132,7 @@ class AxisX extends React.Component {
       style={{
         position: "absolute",
         top: isBarBased ? "-30px" : "calc(100% - 1px)", // due to svg padding: 1px
-        right: isBrokenBar ? 0 : "1px",
+        right: /*isBrokenBar ? 0 :*/ "1px",
         // NOTE: onBar axis-x margin left/right
         width: "calc(100% - " + ((isBarBased ? marginLeft : indent) + (isOnBar ? margin.left+margin.right : 0)) + "px)",
         marginRight: isOnBar ? margin.right + "px" : 0

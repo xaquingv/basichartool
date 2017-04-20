@@ -31,21 +31,23 @@ class BrokenBar extends React.Component {
       if (callByStep === 3) { onSelect(data.string1Col, this.scale) }
     }
 
+    const drawLabel = callByStep === 4 ?
+    (
+      <div ref="txts" style={{
+        lineHeight: "16px",
+        margin: "8px 0"
+      }}></div>
+    ) : null
+
     return (
       <div className="canvas" ref="div" onClick={setChartData}>
         <div className="bar" ref="bars"></div>
-        {/*
-        <div className="tic" ref="axis">
-          <div ref="axis_tick"></div>
-          <div ref="axis_mark">50%</div>
-        </div>
-        */}
+        {drawLabel}
       </div>
     )
   }
 
   renderChart() {
-    // TODO: add multi broken bars as another chart
 
     /* data */
     const data = this.props.data
@@ -58,22 +60,22 @@ class BrokenBar extends React.Component {
     .range([0, 100])
 
     // chart
-    this.dataChart = numbers.map(number => ({
+    this.dataChart = numbers.map((number, i) => ({
       title: number,
-      width: this.scale.x(number)
+      width: Math.round(this.scale.x(number)*100)/100
     }))
+
 
     /* draw */
     this.drawChart()
-    this.drawAxis()
+    this.drawLabel()
   }
 
   drawChart() {
     d3.select(this.refs.bars)
     .html("")
-    //.style("padding-top", 48 + "px") // override
     .style("height", barHeight + "px")
-    .selectAll("div")
+    .selectAll(".rect")
     .data(this.dataChart)
     .enter().append("div")
     .attr("title", d => d.title)
@@ -83,27 +85,38 @@ class BrokenBar extends React.Component {
     .style("background-color", (d, i) => d ? this.props.colors[i] : "transparent")
   }
 
-  drawAxis() {
-    const els = this.refs
+  drawLabel() {
+    if (this.props.callByStep !== 4) return
 
-    d3.select(els.axis)
-    .style("position", "relative")
+    const labels = d3.select(this.refs.txts)
+    .html("")
+    .selectAll(".txts")
+    .data(this.dataChart)
+    .enter().append("div")
+    .attr("class", "txts")
+    .attr("data-width", d => d.width)
+    .style("width", d => d.width + "%")
+    .style("display", "inline-block")
+    .style("vertical-align", "top")
 
-    d3.select(els.axis_tick)
-    .style("position", "absolute")
-    .style("left", "50%")
-    .style("height", "8px")
-    .style("border-left", "1px solid #bdbdbd") //grey-3
+    labels.append("span")
+    .attr("class", (d, i) => "txt num")
+    .attr("contenteditable", true)
+    .style("font-family", "'Guardian Agate Sans 1 Web', monospace")
+    .style("font-weight", "bold")
+    .style("word-wrap", "normal")
+    .style("color", (d, i) => d ? this.props.colors[i] : "transparent")
+    .text(d => d.title + (d.title === d.width ? "%" : ""))
 
-    d3.select(els.axis_mark)
-    .style("position", "absolute")
-    .style("top", "10px")
-    .style("width", "100%")
-    .style("text-align", "center")
-    .style("font-size", "12px")
-    .style("color", "#bdbdbd")
+    const strings = this.props.data.string3Col
+    if (!strings) return
+    labels.append("br")
+    labels.append("span")
+    .attr("class", (d, i) => "txt str")
+    .attr("contenteditable", true)
+    .style("word-wrap", "normal")
+    .text((d, i) => strings[i])
   }
-
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BrokenBar)

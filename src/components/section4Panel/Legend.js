@@ -19,9 +19,8 @@ const mapDispatchToProps = (dispatch) => ({
 class Legend extends React.Component {
 
   render() {
-    const {id, dataChart, dataSetup, onDropColor} = this.props
+    const {id, dataChart, dataSetup, onDropColor, isBarBased} = this.props
     const {legend, string1Width} = dataChart
-    const isBarBased = id.includes("broken") ? false : this.props.isBarBased
 
     const length = legend.length
     const colors = dataSetup.colors
@@ -29,7 +28,7 @@ class Legend extends React.Component {
 
     const chartWidth = dataSetup.size.w || 300
     const labelWidth = string1Width
-    const marginLeft = isBarBased && (labelWidth <= chartWidth/3) ? labelWidth : 0
+    const marginLeft = isBarBased && !id.includes("broken") && (labelWidth <= chartWidth/3) ? labelWidth : 0
 
     let drawLegend = null
 

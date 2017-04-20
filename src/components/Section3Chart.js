@@ -8,7 +8,12 @@ import {chartList} from './charts'
 
 const STEP = 3
 const instruction = "Click on a visualization for editing."
-const messageError = "Sorry, no results! Please check your dataset or contact visual team."
+const messageError = `
+  Oh, oh, something goes wrong! You could:
+  1. Double check your dataset,
+  2. Contact the Guardian's visual team, or
+  3. Email your complaints to apple[dot]cjcfardel[at]yahoo[dot]com.
+  `
 
 const mapStateToProps = (state) => ({
   step: state.step,
@@ -65,9 +70,11 @@ class Section extends React.Component {
     return (
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section3">
         <h1>3. Select a visualization</h1>
-        <p className="instruction">Instruction: {instruction}</p>
+        <p className="instruction">
+          Instruction: {selection.length > 0 ? instruction : messageError}
+        </p>
         <div className="charts">
-          {selection.length > 0 ? chartComponents : messageError}
+          {selection.length > 0 ? chartComponents : "There is NO RESULT!!"}
         </div>
       </div>
     )
