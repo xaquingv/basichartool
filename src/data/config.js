@@ -2,7 +2,8 @@ import {d3} from '../lib/d3-lite.js'
 import jsonBackup from '../assets/data/config'
 
 // source: https://docs.google.com/spreadsheets/d/1Kw1M08x6yybOG8b7JxDvxIbtdffFzCsB0xQ7UuLuzh8/edit#gid=1881209151
-const url = 'https://interactive.guim.co.uk/docsdata-test/1Kw1M08x6yybOG8b7JxDvxIbtdffFzCsB0xQ7UuLuzh8.json'
+//'https://interactive.guim.co.uk/docsdata-test/1Kw1M08x6yybOG8b7JxDvxIbtdffFzCsB0xQ7UuLuzh8.json'
+const url = ""
 
 export const ratio = 0.6
 export const width = 300
