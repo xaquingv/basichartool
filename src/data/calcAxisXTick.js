@@ -9,6 +9,7 @@ const markSymbol = "*"
 
 // TODO: refactory and add case description to this switch
 export function getTickSteps(id, isBarBased, dataX, format, rowCount, axisX) {
+  console.log(dataX);
   switch (true) {
 
     /* bars */
@@ -36,18 +37,19 @@ export function getTickSteps(id, isBarBased, dataX, format, rowCount, axisX) {
 
     // ex. plotScatter, long lineDiscret
     case !format:
-      //console.log("line/plot", "(no format, isMarked:", isMarked, ")")
-      let ticks = dataX
-      .map((tick, index) => ({tick, index}))
-      .filter(d => d.tick.indexOf(markSymbol) > -1)
-      .map(d => d.index)
+      console.log("line/plot", "(no format, isMarked:", isMarked, ")")
+      
+      // let ticks = dataX
+      // .map((tick, index) => ({tick, index}))
+      // .filter(d => d.tick.indexOf(markSymbol) > -1)
+      // .map(d => d.index)
 
-      // if marked, b/n 4-8 ticks
-      const step = Math.ceil(ticks.length / 8)
-      ticks = ticks.filter((tick, index) => index%step === 0)
-      isMarked = ticks.length > 3
+      // // if marked, b/n 4-8 ticks
+      // const step = Math.ceil(ticks.length / 8)
+      // ticks = ticks.filter((tick, index) => index%step === 0)
+      isMarked = true//ticks.length > 3
 
-      return isMarked ? ticks : axisX.ticks(5)
+      return /*isMarked ? ticks :*/ axisX.ticks(5)
 
     // most of line/plot cases
     // case rowCount >= 7:

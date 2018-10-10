@@ -2,7 +2,6 @@
   "name": "basichartool-react",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://visuals.gutools.co.uk/basichartool/",
   "devDependencies": {
     "react-scripts": "0.4.3"
   },

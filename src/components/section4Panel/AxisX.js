@@ -30,6 +30,11 @@ class AxisX extends React.Component {
     this.axisX = scales.x.copy()
     .domain(id.includes("100") ? [0, 100] : scales.x.domain()) // ui range @setup2
     .range([0, 100]) // d3 range
+    
+    // debug
+    console.log("d:", dateCol);
+    console.log("s:", string1Col);
+    console.log("n:", numberCols[0]);
 
     this.ticks = getTickSteps(id, isBarBased, this.dataX, dateFormat, rowCount, this.axisX)
     this.texts = getTickTexts(id, isBarBased, this.dataX, dateFormat, dateHasDay, this.axisX.domain(), this.ticks)
