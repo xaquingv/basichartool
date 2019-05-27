@@ -32,9 +32,9 @@ class AxisX extends React.Component {
     .range([0, 100]) // d3 range
     
     // debug
-    console.log("d:", dateCol);
-    console.log("s:", string1Col);
-    console.log("n:", numberCols[0]);
+    //console.log("d:", dateCol);
+    //console.log("s:", string1Col);
+    //console.log("n:", numberCols[0]);
 
     this.ticks = getTickSteps(id, isBarBased, this.dataX, dateFormat, rowCount, this.axisX)
     this.texts = getTickTexts(id, isBarBased, this.dataX, dateFormat, dateHasDay, this.axisX.domain(), this.ticks)

@@ -20,7 +20,9 @@ const formatList = [
   "%d-%b-%y", "%d %b %Y",
   "%d %b",
   //"%Y%m%d",                   // -> parse sp.4
+  "%Y-%m-%d",
   "%Y-%m-%dT%H:%M:%S%Z",        // iso format timestamp
+  "%Y/%m/%d",
   "%m/%d/%y %H:%M",
   "%m/%d/%y %I:%M %p",
   "%H:%M:%S",                   // extend
@@ -88,7 +90,7 @@ function testDateFormatSp2(data) {
   const format = "%Y"
   const isYear = testDateFormats(data, [format], 2) === format
   // filter, strict
-  const is4Digits = data.every(d => d.length === 4)
+  const is4Digits = data.every(d => d.length === 4 && d<3000) //TO_FIX: this hacky condi!!!
   return isYear && is4Digits ? format : ""
 }
 

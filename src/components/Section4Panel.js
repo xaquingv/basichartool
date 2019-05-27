@@ -40,7 +40,7 @@ class Section extends React.Component {
   getMetaText(type) {
     const metaData = this.props.metaData
     const textIfSourcePatch = metaData.source ? " | Source: " : ""
-    const textCredit = (type === "source" ? "Guardian Graphic" + textIfSourcePatch : "")
+    const textCredit = (type === "source" ? "by RODA" + textIfSourcePatch : "")
     return textCredit + (metaData[type] || default_metaText[type])
   }
 

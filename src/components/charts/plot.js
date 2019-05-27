@@ -34,13 +34,17 @@ export default function(els, dataChart, scale, who, colors, step) {
   .attr("cy", d => scale.y(d.y))
   .attr("title", d => d.title ? d.title : "(" + d.x + ", " + d.y + ")")
   // custom on chart type
-  .attr("r", r)
+  .attr("r", d => {
+    console.log(scale.r(d.r));
+    return scale.r ? scale.r(d.r) : r;
+  })
   .attr("fill", d => d.color ? d.color : false)
   .attr("fill-opacity", d => d.y !== null ? chartType[who].opacity : 0)
   .attr("stroke-width", chartType[who].stroke)
   .attr("stroke", "white")
 
   // new
+  console.log(scale);
   gs.enter()
   .append("g")
   .attr("fill", (d, i) => colors ? colors[i] : false)
@@ -51,7 +55,7 @@ export default function(els, dataChart, scale, who, colors, step) {
   .attr("cy", d => scale.y(d.y)) //number
   .attr("title", d => d.title ? d.title : "(" + d.x + ", " + d.y + ")")
   // custom on chart type
-  .attr("r", r)
+  .attr("r", d => scale.r ? scale.r(d.r) : r)
   .attr("fill", d => d.color ? d.color : false)
   .attr("fill-opacity", d => d.y !== null ? chartType[who].opacity : 0)
   .attr("stroke-width", chartType[who].stroke)

@@ -37,7 +37,7 @@ export default function() {
 
 function parseCfgJson(cfg) {
 
-  /* colors: guardian's pre-defined colors */
+  /* colors: pre-defined colors */
   colors = cfg.COLORS
   .filter(c => c.type === "all")
   .sort((c1, c2) => c1.order - c2.order).map(c => c.code)
