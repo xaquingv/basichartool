@@ -1,6 +1,6 @@
-import {width} from '../../data/config'
+import { width } from '../../data/config'
 
-export default function() {
+export default function () {
   //console.log("res x")
 
   const elsTick = document.querySelectorAll(".axis-x-tick")
@@ -11,7 +11,7 @@ export default function() {
 
 
   /* update chart height */
-  const isAxisXBottom = elAxisX ? (elAxisX.dataset.xBottom==="true") : false
+  const isAxisXBottom = elAxisX ? (elAxisX.dataset.xBottom === "true") : false
   if (isAxisXBottom) {
     // calc max text height
     const heights = [].slice.call(elsText).map(el => Math.ceil(el.offsetHeight))
@@ -74,7 +74,7 @@ export default function() {
     elsText[iLast].style.textAlign = "right"
     // double check
     const txt0ToLastL = elsText[iLast].offsetLeft
-    const txt1ToLastR = elsText[iLast-1].offsetLeft + elsText[iLast-1].offsetWidth
+    const txt1ToLastR = elsText[iLast - 1].offsetLeft + elsText[iLast - 1].offsetWidth
     if (txt1ToLastR > txt0ToLastL) {
       elsText[iLast].style.backgroundColor = "red"
       //console.warn("[str] text overlapped!")
@@ -87,8 +87,10 @@ export default function() {
   if (elSvg) {
     const svgWidth = elSvg.getBoundingClientRect().width
     // plot chart
-    const r = Math.round(3*width*10/svgWidth)/10
     const circles = [...elSvg.querySelectorAll("circle")]
-    circles.forEach((circle) => circle.setAttribute("r", r))
+    circles.forEach((circle) => {
+      var r = circle.dataset.r;
+      circle.setAttribute("r", Math.round(r * width * 10 / svgWidth) / 10);
+    })
   }
 }

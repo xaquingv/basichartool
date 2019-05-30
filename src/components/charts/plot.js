@@ -21,6 +21,8 @@ export default function(els, dataChart, scale, who, colors, step) {
   let gs =
   d3.select(els.svg)
   .selectAll("g")
+  //.style("width", "100%")
+  //.style("height", "100%")
   .data(dataChart)
 
   // update
@@ -29,32 +31,36 @@ export default function(els, dataChart, scale, who, colors, step) {
   .attr("fill", (d, i) => colors ? colors[i] : false)
   .selectAll("circle")
   .data(d => d)
-  .enter().append("circle")
+  .enter()
+  .append("circle")
   .attr("cx", d => scale.x(d.x))
   .attr("cy", d => scale.y(d.y))
   .attr("title", d => d.title ? d.title : "(" + d.x + ", " + d.y + ")")
   // custom on chart type
-  .attr("r", d => {
-    console.log(scale.r(d.r));
-    return scale.r ? scale.r(d.r) : r;
-  })
+  .attr("data-r", d => scale.r ? scale.r(d.r) : r)
+  .attr("r", d => scale.r ? scale.r(d.r) : r)
   .attr("fill", d => d.color ? d.color : false)
   .attr("fill-opacity", d => d.y !== null ? chartType[who].opacity : 0)
   .attr("stroke-width", chartType[who].stroke)
   .attr("stroke", "white")
+  .style("cursor", "pointer")
+  .append("title")
+  .text(d => d.title)
 
   // new
-  console.log(scale);
   gs.enter()
   .append("g")
   .attr("fill", (d, i) => colors ? colors[i] : false)
+  //.attr("transform", "translate(" + 15 + "," + 15 + ")")
   .selectAll("circle")
   .data(d => d)
-  .enter().append("circle")
+  .enter()
+  .append("circle")
   .attr("cx", d => scale.x(d.x)) //date
   .attr("cy", d => scale.y(d.y)) //number
   .attr("title", d => d.title ? d.title : "(" + d.x + ", " + d.y + ")")
   // custom on chart type
+  .attr("data-r", d => scale.r ? scale.r(d.r) : r)
   .attr("r", d => scale.r ? scale.r(d.r) : r)
   .attr("fill", d => d.color ? d.color : false)
   .attr("fill-opacity", d => d.y !== null ? chartType[who].opacity : 0)

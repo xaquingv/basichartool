@@ -198,9 +198,11 @@ export default function(graph) {
           var paths = Array.prototype.slice.call(document.querySelectorAll("path"))
           paths.forEach(function(path) { path.setAttribute("stroke-width", strokeWidth); })
           // plot chart
-          var r = Math.round(3*width*10/svgWidth)/10
-          var circles = Array.prototype.slice.call(document.querySelectorAll("circle"))
-          circles.forEach(function(circle) { circle.setAttribute("r", r); })
+          const circles = [...elSvg.querySelectorAll("circle")]
+          circles.forEach((circle) => {
+            var r = circle.dataset.r;
+            circle.setAttribute("r", Math.round(r * width * 10 / svgWidth) / 10);
+          })
       }}
 
       /* 3. y label width update */

@@ -34,16 +34,16 @@ class ScatterPlot extends React.Component {
         onSelect(legendKeys, this.scale)
       }
     }
-    // temp:
-    console.log(data.indent);
+    console.log(this.isSize, viewBox);
 
     return (
       <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
         top: "-4px",
-        width: "calc(100% - " + (data.indent + 1) + "px)",
+        width: "calc(100% - " + (data.indent - 1) + "px)",
         height: data.height + "%",
-        padding: "3px",
-        marginTop: data.marginTop + "%"
+        paddingTop: "3px",    
+        paddingRight: "2px",  
+        marginTop: data.marginTop + "%",
       }} onClick={setChartData}></svg>
     )
   }
@@ -57,28 +57,31 @@ class ScatterPlot extends React.Component {
     const numberRows = data.numberRows
     const colorGroup = data.string2Col
     const domain = callByStep === 4 && axis ? axis.x.range : d3.extent(numberCols[0])
+    const isSize = data.numberCols[2] ? true : false;
+    const rangeSize = [3, 30];
+    const margin = isSize ? rangeSize[1] : rangeSize[0];
     // using axis.x.range due to editable range @setup2, section 4
     this.colorKeys = uniqueArray(data.string2Col)
-
+    this.isSize = isSize;
+    
     // scale
     this.scale = {}
     this.scale.x = d3.scaleLinear()
       .domain(domain)
-      .range([0, width])
+      .range([0 + margin, width - margin])
 
     this.scale.y = d3.scaleLinear()
       .domain(d3.extent(numberCols[1]))
-      .range([height, 0])
+      .range([height - margin, 0 + margin])
 
-    const scaleColors = d3.scaleOrdinal()
+      const scaleColors = d3.scaleOrdinal()
       .domain(this.colorKeys)
       .range(colors)
 
-    // temp: add size scale
-    if (data.numberCols[2]) {
+    if (isSize) {
       this.scale.r = d3.scaleLinear()
         .domain(d3.extent(numberCols[2]))
-        .range([3, 30])
+        .range(rangeSize)
     }
 
     // TODO: overlap case
@@ -98,7 +101,7 @@ class ScatterPlot extends React.Component {
         y: n[1],
         r: n[2],
         color: scaleColors(colorGroup[i]),//colorGroup[group[i]],
-        title: names[i] + " [" + n[0] + ", " + n[1] + "]"//,
+        title: names[i] + " [" + n[0] + ", " + n[1] + "]" + (isSize ? ", " + n[2] : "")//,
       }
     })]
 
