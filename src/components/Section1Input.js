@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import './section1Input.css';
-import {importData, clearData} from '../actions';
+import { importData, clearData } from '../actions';
 import fetchConfig from '../data/config'
 
 
@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
   onClickClear: (textarea/*, textInput*/) => {
     //[textarea, textInput].forEach(input => input.value= "")
-    textarea.value= ""
+    textarea.value = ""
     dispatch(clearData());
   }
 });
@@ -42,7 +42,7 @@ class Section extends React.Component {
   render() {
     let textarea, textInput;
 
-    const {/*state,*/ onClickImport, onClickClear} = this.props;
+    const {/*state,*/ onClickImport, onClickClear } = this.props;
     //console.log(state);
 
     return (
@@ -54,10 +54,10 @@ class Section extends React.Component {
           <label className="button file-shell">Choose a file</label>
         </div>*/}
         <p className="instruction">Instruction: {instruction}</p>
-        <textarea className="textarea" placeholder="your csv/tsv dataset goes here ..." ref={node=>textarea=node}></textarea>
+        <textarea className="textarea" placeholder="your csv/tsv dataset goes here ..." ref={node => textarea = node}></textarea>
         <div className="row-flex">
-          <input type="button" className="button btn-import" value="Import" onClick={()=>onClickImport(textarea)}/>
-          <input type="button" className="button btn-clear" value="Clear" onClick={()=>onClickClear(textarea, textInput)}/>
+          <input type="button" className="button btn-import" value="Import" onClick={() => onClickImport(textarea)} />
+          <input type="button" className="button btn-clear" value="Clear" onClick={() => onClickClear(textarea, textInput)} />
         </div>
       </div>
     );
@@ -65,8 +65,9 @@ class Section extends React.Component {
 
   componentDidMount() {
     // load cfg file
-    fetchConfig()
+    fetchConfig();
   }
+  
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Section);

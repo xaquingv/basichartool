@@ -6,8 +6,9 @@ import { uniqueArray } from '../../lib/array'
 import { appendChartData } from '../../actions'
 import { width, height, viewBox } from '../../data/config'
 
-const mapStateToProps = (state) => ({
-  data: state.dataChart,
+const mapStateToProps = (state, props) => ({
+  //data: state.dataChart,
+  data: {...props.dataChart, ...state.dataChart},
   axis: state.dataEditable.axis,
   colors: state.dataSetup.colors
 })
@@ -20,6 +21,16 @@ const mapDispatchToProps = (dispatch) => ({
 class ScatterPlot extends React.Component {
 
   componentDidMount() {
+    // get new viewBox value
+    let svg = document.querySelector("#section4 svg");
+    if (svg) {
+    let svgBBox = svg.getBBox();
+    let svgWidth = svgBBox.width + svgBBox.x;
+    let svgHeight = svgBBox.height + svgBBox.y;
+    this.viewBox = '"0 0 ' + svgWidth + ' ' + svgHeight + '"';
+    //console.log(this.viewBox);
+    //console.log(svg.getBoundingClientRect());
+    }
     this.renderChart()
   }
   componentDidUpdate() {
@@ -29,12 +40,12 @@ class ScatterPlot extends React.Component {
   render() {
     const { data, onSelect, callByStep } = this.props
     const setChartData = () => {
-      if (callByStep === 3) {
+      if (callByStep === 2/*3*/) {
         const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : [""]
         onSelect(legendKeys, this.scale)
       }
     }
-    console.log(this.isSize, viewBox);
+    //console.log(this.isSize, viewBox);
 
     return (
       <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
@@ -56,6 +67,7 @@ class ScatterPlot extends React.Component {
     const numberCols = data.numberCols
     const numberRows = data.numberRows
     const colorGroup = data.string2Col
+    //console.log(data);
     const domain = callByStep === 4 && axis ? axis.x.range : d3.extent(numberCols[0])
     const isSize = data.numberCols[2] ? true : false;
     const rangeSize = [3, 30];

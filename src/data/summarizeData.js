@@ -61,7 +61,7 @@ export default function(dataTable, show) {
   // for chart selection
   const count = {
     col: dataCols.length,
-    row: dataTable.flag.isHeader ? dataCols[0].length-1 : dataCols[0].length,
+    row: dataCols.length !== 0 ? (dataTable.flag.isHeader ? dataCols[0].length-1 : dataCols[0].length) : 0,
     string1: countType(types, "string1"),
     string2: countType(types, "string2"),
     number:  countType(types, "number"),
@@ -81,7 +81,7 @@ export default function(dataTable, show) {
   // data of 3 (4) types
   const numberData  = cols.filter(col => col.type === "number")
   const numberCols  = numberData.map(col => col.values)
-  const numbers     = numberCols.reduce((col1, col2) => col1.concat(col2))
+  const numbers     = count.number !== 0 ? numberCols.reduce((col1, col2) => col1.concat(col2)) : []
   const dateData    = count.date > 0 ? cols.find(col => col.type === "date") : []
   const string1Data = count.string1 > 0 ? cols.filter(col => col.type === "string1") : []
   const string1Col  = count.string1 > 0 ? string1Data[0].values : []
@@ -89,7 +89,7 @@ export default function(dataTable, show) {
   const string2Col  = count.string2 > 0 ? cols.find(col => col.type === "string2").values : []
   const rowGroup    = count.string1 > 0 ? string1Col : (dateData.string : [])
   // NOTE: think of string * have multi cols?
-
+  
   /* aka. dataChart */
   // for render charts
 
@@ -108,7 +108,7 @@ export default function(dataTable, show) {
     dateFormat:   dateData.format,
     // number
     numberCols, numbers,
-    numberRows:   swapArray(numberCols),
+    numberRows:   count.number !== 0 ? swapArray(numberCols) : [],
     numbersButC1: numbers.slice(-(numbers.length-count.row)),
     numberFormat: count.number === 1 ? numberData[0].format : null,
     numberOnly:   count.date === 0 && count.string1 === 0,
@@ -123,7 +123,7 @@ export default function(dataTable, show) {
     date_hasRepeat:    count.date > 0 ? uniqueArray(chart.dateCol).length !== count.row : false,
     string1_hasRepeat: count.string1 > 0 ? string1Data[0].hasRepeat : false,
     string1_format:    count.string1 > 0 ? string1Data[0].format : false, // TODO: code/name or bin
-    numberH_format:    getDataType(chart.keys).types[0],
+    numberH_format:    count.number !== 0 ? getDataType(chart.keys).types[0] : false,
     number_rangeType:  getNumberRangeType(chart.numbers),
     number_hasNull:    chart.numbers.indexOf(null) > -1
   }

@@ -1,9 +1,13 @@
-.table {
+.section2-table {
   overflow: scroll;
-  max-height: calc(100vh - 230px);
+  width: calc(100% - 320px);
+  max-height: calc(100vh - 320px); /*230px*/
   min-height: 200px;
   margin-bottom: 30px;
-  /*border: 1px solid #dcdcdc;*/
+  border: 1px solid #dcdcdc; 
+}
+.section2-chart {
+  width: 320px;
 }
 
 table {
@@ -11,10 +15,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
-  border: 1px solid #dcdcdc; /*n-4*/
-}
-th {
-    /*min-width: 120px;*/
+  /*border: 1px solid #dcdcdc; n-4*/
 }
 tbody tr:nth-child(even) {
     background-color: #f6f6f6; /*n-6*/
@@ -40,7 +41,10 @@ td:first-child {
 }
 
 /* color data types */
-.string {}
+.string1,
+.string2 {
+  text-align: left;
+}
 .number {
   color: #197caa;
   text-align: right;

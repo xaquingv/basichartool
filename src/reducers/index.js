@@ -1,5 +1,7 @@
 import { combineReducers } from 'redux';
 import getNewDataTable from '../data/parseDataTableRaw';
+import { defaultColors } from '../data/config';
+console.log(defaultColors);
 
 function step(step = 1, action) {
   switch(action.type) {

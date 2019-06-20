@@ -5,8 +5,8 @@ import drawChart from './line'
 import {width, height, viewBox} from '../../data/config'
 import {appendChartData} from '../../actions'
 
-const mapStateToProps = (state) => ({
-  data: state.dataChart,
+const mapStateToProps = (state, props) => ({
+  data: {...props.dataChart, ...state.dataChart},
   colors: state.dataSetup.colors
 })
 

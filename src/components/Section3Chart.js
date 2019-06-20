@@ -6,7 +6,7 @@ import {selectChart, setColors, setDisplay} from '../actions'
 import {chartList} from './charts'
 
 
-const STEP = 3
+const STEP = 3;
 const instruction = "Click on a visualization for editing."
 const messageError = `
   Oh, oh, something goes wrong! You could:

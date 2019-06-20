@@ -24,10 +24,10 @@ import AreaStack          from './charts/AreaStack'
 
 // TODO: obj -> arr, sort by config file
 export const chartList = {
-  lineDiscrete:     LineDiscrete,
-  lineContinue:     LineContinue,
   plotDot:          PlotDot,
   plotScatter:      PlotScatter,
+  lineDiscrete:     LineDiscrete,
+  lineContinue:     LineContinue,
   onBarDiffArrow:   OnBarArrow,
   onBarDiffDots:    OnBarDots,
   onBarTicks:       OnBarTicks,

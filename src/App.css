@@ -61,7 +61,12 @@ h1 {
   line-height: 20px;
   margin: 15px 0;
 }
-
+.warning {
+  color: #767676;
+  font-family: monospace;
+  line-height: 15px;
+  padding: 7px !important;  
+}
 
 /* buttons */
 .button {

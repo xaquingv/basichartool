@@ -2,6 +2,7 @@
   text-align: center;
   width: calc(320px - 22px); /* 10 (padding) * 2 + 2 (border)*/
   border: 1px solid #dcdcdc;
+  border-left: 0;
   display: inline-block;
   margin-right: -1px;
   margin-bottom: -1px;
