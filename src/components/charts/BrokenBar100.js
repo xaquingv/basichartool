@@ -1,18 +1,18 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {d3} from '../../lib/d3-lite'
-import {appendChartData} from '../../actions'
+import { connect } from 'react-redux'
+import { d3 } from '../../lib/d3-lite'
+import { appendChartData } from '../../actions'
 
 
 const barHeight = 72
 
-const mapStateToProps = (state) => ({
-  data: state.dataChart,
+const mapStateToProps = (state, props) => ({
+  data: { ...state.dataChart, ...props.dataChart },
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
+  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
 })
 
 
@@ -26,18 +26,18 @@ class BrokenBar extends React.Component {
   }
 
   render() {
-    const {data, onSelect, callByStep} = this.props
+    const { data, onSelect, callByStep } = this.props
     const setChartData = () => {
-      if (callByStep === 3) { onSelect(data.string1Col, this.scale) }
+      if (callByStep === 2) { onSelect(data, data.string1Col, this.scale) }
     }
 
-    const drawLabel = callByStep === 4 ?
-    (
-      <div ref="txts" style={{
-        lineHeight: "16px",
-        margin: "8px 0"
-      }}></div>
-    ) : null
+    const drawLabel = callByStep === 3 ?
+      (
+        <div ref="txts" style={{
+          lineHeight: "16px",
+          margin: "8px 0"
+        }}></div>
+      ) : null
 
     return (
       <div className="canvas" ref="div" onClick={setChartData}>
@@ -56,13 +56,13 @@ class BrokenBar extends React.Component {
     // scale
     this.scale = {}
     this.scale.x = d3.scaleLinear()
-    .domain([0, numbers.reduce((n1, n2) => n1 + n2)])
-    .range([0, 100])
+      .domain([0, numbers.reduce((n1, n2) => n1 + n2)])
+      .range([0, 100])
 
     // chart
     this.dataChart = numbers.map((number, i) => ({
       title: number,
-      width: Math.round(this.scale.x(number)*100)/100
+      width: Math.round(this.scale.x(number) * 100) / 100
     }))
 
 
@@ -73,49 +73,49 @@ class BrokenBar extends React.Component {
 
   drawChart() {
     d3.select(this.refs.bars)
-    .html("")
-    .style("height", barHeight + "px")
-    .selectAll(".rect")
-    .data(this.dataChart)
-    .enter().append("div")
-    .attr("title", d => d.title)
-    .style("width", d => d.width + "%")
-    .style("height", barHeight + "px")
-    .style("display", "inline-block")
-    .style("background-color", (d, i) => d ? this.props.colors[i] : "transparent")
+      .html("")
+      .style("height", barHeight + "px")
+      .selectAll(".rect")
+      .data(this.dataChart)
+      .enter().append("div")
+      .attr("title", d => d.title)
+      .style("width", d => d.width + "%")
+      .style("height", barHeight + "px")
+      .style("display", "inline-block")
+      .style("background-color", (d, i) => d ? this.props.colors[i] : "transparent")
   }
 
   drawLabel() {
-    if (this.props.callByStep !== 4) return
+    if (this.props.callByStep !== 3) return
 
     const labels = d3.select(this.refs.txts)
-    .html("")
-    .selectAll(".txts")
-    .data(this.dataChart)
-    .enter().append("div")
-    .attr("class", "txts")
-    .attr("data-width", d => d.width)
-    .style("width", d => d.width + "%")
-    .style("display", "inline-block")
-    .style("vertical-align", "top")
+      .html("")
+      .selectAll(".txts")
+      .data(this.dataChart)
+      .enter().append("div")
+      .attr("class", "txts")
+      .attr("data-width", d => d.width)
+      .style("width", d => d.width + "%")
+      .style("display", "inline-block")
+      .style("vertical-align", "top")
 
     labels.append("span")
-    .attr("class", (d, i) => "txt num")
-    .attr("contenteditable", true)
-    .style("font-family", "'Guardian Agate Sans 1 Web', monospace")
-    .style("font-weight", "bold")
-    .style("word-wrap", "normal")
-    .style("color", (d, i) => d ? this.props.colors[i] : "transparent")
-    .text(d => d.title + (d.title === d.width ? "%" : ""))
+      .attr("class", (d, i) => "txt num")
+      .attr("contenteditable", true)
+      .style("font-family", "'Guardian Agate Sans 1 Web', monospace")
+      .style("font-weight", "bold")
+      .style("word-wrap", "normal")
+      .style("color", (d, i) => d ? this.props.colors[i] : "transparent")
+      .text(d => d.title + (d.title === d.width ? "%" : ""))
 
     const strings = this.props.data.string3Col
     if (!strings) return
     labels.append("br")
     labels.append("span")
-    .attr("class", (d, i) => "txt str")
-    .attr("contenteditable", true)
-    .style("word-wrap", "normal")
-    .text((d, i) => strings[i])
+      .attr("class", (d, i) => "txt str")
+      .attr("contenteditable", true)
+      .style("word-wrap", "normal")
+      .text((d, i) => strings[i])
   }
 }
 

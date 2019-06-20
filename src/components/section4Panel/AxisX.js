@@ -73,7 +73,6 @@ class AxisX extends React.Component {
 
   render() {
     if (!this.props.dataChart.scales.x) return null
-
     /* data */
     const {id, dataChart, chartSize, isOnBar, isPlot, unit, axis, isBarBased} = this.props
     const {indent, string1Width} = dataChart
@@ -156,7 +155,7 @@ class AxisX extends React.Component {
     margin = margin ? margin : {left: 0, right: 0}
     //console.log(margin)
 
-    d3.selectAll("#section4 .grid")
+    d3.selectAll(".js-graph .grid")
     .html("")
     .style("position", "relative")
     .style("margin-left", margin.left + "px")

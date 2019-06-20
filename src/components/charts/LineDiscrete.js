@@ -1,17 +1,17 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {d3} from '../../lib/d3-lite'
+import { connect } from 'react-redux'
+import { d3 } from '../../lib/d3-lite'
 import drawChart from './line'
-import {width, height, viewBox} from '../../data/config'
-import {appendChartData} from '../../actions'
+import { width, height, viewBox } from '../../data/config'
+import { appendChartData } from '../../actions'
 
 const mapStateToProps = (state, props) => ({
-  data: {...props.dataChart, ...state.dataChart},
+  data: { ...state.dataChart, ...props.dataChart },
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
+  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
 })
 
 
@@ -25,16 +25,16 @@ class LineDiscrete extends React.Component {
   }
 
   render() {
-    const {data, onSelect, callByStep} = this.props
+    const { data, onSelect, callByStep } = this.props
     const keys = data.numberOnly ? data.keys.slice(1, data.keys.length) : data.keys
     const setChartData = () => {
-      if (callByStep === 3) { onSelect(keys, this.scale) }
+      if (callByStep === 2) { onSelect(data, keys, this.scale) }
     }
 
     return (
       <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
         top: "-2px",
-        width: "calc(100% - " + (data.indent+1) + "px)",
+        width: "calc(100% - " + (data.indent + 1) + "px)",
         height: data.height + "%",
         padding: "1px",
         marginTop: data.marginTop + "%"
@@ -45,7 +45,7 @@ class LineDiscrete extends React.Component {
   renderChart() {
 
     /* data */
-    const {id, data, colors, callByStep} = this.props
+    const { id, data, colors, callByStep } = this.props
     //const numbers = data.numberOnly ? data.numbersButC1 : data.numbers
     //const numCols = data.numberCols.slice(1, data.numberCols.length)
 
@@ -53,26 +53,26 @@ class LineDiscrete extends React.Component {
     this.scale = {}
     // NOTE: x can be date, string, or number?
     this.scale.x = d3.scaleLinear()
-    .domain([0, data.rowCount - 1])
-    .range([0, width])
+      .domain([0, data.rowCount - 1])
+      .range([0, width])
 
     this.scale.y = d3.scaleLinear()
-    .domain(d3.extent(data.numbers))
-    .range([height, 0])
+      .domain(d3.extent(data.numbers))
+      .range([height, 0])
 
     // chart
     const dataChart = data.numberCols.map(numberCol =>
       numberCol.map((number, i) => ({
         x: i,
         y: number
-    })))
+      })))
 
 
     /* draw */
     drawChart(this.refs, dataChart, this.scale, colors)
 
-    if (callByStep === 4) return
-    d3.select("#"+id).classed("d-n", false)
+    if (callByStep === 3) return
+    d3.select("#" + id).classed("d-n", false)
   }
 }
 

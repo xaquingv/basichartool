@@ -1,18 +1,18 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {d3} from '../../lib/d3-lite'
-import {uniqueArray} from '../../lib/array'
-import {appendChartData} from '../../actions'
+import { connect } from 'react-redux'
+import { d3 } from '../../lib/d3-lite'
+import { uniqueArray } from '../../lib/array'
+import { appendChartData } from '../../actions'
 import ComponentRow from './BarBase'
 import drawChart from './bar'
 
-const mapStateToProps = (state) => ({
-  data: state.dataChart,
+const mapStateToProps = (state, props) => ({
+  data: { ...state.dataChart, ...props.dataChart },
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
+  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
 })
 
 class Bars100 extends React.Component {
@@ -25,20 +25,20 @@ class Bars100 extends React.Component {
   }
 
   render() {
-    const {data, onSelect, callByStep} = this.props
-
+    const { data, onSelect, callByStep } = this.props
+    // step 2: Discover
     const setChartData = () => {
-      if (callByStep === 3) {
+      if (callByStep === 2) {
         const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : data.keys
-        onSelect(legendKeys, this.scale)
+        onSelect(data, legendKeys, this.scale)
       }
     }
-
-    const isLabel = callByStep === 4
+    // step 3: Edit
+    const isLabel = callByStep === 3
     return (
       <div className="canvas" ref="div" onClick={setChartData}>
         {data.string1Col.map((label, i) =>
-        <ComponentRow isLabel={isLabel} label={label} key={i}/>
+          <ComponentRow isLabel={isLabel} label={label} key={i} />
         )}
       </div>
     )
@@ -47,7 +47,7 @@ class Bars100 extends React.Component {
   renderChart() {
 
     /* data */
-    const {data, colors, callByStep} = this.props
+    const { data, colors, callByStep } = this.props
     const numbers = data.numbers
     const labelGroup = data.string1Col
     const colorGroup = data.string2Col
@@ -59,28 +59,28 @@ class Bars100 extends React.Component {
 
     this.scale = {}
     this.scale.x = d3.scaleLinear()
-    .domain([0, domainMax])
-    .range([0, 100])
+      .domain([0, domainMax])
+      .range([0, 100])
 
     const scaleColors = d3.scaleOrdinal()
-    .domain(this.colorKeys)
-    .range(colors)
+      .domain(this.colorKeys)
+      .range(colors)
 
     // chart
     const dataChart = labelGroup.map((label, i) => ({
-        value: [{
-          title: isAnyNumbersLargerThan100 ?
-            Math.round(this.scale.x(numbers[i])) + "% (" + numbers[i] + ")" :
-            numbers[i] + "%",
-          width: this.scale.x(numbers[i]),
-          color: colorGroup.length !== 0 ? scaleColors(colorGroup[i]) : null
-        }]
-      })
+      value: [{
+        title: isAnyNumbersLargerThan100 ?
+          Math.round(this.scale.x(numbers[i])) + "% (" + numbers[i] + ")" :
+          numbers[i] + "%",
+        width: this.scale.x(numbers[i]),
+        color: colorGroup.length !== 0 ? scaleColors(colorGroup[i]) : null
+      }]
+    })
     )
 
 
     /* draw */
-    drawChart(this.refs, dataChart, {hasGroupBgColor: true, colors, callByStep})
+    drawChart(this.refs, dataChart, { hasGroupBgColor: true, colors, callByStep })
   }
 }
 

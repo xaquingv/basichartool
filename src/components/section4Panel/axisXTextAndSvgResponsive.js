@@ -83,7 +83,7 @@ export default function () {
 
 
   /* svg circle */
-  const elSvg = document.querySelector("#section4 svg")
+  const elSvg = document.querySelector("js-graph svg")
   if (elSvg) {
     const svgWidth = elSvg.getBoundingClientRect().width
     // plot chart

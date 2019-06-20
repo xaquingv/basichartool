@@ -1,16 +1,16 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {d3} from '../../lib/d3-lite'
-import {appendChartData} from '../../actions'
-import {width, height, viewBox} from '../../data/config'
+import { connect } from 'react-redux'
+import { d3 } from '../../lib/d3-lite'
+import { appendChartData } from '../../actions'
+import { width, height, viewBox } from '../../data/config'
 
-const mapStateToProps = (state) => ({
-  data: state.dataChart,
+const mapStateToProps = (state, props) => ({
+  data: { ...state.dataChart, ...props.dataChart },
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
+  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
 })
 
 
@@ -24,9 +24,9 @@ class Area extends React.Component {
   }
 
   render() {
-    const {data, onSelect, callByStep} = this.props
+    const { data, onSelect, callByStep } = this.props
     const setChartData = () => {
-      if (callByStep === 3) { onSelect(data.keys, this.scale) }
+      if (callByStep === 2) { onSelect(data, data.keys, this.scale) }
     }
 
     return (
@@ -43,7 +43,7 @@ class Area extends React.Component {
   renderChart() {
 
     /* data */
-    const {data, colors} = this.props
+    const { data, colors } = this.props
     const dates = data.dateCol
     const numberCols = data.numberCols
 
@@ -54,14 +54,14 @@ class Area extends React.Component {
       const nums = numberCols.map(numbers => numbers[i])
 
       // TODO: remove temp validation
-      const sum = nums.reduce((n1, n2) => n1+n2)
+      const sum = nums.reduce((n1, n2) => n1 + n2)
       if (sum < 99 || sum > 101) { isNot100.push(true) }
       if (sum > maxSum) maxSum = sum
       //console.log(sum)
 
       // TODO: rescale to 100% !?
 
-      return {date, ...nums}
+      return { date, ...nums }
     })
 
     let keys = Object.keys(dataChart[0])
@@ -80,59 +80,59 @@ class Area extends React.Component {
 
     this.scale = {}
     this.scale.x = scaleTime()
-    .domain(d3.extent(dates))
-    .range([0, width])
+      .domain(d3.extent(dates))
+      .range([0, width])
 
     this.scale.y = d3.scaleLinear()
-    .domain([0, domainMax])
-    .range([height, 0])
+      .domain([0, domainMax])
+      .range([height, 0])
 
     // chart part 2/2
     const area = d3.area()
-    //.defined(d => {console.log(d); return d})
-    // TODO: use curveStepBefore and add 10px for the last step
-    //.curve(d3.curveStep/*Before*/)
-    .x((d, i) => this.scale.x(d.data.date))
-    .y0((d) => this.scale.y(d[0]))
-    .y1((d) => this.scale.y(d[1]))
+      //.defined(d => {console.log(d); return d})
+      // TODO: use curveStepBefore and add 10px for the last step
+      //.curve(d3.curveStep/*Before*/)
+      .x((d, i) => this.scale.x(d.data.date))
+      .y0((d) => this.scale.y(d[0]))
+      .y1((d) => this.scale.y(d[1]))
 
     let els = this.refs
     if (isNot100.length === 0) {
       area.curve(d3.curveStep/*Before*/)
     } else {
       d3.select(els.line)
-      .classed("d-n", true)
+        .classed("d-n", true)
     }
 
 
     /* draw */
     // init area
     let svg = d3.select(els.svg)
-    //.classed("d-n", false)
-    .selectAll("path")
-    .data(stack(dataChart))
+      //.classed("d-n", false)
+      .selectAll("path")
+      .data(stack(dataChart))
 
     // update
     svg
-    .attr("d", d => area(d))
-    .attr("fill", (d, i) => colors[i])
+      .attr("d", d => area(d))
+      .attr("fill", (d, i) => colors[i])
 
     // new
     svg.enter().insert("path", ":first-child")
-    .attr("d", d => area(d))
-    .attr("fill", (d, i) => colors[i])
-    .attr("fill-opacity", .75)
-    .attr("shape-rendering", "auto")
+      .attr("d", d => area(d))
+      .attr("fill", (d, i) => colors[i])
+      .attr("fill-opacity", .75)
+      .attr("shape-rendering", "auto")
 
     // remove
     svg.exit().remove()
 
     // 50% line
     d3.select(els.line)
-    .attr("fill-opacity", 1)
-    .attr("stroke", "white")
-    .attr("stroke-width", 1)
-    .attr("stroke-dasharray", "3, 3")
+      .attr("fill-opacity", 1)
+      .attr("stroke", "white")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "3, 3")
   }
 }
 

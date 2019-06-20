@@ -1,13 +1,16 @@
 .section2-table {
+  background-color: #fcfcfc;   
   overflow: scroll;
   width: calc(100% - 320px);
-  max-height: calc(100vh - 320px); /*230px*/
+  max-height: calc(100vh - 328px); /*230px, 320px*/
   min-height: 200px;
-  margin-bottom: 30px;
-  border: 1px solid #dcdcdc; 
+  /*margin-bottom: 30px;*/
 }
 .section2-chart {
+  background-color: #fcfcfc;   
+  overflow: scroll;
   width: 320px;
+  max-height: calc(100vh - 328px); /*230px*/
 }
 
 table {
@@ -15,7 +18,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
-  /*border: 1px solid #dcdcdc; n-4*/
+  border: 1px solid #dcdcdc; /*n-4*/
 }
 tbody tr:nth-child(even) {
     background-color: #f6f6f6; /*n-6*/

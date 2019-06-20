@@ -11,14 +11,14 @@ const tickWidth = 6
 const tickBorderRadius = 2
 const margin = tickWidth / 2
 
-const mapStateToProps = (state) => ({
-  data: state.dataChart,
+const mapStateToProps = (state, props) => ({
+  data: { ...state.dataChart, ...props.dataChart },
   axis: state.dataEditable.axis,
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale, margins) => dispatch(appendChartData(keys, scale, margins))
+  onSelect: (data, keys, scale, margins) => dispatch(appendChartData(data, keys, scale, margins))
 })
 
 
@@ -34,13 +34,13 @@ class TickOnBar extends React.Component {
   render() {
     const {data, onSelect, callByStep} = this.props
 
-    // step 3
+    // step 2: Discover
     const setChartData = () => {
-      if (callByStep === 3) { onSelect(data.keys, this.scale, {left: margin, right: margin}) }
+      if (callByStep === 2) { onSelect(data, data.keys, this.scale, {left: margin, right: margin}) }
     }
 
-    // step 4
-    const isLabel = callByStep === 4
+    // step 3: Edit
+    const isLabel = callByStep === 3
     return (
       <div className="canvas" ref="div" onClick={setChartData}>
         {data.rowGroup.map((label, i) =>
@@ -54,7 +54,7 @@ class TickOnBar extends React.Component {
 
     /* data */
     const {data, colors, axis, callByStep} = this.props
-    const domain = callByStep === 4 && axis ? axis.x.range : d3.extent(data.numbers)
+    const domain = callByStep === 3 && axis ? axis.x.range : d3.extent(data.numbers)
     // using axis.x.range due to editable range @setup2, section 4
 
     // scale

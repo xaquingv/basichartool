@@ -5,13 +5,13 @@ import {appendChartData} from '../../actions'
 import {width, height, viewBox} from '../../data/config'
 import drawChart from './line'
 
-const mapStateToProps = (state) => ({
-  data: state.dataChart,
+const mapStateToProps = (state, props) => ({
+  data: { ...state.dataChart, ...props.dataChart },
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
+  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
 })
 
 
@@ -28,7 +28,7 @@ class Line extends React.Component {
     const {data, onSelect, callByStep} = this.props
     const keys = data.numberOnly ? data.keys.slice(1, data.keys.length) : data.keys
     const setChartData = () => {
-      if (callByStep === 3) { onSelect(keys, this.scale) }
+      if (callByStep === 2) { onSelect(data, keys, this.scale) }
     }
 
     return (
@@ -77,7 +77,7 @@ class Line extends React.Component {
     /* validate special */
     // double check if discrete and conti are the same
     // if the same (duplicate), hide the discrete line
-    if (callByStep === 4) return
+    if (callByStep === 3) return
     // ps. d3.select() is not null while the ele doesn't exist
     // that's why there r both document* and d3*
     const pathDiscrete = document.querySelector("#lineDiscrete path")

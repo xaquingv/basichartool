@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './section2Table.css';
-import { analyzeData, toggleData, transposeData, setColors, setDisplay } from '../actions';
+import { /*analyzeData,*/ toggleData, transposeData, setColors, setDisplay } from '../actions';
 import { colors, metaKeys } from '../data/config';
 import summarizeData from '../data/summarizeData';
 import selectCharts from '../data/selectCharts';
@@ -21,7 +21,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   onTranspose: () => dispatch(transposeData()),
   onToggle: (i, type) => dispatch(toggleData({ type, index: i })),
-  onClickCreate: (dataTable, show) => dispatch(analyzeData(dataTable, show)),
+  // onClickCreate: (dataTable, show) => dispatch(analyzeData(dataTable, show)),
   setDefaultColors: (colors) => dispatch(setColors(colors)),
   setDefaultDisplay: (display) => dispatch(setDisplay(display))
   // TODO:
@@ -35,29 +35,31 @@ class Section extends React.Component {
     this.colors = null;
   }
   componentDidUpdate() {
-    const { dataMeta, setDefaultDisplay } = this.props;
-      // setup1 display controls
+    const { stepActive, dataMeta, setDefaultDisplay } = this.props;
+    // setup1 display controls
+    if (stepActive > 1) {
       const display = {};
       metaKeys.forEach(key => {
         display[key] = (key === "standfirst" && !dataMeta[key]) ? false : true;
       })
       setDefaultDisplay(display);
+    }
   }
 
   render() {
-    const { stepActive, dataTable, show, onClickCreate, onToggle, onTranspose, setDefaultColors/*, ... */ } = this.props;
+    const { stepActive, dataTable, show, onToggle, onTranspose, setDefaultColors/*, ... */ } = this.props;
     const isData = dataTable.body ? true : false;
     const dataTypes = isData ? dataTable.type : [];
     const tableHead = isData ? dataTable.head : [];
     const tableBody = isData ? dataTable.body : [];
 
+    // setup1 palette colors
     if (!this.colors) {
-      // setup1 palette colors
       this.colors = colors;
       setDefaultColors(this.colors);
     }
+    // get dataChart
     if (stepActive === 2) {
-      // get dataChart
       const summary = summarizeData(dataTable, show);
       this.selection = selectCharts(summary);
       this.dataChart = summary.chart;
@@ -113,13 +115,13 @@ class Section extends React.Component {
           </div>
         </div>
 
-        {/* button */}
+        {/* button * /}
         <input
           type="button"
           className={"button btn-create"}
-          value="Create Visualizations"
+          value="Next"
           onClick={() => onClickCreate(dataTable, show)}
-        />
+        />*/}
 
         {/* test hidden ground */}
         <span className="test ff-data js-test-x"></span>

@@ -68,7 +68,7 @@ class Section extends React.Component {
     })
 
     return (
-      <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section3">
+      <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section*">
         <h1>3. Select a visualization</h1>
         <p className="instruction">
           Instruction: {selection.length > 0 ? instruction : messageError}

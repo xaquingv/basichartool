@@ -2,7 +2,6 @@
   text-align: center;
   width: calc(320px - 22px); /* 10 (padding) * 2 + 2 (border)*/
   border: 1px solid #dcdcdc;
-  border-left: 0;
   display: inline-block;
   margin-right: -1px;
   margin-bottom: -1px;
@@ -21,13 +20,13 @@
   text-align: left; /* for chart */
 }
 
-#section3 .canvas,
-#section3 svg {
+#section2 .canvas,
+#section2 svg {
   cursor: pointer;
 }
 
 /* hotfix for card layout */
-#section3 svg {
+#section2 svg {
   width: 100% !important;
   height: 100% !important;
   margin-top: 0 !important;

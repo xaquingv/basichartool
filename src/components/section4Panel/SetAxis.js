@@ -17,7 +17,7 @@ class SetAxis extends React.Component {
 
   render() {
     const {id, step, type, dataEditable} = this.props
-    if (step !== 4 || !dataEditable.axis) {return null}
+    if (step !== 3 || !dataEditable.axis) {return null}
 
     // display config ref:
     // https://docs.google.com/spreadsheets/d/1Kw1M08x6yybOG8b7JxDvxIbtdffFzCsB0xQ7UuLuzh8/edit#gid=1568229560

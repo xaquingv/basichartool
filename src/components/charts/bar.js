@@ -17,7 +17,7 @@ export default function (els, dataChart, opt = {}) {
 
   // HACK: for events
   //const cc = clickcancel()
-  const isAnnotate = opt.callByStep === 4 && barHeight === barHeightDefault
+  const isAnnotate = opt.callByStep === 3 && barHeight === barHeightDefault
   const isOneColor = isHighlight(opt.callByStep)
   if (isOneColor || isAnnotate) { dataChart.map((d, i) => d.value.map(dv => dv.index = i)) }
 

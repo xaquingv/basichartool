@@ -1,4 +1,4 @@
-import {width} from '../../data/config'
+// import {width} from '../../data/config'
 
 export default function() {
   const elsText = document.querySelectorAll(".label-x .label")

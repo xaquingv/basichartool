@@ -6,13 +6,13 @@ import {width, height, viewBox} from '../../data/config'
 import {getDomainByDataRange} from '../../data/calcScaleDomain'
 import drawChart from './col'
 
-const mapStateToProps = (state) => ({
-  data: state.dataChart,
+const mapStateToProps = (state, props) => ({
+  data: { ...state.dataChart, ...props.dataChart },
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
+  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
 })
 
 
@@ -28,7 +28,7 @@ class ColStack extends React.Component {
   render() {
     const {data, onSelect, callByStep} = this.props
     const setChartData = () => {
-      if (callByStep === 3) { onSelect(data.keys, this.scale) }
+      if (callByStep === 2) { onSelect(data, data.keys, this.scale) }
     }
 
     return (

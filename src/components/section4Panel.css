@@ -1,4 +1,4 @@
-#section4 {
+#section3 {
   min-height: calc(100vh - 180px);
 }
 
@@ -114,7 +114,7 @@
   color: black;
   font-size: 18px;
   font-family: 'Guardian Egyptian Web', Georgia, serif;
-  //font-weight: 600;
+  /* font-weight: 600; */
   line-height: 24px;
   margin-bottom: 12px;
 }
@@ -180,7 +180,7 @@ footer > div {
   word-break: break-word;
 }
 
-#section4 svg {
+#section3 svg {
   position: absolute;
   right: 0;
   top: -1px;
@@ -193,7 +193,7 @@ svg path {
 /* end of TOTHINK*/
 
 
-/* chart playground */
+/* chart playground * /
 .axis-x {
   //height: 30px;
   //background-color: yellow;

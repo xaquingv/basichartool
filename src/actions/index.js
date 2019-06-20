@@ -48,14 +48,15 @@ export const analyzeData = (dataTable, show) => {
 /* section 3 */
 export const selectChart = (chartId) => ({
   type: "SELECT_CHART",
-  chartId
+  chartId,
 })
 export const setColors = (colors) => ({
   type: "SET_COLORS",
   colors
 })
-export const appendChartData = (legend, scales, margin) => ({
+export const appendChartData = (dataChart, legend, scales, margin) => ({
   type: "APPEND_DATA",
+  dataChart,
   legend,
   scales,
   margin

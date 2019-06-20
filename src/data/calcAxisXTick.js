@@ -9,7 +9,7 @@ const markSymbol = "*"
 
 // TODO: refactory and add case description to this switch
 export function getTickSteps(id, isBarBased, dataX, format, rowCount, axisX) {
-  console.log(dataX);
+  //console.log(dataX);
   switch (true) {
 
     /* bars */

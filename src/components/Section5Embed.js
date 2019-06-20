@@ -7,8 +7,8 @@ import htmlTemplate from './charts/template'
 import reqwest from 'reqwest'
 
 
-const STEP = 5
-const instruction = "Note that the embed link button is only avaiable via the Guardian's visual tool."
+const STEP = 3
+// const instruction = "Note that the embed link button is only avaiable via the Guardian's visual tool."
 
 const mapDispatchToProps = (dispatch) => ({
 })
@@ -56,8 +56,8 @@ class Section extends React.Component {
     const {stepActive} = this.props;
     return (
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section5">
-        <h1>5. Voila, here you go:</h1>
-        <p className="instruction">{instruction}</p>
+        {/* <h1>5. Voila, here you go:</h1> */}
+        {/* <p className="instruction">{instruction}</p> */}
         <input type="button" className={"button" + (isGuardianVisual ? "" : " btn-off")} value="embed" onClick={this.embed.bind(this)} />
         <input type="button" className="button" value="download HTML" onClick={this.downloadHTML.bind(this)} />
         <div className="d-n link js-link">link: <a target="_blank"></a></div>
@@ -70,7 +70,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Section)
 
 
 function getHTMLFileData() {
-  const elGraph = document.querySelector("#section4 .js-graph")
+  const elGraph = document.querySelector(".js-graph")
   const chartId = elGraph.querySelector(".js-chart").dataset.id
   const elGraphCopy = elGraph.cloneNode(true)
   elGraphCopy.style.width = "100%"

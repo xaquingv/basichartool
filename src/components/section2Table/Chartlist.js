@@ -23,9 +23,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (chartId) => dispatch(selectChart(chartId)),
-  //setDefaultColors: (colors) => dispatch(setColors(colors)),
-  //setDefaultDisplay: (display) => dispatch(setDisplay(display))
+  onSelect: (chartId) => dispatch(selectChart(chartId))
 })
 
 
@@ -39,7 +37,7 @@ class Section extends React.Component {
     const chartComponents = Object.keys(chartList).map(chartID => {
       const isSelected = selection.indexOf(chartID) > -1
       const ComponentChart = chartList[chartID]
-
+      //console.log(STEP)
       return isSelected
         ? (
           <div key={chartID} id={chartID} onClick={() => onSelect(chartID)}>

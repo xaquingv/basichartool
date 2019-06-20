@@ -10,13 +10,13 @@ import drawChartPlot from './plot'
 
 const radius = 3
 
-const mapStateToProps = (state) => ({
-  data: state.dataChart
+const mapStateToProps = (state, props) => ({
+  data: { ...state.dataChart, ...props.dataChart },
   //colors: state.dataSetup.colorDiff
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
+  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
 })
 
 
@@ -32,7 +32,7 @@ class Slope extends React.Component {
   render() {
     const {data, onSelect, callByStep} = this.props
     const setChartData = () => {
-      if (callByStep === 3) { onSelect([""], this.scale) }
+      if (callByStep === 2) { onSelect(data, [""], this.scale) }
     }
 
     return (

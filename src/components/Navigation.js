@@ -7,10 +7,10 @@ import scrollTo from '../lib/scrollTo';
 
 const navList = [
     "1. Import",
-    "2. Toggle",
-    "3. Select",
-    "4. Edit",
-    "5. Download"
+    "2. Discover",
+    //"3. Select",
+    "3. Edit",
+    "4. Download"
 ];
 
 const marginTop = 60

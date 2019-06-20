@@ -12,14 +12,14 @@ const headSize = 12
 const headTop = (barHeight - headSize) / 2
 const tickShift = 5
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state, props) => ({
   selectedChartId: state.chartId,
-  data: state.dataChart,
+  data: { ...state.dataChart, ...props.dataChart },
   axis: state.dataEditable.axis
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale, margins) => dispatch(appendChartData(keys, scale, margins))
+  onSelect: (data, keys, scale, margins) => dispatch(appendChartData(data, keys, scale, margins))
 })
 
 
@@ -35,22 +35,22 @@ class ArrowOnBar extends React.Component {
 
   render() {
     const {data, onSelect, callByStep} = this.props
-    if (callByStep === 4) { this.margin = data.margin }
     //console.log("render:", callByStep)
     //console.log("[this]", this.margin)
     //console.log("[data]", data.margin)
 
-    // step 3
+    // step 2: Discover
     const setChartData = () => {
-      if (callByStep === 3) {
+      if (callByStep === 2) {
         const key = data.keys
         const legendKeys = ["Change from " + key[0] + " to " + key[1]]
-        onSelect(legendKeys, this.scale, this.margin/*{left: margin, right: margin}*/)
+        onSelect(data, legendKeys, this.scale, this.margin/*{left: margin, right: margin}*/)
       }
     }
 
-    // step 4
-    const isLabel = callByStep === 4
+    // step 3: Edit
+    const isLabel = callByStep === 3
+    if (callByStep === 3) { this.margin = data.margin }
     return (
       <div className="canvas" ref="div" onClick={setChartData}>
         {data.string1Col.map((label, i) =>
@@ -64,7 +64,7 @@ class ArrowOnBar extends React.Component {
 
     /* data */
     const {data, axis, callByStep} = this.props
-    const domain = callByStep === 4 && axis ? axis.x.range : d3.extent(data.numbers)
+    const domain = callByStep === 3 && axis ? axis.x.range : d3.extent(data.numbers)
     // using axis.x.range due to editable range @setup2, section 4
 
     // scale

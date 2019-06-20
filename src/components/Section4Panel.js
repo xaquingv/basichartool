@@ -19,7 +19,7 @@ import responsiveXTexts    from './section4Panel/axisXTextAndSvgResponsive'
 import responsiveXLabel    from './section4Panel/axisXLabelResponsive'
 import responsiveYTexts    from './section4Panel/axisYTextResponsive'
 
-const STEP = 4;
+const STEP = 3;
 
 const mapStateToProps = (state) => ({
   step: state.step,
@@ -60,15 +60,13 @@ class Section extends React.Component {
     /* navigation */
     // TODO: replace with 1. dispatch scrollSteps
     // to let Navigation.js take care of it or ...
-    const to = document.querySelector("#section4").offsetTop - 60
+    const to = document.querySelector("#section3").offsetTop - 60
     scrollTo(to, null, 1000)
   }
 
 
   render() {
-
     const {stepActive, chartId, graphWidth, chartData, display} = this.props;
-
     const isOnBar = chartId.includes("onBar")
     const isBarBased = chartId.toLowerCase().includes("bar") //&& !chartId.includes("broken")
     const isPlot = chartId.toLowerCase().includes("plot")
@@ -89,7 +87,7 @@ class Section extends React.Component {
         <ComponentXLabel />
       </div>
     ) : null
-
+    
     const graphComponent = stepActive >= STEP
     ? (
       <div className="graph js-graph" style={{width: graphWidth}}>
@@ -130,8 +128,8 @@ class Section extends React.Component {
     ) : null
 
     return (
-      <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section4">
-        <h1>4. Edit your graph</h1>
+      <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section3">
+        <h1>3. Edit your Visualization</h1>
         {setupComponent}
         {graphComponent}
         {/* any styles inside graph needs to be either included in the template.js or inline */}

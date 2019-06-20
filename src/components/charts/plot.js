@@ -11,8 +11,8 @@ export default function(els, dataChart, scale, who, colors, step) {
   // TODO: double check render seq
   let r = chartType[who].r
   // responsive r
-  if (step === 4) {
-    const elSvg = document.querySelector("#section4 svg")
+  if (step === 3) {
+    const elSvg = document.querySelector(".js-graph svg")
     const svgWidth = elSvg.getBoundingClientRect().width
     r = Math.round(chartType[who].r*width*10/svgWidth)/10
   }

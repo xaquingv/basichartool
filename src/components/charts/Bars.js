@@ -1,19 +1,19 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {d3} from '../../lib/d3-lite'
-import {uniqueArray} from '../../lib/array'
-import {appendChartData} from '../../actions'
-import {getDomainByDataRange} from '../../data/calcScaleDomain'
+import { connect } from 'react-redux'
+import { d3 } from '../../lib/d3-lite'
+import { uniqueArray } from '../../lib/array'
+import { appendChartData } from '../../actions'
+import { getDomainByDataRange } from '../../data/calcScaleDomain'
 import ComponentRow from './BarBase'
 import drawChart from './bar'
 
-const mapStateToProps = (state) => ({
-  data: state.dataChart,
+const mapStateToProps = (state, props) => ({
+  data: { ...state.dataChart, ...props.dataChart },
   colors: state.dataSetup.colors
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
+  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
 })
 
 
@@ -27,20 +27,20 @@ class Bars extends React.Component {
   }
 
   render() {
-    const {data, onSelect, callByStep} = this.props
-
+    const { data, onSelect, callByStep } = this.props
+    // step 2: Discover
     const setChartData = () => {
-      if (callByStep === 3) {
+      if (callByStep === 2) {
         const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : data.keys
-        onSelect(legendKeys, this.scale)
+        onSelect(data, legendKeys, this.scale)
       }
     }
-
-    const isLabel = callByStep === 4
+    // step 3: Edit
+    const isLabel = callByStep === 3
     return (
       <div className="canvas" ref="div" onClick={setChartData}>
         {data.string1Col.map((label, i) =>
-        <ComponentRow isLabel={isLabel} label={label} key={i}/>
+          <ComponentRow isLabel={isLabel} label={label} key={i} />
         )}
       </div>
     )
@@ -49,7 +49,7 @@ class Bars extends React.Component {
   renderChart() {
 
     /* data */
-    const {data, colors, callByStep} = this.props
+    const { data, colors, callByStep } = this.props
     const numberRows = data.numberRows
     const colorGroup = data.string2Col
     this.colorKeys = uniqueArray(colorGroup)
@@ -57,12 +57,12 @@ class Bars extends React.Component {
     // scale
     this.scale = {}
     this.scale.x = d3.scaleLinear()
-    .domain(getDomainByDataRange(data.numbers))
-    .range([0, 100])
+      .domain(getDomainByDataRange(data.numbers))
+      .range([0, 100])
 
     const scaleColors = d3.scaleOrdinal()
-    .domain(this.colorKeys)
-    .range(colors)
+      .domain(this.colorKeys)
+      .range(colors)
 
     // chart
     const dataChart = numberRows.map((numRow, i) => ({
@@ -76,10 +76,10 @@ class Bars extends React.Component {
 
 
     /* draw */
-    const getBarHeight = (count) => Math.round((((24 - (count-1)) / 3) * 2) / count)
+    const getBarHeight = (count) => Math.round((((24 - (count - 1)) / 3) * 2) / count)
     const barHeight = getBarHeight(numberRows[0].length)
 
-    drawChart(this.refs, dataChart, {barHeight, colors, callByStep})
+    drawChart(this.refs, dataChart, { barHeight, colors, callByStep })
   }
 }
 

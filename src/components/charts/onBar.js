@@ -44,7 +44,7 @@ export function addBarsBackground(el, dataChart, marginLeft, marginRight = margi
 export function drawBarSticks(el, callByStep, bgColor) {
 
   el.append("div")
-  .attr("class", d => "line c" + (d.color ? d.color.replace("#", "") : "stick") + (callByStep===4 ? " c-d" : ""))
+  .attr("class", d => "line c" + (d.color ? d.color.replace("#", "") : "stick") + (callByStep===3 ? " c-d" : ""))
   .attr("title", d => d.title ? d.title : false)
   .style("width", d => d.width ? d.width + "%" : d.widthCalc)
   .style("height", stickHeight + "px")

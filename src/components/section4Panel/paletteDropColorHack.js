@@ -21,7 +21,7 @@ export function dropColorToHighlight(index, styleCSS) {
 }
 
 export function dropColorOnShape(colorClass, isEven) {
-  const elS4 = document.querySelector("#section4")
+  const elS4 = document.querySelector(".js-graph")
   const elColorPicked = elS4.querySelector(".color-picked")
   const colorPicked = elColorPicked ? elColorPicked.style.fill : null
 

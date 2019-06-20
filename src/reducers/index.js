@@ -1,25 +1,23 @@
 import { combineReducers } from 'redux';
 import getNewDataTable from '../data/parseDataTableRaw';
-import { defaultColors } from '../data/config';
-console.log(defaultColors);
 
 function step(step = 1, action) {
-  switch(action.type) {
+  switch (action.type) {
     // navigation
     case 'CHANGE_STEP':
       return action.step
 
     // sections
+    // case 'INPUT_DATA'
     case 'CLEAR_DATA':
       return 1
     case 'IMPORT_DATA':
     case 'TOGGLE_DATA':
     case 'TRANSPOSE_DATA':
+    //case 'ANALYZE_DATA':
       return 2
-    case 'ANALYZE_DATA':
-      return 3
     case 'SELECT_CHART':
-      return 4
+      return 3
 
     default:
       return step
@@ -27,16 +25,17 @@ function step(step = 1, action) {
 }
 
 function stepActive(stepActive = 1, action) {
-  switch(action.type) {
+  switch (action.type) {
     // sections
     case 'CLEAR_DATA':
       return 1
     case 'IMPORT_DATA':
+    case 'TOGGLE_DATA':
+    case 'TRANSPOSE_DATA':
       return 2
-    case 'ANALYZE_DATA':
-      return 3
+    //case 'ANALYZE_DATA':
     case 'SELECT_CHART':
-      return 5
+      return 3
 
     default:
       return stepActive
@@ -44,7 +43,7 @@ function stepActive(stepActive = 1, action) {
 }
 
 function dataTable(dataTable = {}, action) {
-  switch(action.type) {
+  switch (action.type) {
     case 'CLEAR_DATA':
       return ""
     case 'IMPORT_DATA':
@@ -53,7 +52,7 @@ function dataTable(dataTable = {}, action) {
 
     case 'TRANSPOSE_DATA':
       // swap rows and cols
-      const {meta, rows, cols} = dataTable
+      const { meta, rows, cols } = dataTable
       const newDataTableRaw = {
         meta,
         rows: cols,
@@ -66,8 +65,10 @@ function dataTable(dataTable = {}, action) {
   }
 }
 
-function show(show = {col: [], row: []}, action) {
-  switch(action.type) {
+function show(show = { col: [], row: [] }, action) {
+  switch (action.type) {
+    case 'CLEAR_DATA':
+      return ""
     case 'IMPORT_DATA':
       return {
         row: action.dataTable.rows.map(() => true),
@@ -83,7 +84,7 @@ function show(show = {col: [], row: []}, action) {
       }
 
     case 'TOGGLE_DATA':
-      const {target, index} = action
+      const { target, index } = action
       const newVal = show[target][index] ? false : true
 
       let newShow = { ...show }
@@ -100,10 +101,10 @@ function show(show = {col: [], row: []}, action) {
 }
 
 function dataChart(dataChart = {}, action) {
-  switch(action.type) {
+  switch (action.type) {
     // reset
     case 'ANALYZE_DATA':
-      const resetDataChart = {legend: [], scales:{}, margin: undefined, indent: 0, marginTop: 0}
+      const resetDataChart = { legend: [], scales: {}, margin: undefined, indent: 0, marginTop: 0 }
       return {
         ...resetDataChart,
         ...action.dataChart,
@@ -112,7 +113,7 @@ function dataChart(dataChart = {}, action) {
     /* TODO: rename and clean up */
     case 'APPEND_DATA':
       return {
-        ...dataChart,
+        ...action.dataChart,
         legend: action.legend,
         scales: action.scales,
         margin: action.margin,
@@ -148,7 +149,7 @@ function dataChart(dataChart = {}, action) {
       }
 
     case 'UPDATE_RANGE':
-      let newScales = {...dataChart.scales}
+      let newScales = { ...dataChart.scales }
       newScales[action.target].domain(action.range)
       return {
         ...dataChart,
@@ -161,7 +162,7 @@ function dataChart(dataChart = {}, action) {
 }
 
 function selection(chartList = [], action) {
-  switch(action.type) {
+  switch (action.type) {
     case 'ANALYZE_DATA':
       return action.selection
     default:
@@ -170,7 +171,7 @@ function selection(chartList = [], action) {
 }
 
 function chartId(id = "", action) {
-  switch(action.type) {
+  switch (action.type) {
     case 'SELECT_CHART':
       return action.chartId
     default:
@@ -178,8 +179,8 @@ function chartId(id = "", action) {
   }
 }
 
-function dataSetup(dataSetup = {colors:[], display:{}, legend:[], size:{}, width: "300px"}, action) {
-  switch(action.type) {
+function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, width: "300px" }, action) {
+  switch (action.type) {
     // reset
     case 'SELECT_CHART':
       return {
@@ -193,7 +194,7 @@ function dataSetup(dataSetup = {colors:[], display:{}, legend:[], size:{}, width
         display: action.displaySwitches
       }
     case 'UPDATE_DISPLAY':
-      let newSwitches = {...dataSetup.display}
+      let newSwitches = { ...dataSetup.display }
       newSwitches[action.metaKey] = !newSwitches[action.metaKey]
       return {
         ...dataSetup,
@@ -233,7 +234,7 @@ function dataSetup(dataSetup = {colors:[], display:{}, legend:[], size:{}, width
 }
 
 function dataEditable(dataEditable = {}, action) {
-  switch(action.type) {
+  switch (action.type) {
     // reset
     case 'SELECT_CHART':
       return {}
@@ -245,14 +246,14 @@ function dataEditable(dataEditable = {}, action) {
       }
     case 'APPEND_AXIS':
       // mutate !?
-      let appendAxis = dataEditable.axis || {x: {}, y: {}}
-      appendAxis[action.target] = action.dataAxis || {ticks:[], range:[]}
+      let appendAxis = dataEditable.axis || { x: {}, y: {} }
+      appendAxis[action.target] = action.dataAxis || { ticks: [], range: [] }
       return {
         ...dataEditable,
         axis: appendAxis
       }
     case 'UPDATE_AXIS':
-      let updateAxis = {...dataEditable.axis}
+      let updateAxis = { ...dataEditable.axis }
       updateAxis[action.target1][action.target2] = action.dataTarget
       if (action.dataTargetExtra) {
         updateAxis[action.target1].edits[action.target2] = action.dataTargetExtra
