@@ -166,7 +166,7 @@ export default function(graph) {
 
       // responsive
       function responsive() {
-        iframeMessenger.resize()  // 1
+        //iframeMessenger.resize()  // 1
         rescaleSvgElements()      // 2
         updateYLabelWidths()      // 3
         updateXAxisTextPosition() // 4
@@ -199,9 +199,10 @@ export default function(graph) {
           paths.forEach(function(path) { path.setAttribute("stroke-width", strokeWidth); })
           // plot chart
           const circles = [...elSvg.querySelectorAll("circle")]
+          const viewBoxWidth = elSvg.getAttribute("viewBox").split(" ")[2]
           circles.forEach((circle) => {
             var r = circle.dataset.r;
-            circle.setAttribute("r", Math.round(r * width * 10 / svgWidth) / 10);
+            circle.setAttribute("r", Math.round(r * viewBoxWidth * 10 / svgWidth) / 10);
           })
       }}
 

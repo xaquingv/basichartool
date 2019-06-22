@@ -6,7 +6,7 @@ const chartType = {
   line:    { r: 3, stroke: 0, opacity: 1 }
 }
 
-export default function(els, dataChart, scale, who, colors, step) {
+export default function(els, dataChart, scale, who, colors, step, margin) {
   // data
   // TODO: double check render seq
   let r = chartType[who].r
@@ -17,12 +17,14 @@ export default function(els, dataChart, scale, who, colors, step) {
     r = Math.round(chartType[who].r*width*10/svgWidth)/10
   }
 
+  margin = margin ? margin : {left: 0, right: 0, top: 0, bottom: 0}
+  //console.log("plot", margin)
+  
   // init gs
   let gs =
   d3.select(els.svg)
   .selectAll("g")
-  //.style("width", "100%")
-  //.style("height", "100%")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
   .data(dataChart)
 
   // update
@@ -51,7 +53,7 @@ export default function(els, dataChart, scale, who, colors, step) {
   gs.enter()
   .append("g")
   .attr("fill", (d, i) => colors ? colors[i] : false)
-  //.attr("transform", "translate(" + 15 + "," + 15 + ")")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
   .selectAll("circle")
   .data(d => d)
   .enter()

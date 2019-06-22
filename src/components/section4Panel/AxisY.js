@@ -11,6 +11,7 @@ import ComponentEditor from './Editor'
 const mapStateToProps = (state) => ({
   id: state.chartId,
   scales: state.dataChart.scales,
+  margin: state.dataChart.margin,
   axisRanges: state.dataChart.ranges,
   axis: state.dataEditable.axis,
   numFormat: state.dataChart.numberFormat,
@@ -72,7 +73,7 @@ class AxisY extends React.Component {
     if (!this.props.scales.y) return null
 
     /* data */
-    const {id, numFormat, unit, axis, axisRanges} = this.props
+    const {id, margin, numFormat, unit, axis, axisRanges} = this.props
     if (!axis) {
       this.setAxisData()
     } else {
@@ -122,11 +123,13 @@ class AxisY extends React.Component {
       }}>{drawAxisText(tick.txt, i)}</div>
     )
 
+    //console.log(margin);
     return (
       <div className="axis-y" style={{
         position: "absolute",
+        top: margin ? margin.top : 0,
         width: "100%",
-        height: "100%"
+        height: "calc(100% - " + (margin ? margin.top + margin.bottom : 0) + "px)"
       }}>{drawAxis}</div>
     )
   }

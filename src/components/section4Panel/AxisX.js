@@ -1,9 +1,9 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {d3} from '../../lib/d3-lite'
-import {appendAxisData} from '../../actions'
-import {appendFormatToNum} from '../../data/typeNumber'
-import {getTickSteps, getTickTexts, getTickTextWidths, getTickDataEditable} from '../../data/calcAxisXTick'
+import { connect } from 'react-redux'
+import { d3 } from '../../lib/d3-lite'
+import { appendAxisData } from '../../actions'
+import { appendFormatToNum } from '../../data/typeNumber'
+import { getTickSteps, getTickTexts, getTickTextWidths, getTickDataEditable } from '../../data/calcAxisXTick'
 import ComponentEditor from './Editor'
 
 
@@ -16,21 +16,21 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    initAxisXTicks: (type, axisData) => dispatch(appendAxisData(type, axisData))
+  initAxisXTicks: (type, axisData) => dispatch(appendAxisData(type, axisData))
 })
 
 
 class AxisX extends React.Component {
   setAxisData() {
-    const {id, dataChart, isBarBased} = this.props
-    const {scales, dateCol, string1Col, dateString, dateFormat, dateHasDay, rowCount, numberCols} = dataChart
+    const { id, dataChart, isBarBased } = this.props
+    const { scales, dateCol, string1Col, dateString, dateFormat, dateHasDay, rowCount, numberCols } = dataChart
 
     // TODO: dataX should come with scales, assign in charts
     this.dataX = dateCol || (string1Col.length !== 0 ? string1Col : numberCols[0])
     this.axisX = scales.x.copy()
-    .domain(id.includes("100") ? [0, 100] : scales.x.domain()) // ui range @setup2
-    .range([0, 100]) // d3 range
-    
+      .domain(id.includes("100") ? [0, 100] : scales.x.domain()) // ui range @setup2
+      .range([0, 100]) // d3 range
+
     // debug
     //console.log("d:", dateCol);
     //console.log("s:", string1Col);
@@ -42,12 +42,12 @@ class AxisX extends React.Component {
     const isDate = this.ticks[0].toString() !== this.texts[0].replace(",", "")
     const range = this.axisX.domain()
     const edits = isDate ? getTickDataEditable(id, this.ticks, this.texts, dateString || string1Col, range, dateFormat) : undefined
-    this.axisData = {range, ticks: this.ticks, texts: this.texts, edits}
+    this.axisData = { range, ticks: this.ticks, texts: this.texts, edits }
   }
 
   resetAxisData() {
-    const {id, dataChart, isBarBased} = this.props
-    const {dateFormat, dateHasDay} = dataChart
+    const { id, dataChart, isBarBased } = this.props
+    const { dateFormat, dateHasDay } = dataChart
 
     this.axisX.domain(this.props.axis.x.range)
     this.ticks = this.props.axis.x.ticks
@@ -74,8 +74,8 @@ class AxisX extends React.Component {
   render() {
     if (!this.props.dataChart.scales.x) return null
     /* data */
-    const {id, dataChart, chartSize, isOnBar, isPlot, unit, axis, isBarBased} = this.props
-    const {indent, string1Width} = dataChart
+    const { id, dataChart, chartSize, isOnBar, isPlot, unit, axis, isBarBased } = this.props
+    const { indent, string1Width } = dataChart
 
     if (!axis) {
       this.setAxisData()
@@ -87,14 +87,14 @@ class AxisX extends React.Component {
 
     // wrap for drawing
     const tickData = getTickTextWidths(this.texts).map((width, i) => ({
-      pos: Math.round(this.axisX(this.ticks[i])*100)/100,
+      pos: Math.round(this.axisX(this.ticks[i]) * 100) / 100,
       txt: this.texts[i],
       txtWidth: width
     }))
     this.grid = tickData.map(d => d.pos)
 
     const chartWidth = chartSize.w || 300
-    const marginLeft = id.includes("broken") || (string1Width > chartWidth/3) ? 1 : string1Width+1
+    const marginLeft = id.includes("broken") || (string1Width > chartWidth / 3) ? 1 : string1Width + 1
 
 
     /* draw */
@@ -102,7 +102,7 @@ class AxisX extends React.Component {
       <div key={"tick" + i} className="axis-x-tick" style={{
         position: "absolute",
         top: isBarBased ? "24px" : "1px",
-        left: "calc(" + tick.pos + "% + " + (isPlot ? -2 : 0) + "px)",
+        left: "calc(" + tick.pos + "% + " + (isPlot ? -1 : 0) + "px)",
         width: "1px",
         height: "5px",
         backgroundColor: "#dcdcdc"
@@ -113,34 +113,39 @@ class AxisX extends React.Component {
       <div key={"text" + i}
         className={"axis-x-text" + (isBarBased ? " axis-top-text" : "")}
         style={{
-        position: "absolute",
-        top: "8px",
-        left: "calc(" + (tick.pos - tick.txtWidth/2) + "% + " + (isPlot ? -2 : 0) + "px)",
-        width: tick.txtWidth + "%",
-        lineHeight: "14px",
-        paddingTop: "2px",
-        textAlign: "center"
-      }}>
+          position: "absolute",
+          top: "8px",
+          left: "calc(" + (tick.pos - tick.txtWidth / 2) + "% + " + (isPlot ? -1 : 0) + "px)",
+          width: tick.txtWidth + "%",
+          lineHeight: "14px",
+          paddingTop: "2px",
+          textAlign: "center"
+        }}>
         <ComponentEditor text={tick.txt} type="xTexts" />
       </div>
     )
 
+    let marginPlot = 0//30 - 1;
     let margin = dataChart.margin
-    margin = margin ? margin : {left: 0, right: 0}
+    margin = margin ? margin : { left: 0, right: 0 }
     return (
       <div className="axis-x"
         data-x-bottom={!isBarBased}
         data-y-indent={isBarBased ? 0 : indent}
         data-l-indent={margin.left}
         data-r-indent={margin.right}
-      style={{
-        position: "absolute",
-        top: isBarBased ? "-30px" : "calc(100% - 1px)", // due to svg padding: 1px
-        right: /*isBrokenBar ? 0 :*/ "1px",
-        // NOTE: onBar axis-x margin left/right
-        width: "calc(100% - " + ((isBarBased ? marginLeft : indent) + (isOnBar ? margin.left+margin.right : 0)) + "px)",
-        marginRight: isOnBar ? margin.right + "px" : 0
-      }}>
+        style={{
+          position: "absolute",
+          top: isBarBased ? "-30px" : "calc(100% - 1px)", // due to svg padding: 1px
+          right: isPlot ? marginPlot + "px" : /*isBrokenBar ? 0 :*/ "1px",
+          // NOTE: onBar axis-x margin left/right
+          width: "calc(100% - " + (
+            (isBarBased ? marginLeft : indent) +
+            (isOnBar || isPlot ? margin.left + margin.right : 0)) +
+            //(isPlot ? marginPlot * 2 : 0)) + // margin + 2
+            "px)",
+          marginRight: isOnBar || isPlot ? margin.right + "px" : 0
+        }}>
         {drawAxisTicks}
         {drawAxisTexts}
       </div>
@@ -148,31 +153,30 @@ class AxisX extends React.Component {
   }
 
   renderGrid() {
-    const {isBarBased, dataChart} = this.props
+    const { isBarBased, dataChart } = this.props
     if (!isBarBased || this.grid.length === 0) return
 
     let margin = dataChart.margin
-    margin = margin ? margin : {left: 0, right: 0}
-    //console.log(margin)
+    margin = margin ? margin : { left: 0, right: 0 }
 
     d3.selectAll(".js-graph .grid")
-    .html("")
-    .style("position", "relative")
-    .style("margin-left", margin.left + "px")
-    .style("margin-right", (margin.right + 1) + "px")
-    .selectAll("div")
-    .data(this.grid)
-    .enter().append("div")
-    .style("position", "absolute")
-    .style("left", d => d + "%")
-    .style("top", 0)
-    .style("width", "1px")
-    .style("height", "20px")
-    .style("background-color", d =>
-      (d===0 && margin.left===0) || (d===100 && margin.right === 0) ?
-      "transparent" :
-      "rgba(255, 255, 255, 0.5)"
-    )
+      .html("")
+      .style("position", "relative")
+      .style("margin-left", margin.left + "px")
+      .style("margin-right", (margin.right + 1) + "px")
+      .selectAll("div")
+      .data(this.grid)
+      .enter().append("div")
+      .style("position", "absolute")
+      .style("left", d => d + "%")
+      .style("top", 0)
+      .style("width", "1px")
+      .style("height", "20px")
+      .style("background-color", d =>
+        (d === 0 && margin.left === 0) || (d === 100 && margin.right === 0) ?
+          "transparent" :
+          "rgba(255, 255, 255, 0.5)"
+      )
   }
 }
 

@@ -1,4 +1,4 @@
-import { width } from '../../data/config'
+//import { width, viewBox } from '../../data/config'
 
 export default function () {
   //console.log("res x")
@@ -83,14 +83,15 @@ export default function () {
 
 
   /* svg circle */
-  const elSvg = document.querySelector("js-graph svg")
+  const elSvg = document.querySelector(".js-graph svg")
   if (elSvg) {
-    const svgWidth = elSvg.getBoundingClientRect().width
+    const svgWidth = elSvg.getClientRects()[0].width
+    const viewBoxWidth = elSvg.getAttribute("viewBox").split(" ")[2]
     // plot chart
     const circles = [...elSvg.querySelectorAll("circle")]
     circles.forEach((circle) => {
-      var r = circle.dataset.r;
-      circle.setAttribute("r", Math.round(r * width * 10 / svgWidth) / 10);
+      let r = circle.dataset.r;
+      circle.setAttribute("r", Math.round(r * viewBoxWidth * 10 / svgWidth) / 10);
     })
   }
 }
