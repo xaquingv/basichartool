@@ -17,22 +17,22 @@ const mapStateToProps = (state) => ({
   stepActive: state.stepActive
 })
 
-const isGuardianVisual = location.origin.indexOf("visuals.gutools.co.uk") > -1
+//const isGuardianVisual = location.origin.indexOf("visuals.gutools.co.uk") > -1
 //console.log("dev mode:", !isGuardianVisual)
 
 
 class Section extends React.Component {
   embed() {
     // return in dev mode
-    if (!isGuardianVisual) return
+    // if (!isGuardianVisual) return
 
-    const data = getHTMLFileData()
+    // const data = getHTMLFileData()
 
     // TODO: push html to s3 server
     // console.log(data.html)
     // console.log(JSON.stringify({ embed: data.html }))
 
-    pushToS3ByReqwest(data)
+    // pushToS3ByReqwest(data)
 
     // TODO: debug for fetch issue
     // if (fetch) {
@@ -58,7 +58,7 @@ class Section extends React.Component {
       <div className={"section" + ((stepActive>=STEP)?"":" d-n")} id="section5">
         {/* <h1>5. Voila, here you go:</h1> */}
         {/* <p className="instruction">{instruction}</p> */}
-        <input type="button" className={"button" + (isGuardianVisual ? "" : " btn-off")} value="embed" onClick={this.embed.bind(this)} />
+        {/* <input type="button" className={"button" + (isGuardianVisual ? "" : " btn-off")} value="embed" onClick={this.embed.bind(this)} /> */}
         <input type="button" className="button" value="download HTML" onClick={this.downloadHTML.bind(this)} />
         <div className="d-n link js-link">link: <a target="_blank"></a></div>
       </div>

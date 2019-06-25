@@ -3,6 +3,13 @@ import { connect } from 'react-redux'
 import sumstats from '../../lib/sumstats'
 import sentence from '../../lib/nlg/sentences'
 
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+
+let answers = {
+    gdp: []
+}
 const typeSumstats = ["min", "mean", "median", "max"]
 
 const mapStateToProps = (state) => ({
@@ -34,21 +41,33 @@ class Section extends React.Component {
                 ...typeSumstats
             )
         })
-   
-        dataStats.forEach(dataList => {
-            console.log(dataList[0].column);
+
+        dataStats.forEach(d => {
+            console.log(d);
         })
+
+        const handleChange = (who) => {
+            console.log(who);
+        }
+
+        
 
         //return null
         return (
             <div className="questions">
                 <p className="mt-30">Question 1: Do you want to highlight the correlation between gdp and life expectancy?</p>
                 <p className="mt-30">Question 2:</p>
-                {dataStats.map((dataList, idx) => 
+                {dataStats.map((dataList, idx) =>
                     <div key={"qh-" + idx}>
                         <p className="question-header">{dataList[0].column}</p>
                         {dataList.map((data, i) =>
-                        <p key={"qa-" + idx + i}>{sentence(data)}</p>
+                            // <div key={"qa-" + idx + i}>
+                            // <FormControlLabel
+                            //     control={<Switch checked={answers['gdp']} onChange={handleChange('gdp')} value="gdp" />}
+                            //     label={sentence(data)}
+                            // />
+                            // </div>
+                            <p key={"qa-" + idx + i}>{sentence(data)}</p>
                         )}
                     </div>
                 )}

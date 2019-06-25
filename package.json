@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "react-scripts": "0.4.3"
+    "react-scripts": "3.0.1"
   },
   "dependencies": {
+    "@material-ui/core": "^4.1.2",
     "compute.io": "^0.106.0",
     "d3-array": "^1.0.2",
     "d3-axis": "^1.0.4",
@@ -20,8 +21,8 @@
     "draft-js": "^0.10.0",
     "es6-promise": "^4.0.5",
     "isomorphic-fetch": "^2.2.1",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
     "react-file-download": "^0.3.2",
     "react-redux": "^4.4.5",
     "redux": "^3.6.0",
@@ -35,5 +36,17 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

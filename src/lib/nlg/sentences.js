@@ -3,7 +3,8 @@ import { NaturalLanguage } from '../nlg/src/main';
 
 export default function (data) {
 
-    data.dataType = 'scatterPlot', data.sentenceType = 'scatterPlot';
+    data.dataType = 'scatterPlot';
+    data.sentenceType = 'scatterPlot';
 
     let NL = new NaturalLanguage([data]);
     NL.addType("scatterPlot", scatterPlotType);
