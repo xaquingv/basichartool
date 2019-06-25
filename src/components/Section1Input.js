@@ -4,7 +4,6 @@ import './section1Input.css';
 import { importData, clearData } from '../actions';
 import fetchConfig from '../data/config'
 
-
 //const STEP = 1;
 // read https://facebook.github.io/react/docs/forms.html
 const instruction = "Type your data or copy & paste it from a spreadsheet."

@@ -6,6 +6,7 @@ import { colors, metaKeys } from '../data/config';
 import summarizeData from '../data/summarizeData';
 import selectCharts from '../data/selectCharts';
 import ComponentChartlist from './section2Table/Chartlist';
+import ComponentQuestions from './section2Table/Questions';
 
 const STEP = 2;
 const instruction = "Toggle a col/row's header to select and deselect data, or transpose this dataset with a click on T."
@@ -64,7 +65,7 @@ class Section extends React.Component {
       this.selection = selectCharts(summary);
       this.dataChart = summary.chart;
     }
-
+    
     return (
       <div className={"section" + ((stepActive >= STEP) ? "" : " d-n")} id="section2">
         <h1>2. Discover your dataset</h1>
@@ -111,9 +112,12 @@ class Section extends React.Component {
 
           {/* charts */}
           <div className="section2-chart">
-            {this.selection ? <ComponentChartlist selection={this.selection} dataChart={this.dataChart} /> : null}
+            <ComponentChartlist selection={this.selection} dataChart={this.dataChart} /> 
           </div>
         </div>
+        
+        {/* questions */}
+        <ComponentQuestions dataChart={this.dataChart} />
 
         {/* button * /}
         <input

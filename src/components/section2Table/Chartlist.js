@@ -31,13 +31,14 @@ class Section extends React.Component {
 
   render() {
     const { selection, dataChart, onSelect } = this.props
+    if (!selection) { return null; }
 
     // TODO: loop through arr, see charts.js
     // list of charts
     const chartComponents = Object.keys(chartList).map(chartID => {
       const isSelected = selection.indexOf(chartID) > -1
       const ComponentChart = chartList[chartID]
-      //console.log(STEP)
+
       return isSelected
         ? (
           <div key={chartID} id={chartID} onClick={() => onSelect(chartID)}>

@@ -1,0 +1,13 @@
+{
+    "default": {
+        "priority": {
+            "init": 1,
+            "negativeFactor": 20,
+            "positiveFactor": 100
+        },
+        "level": {
+            "threshold": 0.09,
+            "sensitiveness": 1
+        }
+    }
+}

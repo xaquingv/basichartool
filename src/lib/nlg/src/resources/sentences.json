@@ -1,0 +1,93 @@
+{
+    "simpleSentences": {
+        "default": {
+            "na": [
+                "{column} is {value}"
+            ],
+            "positive": {
+                "1": [
+                    "{column} has slightly raised to {value}",
+                    "{column} has raised slightly to {value}",
+                    "{column} has increased a bit to {value}"
+                ],
+                "2": [
+                    "{column} has raised from {compareValue} to {value}",
+                    "{column} has raised to {value}",
+                    "{column} has raised for {difference}",
+                    "{column} has increased by {difference} to {value}"
+                ],
+                "3": [
+                    "{column} has significantly increased by {difference} to {value}",
+                    "{column} has extremely raised to {value}",
+                    "{column} has soared from {compareValue} to {value}, a {difference} increase"
+                ]
+            },
+            "neutral": {
+                "0": [
+                    "{column} is still good at {value}",
+                    "{column} looks good at {value}"
+                ]
+            },
+            "negative": {
+                "-1": [
+                    "{column} has slightly dropped to {value}",
+                    "{column} has slightly fallen about {difference}"
+                ],
+                "-2": [
+                    "{column} has dropped from {compareValue} to {value}",
+                    "{column} has dropped to {value}"
+                ],
+                "-3": [
+                    "{column} has significantly decreased by {difference} to {value}",
+                    "{column} has extremely dropped to {value}"
+                ]
+            }
+        }
+    },
+    "compoundSentences": {
+        "default": [
+            {
+                "type": [
+                    "positive",
+                    "neutral",
+                    "negative",
+                    "na"
+                ],
+                "sentences": [
+                    "{sentence.0}."
+                ]
+            },
+            {
+                "type": [
+                    "positive_negative",
+                    "neutral_negative",
+                    "negative_positive"
+                ],
+                "sentences": [
+                    "{sentence.0}, but {sentence.1}."
+                ]
+            },
+            {
+                "type": [
+                    "positive_positive",
+                    "na_na"
+                ],
+                "sentences": [
+                    "{sentence.0}, and {sentence.1}."
+                ]
+            },
+            {
+                "type": [
+                    "positive_neutral",
+                    "negative_negative",
+                    "neutral_positive",
+                    "neutral_neutral",
+                    "negative_neutral"
+                ],
+                "sentences": [
+                    "{sentence.0} and {sentence.1}."
+                ]
+            }
+        ]
+    }
+}

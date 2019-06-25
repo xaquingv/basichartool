@@ -65,7 +65,16 @@ h1 {
   color: #767676;
   font-family: monospace;
   line-height: 15px;
+  width: 304px !important;
   padding: 7px !important;  
+}
+.questions {
+  font-size: 14px;
+}
+.question-header {
+  font-weight: bold;
+  display: inline;
+  border-bottom: 1px solid;
 }
 
 /* buttons */

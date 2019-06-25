@@ -6,6 +6,7 @@
     "react-scripts": "0.4.3"
   },
   "dependencies": {
+    "compute.io": "^0.106.0",
     "d3-array": "^1.0.2",
     "d3-axis": "^1.0.4",
     "d3-dispatch": "^1.0.3",
@@ -26,7 +27,8 @@
     "redux": "^3.6.0",
     "reqwest": "^2.0.5",
     "st": "^1.2.2",
-    "topojson": "^1.6.27"
+    "topojson": "^1.6.27",
+    "underscore": "^1.9.1"
   },
   "scripts": {
     "start": "react-scripts start",
