@@ -1,0 +1,68 @@
+:root {
+    --qablue: #197caa;
+    --qagrey: #333;
+  }
+
+.questions {
+    font-size: 14px;
+}
+.question-header {
+    font-weight: bold;
+}
+
+/* override material-ui styles */
+.questions .MuiFormLabel-root,
+.questions .MuiInputBase-input,
+.questions .MuiTypography-body1,
+.MuiPaper-root .MuiMenuItem-root {
+    color: var(--qagrey);
+    font-size: 14px;
+    font-family: 'Guardian Text Sans Web';
+    transform: scale(1);
+}
+
+/* switch */
+.questions .MuiSwitch-root {
+    height: 28px;
+    padding: 7px 12px;
+}
+.questions .MuiButtonBase-root {
+    padding: 4px 10px;
+}
+.questions .MuiTouchRipple-root {
+    left: 5px;
+    width: 75%;
+}
+.questions .Mui-checked {
+    color: var(--qablue) !important;
+}
+.questions .Mui-checked:hover {
+    background-color: transparent !important; 
+}
+.questions .Mui-checked + .MuiSwitch-track {
+    background-color: var(--qablue) !important;  
+}
+
+/* textfield */
+.questions .MuiFormControl-root {
+    /* width: 67%; */
+    margin-top: 0;
+}
+.questions .MuiFormLabel-root.Mui-focused {
+    color: var(--qablue);  
+}
+.questions .MuiInput-underline:after {
+    border-bottom: 2px solid var(--qablue);  
+}
+
+/* select and menu*/
+.questions .MuiTypography-root {
+    white-space: nowrap;
+}
+.questions .MuiSelect-root {
+    padding-left: 16px;
+    margin-bottom: -4px; 
+}
+.MuiPaper-root .MuiMenuItem-root {
+    min-height: 28px
+}

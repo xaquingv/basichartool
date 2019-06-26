@@ -26,7 +26,7 @@
 }
 
 /* hotfix for card layout */
-#section2 svg {
+.section2-chart svg {
   width: 100% !important;
   height: 100% !important;
   margin-top: 0 !important;

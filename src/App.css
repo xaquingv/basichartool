@@ -68,14 +68,7 @@ h1 {
   width: 304px !important;
   padding: 7px !important;  
 }
-.questions {
-  font-size: 14px;
-}
-.question-header {
-  font-weight: bold;
-  display: inline;
-  border-bottom: 1px solid;
-}
+
 
 /* buttons */
 .button {

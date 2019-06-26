@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
 import './navigation.css';
 import {changeStep} from '../actions';
 import scrollTo from '../lib/scrollTo';
@@ -30,7 +31,7 @@ const mapStateToProps = (state) => ({
 
 class Navigation extends React.Component {
   static propTypes = {
-    step: React.PropTypes.number.isRequired,
+    step: PropTypes.number.isRequired,
   };
 
   animateScroll = () => {

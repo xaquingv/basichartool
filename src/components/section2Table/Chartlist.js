@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 
-class Section extends React.Component {
+class Chartlist extends React.Component {
 
   render() {
     const { selection, dataChart, onSelect } = this.props
@@ -56,4 +56,4 @@ class Section extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Section)
+export default connect(mapStateToProps, mapDispatchToProps)(Chartlist)

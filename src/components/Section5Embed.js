@@ -4,7 +4,7 @@ import './section5Embed.css'
 
 import downloadFile from 'react-file-download'
 import htmlTemplate from './charts/template'
-import reqwest from 'reqwest'
+// import reqwest from 'reqwest'
 
 
 const STEP = 3
@@ -60,7 +60,7 @@ class Section extends React.Component {
         {/* <p className="instruction">{instruction}</p> */}
         {/* <input type="button" className={"button" + (isGuardianVisual ? "" : " btn-off")} value="embed" onClick={this.embed.bind(this)} /> */}
         <input type="button" className="button" value="download HTML" onClick={this.downloadHTML.bind(this)} />
-        <div className="d-n link js-link">link: <a target="_blank"></a></div>
+        {/* <div className="d-n link js-link">link: <a target="_blank"></a></div> */}
       </div>
     )
   }
@@ -95,31 +95,31 @@ function getHTMLFileData() {
   }
 }
 
-function pushToS3ByReqwest(data) {
-  reqwest({
-    url: 'https://visuals.gutools.co.uk/embed-uploader?type=chart',
-    method: 'post',
-    contentType: 'application/json',
-    data: JSON.stringify({
-        embed: data.html
-    }),
-    success: res => {
-      let elLink = document.querySelector(".js-link")
-      let elLinkA = elLink.querySelector("a")
-      elLink.classList.remove("d-n")
-      elLinkA.href = res
-      elLinkA.textContent = res
+// function pushToS3ByReqwest(data) {
+//   reqwest({
+//     url: 'https://visuals.gutools.co.uk/embed-uploader?type=chart',
+//     method: 'post',
+//     contentType: 'application/json',
+//     data: JSON.stringify({
+//         embed: data.html
+//     }),
+//     success: res => {
+//       let elLink = document.querySelector(".js-link")
+//       let elLinkA = elLink.querySelector("a")
+//       elLink.classList.remove("d-n")
+//       elLinkA.href = res
+//       elLinkA.textContent = res
 
-      setTimeout(() => {
-        elLink.classList.add("d-n")
-      }, 60000)
-      //console.log(res)
-    },
-    error: err => {
-      console.warn(err)
-    }
-  })
-}
+//       setTimeout(() => {
+//         elLink.classList.add("d-n")
+//       }, 60000)
+//       //console.log(res)
+//     },
+//     error: err => {
+//       console.warn(err)
+//     }
+//   })
+// }
 
 /*function pushToS3ByFetch(data) {
   fetch('https://visuals.gutools.co.uk/embed-uploader?type=chart', {
