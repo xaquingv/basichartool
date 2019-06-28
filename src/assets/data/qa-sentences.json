@@ -1,0 +1,386 @@
+[
+    {
+        "data": {
+            "column": "gdp",
+            "stat": "min",
+            "statDefinition": "lowest value",
+            "id": "Somalia",
+            "value": 629,
+            "data": {
+                "key": "Somalia",
+                "value": 629
+            },
+            "type": "country",
+            "dataType": "scatterPlot",
+            "sentenceType": "scatterPlot",
+            "options": {
+                "priority": {
+                    "init": 1,
+                    "negativeFactor": 20,
+                    "positiveFactor": 100
+                },
+                "level": {
+                    "threshold": 0.09,
+                    "sensitiveness": 1
+                }
+            },
+            "alwaysShow": false,
+            "contentGroup": "default",
+            "difference": "na",
+            "displayInfo": {
+                "column": "gdp",
+                "value": 629,
+                "type": "country",
+                "id": "somalia",
+                "statDefinition": "lowest value"
+            },
+            "priority": 1,
+            "level": "na",
+            "levelType": "na"
+        },
+        "explanation": [
+            {
+                "q": "Why does somalia have the lowest gdp?",
+                "a": "{to be answered}"
+            },
+            {
+                "q": "Has there been a recent change? What has happened to rank it in the top?",
+                "a": "{to be answered}"
+            }
+        ]
+    },
+    {
+        "data": {
+            "column": "gdp",
+            "stat": "mean",
+            "statDefinition": "average",
+            "id": "Turkmenistan",
+            "value": 17919.239130434773,
+            "data": {
+                "values": 17919.239130434773,
+                "exists": false,
+                "closest": {
+                    "key": "Turkmenistan",
+                    "value": 17900
+                }
+            },
+            "type": "country",
+            "dataType": "scatterPlot",
+            "sentenceType": "scatterPlot",
+            "options": {
+                "priority": {
+                    "init": 1,
+                    "negativeFactor": 20,
+                    "positiveFactor": 100
+                },
+                "level": {
+                    "threshold": 0.09,
+                    "sensitiveness": 1
+                }
+            },
+            "alwaysShow": false,
+            "contentGroup": "default",
+            "difference": "na",
+            "displayInfo": {
+                "column": "gdp",
+                "value": 17919.239130434773,
+                "type": "country",
+                "id": "turkmenistan",
+                "statDefinition": "average"
+            },
+            "priority": 1,
+            "level": "na",
+            "levelType": "na"
+        },
+        "explanation": [
+            {
+                "q": "What makes turkmenistan’s 17919.239130434773 {units} representative?",
+                "a": "{to be answered}"
+            },
+            {
+                "q": "How does it compare to country of similar characteristics?",
+                "a": "{to be answered}"
+            }
+        ]
+    },
+    {
+        "data": {
+            "column": "life expectancy",
+            "stat": "median",
+            "statDefinition": "median",
+            "id": "Bahamas",
+            "value": 74.05,
+            "data": {
+                "values": 74.05,
+                "exists": false,
+                "closest": {
+                    "key": "Bahamas",
+                    "value": 74.1
+                }
+            },
+            "type": "country",
+            "dataType": "scatterPlot",
+            "sentenceType": "scatterPlot",
+            "options": {
+                "priority": {
+                    "init": 1,
+                    "negativeFactor": 20,
+                    "positiveFactor": 100
+                },
+                "level": {
+                    "threshold": 0.09,
+                    "sensitiveness": 1
+                }
+            },
+            "alwaysShow": false,
+            "contentGroup": "default",
+            "difference": "na",
+            "displayInfo": {
+                "column": "life expectancy",
+                "value": 74.05,
+                "type": "country",
+                "id": "bahamas",
+                "statDefinition": "median"
+            },
+            "priority": 1,
+            "level": "na",
+            "levelType": "na"
+        },
+        "explanation": [
+            {
+                "q": "Why is bahamas’s 74.05 {units} a good example of the?",
+                "a": "{to be answered}"
+            },
+            {
+                "q": "Does it compare to country of similar characteristics?",
+                "a": "{to be answered}"
+            }
+        ]
+    },
+    {
+        "data": {
+            "column": "life expectancy",
+            "stat": "max",
+            "statDefinition": "highest value",
+            "id": "Japan",
+            "value": 84.2,
+            "data": {
+                "key": "Japan",
+                "value": 84.2
+            },
+            "type": "country",
+            "dataType": "scatterPlot",
+            "sentenceType": "scatterPlot",
+            "options": {
+                "priority": {
+                    "init": 1,
+                    "negativeFactor": 20,
+                    "positiveFactor": 100
+                },
+                "level": {
+                    "threshold": 0.09,
+                    "sensitiveness": 1
+                }
+            },
+            "alwaysShow": false,
+            "contentGroup": "default",
+            "difference": "na",
+            "displayInfo": {
+                "column": "life expectancy",
+                "value": 84.2,
+                "type": "country",
+                "id": "japan",
+                "statDefinition": "highest value"
+            },
+            "priority": 1,
+            "level": "na",
+            "levelType": "na"
+        },
+        "explanation": [
+            {
+                "q": "What’s the reason japan shows the highest life expectancy?",
+                "a": "{to be answered}"
+            },
+            {
+                "q": "If this is unusual (or historically hasn’t been like this), what has happened recently to rank it in the top?",
+                "a": "{to be answered}"
+            }
+        ]
+    },
+    {
+        "data": {
+            "column": "life expectancy",
+            "stat": "mode",
+            "statDefinition": "most frequent value",
+            "id": " and ",
+            "data": [
+                59.5,
+                60.2
+            ],
+            "type": "country",
+            "dataType": "scatterPlot",
+            "sentenceType": "scatterPlot",
+            "options": {
+                "priority": {
+                    "init": 1,
+                    "negativeFactor": 20,
+                    "positiveFactor": 100
+                },
+                "level": {
+                    "threshold": 0.09,
+                    "sensitiveness": 1
+                }
+            },
+            "alwaysShow": false,
+            "contentGroup": "default",
+            "difference": "na",
+            "displayInfo": {
+                "column": "life expectancy",
+                "type": "country",
+                "id": " and ",
+                "statDefinition": "most frequent value"
+            },
+            "priority": 1,
+            "level": "na",
+            "levelType": "na"
+        },
+        "explanation": [
+            {
+                "q": "The most frequent value is undefined. Is  and  a good example of what’s the norm?",
+                "a": "{to be answered}"
+            },
+            {
+                "q": "Are there other country in the data that",
+                "a": "{to be answered}"
+            }
+        ]
+    },
+    {
+        "data": {
+            "column": "population",
+            "stat": "percentile2",
+            "statDefinition": "lowest",
+            "id": "Seychelles, Antigua and Barbuda, and Micronesia, Fed. Sts.",
+            "value": 106000,
+            "data": [
+                {
+                    "key": "Seychelles",
+                    "value": 95200
+                },
+                {
+                    "key": "Antigua and Barbuda",
+                    "value": 103000
+                },
+                {
+                    "key": "Micronesia, Fed. Sts.",
+                    "value": 106000
+                }
+            ],
+            "type": "country",
+            "dataType": "scatterPlot",
+            "sentenceType": "scatterPlot",
+            "options": {
+                "priority": {
+                    "init": 1,
+                    "negativeFactor": 20,
+                    "positiveFactor": 100
+                },
+                "level": {
+                    "threshold": 0.09,
+                    "sensitiveness": 1
+                }
+            },
+            "alwaysShow": false,
+            "contentGroup": "default",
+            "difference": "na",
+            "displayInfo": {
+                "column": "population",
+                "value": 106000,
+                "type": "country",
+                "id": "seychelles, antigua and barbuda, and micronesia, fed. sts.",
+                "statDefinition": "lowest"
+            },
+            "priority": 1,
+            "level": "na",
+            "levelType": "na"
+        },
+        "explanation": [
+            {
+                "q": "What do seychelles, antigua and barbuda, and micronesia, fed. sts. have in common?",
+                "a": "{to be answered}"
+            },
+            {
+                "q": "What is the reason they all have such a low population?",
+                "a": "{to be answered}"
+            },
+            {
+                "q": "If any of them is an exception, has anything happened recently to send it to the bottom?",
+                "a": "{to be answered}"
+            }
+        ]
+    },
+    {
+        "data": {
+            "column": "population",
+            "stat": "percentile98",
+            "statDefinition": "highest",
+            "id": "United States, India, and China",
+            "value": 1420000000,
+            "data": [
+                {
+                    "key": "United States",
+                    "value": 327000000
+                },
+                {
+                    "key": "India",
+                    "value": 1350000000
+                },
+                {
+                    "key": "China",
+                    "value": 1420000000
+                }
+            ],
+            "type": "country",
+            "dataType": "scatterPlot",
+            "sentenceType": "scatterPlot",
+            "options": {
+                "priority": {
+                    "init": 1,
+                    "negativeFactor": 20,
+                    "positiveFactor": 100
+                },
+                "level": {
+                    "threshold": 0.09,
+                    "sensitiveness": 1
+                }
+            },
+            "alwaysShow": false,
+            "contentGroup": "default",
+            "difference": "na",
+            "displayInfo": {
+                "column": "population",
+                "value": 1420000000,
+                "type": "country",
+                "id": "united states, india, and china",
+                "statDefinition": "highest"
+            },
+            "priority": 1,
+            "level": "na",
+            "levelType": "na"
+        },
+        "explanation": [
+            {
+                "q": "What’s that connection between united states, india, and china?",
+                "a": "{to be answered}"
+            },
+            {
+                "q": "Why do they all have such a high population?",
+                "a": "{to be answered}"
+            },
+            {
+                "q": "Any of them out of place? Has anything happened recently to rank it in the top?",
+                "a": "{to be answered}"
+            }
+        ]
+    }
+]

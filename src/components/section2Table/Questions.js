@@ -3,20 +3,20 @@ import { connect } from 'react-redux'
 import './questions.css'
 import { setAnswers } from '../../actions'
 // import _ from "underscore"
-import sumstats from '../../lib/sumstats'
+import { summarize } from '../../lib/sumstats'
 import sentence from '../../lib/nlg/sentences'
 
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
-import MenuItem from "@material-ui/core/MenuItem"
-import InputAdornment from '@material-ui/core/InputAdornment'
+// import MenuItem from "@material-ui/core/MenuItem"
+// import InputAdornment from '@material-ui/core/InputAdornment'
 // import Select from 'react-select';
 // import makeAnimated from 'react-select/animated';
 // import ComponentSelectMultiple from './SelectMultiple'
 
 
-const typeSumstats = ["min", "mean", "median", "max"]
+const typeSumstats = ["min", "mean", "median", "max", "mode", "percentile2", "percentile98"]
 const numberColMapping = [
     { value: "X-AXIS", label: "X-AXIS" },
     { value: "Y-AXIS", label: "Y-AXIS" },
@@ -37,10 +37,10 @@ class Questions extends React.Component {
 
     handleChange = (event, setId, uiType, indexSet = null, indexUi = null) => {
         const value = (uiType === "switch" ? event.target.checked : event.target.value)
-        
-        let newSentences = {...this.sumstatSentences}
+
+        let newSentences = { ...this.sumstatSentences }
         if (setId === "set2" && uiType === "textField") {
-            const replaceText = "{" + value + "}." 
+            const replaceText = "{" + value + "}."
             newSentences.edit[indexSet] = newSentences.edit[indexSet].map(s => s.split("{")[0] + replaceText)
             newSentences.text[indexSet] = newSentences.edit[indexSet].map(s => {
                 s = s.replace("{", "")
@@ -56,11 +56,9 @@ class Questions extends React.Component {
         }
 
         let newAnswers = { ...this.answers }
-        if (indexSet!==null && indexUi!==null) {
-            console.log("both", indexSet, indexUi)
+        if (indexSet !== null && indexUi !== null) {
             newAnswers[setId][indexSet][uiType][indexUi] = value
         } else if (indexSet !== null) {
-            console.log("iset", indexSet)
             newAnswers[setId][indexSet][uiType] = value
         } else if (indexUi !== null) {
             newAnswers[setId][uiType][indexUi] = value
@@ -68,8 +66,24 @@ class Questions extends React.Component {
             newAnswers[setId][uiType] = value
         }
 
-        this.props.setDataAnswer(newAnswers, newSentences)
+        // TODO: add to ui
+        // const dataStatsFiltered = this.dataStats.map((stats, index) => stats
+        //     .filter((s, i) => newAnswers.set2[index].switch[i])
+        //     .map(s => {
+        //         let qs = sentence(s, "questions");
+        //         return {
+        //             data: s,
+        //             explanation: qs.map(q => ({ q, a: "{to be answered}"}))
+        //         }
+        //     }
+        //     )
+        // )
+        // console.log(JSON.stringify(dataStatsFiltered.flat()))
+
+        // TODO: stats.forEach(d=> { d.units = 'years'; d.type = 'countries'; });
         // TODO: update dataChart ?
+
+        this.props.setDataAnswer(newAnswers, newSentences)
     }
 
     componentDidMount() {
@@ -85,7 +99,7 @@ class Questions extends React.Component {
         if (!dataChart) { return null; }
 
         const { dataAnswer, dataSentence } = this.props
-        const { dateCol, numberCols, string1Col, string2Col} =  dataChart
+        const { dateCol, numberCols, string1Col } = dataChart
         if ((string1Col.length < 1 && dateCol.length < 1) || numberCols.length < 1) { return null; }
 
         /* example:
@@ -98,18 +112,19 @@ class Questions extends React.Component {
         const numberColGroups = dataChart.keys
         const isNumberColSame = this.numberCols.length === numberCols.length
         this.isDataChange = (!isNumberColSame) || (isNumberColSame ? (this.numberCols.some((col, i) => col.toString() !== numberCols[i].toString())) : false)
+        console.log(this.isDataChange)
         // note that can make underscore isequal work here
 
         const keys = string1Col// || dateCol
         // const dataKeys = keys.map(key => ({ label: key, value: key }))
-        
+
         if (this.isDataChange) {
             this.dataStats = numberCols.map((col, idx) => {
                 // params: col header, data, type of sumstats1, 2, 3, ///
-                // TODO: change to sumstats.summarize
-                return sumstats(
+                return summarize(
                     dataChart.keys[idx],
                     col.map((value, index) => ({ key: keys[index], value })),
+                    "country", //hotfix
                     ...typeSumstats
                 )
             })
@@ -127,35 +142,35 @@ class Questions extends React.Component {
                 set3: { textField: "" }
             }
         } else {
-            this.answers = dataAnswer || this.answers 
+            this.answers = dataAnswer || this.answers
             this.sumstatSentences = dataSentence || this.sumstatSentences
         }
 
-        const mappingCount = numberColGroups.length
-        const mapping = numberColMapping.filter((number, index) => index < mappingCount)
+        // const mappingCount = numberColGroups.length
+        // const mapping = numberColMapping.filter((number, index) => index < mappingCount)
 
-        const selectComponent = (index, start) => {
-            const marginRight = (index + 1) % 3 !== 0 ? "2%" : "0"
-            return (
-                <TextField
-                    key={"select-" + index}
-                    select
-                    label="Change your mapping"
-                    value={this.answers.set1.select[index]}
-                    onChange={(event) => this.handleChange(event, "set1", "select", null, index)}
-                    style={{ width: "32%", marginRight: marginRight }}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start">{start + " :"}</InputAdornment>,
-                    }}
-                >
-                    {mapping.map(option => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            )
-        }
+        // const selectComponent = (index, start) => {
+        //     const marginRight = (index + 1) % 3 !== 0 ? "2%" : "0"
+        //     return (
+        //         <TextField
+        //             key={"select-" + index}
+        //             select
+        //             label="Change your mapping"
+        //             value={this.answers.set1.select[index]}
+        //             onChange={(event) => this.handleChange(event, "set1", "select", null, index)}
+        //             style={{ width: "32%", marginRight: marginRight }}
+        //             InputProps={{
+        //                 startAdornment: <InputAdornment position="start">{start + " :"}</InputAdornment>,
+        //             }}
+        //         >
+        //             {mapping.map(option => (
+        //                 <MenuItem key={option.value} value={option.value}>
+        //                     {option.label}
+        //                 </MenuItem>
+        //             ))}
+        //         </TextField>
+        //     )
+        // }
 
         const switchComponent = (label, checked, setId, indexSet, indexUi, style = {}) => {
             return (
@@ -213,7 +228,6 @@ class Questions extends React.Component {
                     <div key={"qh-" + idx} className="mb-5">
                         <p><span className="question-group">{numberColGroups[idx]}</span></p>
                         {textFieldComponent("What are the " + numberColGroups[idx] + " numbers referring to? (e.g. dollars, people, years ...)", this.answers.set2[idx].textField, "set2", idx)}
-                        {/* TODO: sentence(data, <"sentence", "question">) */}
                         {dataList.map((data, i) => switchComponent(this.sumstatSentences.text[idx][i], this.answers.set2[idx].switch[i], "set2", idx, i))}
                     </div>
                 )}

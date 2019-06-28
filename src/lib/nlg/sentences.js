@@ -1,7 +1,6 @@
-//import assert from 'assert'
-import { NaturalLanguage } from '../nlg/src/main';
+import { NaturalLanguage } from './src/main';
 
-export default function (data) {
+export default function (data, type="sentence") {
 
     data.dataType = 'scatterPlot';
     data.sentenceType = 'scatterPlot';
@@ -9,8 +8,23 @@ export default function (data) {
     let NL = new NaturalLanguage([data]);
     NL.addType("scatterPlot", scatterPlotType);
     NL.addSentence("scatterPlot", scatterPlotSentence);
-    return NL.generate(-1, true);
+
+    if (type === 'sentence') return NL.generate(-1, true);
+    else if (type === 'questions') return NL.getQuestions(-1);
+
 }
+
+
+// function addDataType(data) {
+//     data.dataType = 'scatterPlot';
+//     data.sentenceType = 'scatterPlot';
+
+//     let NL = new NaturalLanguage([data]);
+//     NL.addType("scatterPlot", scatterPlotType);
+//     NL.addSentence("scatterPlot", scatterPlotSentence);
+
+//     return NL;
+// }
 
 const scatterPlotType = {
     getDisplayInfo(data) {
@@ -45,7 +59,7 @@ const scatterPlotType = {
 };
 
 const scatterPlotSentence = {
-    simpleSentencese: {
+    simpleSentences: {
         "na": {
             "mean": [
                 "The {statDefinition} {column} for these {type} is {id}: {value} {units}",
@@ -100,17 +114,73 @@ const scatterPlotSentence = {
             "Neutral is not defined!!!!!"
         ]
     },
+    simpleQuestions: {
+        "na": {
+            "mean": [
+                "What makes {id}’s {value} {units} representative?",
+                "How does it compare to {type} of similar characteristics?"
+            ],
+            "median": [
+                "Why is {id}’s {value} {units} a good example of the?",
+                "Does it compare to {type} of similar characteristics?"
+            ],
+            "mode": [
+                "The most frequent value is {value}. Is {id} a good example of what’s the norm?",
+                "Are there other {type} in the data that"
+            ],
+            "percentile98": [
+                "What’s that connection between {id}?",
+                "Why do they all have such a high {column}?",
+                "Any of them out of place? Has anything happened recently to rank it in the top?"
+            ],
+            "percentile2": [
+                "What do {id} have in common?",
+                "What is the reason they all have such a low {column}?",
+                "If any of them is an exception, has anything happened recently to send it to the bottom?"
+            ],
+            "max": [
+                "What’s the reason {id} shows the highest {column}?",
+                "If this is unusual (or historically hasn’t been like this), what has happened recently to rank it in the top?"
+            ],
+            "min": [
+                "Why does {id} have the lowest {column}?",
+                "Has there been a recent change? What has happened to rank it in the top?"
+            ],
+            "default": [
 
-    getSimpleSentenceList(data, simpleSentencese) {
+            ]
+        },
+        "positive": [
+
+        ],
+        "negative": [
+
+        ],
+        "neutral": [
+
+        ]
+    },
+    getSimpleSentenceList(data, simpleSentences) {
         //console.log(data.stat)
         if (data.difference === "na") {
             if (typeof data.stat !== "undefined") {
-                return this.simpleSentencese[data.levelType][data.stat];
+                return this.simpleSentences[data.levelType][data.stat];
             } else {
-                return this.simpleSentencese[data.levelType]["default"];
+                return this.simpleSentences[data.levelType]["default"];
             }
         } else {
-            return this.simpleSentencese[data.levelType];
+            return this.simpleSentences[data.levelType];
+        }
+    },
+    getSimpleQuestionList(data, simpleQuestion) {
+        if (data.difference === "na") {
+            if (typeof data.stat !== "undefined") {
+                return this.simpleQuestions[data.levelType][data.stat];
+            } else {
+                return this.simpleQuestions[data.levelType]["default"];
+            }
+        } else {
+            return this.simpleQuestions[data.levelType];
         }
     }
 };
