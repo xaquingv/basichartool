@@ -14,7 +14,7 @@ function step(step = 1, action) {
     case 'IMPORT_DATA':
     case 'TOGGLE_DATA':
     case 'TRANSPOSE_DATA':
-    //case 'ANALYZE_DATA':
+      //case 'ANALYZE_DATA':
       return 2
     case 'SELECT_CHART':
       return 3
@@ -97,6 +97,23 @@ function show(show = { col: [], row: [] }, action) {
 
     default:
       return show
+  }
+}
+
+function dataAnswer(dataAnswer = null, action) {
+  switch (action.type) {
+    case 'SET_ANSWERS':
+      return action.dataAnswer
+    default:
+      return dataAnswer
+  }
+}
+function dataSentence(dataSentence = null, action) {
+  switch (action.type) {
+    case 'SET_ANSWERS':
+      return action.dataSentence
+    default:
+      return dataSentence
   }
 }
 
@@ -272,6 +289,8 @@ const app = combineReducers({
   stepActive,
   show,
   dataTable,
+  dataAnswer,
+  dataSentence,
   dataChart,
   selection,
   chartId,

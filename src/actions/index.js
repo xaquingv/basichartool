@@ -45,6 +45,12 @@ export const analyzeData = (dataTable, show) => {
   }
 }
 
+export const setAnswers = (dataAnswer, dataSentence) => ({
+  type: "SET_ANSWERS",
+  dataAnswer,
+  dataSentence
+})
+
 /* section 3 */
 export const selectChart = (chartId) => ({
   type: "SELECT_CHART",
