@@ -78,7 +78,9 @@
 .ws-pl { white-space: pre-line; }
 .mr-10 { margin-right: 10px; }
 .ml-10 { margin-left: 10px; }
+.mt-15 { margin-top: 15px; }
 .mt-30 { margin-top: 30px; }
+.mb-15 { margin-bottom: 15px; }
 .mb-5  { margin-bottom: 5px; }
 .ff-ss   {font-family: 'Guardian Text Sans Web', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;}
 .ff-data {font-family: 'Guardian Agate Sans 1 Web', monospace;}

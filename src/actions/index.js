@@ -51,6 +51,11 @@ export const setAnswers = (dataAnswer, dataSentence) => ({
   dataSentence
 })
 
+export const setQuestions = (dataQuestion) => ({
+  type: "SET_QUESTIONS",
+  dataQuestion
+})
+
 /* section 3 */
 export const selectChart = (chartId) => ({
   type: "SELECT_CHART",

@@ -100,6 +100,7 @@ function show(show = { col: [], row: [] }, action) {
   }
 }
 
+// sumstats' answer sets
 function dataAnswer(dataAnswer = null, action) {
   switch (action.type) {
     case 'SET_ANSWERS':
@@ -108,12 +109,22 @@ function dataAnswer(dataAnswer = null, action) {
       return dataAnswer
   }
 }
+// sumstats' question sets for text editing
 function dataSentence(dataSentence = null, action) {
   switch (action.type) {
     case 'SET_ANSWERS':
-      return action.dataSentence
+      return action.dataSentence || dataSentence
     default:
       return dataSentence
+  }
+}
+// sumstats' follow up questions
+function dataQuestion(dataQuestion = null, action) {
+  switch (action.type) {
+    case 'SET_QUESTIONS':
+      return action.dataQuestion
+    default:
+      return dataQuestion
   }
 }
 
@@ -291,6 +302,7 @@ const app = combineReducers({
   dataTable,
   dataAnswer,
   dataSentence,
+  dataQuestion,
   dataChart,
   selection,
   chartId,

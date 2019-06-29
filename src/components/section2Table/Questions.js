@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import './questions.css'
-import { setAnswers } from '../../actions'
+import { setAnswers, setQuestions } from '../../actions'
 // import _ from "underscore"
 import { summarize } from '../../lib/sumstats'
 import sentence from '../../lib/nlg/sentences'
@@ -9,6 +9,7 @@ import sentence from '../../lib/nlg/sentences'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
+import { timingSafeEqual } from 'crypto';
 // import MenuItem from "@material-ui/core/MenuItem"
 // import InputAdornment from '@material-ui/core/InputAdornment'
 // import Select from 'react-select';
@@ -16,7 +17,7 @@ import TextField from '@material-ui/core/TextField'
 // import ComponentSelectMultiple from './SelectMultiple'
 
 
-const typeSumstats = ["min", "mean", "median", "max", "mode", "percentile2", "percentile98"]
+const typeSumstats = ["min", "mean", "median", "max", "percentile2", "percentile98"]
 const numberColMapping = [
     { value: "X-AXIS", label: "X-AXIS" },
     { value: "Y-AXIS", label: "Y-AXIS" },
@@ -26,33 +27,25 @@ const numberColMapping = [
 
 const mapStateToProps = (state) => ({
     dataAnswer: state.dataAnswer,
-    dataSentence: state.dataSentence
+    dataSentence: state.dataSentence,
+    dataQuestion: state.dataQuestion
 })
 
 const mapDispatchToProps = (dispatch) => ({
     setDataAnswer: (answers, sentences) => dispatch(setAnswers(answers, sentences)),
+    setDataQuestion: (questions) => dispatch(setQuestions(questions))
 })
 
 class Questions extends React.Component {
 
-    handleChange = (event, setId, uiType, indexSet = null, indexUi = null) => {
+    handleSets = (event, setId, uiType, indexSet = null, indexUi = null) => {
         const value = (uiType === "switch" ? event.target.checked : event.target.value)
 
         let newSentences = { ...this.sumstatSentences }
         if (setId === "set2" && uiType === "textField") {
             const replaceText = "{" + value + "}."
             newSentences.edit[indexSet] = newSentences.edit[indexSet].map(s => s.split("{")[0] + replaceText)
-            newSentences.text[indexSet] = newSentences.edit[indexSet].map(s => {
-                s = s.replace("{", "")
-                s = s.replace("}.", "")
-                return s
-            })
-        }
-
-        // TODO: debug for switch
-        if (setId === "set2" && uiType === "switch") {
-            console.log(this.answers)
-            console.log("debug:", setId, uiType, indexSet, indexUi)
+            newSentences.text[indexSet] = newSentences.edit[indexSet].map(s => s.split("{")[0] + (value !== "" ? value : "{units}"))
         }
 
         let newAnswers = { ...this.answers }
@@ -66,24 +59,52 @@ class Questions extends React.Component {
             newAnswers[setId][uiType] = value
         }
 
-        // TODO: add to ui
-        // const dataStatsFiltered = this.dataStats.map((stats, index) => stats
-        //     .filter((s, i) => newAnswers.set2[index].switch[i])
-        //     .map(s => {
-        //         let qs = sentence(s, "questions");
-        //         return {
-        //             data: s,
-        //             explanation: qs.map(q => ({ q, a: "{to be answered}"}))
-        //         }
-        //     }
-        //     )
-        // )
-        // console.log(JSON.stringify(dataStatsFiltered.flat()))
-
-        // TODO: stats.forEach(d=> { d.units = 'years'; d.type = 'countries'; });
         // TODO: update dataChart ?
 
         this.props.setDataAnswer(newAnswers, newSentences)
+    }
+
+    handleSet2FollowUp(event, index1, index2) {
+        const {dataQuestion,  setDataAnswer} = this.props
+
+        const newAnswers = { ...this.answers }
+        const newAnswerTextFields = newAnswers.set2FollowUp.textField
+        newAnswerTextFields[index1][index2] = event.target.value
+        const newQuestionAnswer = newAnswerTextFields.map((as, idx) => as.map((a, i) => ({a, q: dataQuestion.sentence[idx][i]}))) 
+        const dataParagraph = newQuestionAnswer.map((qas, i) => {
+            const index = dataQuestion.index[i]
+            return {
+                //index: index,
+                data: this.dataStats[index.set][index.ui],
+                explanation: qas.filter(qa => qa.a !== "")
+            }
+        })
+        console.log(dataParagraph)
+
+        setDataAnswer(newAnswers) 
+    }
+
+    handleSubmit() {
+        const dataStatsFiltered = this.dataStats
+        .map((stats, index) => stats
+            .map((s,i) => {
+                let qs = sentence(s, "questions");
+                return {
+                    //data: { ...s, units: this.answers.set2[index].textField },
+                    //explanation: qs.map(q => ({ q, a: "{to be answered}" }))
+                    index: {set: index, ui:i},
+                    explanation: qs
+                }}
+            ).filter((s, i) => this.answers.set2[index].switch[i])
+        ).flat()
+
+        const questions = dataStatsFiltered.map(stats => stats.explanation/*.map(exp => exp.q)*/)
+        const index = dataStatsFiltered.map(stats => stats.index )
+        // console.log("q:", questions)
+        // console.log("i:", index)
+
+        this.answers.set2FollowUp.textField = questions.map(stats => stats.map(s => ""))
+        this.props.setDataQuestion({sentence: questions, index: index}) //TODO: add answers
     }
 
     componentDidMount() {
@@ -98,7 +119,7 @@ class Questions extends React.Component {
         const { dataChart } = this.props
         if (!dataChart) { return null; }
 
-        const { dataAnswer, dataSentence } = this.props
+        const { dataAnswer, dataSentence, dataQuestion } = this.props
         const { dateCol, numberCols, string1Col } = dataChart
         if ((string1Col.length < 1 && dateCol.length < 1) || numberCols.length < 1) { return null; }
 
@@ -112,7 +133,6 @@ class Questions extends React.Component {
         const numberColGroups = dataChart.keys
         const isNumberColSame = this.numberCols.length === numberCols.length
         this.isDataChange = (!isNumberColSame) || (isNumberColSame ? (this.numberCols.some((col, i) => col.toString() !== numberCols[i].toString())) : false)
-        console.log(this.isDataChange)
         // note that can make underscore isequal work here
 
         const keys = string1Col// || dateCol
@@ -128,16 +148,18 @@ class Questions extends React.Component {
                     ...typeSumstats
                 )
             })
+            // to have the same test copy
+            const sentences = this.dataStats.map(stats => stats.map(s => sentence(s)))
             this.sumstatSentences = {
-                edit: this.dataStats.map(stats => stats.map(s => sentence(s))),
-                text: this.dataStats.map(stats => stats.map(s => sentence(s)))
+                edit: sentences,
+                text: [...sentences]
             }
             this.answers = {
                 set1: {
                     select: numberColMapping.map(mapping => mapping.value),
                     switch: true
                 },
-                set2: this.dataStats.map(group => ({ textField: "", switch: group.map(s => true) })),
+                set2: this.dataStats.map(group => ({ textField: "", switch: group.map(s => false/*true*/) })),
                 set2FollowUp: { textField: [] },
                 set3: { textField: "" }
             }
@@ -146,6 +168,7 @@ class Questions extends React.Component {
             this.sumstatSentences = dataSentence || this.sumstatSentences
         }
 
+        const followUpCount = dataQuestion ? dataQuestion.sentence.length : 0
         // const mappingCount = numberColGroups.length
         // const mapping = numberColMapping.filter((number, index) => index < mappingCount)
 
@@ -178,7 +201,7 @@ class Questions extends React.Component {
                     <FormControlLabel
                         control={<Switch
                             checked={checked}
-                            onChange={(event) => this.handleChange(event, setId, "switch", indexSet, indexUi)}
+                            onChange={(event) => this.handleSets(event, setId, "switch", indexSet, indexUi)}
                             color="primary"
                         />}
                         label={label}
@@ -190,17 +213,23 @@ class Questions extends React.Component {
 
         const textFieldComponent = (label, value, setId, indexSet = null, indexUi = null, rowNumber = 1, style = {}) => {
             return (
-                <TextField
-                    multiline
-                    label={label}
-                    rowsMax={rowNumber}
-                    value={value}
-                    placeholder="Please type your answer here, or leave it empty to skip."
-                    onChange={(event) => this.handleChange(event, setId, "textField", indexSet, indexUi)}
-                    margin="normal"
-                    style={{ width: "66%", ...style }}
-                    InputLabelProps={{ shrink: true, }}
-                />
+                <div key={"tf-" + indexSet + indexUi}>
+                    <TextField
+
+                        multiline
+                        label={label}
+                        rowsMax={rowNumber}
+                        value={value}
+                        placeholder="Please type your answer here, or leave it empty to skip."
+                        onChange={(event) => setId !== "set2FollowUp" ?
+                            this.handleSets(event, setId, "textField", indexSet, indexUi) : 
+                            this.handleSet2FollowUp(event, indexSet, indexUi)
+                        }
+                        margin="normal"
+                        style={{ width: "66%", ...style }}
+                        InputLabelProps={{ shrink: true, }}
+                    />
+                </div>
             )
         }
 
@@ -231,7 +260,20 @@ class Questions extends React.Component {
                         {dataList.map((data, i) => switchComponent(this.sumstatSentences.text[idx][i], this.answers.set2[idx].switch[i], "set2", idx, i))}
                     </div>
                 )}
-                {textFieldComponent("Why do Australia, Japan, Spain, Switzerland have such a high life expentancy?", this.answers.set2FollowUp.textField[0], "set2FollowUp", null, 0, 3, { marginTop: "8px" })}
+
+                <input
+                    type="button"
+                    className={"button btn-create mb-5 mt-15"}
+                    value="Submit"
+                    onClick={() => this.handleSubmit()}
+                />
+
+                {dataQuestion ? dataQuestion.sentence.map((qs, idx) =>
+                    <div key={"qh-" + idx}>
+                        <p className="question-set mb-15">{"Follow up question(s): " + parseInt(idx+1) + "/" + followUpCount}</p>
+                        {qs.map((q, i) => textFieldComponent(q, this.answers.set2FollowUp.textField[idx][i], "set2FollowUp", idx, i, 3))}
+                    </div>
+                ) : null}
 
                 {/* <p className="question-set">Question set 3:</p> */}
                 {/* {textFieldComponent("Are you focusing on some specific country or a group of them?", this.answers.set3.textField, "set3", null, null, 3)} */}

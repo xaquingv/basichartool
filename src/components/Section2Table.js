@@ -120,12 +120,12 @@ class Section extends React.Component {
         <ComponentQuestions dataChart={this.dataChart} callByStep="2s"/>
 
         {/* button */}
-        <input
+        {/* <input
           type="button"
           className={"button btn-create"}
           value="Next"
           // onClick={() => onClickCreate(dataTable, show)}
-        />
+        /> */}
 
         {/* test hidden ground */}
         <span className="test ff-data js-test-x"></span>
