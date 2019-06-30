@@ -5,7 +5,7 @@
 }
 
 h1 {
-  font-size: 1.75rem;
+  font-size: 2rem;
   margin-bottom: 0;
 }
 .f-app {
@@ -13,7 +13,7 @@ h1 {
   font-weight: normal;
 }
 .f-bar {
-  font-family: 'Guardian Agate Sans 1 Web', monospace;
+  font-family: source-sans-pro, Helvetica, Arial, sans-serif;
   color: #f1f1f1; /* n-5 */
   text-align: right;
   line-height: 16px;
@@ -72,14 +72,17 @@ h1 {
 
 /* buttons */
 .button {
-  font-size: 14px;
-  background-color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform:uppercase;
+  background-color: #156ca6;
   width: 20%;
-  min-width: 140px;
-  outline: 0;
+/*  min-width: 140px;
+*/  outline: 0;
   padding: 8px;
-  border: 1px solid #333;
-  cursor: pointer;
+/*  border: 1px solid #333;
+*/  cursor: pointer;
+  color:white;
 }
 .btn-off {
   opacity: 0.25;

@@ -7,10 +7,14 @@
   /*margin-bottom: 30px;*/
 }
 .section2-chart {
-  background-color: #fcfcfc;   
+  background-color: #F0F0F0;   
   overflow: scroll;
   width: 320px;
   max-height: calc(100vh - 328px); /*230px*/
+}
+
+.charts {
+  background-color: #FFF;   
 }
 
 table {

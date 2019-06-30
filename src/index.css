@@ -1,69 +1,4 @@
-/* font the guardian */
-/* fs-headline */
-@font-face {
-  font-family: "Guardian Egyptian Web";
-  src: url("./assets/font/GuardianEgyptianWeb-Regular.eot");
-  src: url("./assets/font/GuardianEgyptianWeb-Regular.woff2") format("woff2"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Regular.woff") format("woff"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Regular.ttf") format("truetype"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Regular.eot?#iefix") format("embedded-opentype"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Regular.svg#GuardianEgyptianWeb-Regular") format("svg");
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-}
-@font-face {
-  font-family: "Guardian Egyptian Web";
-  src: url("./assets/font/GuardianEgyptianWeb-Semibold.eot");
-  src: url("./assets/font/GuardianEgyptianWeb-Semibold.woff2") format("woff2"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Semibold.woff") format("woff"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Semibold.ttf") format("truetype"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Semibold.eot?#iefix") format("embedded-opentype"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Semibold.svg#GuardianEgyptianWeb-Semibold") format("svg");
-  font-weight: 600;
-  font-style: normal;
-  font-stretch: normal;
-}
-/* fs-textSans */
-@font-face {
-  font-family: "Guardian Text Sans Web";
-  src: url("./assets/font/GuardianTextSansWeb-Regular.eot");
-  src: url("./assets/font/GuardianTextSansWeb-Regular.woff2") format("woff2"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Regular.woff") format("woff"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Regular.ttf") format("truetype"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Regular.eot?#iefix") format("embedded-opentype"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Regular.svg#GuardianTextSansWeb-Regular") format("svg");
-  font-weight: normal;/*400;*/
-  font-style: normal;
-  font-stretch: normal;
-}
-@font-face {
-  font-family: "Guardian Text Sans Web";
-  src: url("./assets/font/GuardianTextSansWeb-Bold.eot");
-  src: url("./assets/font/GuardianTextSansWeb-Bold.woff2") format("woff2"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Bold.woff") format("woff"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Bold.ttf") format("truetype"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Bold.eot?#iefix") format("embedded-opentype"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Bold.svg#GuardianTextSansWeb-Bold") format("svg");
-  font-weight: 700;
-  font-style: normal;
-  font-stretch: normal;
-}
-/* fs-data */
-@font-face {
-  font-family: "Guardian Agate Sans 1 Web";
-  src: url("./assets/font/GuardianAgateSans1Web-Regular.eot");
-  src: url("./assets/font/GuardianAgateSans1Web-Regular.woff2") format("woff2"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianAgateSans1Web/GuardianAgateSans1Web-Regular.woff") format("woff"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianAgateSans1Web/GuardianAgateSans1Web-Regular.ttf") format("truetype"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianAgateSans1Web/GuardianAgateSans1Web-Regular.eot?#iefix") format("embedded-opentype"),
-       url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianAgateSans1Web/GuardianAgateSans1Web-Regular.svg#GuardianAgateSans1Web-Regular") format("svg");
-  font-weight: 400;
-  font-style: normal;
-  font-stretch: normal;
-}
-
-
+@import url("https://use.typekit.net/vku3rtg.css");
 /* atomic css */
 .d-n { display: none !important; }
 .d-f { display: flex; }
@@ -83,12 +18,13 @@
 .mt-30 { margin-top: 30px; }
 .mb-15 { margin-bottom: 15px; }
 .mb-5  { margin-bottom: 5px; }
-.ff-ss   {font-family: 'Guardian Text Sans Web', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;}
-.ff-data {font-family: 'Guardian Agate Sans 1 Web', monospace;}
+.ff-ss   {font-family: source-sans-pro, Helvetica, Arial, sans-serif;}
+.ff-data {font-family: source-code-pro, monospace;}
 
 /* index.css */
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Guardian Text Sans Web';
+  font-family: source-sans-pro, Helvetica, Arial, sans-serif;
+  background-color:#F0F0F0;
 }

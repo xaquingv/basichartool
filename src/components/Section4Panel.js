@@ -99,18 +99,18 @@ class Section extends React.Component {
 
     /* highlight */
     //setTimeout({
-      const {paragraphData} = this.props
-      const els = document.querySelectorAll(".js-graph");
-      [...els].forEach((els, idx) => {
-        const titles = paragraphData[idx].data.key.replace("and ", "").split(", ");
-        console.log(titles)
-        titles.forEach(title => {
-          let elCircle = els.querySelector('circle[title^="' + title + '"]');
-          console.log(elCircle)
-          elCircle.setAttribute("stroke", "black")
-          elCircle.setAttribute("stroke-width", "2")
-        })
-      })
+      // const {paragraphData} = this.props
+      // const els = document.querySelectorAll(".js-graph");
+      // [...els].forEach((els, idx) => {
+      //   const titles = paragraphData[idx].data.key.replace("and ", "").split(", ");
+      //   console.log(titles)
+      //   titles.forEach(title => {
+      //     let elCircle = els.querySelector('circle[title^="' + title + '"]');
+      //     console.log(elCircle)
+      //     elCircle.setAttribute("stroke", "black")
+      //     elCircle.setAttribute("stroke-width", "2")
+      //   })
+      // })
     //}, 1000)
   }
 
