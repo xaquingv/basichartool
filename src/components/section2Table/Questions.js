@@ -112,7 +112,7 @@ class Questions extends React.Component {
         }).filter(d => d.explanation.length !== 0)
 
         // console.log(dataParagraph)
-        // console.log(write(dataParagraph))
+        console.log(write(dataParagraph))
         // console.log("submit")
 
         const chartId = document.querySelector(".charts div").id

@@ -67,6 +67,7 @@
 /* atomic css */
 .d-n { display: none !important; }
 .d-f { display: flex; }
+.j-c { justify-content: center; }
 .p-r { position: relative; }
 .c-p { cursor: pointer; }
 .c-d { cursor: url('./assets/icon/colordrop.svg') 12 12, auto !important;}

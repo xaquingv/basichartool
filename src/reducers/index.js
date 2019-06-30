@@ -143,7 +143,7 @@ function chartId(id = "", action) {
   switch (action.type) {
     case 'SELECT_CHART':
     case 'SET_PARAGRAPH':
-      return action.chartId
+      return action.chartId || id
     default:
       return id
   }

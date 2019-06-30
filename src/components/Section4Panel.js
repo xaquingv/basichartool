@@ -4,6 +4,7 @@ import './section4Panel.css'
 import scrollTo from '../lib/scrollTo'
 import { default_metaText, ratio } from '../data/config'
 import { chartList } from './charts'
+import { updateWidth, setParagraph } from '../actions'
 
 import ComponentSize from './section4Panel/Size'
 import ComponentResponsive from './section4Panel/Responsive'
@@ -33,10 +34,13 @@ const mapStateToProps = (state) => ({
   graphWidth: state.dataSetup.width,
   axis: state.dataEditable.axis,
 
+  width: state.dataSetup.width,
   paragraphData: state.dataParagraph
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  setWidth: (width) => dispatch(updateWidth(width)),
+  setDataParagraph: (paragraph) => dispatch(setParagraph(paragraph))
 })
 
 
@@ -48,8 +52,34 @@ class Section extends React.Component {
     return textCredit + (metaData[type] || default_metaText[type])
   }
 
+  handleEdit(event, index) {
+    const { paragraphData, setDataParagraph } = this.props
+    let paragraphs = [...paragraphData]
+    paragraphs[index].paragraph = event.target.value
+
+    setDataParagraph(paragraphs)
+  }
+  
+  setHighlight() {
+    const {paragraphData} = this.props
+    const els = document.querySelectorAll(".js-graph");
+    [...els].forEach((els, idx) => {
+      const titles = paragraphData[idx].data.key.replace("and ", "").split(", ");
+      console.log(titles)
+      titles.forEach(title => {
+        let elCircle = els.querySelector('circle[title^="' + title + '"]');
+        console.log(elCircle)
+        elCircle.setAttribute("stroke", "black")
+        elCircle.setAttribute("stroke-width", "2")
+      })
+    })
+  }
+
+  componentDidMount() {
+    this.props.setWidth("860px")
+  }
   componentDidUpdate() {
-    const { stepActive, chartId, chartData } = this.props
+    const { stepActive, chartId, chartData, setHighlight} = this.props
     if (stepActive < STEP) return
 
     /* chart axes responsive */
@@ -64,8 +94,24 @@ class Section extends React.Component {
     /* navigation */
     // TODO: replace with 1. dispatch scrollSteps
     // to let Navigation.js take care of it or ...
-    const to = document.querySelector("#section3").offsetTop - 60
-    scrollTo(to, null, 1000)
+    //const to = document.querySelector("#section3").offsetTop - 60
+    //scrollTo(to, null, 1000)
+
+    /* highlight */
+    //setTimeout({
+      const {paragraphData} = this.props
+      const els = document.querySelectorAll(".js-graph");
+      [...els].forEach((els, idx) => {
+        const titles = paragraphData[idx].data.key.replace("and ", "").split(", ");
+        console.log(titles)
+        titles.forEach(title => {
+          let elCircle = els.querySelector('circle[title^="' + title + '"]');
+          console.log(elCircle)
+          elCircle.setAttribute("stroke", "black")
+          elCircle.setAttribute("stroke-width", "2")
+        })
+      })
+    //}, 1000)
   }
 
 
@@ -97,9 +143,9 @@ class Section extends React.Component {
         <div className="graph js-graph" style={{ width: graphWidth }}>
           {/* header */}
           <header className="header">
-            <div className={"headline" + (display["headline"] ? "" : " d-n")} >
+            {/* <div className={"headline" + (display["headline"] ? "" : " d-n")} >
               <ComponentEditor text={this.getMetaText("headline")} bold={true} />
-            </div>
+            </div> */}
             <div className={"standfirst" + (display["standfirst"] ? "" : " d-n")}>
               <ComponentEditor text={this.getMetaText("standfirst")} />
             </div>
@@ -131,16 +177,16 @@ class Section extends React.Component {
         </div>
       ) : null
 
-    const textFieldComponent = (value, index, rowNumber = 1, style = {}) => {
+    const textFieldComponent = (value, index) => {
       return (
-        <div key={"tf-" + index}>
+        <div key={"tf-" + index} className="d-f j-c">
           <TextField
             multiline
             value={value}
             placeholder="Edit this paragraph"
-            // onChange={(event) => this.handleEdit()}
+            onChange={(event) => this.handleEdit(event, index)}
             margin="normal"
-            style={{ width: "100%", ...style }}
+            style={{ width: "620" }}
             InputLabelProps={{ shrink: true, }}
           />
         </div>
@@ -153,13 +199,17 @@ class Section extends React.Component {
         {setupComponent}
         {/* {graphComponent} */}
         {/* {articleComponent} */}
+        <div className={"headline"} >
+          <ComponentEditor text={"Headline"} bold={true} />
+        </div>
         {
-          paragraphData ? paragraphData.map((p, i) => 
+          paragraphData ? paragraphData.map((p, i) =>
             <div key={"p-" + i}>
+              {/* {textFieldComponent(p.paragraph, i)} */}
+              <div className="standfirst"><ComponentEditor text={p.paragraph}/></div>
               {graphComponent}
-              {textFieldComponent(p.paragraph, i)}
             </div>
-          ) : null  
+          ) : null
         }
         {/* any styles inside graph needs to be either included in the template.js or inline */}
       </div>

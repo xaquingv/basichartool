@@ -103,6 +103,7 @@
   -webkit-font-smoothing: antialiased;
   /* editor only */
   transition: all 1s ease-out;
+  margin: 15px auto; /* center */
 }
 .chart {
   position: relative;
@@ -112,20 +113,30 @@
 }
 .headline {
   color: black;
-  font-size: 18px;
+  font-size: 18px !important;
   font-family: 'Guardian Egyptian Web', Georgia, serif;
   /* font-weight: 600; */
   line-height: 24px;
-  margin-bottom: 12px;
+  margin: 30px auto 0;
+  text-align: center; /* center */
+  max-width: 620px
 }
 .standfirst {
   font-size: 14px;
   line-height: 18px;
   margin-top: 12px;
   margin-bottom: 12px;
+  /* paragraph */
+  color: #333;
+  line-height: 1.5em;
+  font-family: 'Guardian Text Sans Web';
+  letter-spacing: 0.00938em;
+  width: 620px;
+  margin: 15px auto 30px;
 }
 .legend {
   line-height: 18px;
+  text-align: center; /* center */
 }
 .legend-item {
   white-space: nowrap;
@@ -175,6 +186,7 @@ footer {
   margin-top: 6px;
   padding-top: 8px;
   border-top: 1px dotted #bdbdbd; /*n-3*/
+  text-align: center; /* center */
 }
 footer > div {
   word-break: break-word;

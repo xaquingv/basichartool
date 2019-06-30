@@ -7,7 +7,7 @@
     font-size: 14px;
 }
 .question-set {
-    margin-top: 30px;
+    margin-top: 15px;
     font-size: 16px; 
 }
 .question-group {
@@ -66,9 +66,11 @@
 .questions .MuiInput-underline {
     width: 66%;
 }
+#section3 .MuiFormControl-root {
+    width: 620px;
+}
 #section3 .MuiInput-underline,
 #section3 .MuiInput-underline:before {
-    width: 66%;
     border: 0;
     /* border: 2px solid transparent !important; */
 }
