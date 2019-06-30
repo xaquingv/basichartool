@@ -12,7 +12,8 @@ const mapStateToProps = (state, props) => ({
   //data: state.dataChart,
   data: { ...state.dataChart, ...props.dataChart },
   axis: state.dataEditable.axis,
-  colors: state.dataSetup.colors
+  colors: state.dataSetup.colors,
+  dataParagraph: state.dataParagraph
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -82,7 +83,7 @@ class ScatterPlot extends React.Component {
   renderChart() {
 
     /* data */
-    const { data, colors, axis, callByStep } = this.props
+    const { data, colors, axis, callByStep, dataParagraph } = this.props
 
     const names = data.string1Col
     const numberCols = data.numberCols
@@ -142,6 +143,7 @@ class ScatterPlot extends React.Component {
     //console.log(count)
 
     // chart
+  
     const dataChart = [numberRows.map((n, i) => {
       //const countOverlap = count["x"+n[0]+"y"+n[1]]
       //const isOverlapped = countOverlap > 1
@@ -156,9 +158,8 @@ class ScatterPlot extends React.Component {
     })]
 
     /* draw */
-    //console.log("draw:", this.scale);
-    //console.log(isSize, this.margin, d3.extent(numberCols[1]));
-    drawChart(this.refs, dataChart, this.scale, "scatter", colors, callByStep, this.margin)
+    const countries = dataParagraph ?  dataParagraph.map(p => p.data.key) : null
+    drawChart(this.refs, dataChart, this.scale, "scatter", colors, callByStep, this.margin, countries)
     // TOOD: reset view box
   }
 
