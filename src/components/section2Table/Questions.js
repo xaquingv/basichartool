@@ -1,15 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import './questions.css'
-import { setAnswers, setQuestions } from '../../actions'
+import { setAnswers, setQuestions, setParagraph } from '../../actions'
 // import _ from "underscore"
 import { summarize } from '../../lib/sumstats'
 import sentence from '../../lib/nlg/sentences'
+import write from '../../lib/write-data'
 
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
-import { timingSafeEqual } from 'crypto';
 // import MenuItem from "@material-ui/core/MenuItem"
 // import InputAdornment from '@material-ui/core/InputAdornment'
 // import Select from 'react-select';
@@ -33,12 +33,13 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     setDataAnswer: (answers, sentences) => dispatch(setAnswers(answers, sentences)),
-    setDataQuestion: (questions) => dispatch(setQuestions(questions))
+    setDataQuestion: (questions) => dispatch(setQuestions(questions)),
+    setDataParagraph: (paragraph, chart, id) => dispatch(setParagraph(paragraph, chart, id))
 })
 
 class Questions extends React.Component {
 
-    handleSets = (event, setId, uiType, indexSet = null, indexUi = null) => {
+    handleSets(event, setId, uiType, indexSet = null, indexUi = null) {
         const value = (uiType === "switch" ? event.target.checked : event.target.value)
 
         let newSentences = { ...this.sumstatSentences }
@@ -59,32 +60,22 @@ class Questions extends React.Component {
             newAnswers[setId][uiType] = value
         }
 
-        // TODO: update dataChart ?
+        // TODO: update dataChart if mapping change?
 
         this.props.setDataAnswer(newAnswers, newSentences)
     }
 
     handleSet2FollowUp(event, index1, index2) {
-        const {dataQuestion,  setDataAnswer} = this.props
+        const {setDataAnswer} = this.props
 
         const newAnswers = { ...this.answers }
         const newAnswerTextFields = newAnswers.set2FollowUp.textField
         newAnswerTextFields[index1][index2] = event.target.value
-        const newQuestionAnswer = newAnswerTextFields.map((as, idx) => as.map((a, i) => ({a, q: dataQuestion.sentence[idx][i]}))) 
-        const dataParagraph = newQuestionAnswer.map((qas, i) => {
-            const index = dataQuestion.index[i]
-            return {
-                //index: index,
-                data: this.dataStats[index.set][index.ui],
-                explanation: qas.filter(qa => qa.a !== "")
-            }
-        })
-        console.log(dataParagraph)
-
+        
         setDataAnswer(newAnswers) 
     }
 
-    handleSubmit() {
+    handleContinue() {
         const dataStatsFiltered = this.dataStats
         .map((stats, index) => stats
             .map((s,i) => {
@@ -100,11 +91,33 @@ class Questions extends React.Component {
 
         const questions = dataStatsFiltered.map(stats => stats.explanation/*.map(exp => exp.q)*/)
         const index = dataStatsFiltered.map(stats => stats.index )
-        // console.log("q:", questions)
-        // console.log("i:", index)
 
         this.answers.set2FollowUp.textField = questions.map(stats => stats.map(s => ""))
         this.props.setDataQuestion({sentence: questions, index: index}) //TODO: add answers
+    }
+
+    handleSubmit() {
+        const {dataQuestion, setDataParagraph, dataChart} = this.props
+        const newQuestionAnswer = this.answers.set2FollowUp.textField.map((as, idx) => as.map((a, i) => ({a, q: dataQuestion.sentence[idx][i]}))) 
+        const dataParagraph = newQuestionAnswer.map((qas, i) => {
+            const index = dataQuestion.index[i]
+            return {
+                //index: index,
+                data: {
+                    ...this.dataStats[index.set][index.ui], 
+                    units: this.answers.set2[index.set].textField
+                },
+                explanation: qas.filter(qa => qa.a !== "")
+            }
+        }).filter(d => d.explanation.length !== 0)
+
+        // console.log(dataParagraph)
+        // console.log(write(dataParagraph))
+        // console.log("submit")
+
+        const chartId = document.querySelector(".charts div").id
+
+        setDataParagraph(write(dataParagraph), dataChart, chartId)
     }
 
     componentDidMount() {
@@ -226,7 +239,7 @@ class Questions extends React.Component {
                             this.handleSet2FollowUp(event, indexSet, indexUi)
                         }
                         margin="normal"
-                        style={{ width: "66%", ...style }}
+                        style={{ width: "100%", ...style }}
                         InputLabelProps={{ shrink: true, }}
                     />
                 </div>
@@ -261,20 +274,28 @@ class Questions extends React.Component {
                     </div>
                 )}
 
-                <input
+                <a href = "#continue"><input
+                    type="button"
+                    className={"button btn-create mb-5 mt-15"}
+                    value="Continue"
+                    onClick={() => this.handleContinue()}
+                    id = "continue"
+                /></a>
+
+                {dataQuestion ? (dataQuestion.sentence.length !== 0 ? 
+                    dataQuestion.sentence.map((qs, idx) =>
+                    <div key={"qh-" + idx}>
+                        <p className="question-set mb-15">{"Follow up question set: " + parseInt(idx+1) + "/" + followUpCount}</p>
+                        {qs.map((q, i) => textFieldComponent(q, this.answers.set2FollowUp.textField[idx][i], "set2FollowUp", idx, i, 3))}
+                    </div>) : <p className="instruction">There is no follow up questions</p>
+                ) : null}
+                {dataQuestion ? <input
                     type="button"
                     className={"button btn-create mb-5 mt-15"}
                     value="Submit"
                     onClick={() => this.handleSubmit()}
-                />
-
-                {dataQuestion ? dataQuestion.sentence.map((qs, idx) =>
-                    <div key={"qh-" + idx}>
-                        <p className="question-set mb-15">{"Follow up question(s): " + parseInt(idx+1) + "/" + followUpCount}</p>
-                        {qs.map((q, i) => textFieldComponent(q, this.answers.set2FollowUp.textField[idx][i], "set2FollowUp", idx, i, 3))}
-                    </div>
-                ) : null}
-
+                /> : null}
+                
                 {/* <p className="question-set">Question set 3:</p> */}
                 {/* {textFieldComponent("Are you focusing on some specific country or a group of them?", this.answers.set3.textField, "set3", null, null, 3)} */}
                 {/* <ComponentSelectMultiple dataKeys={dataKeys} label="Are you focusing on some specific country or a group of them?" /> */}

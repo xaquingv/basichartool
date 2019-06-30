@@ -16,6 +16,7 @@
 }
 
 /* override material-ui styles */
+#section3 .MuiInputBase-input,
 .questions .MuiFormLabel-root,
 .questions .MuiInputBase-input,
 .questions .MuiTypography-body1,
@@ -24,6 +25,9 @@
     font-size: 14px;
     font-family: 'Guardian Text Sans Web';
     transform: scale(1);
+}
+.questions .MuiInputBase-input {
+    color: var(--qablue);
 }
 
 /* switch */
@@ -58,6 +62,18 @@
 }
 .questions .MuiInput-underline:after {
     border-bottom: 2px solid var(--qablue);  
+}
+.questions .MuiInput-underline {
+    width: 66%;
+}
+#section3 .MuiInput-underline,
+#section3 .MuiInput-underline:before {
+    width: 66%;
+    border: 0;
+    /* border: 2px solid transparent !important; */
+}
+#section3 .MuiInput-underline:after {
+    border-bottom: 2px solid var(--qagrey);  
 }
 
 /* select and menu*/

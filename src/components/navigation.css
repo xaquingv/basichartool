@@ -32,7 +32,7 @@
     padding-left: 0;
     padding-right: 8px;
     margin-right: 8px;
-    width: 40px;
+    width: 25%;
 }
 /*.ul-flex li:last-child {
     margin-left: 10px;
@@ -40,7 +40,7 @@
 
 .li {
     color: #dcdcdc;
-    width: calc(100% / 5);
+    width: calc(100% / 4);
 }
 .li:hover {
     color: #333;

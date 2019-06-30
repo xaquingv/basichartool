@@ -17,6 +17,7 @@ function step(step = 1, action) {
       //case 'ANALYZE_DATA':
       return 2
     case 'SELECT_CHART':
+    case 'SET_PARAGRAPH':
       return 3
 
     default:
@@ -35,6 +36,7 @@ function stepActive(stepActive = 1, action) {
       return 2
     //case 'ANALYZE_DATA':
     case 'SELECT_CHART':
+    case 'SET_PARAGRAPH':
       return 3
 
     default:
@@ -127,11 +129,32 @@ function dataQuestion(dataQuestion = null, action) {
       return dataQuestion
   }
 }
+// sumstats' paragraph data
+function dataParagraph(dataParagraph = null, action) {
+  switch (action.type) {
+    case 'SET_PARAGRAPH':
+      return action.dataParagraph
+    default:
+      return dataParagraph
+  }
+}
+
+function chartId(id = "", action) {
+  switch (action.type) {
+    case 'SELECT_CHART':
+    case 'SET_PARAGRAPH':
+      return action.chartId
+    default:
+      return id
+  }
+}
 
 function dataChart(dataChart = {}, action) {
   switch (action.type) {
     // reset
+    // TODO: debug
     case 'ANALYZE_DATA':
+    //case 'SET_PARAGRAPH':
       const resetDataChart = { legend: [], scales: {}, margin: undefined, indent: 0, marginTop: 0 }
       return {
         ...resetDataChart,
@@ -198,19 +221,11 @@ function selection(chartList = [], action) {
   }
 }
 
-function chartId(id = "", action) {
-  switch (action.type) {
-    case 'SELECT_CHART':
-      return action.chartId
-    default:
-      return id
-  }
-}
-
 function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, width: "300px" }, action) {
   switch (action.type) {
     // reset
     case 'SELECT_CHART':
+    case 'SET_PARAGRAPH':
       return {
         ...dataSetup,
         pickColor: ""//dataSetup.colors[0]//"#000000"
@@ -265,6 +280,7 @@ function dataEditable(dataEditable = {}, action) {
   switch (action.type) {
     // reset
     case 'SELECT_CHART':
+    case 'SET_PARAGRAPH':
       return {}
     // update
     case 'UPDATE_COLOR_INPUT':
@@ -303,6 +319,7 @@ const app = combineReducers({
   dataAnswer,
   dataSentence,
   dataQuestion,
+  dataParagraph,
   dataChart,
   selection,
   chartId,

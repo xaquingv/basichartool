@@ -9,26 +9,13 @@ import kurtosis from 'compute-kurtosis'
 import skew from 'compute-skewness'
 import pcorr from 'compute-pcorr'
 
-// const statsToDefinition = {
-//     mean: 'average',
-//     median: 'median',
-//     mode: 'most frequent value',
-//     min: 'lowest value',
-//     max: 'highest value',
-//     kurtosis: 'kurtosis',
-//     skewness: 'skewness',
-//     outliers: 'outliers',
-//     percentile2: 'lowest',
-//     percentile98: 'highest'
-// }
-
 export function summarize(col, data, type, ...stats) {
 
     const sumstats = stats.map((d, i) => {
 
         const stat = d;
         const value = getValue(compute(d, data), data);
-        
+
         return {
             column: col,
             stat: stat,
@@ -79,7 +66,8 @@ function getValue(d, data) {
         value = { data: match, exists: true, id: match.key, value: match.value }
     } else {
         let match = closest(d, data)
-        value = { data: { values: d, exists: false, closest: closest(d, data) }, id: match.key, value: d }
+        //value = { data: { values: d, exists: false, closest: closest(d, data) }, id: match.key, value: d }
+        value = { data: { values: d, exists: false, closest: closest(d, data) }, id: match.key, value: match.value }
     }
 
     return value;
@@ -112,7 +100,7 @@ function compute(stat, data) {
 }
 
 // function getRow(data, stat, value) {
-//     return closest(value, data)
+
 //     if (stat === 'mean' || stat === 'median' || stat === 'mode' || stat === 'min' || stat === 'max') {
 //         return closest(value, data)
 //     } else {
@@ -143,5 +131,20 @@ function define(stat) {
 function percentile(data, p) {
     data = data.sort((a, b) => a.value - b.value);
     const index = Math.ceil(data.length * (p / 100)) - 1;
-    return data.filter((d, i) => (p > 50) ? i > index : i < index);
+    const _data = data.filter((d, i) => (p > 50) ? i > index : i < index);
+    const sorted = (p > 50) ? _data.sort((a, b) => b.value - a.value) : _data.sort((a, b) => a.value - b.value);
+    return sorted;
 }
+
+// const statsToDefinition = {
+//     mean: 'average',
+//     median: 'median',
+//     mode: 'most frequent value',
+//     min: 'lowest value',
+//     max: 'highest value',
+//     kurtosis: 'kurtosis',
+//     skewness: 'skewness',
+//     outliers: 'outliers',
+//     percentile2: 'lowest',
+//     percentile98: 'highest'
+// }

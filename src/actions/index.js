@@ -44,16 +44,21 @@ export const analyzeData = (dataTable, show) => {
     selection: selectCharts(summary)
   }
 }
-
+// sumstats
 export const setAnswers = (dataAnswer, dataSentence) => ({
   type: "SET_ANSWERS",
   dataAnswer,
   dataSentence
 })
-
 export const setQuestions = (dataQuestion) => ({
   type: "SET_QUESTIONS",
   dataQuestion
+})
+export const setParagraph = (dataParagraph, dataChart, chartId) => ({
+  type: "SET_PARAGRAPH",
+  dataParagraph,
+  dataChart,
+  chartId
 })
 
 /* section 3 */

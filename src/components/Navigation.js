@@ -11,7 +11,7 @@ const navList = [
     "2. Discover",
     //"3. Select",
     "3. Edit",
-    "4. Download"
+    // "4. Download"
 ];
 
 const marginTop = 60

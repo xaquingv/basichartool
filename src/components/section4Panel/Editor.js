@@ -65,6 +65,7 @@ class InlineEditor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+  // componentWillUpdate(nextProps) {
     if (this.props.text === nextProps.text) return
 
     // update if content changes

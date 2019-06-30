@@ -1,3 +1,9 @@
+#section5 {
+  min-height: 36px;
+  margin-top: -50px;
+  margin-bottom: 30px;
+}
+
 .link {
   font-family: monospace;
   font-size: 12px;

@@ -24,9 +24,23 @@ class ScatterPlot extends React.Component {
 
   componentDidMount() {
     this.renderChart()
+    this.isChartDataSet = false
   }
   componentDidUpdate() {
     this.renderChart()
+
+    // TODO: think of how to set this data properly
+    const { data, onSelect } = this.props 
+    if (!this.isChartDataSet) {
+      const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : [""]
+      onSelect(data, legendKeys, this.scale, this.margin)
+      console.log("update key/scale/margin")
+      console.log("d", data)
+      console.log("l", legendKeys)
+      console.log("s", this.scale)
+      console.log("m", this.margin)
+      this.isChartDataSet = true
+    }
   }
 
   render() {
