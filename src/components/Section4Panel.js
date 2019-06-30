@@ -79,7 +79,7 @@ class Section extends React.Component {
     this.props.setWidth("860px")
   }
   componentDidUpdate() {
-    const { stepActive, chartId, chartData, setHighlight} = this.props
+    const { stepActive, chartId, chartData} = this.props
     if (stepActive < STEP) return
 
     /* chart axes responsive */
@@ -103,15 +103,12 @@ class Section extends React.Component {
       // const els = document.querySelectorAll(".js-graph");
       // [...els].forEach((els, idx) => {
       //   const titles = paragraphData[idx].data.key.replace("and ", "").split(", ");
-      //   console.log(titles)
-      //   titles.forEach(title => {
-      //     let elCircle = els.querySelector('circle[title^="' + title + '"]');
-      //     console.log(elCircle)
       //     elCircle.setAttribute("stroke", "black")
       //     elCircle.setAttribute("stroke-width", "2")
       //   })
       // })
     //}, 1000)
+    // console.log("hightlight", chartData.ranges)
   }
 
 
@@ -204,9 +201,9 @@ class Section extends React.Component {
         </div>
         {
           paragraphData ? paragraphData.map((p, i) =>
-            <div key={"p-" + i}>
+            <div key={"p-" + i} id={"p-" + i}>
               {/* {textFieldComponent(p.paragraph, i)} */}
-              <div className="standfirst"><ComponentEditor text={p.paragraph}/></div>
+              <div className="paragraph"><ComponentEditor text={p.paragraph}/></div>
               {graphComponent}
             </div>
           ) : null

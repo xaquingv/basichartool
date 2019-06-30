@@ -126,13 +126,15 @@
   line-height: 18px;
   margin-top: 12px;
   margin-bottom: 12px;
-  /* paragraph */
+}
+.paragraph {
   color: #333;
+  font-size: 14px;
   line-height: 1.5em;
   font-family: 'Guardian Text Sans Web';
   letter-spacing: 0.00938em;
   width: 620px;
-  margin: 15px auto 30px;
+  margin: 15px auto 30px; 
 }
 .legend {
   line-height: 18px;
