@@ -7,6 +7,10 @@
 h1 {
   font-size: 2rem;
   margin-bottom: 0;
+  margin: 0 auto;
+}
+p {
+  margin: 0 auto;
 }
 .f-app {
   font-size: 1rem;
@@ -32,6 +36,7 @@ h1 {
 
 .section {
   margin: 60px auto 60px;
+  margin-top: 6rem;
   max-width: 1284px;/*1024px;*/
   width: 100%;
   min-height: calc(100vh - 120px);
@@ -56,14 +61,17 @@ h1 {
 }
 
 .instruction {
-  color: #767676;
-  font-family: monospace;
-  line-height: 20px;
-  margin: 20px 0;
+  color: #333;
+  font-family: source-sans-pro, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  margin: 0 auto;
+  padding-bottom: 2rem;
+  font-size: 1.2rem;
+  font-weight: 300;
 }
 .warning {
   color: #767676;
-  font-family: monospace;
+  font-family: source-code-pro, monospace;
   line-height: 15px;
   width: 304px !important;
   padding: 7px !important;  
@@ -74,15 +82,13 @@ h1 {
 .button {
   font-size: 1rem;
   font-weight: 600;
-  text-transform:uppercase;
   background-color: #156ca6;
-  width: 20%;
-/*  min-width: 140px;
-*/  outline: 0;
+  min-width: 3rem;
+  outline: 0;
   padding: 8px;
-/*  border: 1px solid #333;
-*/  cursor: pointer;
+  cursor: pointer;
   color:white;
+  border-radius: .3rem;
 }
 .btn-off {
   opacity: 0.25;
@@ -90,9 +96,13 @@ h1 {
 }
 /* section 1 */
 .btn-import {
-  width: 40%;
+  min-width: 10rem;
 }
-.btn-clear { opacity: 0.25 }
+.btn-clear {
+  background-color: #F0F0F0;
+  border:1px solid #505050;
+  color:#505050;
+}
 .btn-clear:hover { opacity: 1 }
 /* section 2 */
 .btn-create {
@@ -100,7 +110,7 @@ h1 {
 }
 
 .test {
-  font-size: 13px;
+  font-size: 1rem;
   visibility: hidden;
   white-space: nowrap;
 }

@@ -10,11 +10,12 @@
 .setup-p1,
 .setup-p2 {
   color: #333;
-  background-color: #f6f6f6; /* n-6 */
-  font-family: monospace;
+  background-color: #FFF; /* n-6 */
+  font-family: source-sans-pro, Helvetica, Arial, sans-serif;
   width: calc(50% - 5px);
   box-sizing: border-box;
   padding: 15px 10px;
+  box-shadow:1px 1px 8px rgba(0,0,0,.1);
 }
 .setup-p1 div {
   line-height: 24px;
@@ -98,8 +99,8 @@
 /* TOTHINK: temp or not, sync with template */
 .graph {
   color: #767676; /*n-2*/
-  font-size: 13px;
-  font-family: 'Guardian Text Sans Web', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+  font-size: .85rem;
+  font-family: source-sans-pro, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   /* editor only */
   transition: all 1s ease-out;
@@ -113,10 +114,10 @@
 }
 .headline {
   color: black;
-  font-size: 18px !important;
-  font-family: 'Guardian Egyptian Web', Georgia, serif;
+  font-size: 1.8rem !important;
+  font-family: source-sans-pro, Helvetica, Arial, sans-serif;
   /* font-weight: 600; */
-  line-height: 24px;
+  line-height: 1.5;
   margin: 30px auto 0;
   text-align: center; /* center */
   max-width: 620px
@@ -129,10 +130,9 @@
 }
 .paragraph {
   color: #333;
-  font-size: 14px;
-  line-height: 1.5em;
-  font-family: 'Guardian Text Sans Web';
-  letter-spacing: 0.00938em;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  font-family: source-serif-pro, serif;
   width: 620px;
   margin: 15px auto 30px; 
 }
@@ -148,24 +148,24 @@
 }
 .legend-color {
   position: absolute;
-  top: 1px;
+  top: 3px;
   display: inline-block;
-  width: 6px;
-  height: 12px;
-  border-radius: 2px;
+  width: .7rem;
+  height: .7rem;
+  border-radius: .35rem;
   /* to help selection, no need in templates */
-  margin: 0 4px 4px 0;
-  cursor: url('../assets/icon/colordrop.svg') 12 12, auto;
+/*  margin: 0 4px 4px 0;
+*/  cursor: url('../assets/icon/colordrop.svg') 12 12, auto;
 }
 .legend-label {
-  margin-left: 10px; /* 6+4 */
+  margin-left: 1rem; /* 6+4 */
   pointer-events: all;
 }
 
 .axis-x,
 .axis-y {
-  color: #bdbdbd; /* n-3 */
-  font-family: 'Guardian Agate Sans 1 Web', monospace;
+  color: #999; /* n-3 */
+  font-family: source-sans-pro, Helvetica, Arial, sans-serif;
 }
 .axis-top-text {
   white-space: nowrap;

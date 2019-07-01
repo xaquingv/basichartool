@@ -1,13 +1,14 @@
 .charts > div {
   text-align: center;
   width: calc(320px - 22px); /* 10 (padding) * 2 + 2 (border)*/
-  border: 1px solid #dcdcdc;
   display: inline-block;
-  margin-right: -1px;
-  margin-bottom: -1px;
-  padding: 10px;
+/*  margin-right: -1px;
+  margin-bottom: -1px;*/
+  padding: 0 5px;
   padding-bottom: 5px;
   pointer-events: none;
+  box-shadow:1px 1px 8px rgba(0,0,0,.1);
+  background-color: #FFF; 
 }
 .charts > div > * {
   pointer-events: all;
@@ -18,6 +19,10 @@
   margin-bottom: 7px;
   overflow: hidden;
   text-align: left; /* for chart */
+}
+
+.charts {
+   padding-left:.5rem;
 }
 
 #section2 .canvas,

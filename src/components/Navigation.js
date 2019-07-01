@@ -50,7 +50,7 @@ class Navigation extends React.Component {
     return (
       <nav className="nav">
         <ul className="ul-flex l-section">
-          <li>Step</li>
+          
           {navList.map((li, index) => <li
             key={"step"+(index+1)}
             ref={(node) => this.node = node}

@@ -6,17 +6,21 @@
 /* input text and textarea */
 .text,
 .textarea {
-  font-family: monospace;
-  font-size: 13px;
+  font-family: source-code-pro, monospace;
+  font-size: .85rem;
   display: block;
-  padding: 10px 5px;
+  padding: 1rem;
   border: 1px solid #dcdcdc; /*n-4*/
   box-sizing: border-box;
+  box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+  background-color: #F6F6F6;
+  transition: all .6s;
 }
 .text:focus,
 .textarea:focus{
   outline: none;
-  border-color: #333;
+  background-color: #FFF;
+  box-shadow: inset 0 0 6px rgba(0,0,0,.15);
 }
 .text {
   width: calc(80% - 5px);

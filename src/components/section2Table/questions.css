@@ -1,18 +1,26 @@
 :root {
-    --qablue: #197caa;
-    --qagrey: #333;
+    --qablue: #156ca6;
+    --qagrey: #808080;
+    --qablack: #333;
   }
 
 .questions {
     font-size: 14px;
 }
 .question-set {
-    margin-top: 15px;
-    font-size: 16px; 
+    margin-top: 3rem;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color:#808080; 
+    width:100%;
+    max-width: none;
 }
 .question-group {
+    font-size: .85rem;
     font-weight: bold;
-    border-bottom: 1px solid;
+    font-family: source-code-pro, monospace;
+    width:100%;
+    max-width: none;
 }
 
 /* override material-ui styles */
@@ -21,9 +29,9 @@
 .questions .MuiInputBase-input,
 .questions .MuiTypography-body1,
 .MuiPaper-root .MuiMenuItem-root {
-    color: var(--qagrey);
-    font-size: 14px;
-    font-family: 'Guardian Text Sans Web';
+    color: var(--qablack);
+    font-size: 1.125rem;
+    font-family: source-sans-pro, Helvetica, Arial, sans-serif;
     transform: scale(1);
 }
 .questions .MuiInputBase-input {
@@ -55,7 +63,11 @@
 /* textfield */
 .questions .MuiFormControl-root {
     /* width: 67%; */
-    margin-top: 0;
+    margin-top: 1rem;
+}
+.MuiInputLabel-formControl {
+    font-weight: 600!important;
+
 }
 .questions .MuiFormLabel-root.Mui-focused {
     color: var(--qablue);  
