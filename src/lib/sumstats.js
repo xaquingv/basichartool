@@ -99,14 +99,6 @@ function compute(stat, data) {
 
 }
 
-// function getRow(data, stat, value) {
-
-//     if (stat === 'mean' || stat === 'median' || stat === 'mode' || stat === 'min' || stat === 'max') {
-//         return closest(value, data)
-//     } else {
-//     }
-// }
-
 function outliers(data) {
     return data.filter(d => d <= (q(data, 4)[1] - iqr(data) * 1.5) || d >= (q(data, 4)[3] + iqr(data) * 1.5));
 }
@@ -138,16 +130,3 @@ function percentile(data, p) {
     const sorted = (p > 50) ? _data.sort((a, b) => b.value - a.value) : _data.sort((a, b) => a.value - b.value);
     return sorted;
 }
-
-// const statsToDefinition = {
-//     mean: 'average',
-//     median: 'median',
-//     mode: 'most frequent value',
-//     min: 'lowest value',
-//     max: 'highest value',
-//     kurtosis: 'kurtosis',
-//     skewness: 'skewness',
-//     outliers: 'outliers',
-//     percentile2: 'lowest',
-//     percentile98: 'highest'
-// }
