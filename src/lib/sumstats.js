@@ -130,7 +130,10 @@ function define(stat) {
 
 function percentile(data, p) {
     data = data.sort((a, b) => a.value - b.value);
-    const index = Math.ceil(data.length * (p / 100)) - 1;
+    const i = Math.ceil(data.length * (p / 100)) - 1;
+    let index = i;
+    if (i < 1) index = 1;
+    else if (i >= data.length - 1) index = data.length - 2;
     const _data = data.filter((d, i) => (p > 50) ? i > index : i < index);
     const sorted = (p > 50) ? _data.sort((a, b) => b.value - a.value) : _data.sort((a, b) => a.value - b.value);
     return sorted;
