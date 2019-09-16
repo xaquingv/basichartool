@@ -27,6 +27,7 @@ export const chartList = {
   plotScatter:      PlotScatter,
   lineDiscrete:     LineDiscrete,
   lineContinue:     LineContinue,
+  areaGroupStack:   AreaStack,
   plotDot:          PlotDot,
   onBarDiffArrow:   OnBarArrow,
   onBarDiffDots:    OnBarDots,
@@ -40,9 +41,8 @@ export const chartList = {
   col:              Cols,
   colGroup:         Cols,
   colGroupStack:    ColStack,
-  colGroupStack100: AreaStack,
+  //colGroupStack100: AreaStack,
   slopegraph:       Slopegraph,
-  //areaGroupStack: AreaStack,
   //donut:          Donut,
   //mapChoropleth:  MapChoropleth,
   //mapBubble:      MapBubble
