@@ -16,8 +16,8 @@ import TextField from '@material-ui/core/TextField'
 // import makeAnimated from 'react-select/animated';
 // import ComponentSelectMultiple from './SelectMultiple'
 
-
-const typeSumstats = ["min", "mean", "median", "max", "percentile2", "percentile98"]
+//add roi -> regions of interest
+const typeSumstats = ["min", "mean", "median", "max", "percentile2", "percentile98", "roi"]
 const numberColMapping = [
     { value: "X-AXIS", label: "X-AXIS" },
     { value: "Y-AXIS", label: "Y-AXIS" },

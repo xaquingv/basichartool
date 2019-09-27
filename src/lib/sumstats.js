@@ -89,6 +89,7 @@ function compute(stat, data) {
         case 'outliers': return outliers(_data);
         case 'percentile2': return percentile(_data, 2);
         case 'percentile98': return percentile(_data, 98);
+        case 'roi': return roi(_data)
         // case 'lr': return lr(_data[0],_data[1]);
         //Need a multidimensional array
         case 'pcorr': return pcorr(data[0].map(d => d.value), data[1].map(d => d.value));
@@ -129,4 +130,76 @@ function percentile(data, p) {
     const _data = data.filter((d, i) => (p > 50) ? i > index : i < index);
     const sorted = (p > 50) ? _data.sort((a, b) => b.value - a.value) : _data.sort((a, b) => a.value - b.value);
     return sorted;
+}
+
+function roi(data) {
+    let tmedian = median(data);
+    let tpercentile25 = percentile(data, 25);
+    let tpercentile75 = percentile(data, 75);
+    let tmin = min(data);
+    let tmax = max(data);
+    let tdif = tmax - tmin;
+    let result = [];
+    let indexResult = 0;
+
+    let index = 0;
+    while(index < data.length-1)
+    {
+        let tslope = 0;
+        let direction = data[index+1] - data[index];
+        let follow = direction != 0;
+        let initialIndex = index;
+        while(follow && index < data.length-1)
+        {
+            if(direction > 0 && data[index] <= data[index+1])
+            {
+                tslope = tslope + slope(data[index+1], data[index]);
+                index++;
+            }
+            else
+            {
+                if(direction < 0 && data[index] >= data[index+1])
+                {
+                    tslope = tslope + slope(data[index], data[index+1]);
+                    index++;
+                }
+                else
+                {
+                    follow = false;
+                    if(tslope > 0.1*tdif)
+                    {
+                        result[indexResult] = [initialIndex, index, (direction > 0)?1:-1];
+                        indexResult++;
+                    }
+                }
+            }
+        }
+        if(index >= data.length-1)
+        {
+            if(tslope > 0.1*tdif)
+            {
+                result[indexResult] = [initialIndex, index, (direction > 0)?1:-1];
+                indexResult++;
+            }
+        }
+    }
+
+    return result;
+
+    /*
+    const roi = data.filter((d, i) => 
+    
+    data = data.sort((a, b) => a.value - b.value);
+    const i = Math.ceil(data.length * (p / 100)) - 1;
+    let index = i;
+    if (i < 1) index = 1;
+    else if (i >= data.length - 1) index = data.length - 2;
+    const _data = data.filter((d, i) => (d > 50) ? i > index : i < index);
+    const sorted = (p > 50) ? _data.sort((a, b) => b.value - a.value) : _data.sort((a, b) => a.value - b.value);
+    return sorted;*/
+}
+
+function slope(a, b)
+{
+    return (a-b);
 }
