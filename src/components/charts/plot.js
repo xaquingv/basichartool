@@ -21,6 +21,7 @@ export default function (els, dataChart, scale, who, colors, step, margin, count
   //console.log("plot", margin)
 
   // init gs
+  //console.log(dataChart)
   let gs =
     d3.select(els.svg)
       .selectAll("g")
