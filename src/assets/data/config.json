@@ -12,6 +12,19 @@
     { "type": "all", "order": "10", "code": "#000000", "name": "custom color" },
     { "type": "barBackground", "order": "", "code": "#f1f1f1", "name": "grey 5-6" }
   ],
+  "COLORSGRAY": [
+    { "type": "all", "order": "4", "code": "#dfdfdf", "name": "grey 1.5" },
+    { "type": "all", "order": "3", "code": "#dfdfdf", "name": "grey 1.5" },
+    { "type": "all", "order": "2", "code": "#dfdfdf", "name": "grey 1.5" },
+    { "type": "all", "order": "1", "code": "#dfdfdf", "name": "grey 1.5" },
+    { "type": "all", "order": "5", "code": "#dfdfdf", "name": "grey 1.5" },
+    { "type": "all", "order": "6", "code": "#dfdfdf", "name": "grey 1.5" },
+    { "type": "all", "order": "7", "code": "#dfdfdf", "name": "grey 1.5" },
+    { "type": "all", "order": "8", "code": "#dfdfdf", "name": "grey 1.5" },
+    { "type": "all", "order": "9", "code": "#dfdfdf", "name": "grey 1.5" },
+    { "type": "all", "order": "10", "code": "#dfdfdf", "name": "grey 1.5" },
+    { "type": "barBackground", "order": "", "code": "#f1f1f1", "name": "grey 5-6" }
+  ],
   "CFG_CHARTS": [
     {
       "num": "1",

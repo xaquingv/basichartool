@@ -11,7 +11,7 @@ export const height = width*ratio
 export const viewBox = "0 0 " + width + " " + height
 
 export let cfg_charts
-export let colors, colorBarBackground
+export let colors, colorsgray, colorBarBackground
 export let metaKeys, default_metaText
 export let chartNames = {}
 
@@ -44,6 +44,13 @@ function parseCfgJson(cfg) {
 
   colorBarBackground = cfg.COLORS
   .find(c => c.type === "barBackground").code || "#f1f1f1"
+
+
+  /* colorsgray: pre-defined colorsgray */
+  colorsgray = cfg.COLORSGRAY
+  .filter(c => c.type === "all")
+  .sort((c1, c2) => c1.order - c2.order).map(c => c.code)
+
 
   // TODO: add map colors, see mapData.js
   // ...
