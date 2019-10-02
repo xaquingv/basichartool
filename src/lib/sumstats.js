@@ -11,25 +11,57 @@ import pcorr from 'compute-pcorr'
 
 export function summarize(col, data, type, ...stats) {
 
-    const sumstats = stats.map((d, i) => {
+    let sumstats = stats.map((d, i) => {
 
         const stat = d;
         const value = getValue(compute(d, data), data);
 
-        return {
-            column: col,
-            stat: stat,
-            statDefinition: define(stat),
-            id: value.id,
-            value: value.value,
-            data: value.data,
-            type: type
+        if(value.data.length > 1)
+        {
+            const tvalue = value.data.map((v , i) => {
+                return{
+                    column: col,
+                    stat: stat,
+                    statDefinition: define(stat),
+                    id: formatList(v.map(v => v = v.key)),
+                    value: v[0].value,
+                    compareValue: v[1].value,
+                    data: v,
+                    type: type
+                }
+            })
+            return tvalue;
+        }
+        else
+        {
+            return {    
+                column: col,
+                stat: stat,
+                statDefinition: define(stat),
+                id: value.id,
+                value: value.value,
+                data: value.data,
+                type: type
+            }
         }
 
     });
-
+    separateInfo(sumstats);
+    //console.log(sumstats);
     return sumstats;
 
+}
+
+function separateInfo(array)
+{
+    array.map((d, i) => {
+        if(d.length > 1){
+            d.map((d2, i2) => { 
+                array.push(d2);
+            })
+            array.splice(i, 1);
+        }
+    })
 }
 
 export function intersect(data1, data2, ...stats) {
@@ -75,7 +107,7 @@ function getValue(d, data) {
 
 function compute(stat, data) {
 
-    const _data = (stat === 'percentile2' || stat === 'percentile98' || stat === 'outliers') ? data.map((d, i) => i = { key: d.key, value: d.value }) : data.map((d, i) => i = d.value);
+    const _data = (stat === 'percentile2' || stat === 'percentile98' || stat === 'outliers' || stat === 'roi') ? data.map((d, i) => i = { key: d.key, value: d.value }) : data.map((d, i) => i = d.value);
 
     switch (stat) {
 
@@ -115,8 +147,8 @@ function formatList(list) {
 }
 
 function define(stat) {
-    const stats = ['mean', 'median', 'mode', 'min', 'max', 'kurtosis', 'skewness', 'outliers', 'percentile2', 'percentile98'];
-    const definition = ['average', 'median', 'most frequent value', 'lowest value', 'highest value', 'kurtosis', 'skewness', 'outliers', 'lowest', 'highest'];
+    const stats = ['mean', 'median', 'mode', 'min', 'max', 'kurtosis', 'skewness', 'outliers', 'percentile2', 'percentile98', 'roi'];
+    const definition = ['average', 'median', 'most frequent value', 'lowest value', 'highest value', 'kurtosis', 'skewness', 'outliers', 'lowest', 'highest', 'region of interest'];
     const i = stats.findIndex(d => d === stat)
     return definition[i]
 }
@@ -133,11 +165,9 @@ function percentile(data, p) {
 }
 
 function roi(data) {
-    let tmedian = median(data);
-    let tpercentile25 = percentile(data, 25);
-    let tpercentile75 = percentile(data, 75);
-    let tmin = min(data);
-    let tmax = max(data);
+    let _data = data.map((d, i) => i = d.value);
+    let tmin = min(_data);
+    let tmax = max(_data);
     let tdif = tmax - tmin;
     let result = [];
     let indexResult = 0;
@@ -146,21 +176,21 @@ function roi(data) {
     while(index < data.length-1)
     {
         let tslope = 0;
-        let direction = data[index+1] - data[index];
+        let direction = _data[index+1] - _data[index];
         let follow = direction != 0;
         let initialIndex = index;
-        while(follow && index < data.length-1)
+        while(follow && index < _data.length-1)
         {
-            if(direction > 0 && data[index] <= data[index+1])
+            if(direction > 0 && _data[index] <= _data[index+1])
             {
-                tslope = tslope + slope(data[index+1], data[index]);
+                tslope = tslope + slope(_data[index+1], _data[index]);
                 index++;
             }
             else
             {
-                if(direction < 0 && data[index] >= data[index+1])
+                if(direction < 0 && _data[index] >= _data[index+1])
                 {
-                    tslope = tslope + slope(data[index], data[index+1]);
+                    tslope = tslope + slope(_data[index], _data[index+1]);
                     index++;
                 }
                 else
@@ -168,7 +198,7 @@ function roi(data) {
                     follow = false;
                     if(tslope > 0.1*tdif)
                     {
-                        result[indexResult] = [initialIndex, index, (direction > 0)?1:-1];
+                        result[indexResult] = [data[initialIndex], data[index]];
                         indexResult++;
                     }
                 }
@@ -178,12 +208,13 @@ function roi(data) {
         {
             if(tslope > 0.1*tdif)
             {
-                result[indexResult] = [initialIndex, index, (direction > 0)?1:-1];
+                result[indexResult] = [data[initialIndex], data[index]];
                 indexResult++;
             }
         }
     }
 
+    const sorted = result.sort((a, b) => Math.abs(b[0].value-b[1].value) - Math.abs(a[0].value-a[1].value));
     return result;
 
     /*

@@ -46,6 +46,9 @@ const scatterPlotType = {
         if (typeof data.statDefinition !== "undefined") {
             result.statDefinition = data.statDefinition;
         }
+        if (typeof data.difference !== "undefined") {
+            result.difference = Math.abs(data.difference).toFixed(data.precision);
+        }
         return result;
     },
 
@@ -105,10 +108,10 @@ const scatterPlotSentence = {
             ]
         },
         "positive": [
-            "compareValue is bigger than value"
+            "Between {id} there has been an increase of {difference} {units}"
         ],
         "negative": [
-            "value is bigger than compareValue"
+            "Between {id} there has been a decrease of {difference} {units}"
         ],
         "neutral": [
             "Neutral is not defined!!!!!"
