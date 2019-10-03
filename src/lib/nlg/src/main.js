@@ -175,7 +175,7 @@ exports.NaturalLanguage =
             if (typeof item.alwaysShow === "undefined") { item.alwaysShow = false; }
             if (!item.contentGroup) { item.contentGroup = "default"; }
             if (!item.sentenceType) { item.sentenceType = "default"; }
-            if (item.precision === "undefined") { item.precision = 0; }
+            if (typeof item.precision === "undefined") { item.precision = 2; }
             item.difference = getDifference(item);
             item.displayInfo = getDisplayInfo(item);
             item.priority = calculatePriority(item);
