@@ -172,6 +172,8 @@ function roi(data) {
     let result = [];
     let indexResult = 0;
 
+
+
     let index = 0;
     while(index < data.length-1)
     {
@@ -181,27 +183,27 @@ function roi(data) {
         let initialIndex = index;
         while(follow && index < _data.length-1)
         {
-            if(direction > 0 && _data[index] <= _data[index+1])
+            if(direction > 0 && _data[index] <= _data[index+1] || direction < 0 && _data[index] >= _data[index+1])
             {
-                tslope = tslope + slope(_data[index+1], _data[index]);
+                tslope = tslope + Math.abs(slope(data[index+1], data[index]));
                 index++;
             }
             else
             {
-                if(direction < 0 && _data[index] >= _data[index+1])
-                {
-                    tslope = tslope + slope(_data[index], _data[index+1]);
-                    index++;
-                }
-                else
-                {
+                //if(direction < 0 && _data[index] >= _data[index+1])
+                //{
+                //    tslope = tslope + slope(data[index+1], data[index]);
+                //    index++;
+                //}
+                //else
+                //{
                     follow = false;
                     if(tslope > 0.1*tdif)
                     {
                         result[indexResult] = [data[initialIndex], data[index]];
                         indexResult++;
                     }
-                }
+                //}
             }
         }
         if(index >= data.length-1)
@@ -214,7 +216,7 @@ function roi(data) {
         }
     }
 
-    const sorted = result.sort((a, b) => Math.abs(b[0].value-b[1].value) - Math.abs(a[0].value-a[1].value));
+    result.sort((a, b) => Math.abs(b[0].value-b[1].value) - Math.abs(a[0].value-a[1].value));
     return result;
 
     /*
@@ -230,7 +232,15 @@ function roi(data) {
     return sorted;*/
 }
 
-function slope(a, b)
-{
-    return (a-b);
+function slope(a, b){
+    let result;
+    const akey = parseFloat(a.key.replace(",", "."))
+    const bkey = parseFloat(b.key.replace(",", "."))
+    if(isNaN(akey) || isNaN(bkey)){
+        result = a.value-b.value
+    }
+    else{
+        result = (a.value-b.value)/(akey - bkey)
+    }
+    return result
 }

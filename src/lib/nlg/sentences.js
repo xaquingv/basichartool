@@ -46,7 +46,7 @@ const scatterPlotType = {
         if (typeof data.statDefinition !== "undefined") {
             result.statDefinition = data.statDefinition;
         }
-        if (typeof data.difference !== "undefined") {
+        if (typeof data.difference !== "undefined" && data.difference !== "na") {
             result.difference = Math.abs(data.difference).toFixed(data.precision);
         }
         return result;
@@ -54,7 +54,7 @@ const scatterPlotType = {
 
     getDifference(data) {
         if (typeof data.compareValue !== "undefined") {
-            return parseInt(data.compareValue) - parseInt(data.value);
+            return data.compareValue - data.value;
         } else {
             return "na";
         }
