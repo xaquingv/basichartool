@@ -47,7 +47,7 @@ const scatterPlotType = {
             result.statDefinition = data.statDefinition;
         }
         if (typeof data.difference !== "undefined" && data.difference !== "na") {
-            result.difference = Math.abs(data.difference).toFixed(data.precision);
+            result.difference = Number.isInteger(data.difference) ? Math.abs(data.difference): Math.abs(data.difference).toFixed(data.precision);
         }
         return result;
     },
