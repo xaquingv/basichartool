@@ -149,6 +149,7 @@ class Questions extends React.Component {
         // note that can make underscore isequal work here
 
         const keys = string1Col.length != 0 ? string1Col : dateCol.map(date => date.toString())
+        const keyType = string1Col.length != 0 ? "number" : "date"
         // const dataKeys = keys.map(key => ({ label: key, value: key }))
 
         if (this.isDataChange) {
@@ -156,7 +157,7 @@ class Questions extends React.Component {
                 // params: col header, data, type of sumstats1, 2, 3, ///
                 return summarize(
                     dataChart.keys[idx],
-                    col.map((value, index) => ({ key: keys[index], value })),
+                    col.map((value, index) => ({ key: keys[index], value, keyType })),
                     "country", //hotfix
                     ...typeSumstats
                 )

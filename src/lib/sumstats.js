@@ -107,7 +107,7 @@ function getValue(d, data) {
 
 function compute(stat, data) {
 
-    const _data = (stat === 'percentile2' || stat === 'percentile98' || stat === 'outliers' || stat === 'roi') ? data.map((d, i) => i = { key: d.key, value: d.value }) : data.map((d, i) => i = d.value);
+    const _data = (stat === 'percentile2' || stat === 'percentile98' || stat === 'outliers' || stat === 'roi') ? data.map((d, i) => i = { key: d.key, value: d.value, keyType: d.keyType }) : data.map((d, i) => i = d.value);
 
     switch (stat) {
 
@@ -165,6 +165,9 @@ function percentile(data, p) {
 }
 
 function roi(data) {
+    if(data.length > 0 && data[0].keyType == "date"){
+        data.sort((a,b) => a.key - b.key);
+    }
     let _data = data.map((d, i) => i = d.value);
     let tmin = min(_data);
     let tmax = max(_data);
