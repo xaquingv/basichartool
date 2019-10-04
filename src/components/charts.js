@@ -25,8 +25,8 @@ import AreaStack          from './charts/AreaStack'
 // TODO: obj -> arr, sort by config file
 export const chartList = {
   plotScatter:      PlotScatter,
-  lineDiscrete:     LineDiscrete,
   lineContinue:     LineContinue,
+  lineDiscrete:     LineDiscrete,
   areaGroupStack:   AreaStack,
   plotDot:          PlotDot,
   onBarDiffArrow:   OnBarArrow,
