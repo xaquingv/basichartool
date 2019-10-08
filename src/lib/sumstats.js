@@ -16,7 +16,7 @@ export function summarize(col, data, type, ...stats) {
         const stat = d;
         const value = getValue(compute(d, data), data);
 
-        if(value.data.length > 1)
+        if(stat=="roi" && value.data.length > 1)
         {
             const tvalue = value.data.map((v , i) => {
                 return{
