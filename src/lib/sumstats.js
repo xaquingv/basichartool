@@ -54,9 +54,9 @@ export function summarize(col, data, type, ...stats) {
 
 function separateInfo(array)
 {
-    array.map((d, i) => {
+    array.forEach((d, i) => {
         if(Array.isArray(d)){
-            d.map((d2, i2) => { 
+            d.forEach((d2, i2) => { 
                 array.push(d2);
             })
             array.splice(i, 1);
