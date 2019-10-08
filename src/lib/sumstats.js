@@ -165,7 +165,7 @@ function percentile(data, p) {
 }
 
 function roi(data) {
-    if(data.length > 0 && data[0].keyType == "date"){
+    if(data.length > 0 && data[0].keyType === "date"){
         data.sort((a,b) => a.key - b.key);
     }
     let _data = data.map((d, i) => i = d.value);
@@ -182,11 +182,11 @@ function roi(data) {
     {
         let tslope = 0;
         let direction = _data[index+1] - _data[index];
-        let follow = direction != 0;
+        let follow = direction !== 0;
         let initialIndex = index;
         while(follow && index < _data.length-1)
         {
-            if(direction > 0 && _data[index] <= _data[index+1] || direction < 0 && _data[index] >= _data[index+1])
+            if((direction > 0 && _data[index] <= _data[index+1]) || (direction < 0 && _data[index] >= _data[index+1]))
             {
                 tslope = tslope + Math.abs(slope(data[index+1], data[index]));
                 index++;

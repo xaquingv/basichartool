@@ -148,8 +148,8 @@ class Questions extends React.Component {
         this.isDataChange = (!isNumberColSame) || (isNumberColSame ? (this.numberCols.some((col, i) => col.toString() !== numberCols[i].toString())) : false)
         // note that can make underscore isequal work here
 
-        const keys = string1Col.length != 0 ? string1Col : dateCol.map(date => date.toString())
-        const keyType = string1Col.length != 0 ? "number" : "date"
+        const keys = string1Col.length !== 0 ? string1Col : dateCol.map(date => date.toString())
+        const keyType = string1Col.length !== 0 ? "number" : "date"
         // const dataKeys = keys.map(key => ({ label: key, value: key }))
 
         if (this.isDataChange) {
