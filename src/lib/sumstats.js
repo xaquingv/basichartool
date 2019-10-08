@@ -16,7 +16,7 @@ export function summarize(col, data, type, ...stats) {
         const stat = d;
         const value = getValue(compute(d, data), data);
 
-        if(stat=="roi" && value.data.length > 1)
+        if(stat==="roi")
         {
             const tvalue = value.data.map((v , i) => {
                 return{
@@ -55,7 +55,7 @@ export function summarize(col, data, type, ...stats) {
 function separateInfo(array)
 {
     array.map((d, i) => {
-        if(d.length > 1){
+        if(Array.isArray(d)){
             d.map((d2, i2) => { 
                 array.push(d2);
             })
