@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './section4Panel.css'
-import scrollTo from '../lib/scrollTo'
+// import scrollTo from '../lib/scrollTo'
 import { default_metaText, ratio } from '../data/config'
 import { chartList } from './charts'
 import { updateWidth, setParagraph } from '../actions'
@@ -19,8 +19,7 @@ import ComponentYAxis from './section4Panel/AxisY'
 import responsiveXTexts from './section4Panel/axisXTextAndSvgResponsive'
 import responsiveXLabel from './section4Panel/axisXLabelResponsive'
 import responsiveYTexts from './section4Panel/axisYTextResponsive'
-
-import TextField from '@material-ui/core/TextField'
+// import TextField from '@material-ui/core/TextField'
 
 const STEP = 3;
 
@@ -174,21 +173,21 @@ class Section extends React.Component {
         </div>
       ) : null
 
-    const textFieldComponent = (value, index) => {
-      return (
-        <div key={"tf-" + index} className="d-f j-c">
-          <TextField
-            multiline
-            value={value}
-            placeholder="Edit this paragraph"
-            onChange={(event) => this.handleEdit(event, index)}
-            margin="normal"
-            style={{ width: "620" }}
-            InputLabelProps={{ shrink: true, }}
-          />
-        </div>
-      )
-    }
+    // const textFieldComponent = (value, index) => {
+    //   return (
+    //     <div key={"tf-" + index} className="d-f j-c">
+    //       <TextField
+    //         multiline
+    //         value={value}
+    //         placeholder="Edit this paragraph"
+    //         onChange={(event) => this.handleEdit(event, index)}
+    //         margin="normal"
+    //         style={{ width: "620" }}
+    //         InputLabelProps={{ shrink: true, }}
+    //       />
+    //     </div>
+    //   )
+    // }
 
     return (
       <div className={"section" + ((stepActive >= STEP) ? "" : " d-n")} id="section3">

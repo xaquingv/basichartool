@@ -35,7 +35,6 @@ class Chartlist extends React.Component {
 
     // TODO: loop through arr, see charts.js
     // list of charts
-    console.log(selection)
     const chartComponents = Object.keys(chartList).map(chartID => {
       const isSelected = selection.indexOf(chartID) > -1
       const ComponentChart = chartList[chartID]

@@ -33,11 +33,13 @@ function clean(text) {
 
     let numbers = _text.values().noUnits()
     let n = numbers.values().greaterThan(20);
-    let b = n.values().toNice();
+    // let b = n.values().toNice();
 
-
-    let proper = _text.topics()
-    let a = proper.toTitleCase();
+    // let proper = _text.topics();
+    // let a = proper.toTitleCase();
+    
+    n.values().toNice();
+    _text.topics().toTitleCase();
 
     let _textout = _text.out('text').replace(' $', '$')
 

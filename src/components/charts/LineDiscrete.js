@@ -78,7 +78,7 @@ class LineDiscrete extends React.Component {
     /* validate special */
     // double check if discrete and conti are the same
     // if the same (duplicate), hide the discrete line
-    if (callByStep === 3) return
+    // if (callByStep === 3) return
     // ps. d3.select() is not null while the ele doesn't exist
     // that's why there r both document* and d3*
     const pathDiscrete = document.querySelector("#lineDiscrete path")

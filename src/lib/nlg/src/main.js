@@ -100,6 +100,8 @@ exports.NaturalLanguage =
           for (let i in patterns) {
             pattern = patterns[i];
             _.each(data, (item, key) => pattern = pattern.replace(`{${key}}`, item));
+            console.log(pattern[i])
+            console.log(pattern)
             result.push(pattern);
           }
           return result;

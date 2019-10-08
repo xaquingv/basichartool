@@ -27,6 +27,7 @@ class Palette extends React.Component {
   render() {
     const {id, step, dataEditable, colorPicked, legend} = this.props
     if (step !== 3) {return null}
+    console.log("legend:", legend)
 
     /* data */
     this.colorInput = dataEditable.colorInput || colors.slice(-1)[0]

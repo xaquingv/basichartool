@@ -5,7 +5,7 @@ import Section1 from './components/Section1Input';
 import Section2 from './components/Section2Table';
 //import Section3 from './components/Section3Chart';
 import Section4 from './components/Section4Panel';
-import Section5 from './components/Section5Embed';
+// import Section5 from './components/Section5Embed';
 
 
 const App = () => (

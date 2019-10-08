@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import './questions.css'
 import { setAnswers, setQuestions, setParagraph } from '../../actions'
-// import _ from "underscore"
 import { summarize } from '../../lib/sumstats'
 import sentence from '../../lib/nlg/sentences'
 import write from '../../lib/write-data'
@@ -129,8 +128,9 @@ class Questions extends React.Component {
     }
 
     render() {
-        const { dataChart } = this.props
-        if (!dataChart) { return null; }
+        const { selection, dataChart } = this.props
+        console.log("charts:", selection);
+        if (!dataChart || selection.length===0) { return null; }
 
         const { dataAnswer, dataSentence, dataQuestion } = this.props
         const { dateCol, numberCols, string1Col } = dataChart

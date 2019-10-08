@@ -70,8 +70,8 @@ class InlineEditor extends React.Component {
 
     // update if content changes
     const editorState = this.createEditorState(nextProps.text)
-    this.state = {editorState: editorState}
-    //this.setState({editorState: editorState})
+    //this.state = {editorState: editorState}
+    this.setState({editorState: editorState})
   }
 
   /* case 1: input change handler

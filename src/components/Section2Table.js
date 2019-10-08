@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './section2Table.css';
 import { /*analyzeData,*/ toggleData, transposeData, setColors, setDisplay } from '../actions';
-import { colors, colorsgray, metaKeys } from '../data/config';
+import { colors, /*colorsgray,*/ metaKeys } from '../data/config';
 import summarizeData from '../data/summarizeData';
 import selectCharts from '../data/selectCharts';
 import ComponentChartlist from './section2Table/Chartlist';
@@ -55,19 +55,15 @@ class Section extends React.Component {
     const tableBody = isData ? dataTable.body : [];
 
     // setup1 palette colors
-    /*
     if (!this.colors) {
       this.colors = colors;
       setDefaultColors(this.colors);
     }
-    */
-   if(tableBody.length > 10)
-     this.colors = colorsgray;
-   else
-     this.colors = colors;
-
-     
-     setDefaultColors(this.colors);
+  //  if (tableBody.length > 10)
+  //    this.colors = colorsgray;
+  //  else
+  //    this.colors = colors;
+  //   setDefaultColors(this.colors);
 
     // get dataChart
     if (stepActive === 2) {
@@ -127,7 +123,7 @@ class Section extends React.Component {
         </div>
         
         {/* questions */}
-        <ComponentQuestions dataChart={this.dataChart} callByStep="2s"/>
+        <ComponentQuestions selection={this.selection} dataChart={this.dataChart} callByStep="2s"/>
 
         {/* button */}
         {/* <input
