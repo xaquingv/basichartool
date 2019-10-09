@@ -2,7 +2,7 @@ import LineDiscrete       from './charts/LineDiscrete'
 import LineContinue     from './charts/LineContinue'
 import PlotDot            from './charts/PlotDot'
 import PlotScatter        from './charts/PlotScatter'
-import Slopegraph         from './charts/Slopegraph'
+// import Slopegraph         from './charts/Slopegraph'
 import Bars               from './charts/Bars'
 import BarStack           from './charts/BarStack'
 import BarStack100        from './charts/BarStack100'
@@ -42,7 +42,7 @@ export const chartList = {
   colGroupStack:    ColStack,
   //colGroupStack100: AreaStack,
   areaGroupStack:   AreaStack,
-  slopegraph:       Slopegraph,
+  // slopegraph:       Slopegraph,
   //donut:          Donut,
   //mapChoropleth:  MapChoropleth,
   //mapBubble:      MapBubble

@@ -35,11 +35,10 @@ p {
 }
 
 .section {
-  margin: 60px auto 60px;
-  margin-top: 6rem;
+  margin: 90px auto 60px;
   max-width: 1284px;/*1024px;*/
   width: 100%;
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - 150px);
 }
 .section-full {
   margin-top: 80px;

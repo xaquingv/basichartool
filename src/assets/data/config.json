@@ -149,7 +149,7 @@
       "date_max": " ",
       "string1_hasRepeat": "false",
       "string1_format": "",
-      "active": "true",
+      "active": "false",
       "key": "diff2?"
     },
     {
@@ -167,7 +167,7 @@
       "date_max": "",
       "string1_hasRepeat": "false",
       "string1_format": "",
-      "active": "true",
+      "active": "false",
       "key": "diff2?"
     },
     {

@@ -4,8 +4,8 @@ import './section1Input.css';
 import { importData, clearData } from '../actions';
 import fetchConfig from '../data/config'
 
-//const STEP = 1;
 // read https://facebook.github.io/react/docs/forms.html
+//const STEP = 1;
 const instruction = "Type your data or copy & paste it from a spreadsheet."
 
 const mapStateToProps = (state) => ({
@@ -65,6 +65,7 @@ class Section extends React.Component {
   componentDidMount() {
     // load cfg file
     fetchConfig();
+    console.log("[data] fetch config");
   }
   
 }

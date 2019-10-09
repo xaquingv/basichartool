@@ -15,8 +15,9 @@ import TextField from '@material-ui/core/TextField'
 // import makeAnimated from 'react-select/animated';
 // import ComponentSelectMultiple from './SelectMultiple'
 
-//add roi -> regions of interest
-const typeSumstats = ["min", "mean", "median", "max", "percentile2", "percentile98", "roi"]
+
+const regAnyInCB = /{([^}]*)}/ // match 0 or more chars in {} (curly braces)
+const typeSumstats = ["min", "mean", "median", "max", "percentile2", "percentile98", "roi"] // roi -> regions of interest
 const numberColMapping = [
     { value: "X-AXIS", label: "X-AXIS" },
     { value: "Y-AXIS", label: "Y-AXIS" },
@@ -43,9 +44,9 @@ class Questions extends React.Component {
 
         let newSentences = { ...this.sumstatSentences }
         if (setId === "set2" && uiType === "textField") {
-            const replaceText = "{" + value + "}."
-            newSentences.edit[indexSet] = newSentences.edit[indexSet].map(s => s.split("{")[0] + replaceText)
-            newSentences.text[indexSet] = newSentences.edit[indexSet].map(s => s.split("{")[0] + (value !== "" ? value : "{units}"))
+            const replaceText = "{" + value + "}"
+            newSentences.edit[indexSet] = newSentences.edit[indexSet].map(s => s.replace(regAnyInCB, replaceText))
+            newSentences.text[indexSet] = newSentences.edit[indexSet].map(s => s.replace(regAnyInCB, (value !== "" ? value : "{units}")))
         }
 
         let newAnswers = { ...this.answers }
@@ -60,7 +61,6 @@ class Questions extends React.Component {
         }
 
         // TODO: update dataChart if mapping change?
-
         this.props.setDataAnswer(newAnswers, newSentences)
     }
 
@@ -70,7 +70,6 @@ class Questions extends React.Component {
         const newAnswers = { ...this.answers }
         const newAnswerTextFields = newAnswers.set2FollowUp.textField
         newAnswerTextFields[index1][index2] = event.target.value
-        
         setDataAnswer(newAnswers) 
     }
 
@@ -129,7 +128,7 @@ class Questions extends React.Component {
 
     render() {
         const { selection, dataChart } = this.props
-        console.log("charts:", selection);
+        // console.log("charts:", selection);
         if (!dataChart || selection.length===0) { return null; }
 
         const { dataAnswer, dataSentence, dataQuestion } = this.props
