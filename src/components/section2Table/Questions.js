@@ -2,6 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import './questions.css'
 import { setAnswers, setQuestions, setParagraph } from '../../actions'
+import { chartTasks } from '../../data/config';
+
 import { summarize } from '../../lib/sumstats'
 import sentence from '../../lib/nlg/sentences'
 import write from '../../lib/write-data'
@@ -9,8 +11,7 @@ import write from '../../lib/write-data'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
-// import MenuItem from "@material-ui/core/MenuItem"
-// import InputAdornment from '@material-ui/core/InputAdornment'
+import MenuItem from "@material-ui/core/MenuItem"
 // import Select from 'react-select';
 // import makeAnimated from 'react-select/animated';
 // import ComponentSelectMultiple from './SelectMultiple'
@@ -18,17 +19,12 @@ import TextField from '@material-ui/core/TextField'
 
 const regAnyInCB = /{([^}]*)}/ // match 0 or more chars in {} (curly braces)
 const typeSumstats = ["min", "mean", "median", "max", "percentile2", "percentile98", "roi"] // roi -> regions of interest
-const numberColMapping = [
-    { value: "X-AXIS", label: "X-AXIS" },
-    { value: "Y-AXIS", label: "Y-AXIS" },
-    { value: "SIZE", label: "SIZE" }
-];
-
 
 const mapStateToProps = (state) => ({
     dataAnswer: state.dataAnswer,
     dataSentence: state.dataSentence,
-    dataQuestion: state.dataQuestion
+    dataQuestion: state.dataQuestion,
+    selectionInOrder: state.selectionInOrder
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -60,61 +56,64 @@ class Questions extends React.Component {
             newAnswers[setId][uiType] = value
         }
 
-        // TODO: update dataChart if mapping change?
+        // TODO: update selection order
+        // TODO: debug, check on https://reactjs.org/docs/forms.html#controlled-components
+        if (setId === "set1" && uiType === "select") {
+            const selectIndex = this.selectionTasks.findIndex(task => task === value)
+            const selectionInOrder = this.props.selectionInOrder
+            selectionInOrder.forEach((select, index) => document.querySelector("#" + select).setAttribute("class", (index !== selectIndex) ? "order2" : "order1"))
+        }
+
         this.props.setDataAnswer(newAnswers, newSentences)
     }
 
     handleSet2FollowUp(event, index1, index2) {
-        const {setDataAnswer} = this.props
+        const { setDataAnswer } = this.props
 
         const newAnswers = { ...this.answers }
         const newAnswerTextFields = newAnswers.set2FollowUp.textField
         newAnswerTextFields[index1][index2] = event.target.value
-        setDataAnswer(newAnswers) 
+        setDataAnswer(newAnswers)
     }
 
     handleContinue() {
         const dataStatsFiltered = this.dataStats
-        .map((stats, index) => stats
-            .map((s,i) => {
-                let qs = sentence(s, "questions");
-                return {
-                    //data: { ...s, units: this.answers.set2[index].textField },
-                    //explanation: qs.map(q => ({ q, a: "{to be answered}" }))
-                    index: {set: index, ui:i},
-                    explanation: qs
-                }}
-            ).filter((s, i) => this.answers.set2[index].switch[i])
-        ).flat()
+            .map((stats, index) => stats
+                .map((s, i) => {
+                    let qs = sentence(s, "questions");
+                    return {
+                        //data: { ...s, units: this.answers.set2[index].textField },
+                        //explanation: qs.map(q => ({ q, a: "{to be answered}" }))
+                        index: { set: index, ui: i },
+                        explanation: qs
+                    }
+                }
+                ).filter((s, i) => this.answers.set2[index].switch[i])
+            ).flat()
 
         const questions = dataStatsFiltered.map(stats => stats.explanation/*.map(exp => exp.q)*/)
-        const index = dataStatsFiltered.map(stats => stats.index )
+        const index = dataStatsFiltered.map(stats => stats.index)
 
         this.answers.set2FollowUp.textField = questions.map(stats => stats.map(s => ""))
-        this.props.setDataQuestion({sentence: questions, index: index}) //TODO: add answers
+        this.props.setDataQuestion({ sentence: questions, index: index }) //TODO: add answers
     }
 
     handleSubmit() {
-        const {dataQuestion, setDataParagraph, dataChart} = this.props
-        const newQuestionAnswer = this.answers.set2FollowUp.textField.map((as, idx) => as.map((a, i) => ({a, q: dataQuestion.sentence[idx][i]}))) 
+        const { dataQuestion, setDataParagraph, dataChart } = this.props
+        const newQuestionAnswer = this.answers.set2FollowUp.textField.map((as, idx) => as.map((a, i) => ({ a, q: dataQuestion.sentence[idx][i] })))
         const dataParagraph = newQuestionAnswer.map((qas, i) => {
             const index = dataQuestion.index[i]
             return {
                 //index: index,
                 data: {
-                    ...this.dataStats[index.set][index.ui], 
+                    ...this.dataStats[index.set][index.ui],
                     units: this.answers.set2[index.set].textField
                 },
                 explanation: qas.filter(qa => qa.a !== "")
             }
         }).filter(d => d.explanation.length !== 0)
 
-        // console.log(dataParagraph)
-        // console.log(write(dataParagraph))
-        // console.log("submit")
-
         const chartId = document.querySelector(".charts div").id
-
         setDataParagraph(write(dataParagraph), dataChart, chartId)
     }
 
@@ -123,35 +122,32 @@ class Questions extends React.Component {
         this.string1Col = []
     }
     componentDidUpdate() {
-        this.numberCols = this.props.dataChart.numberCols//numberCols
+        this.numberCols = this.props.dataChart.numberCols
     }
 
     render() {
-        const { selection, dataChart } = this.props
-        // console.log("charts:", selection);
-        if (!dataChart || selection.length===0) { return null; }
-
-        const { dataAnswer, dataSentence, dataQuestion } = this.props
-        const { dateCol, numberCols, string1Col } = dataChart
-        if ((string1Col.length < 1 && dateCol.length < 1) || numberCols.length < 1) { return null; }
-
-        /* example:
-        const data = [...new Array(201)].map((d, i)=> {
-        return i = {key: Math.random().toString(36).substring(2, 15), value: Math.random()}; });
-        const stats = sumstats('column', data, 'mean', 'median', 'percentile98');
-        console.log(stats);*/
+        const { dataChart, dataCount, selectionInOrder} = this.props
+        if (!dataChart || selectionInOrder.length === 0) { return null; }
 
         /* data */
+        const { dataAnswer, dataSentence, dataQuestion } = this.props
+        const { dateCol, numberCols, string1Col } = dataChart
         const numberColGroups = dataChart.keys
-        const isNumberColSame = this.numberCols.length === numberCols.length
-        this.isDataChange = (!isNumberColSame) || (isNumberColSame ? (this.numberCols.some((col, i) => col.toString() !== numberCols[i].toString())) : false)
-        // note that can make underscore isequal work here
+        this.selectionTasks = selectionInOrder.map(id => chartTasks[id])
 
-        const keys = string1Col.length !== 0 ? string1Col : dateCol.map(date => date.toString())
-        const keyType = string1Col.length !== 0 ? "number" : "date"
-        // const dataKeys = keys.map(key => ({ label: key, value: key }))
+        // TODO: to be more strict in data change comparison
+        this.isDataChange = this.dataCount === undefined || Object.entries(dataCount).some(arr => {
+            const key = arr[0]
+            const val = arr[1]
+            const preDataCount = this.dataCount
+            return preDataCount[key] !== val
+        })
+        this.dataCount = dataCount
 
         if (this.isDataChange) {
+            const keys = string1Col.length !== 0 ? string1Col : dateCol.map(date => date.toString())
+            const keyType = string1Col.length !== 0 ? "number" : "date"
+        
             this.dataStats = numberCols.map((col, idx) => {
                 // params: col header, data, type of sumstats1, 2, 3, ///
                 return summarize(
@@ -169,8 +165,7 @@ class Questions extends React.Component {
             }
             this.answers = {
                 set1: {
-                    select: numberColMapping.map(mapping => mapping.value),
-                    switch: true
+                    select: [this.selectionTasks[0]]
                 },
                 set2: this.dataStats.map(group => ({ textField: "", switch: group.map(s => false/*true*/) })),
                 set2FollowUp: { textField: [] },
@@ -182,31 +177,25 @@ class Questions extends React.Component {
         }
 
         const followUpCount = dataQuestion ? dataQuestion.sentence.length : 0
-        // const mappingCount = numberColGroups.length
-        // const mapping = numberColMapping.filter((number, index) => index < mappingCount)
 
-        // const selectComponent = (index, start) => {
-        //     const marginRight = (index + 1) % 3 !== 0 ? "2%" : "0"
-        //     return (
-        //         <TextField
-        //             key={"select-" + index}
-        //             select
-        //             label="Change your mapping"
-        //             value={this.answers.set1.select[index]}
-        //             onChange={(event) => this.handleChange(event, "set1", "select", null, index)}
-        //             style={{ width: "32%", marginRight: marginRight }}
-        //             InputProps={{
-        //                 startAdornment: <InputAdornment position="start">{start + " :"}</InputAdornment>,
-        //             }}
-        //         >
-        //             {mapping.map(option => (
-        //                 <MenuItem key={option.value} value={option.value}>
-        //                     {option.label}
-        //                 </MenuItem>
-        //             ))}
-        //         </TextField>
-        //     )
-        // }
+        const selectComponent = (index, label) => {
+            return (
+                <TextField
+                    key={"select-" + index}
+                    select
+                    label={label}
+                    value={this.answers.set1.select[index]}
+                    onChange={(event) => this.handleSets(event, "set1", "select", null, index)}
+                    style={{ width: "100%" }}
+                >
+                    {this.selectionTasks.map((task, index) => (
+                        <MenuItem key={index} value={task}>
+                            {task}
+                        </MenuItem>
+                    ))}
+                </TextField>
+            )
+        }
 
         const switchComponent = (label, checked, setId, indexSet, indexUi, style = {}) => {
             return (
@@ -235,7 +224,7 @@ class Questions extends React.Component {
                         value={value}
                         placeholder="Please type your answer here, or leave it empty to skip."
                         onChange={(event) => setId !== "set2FollowUp" ?
-                            this.handleSets(event, setId, "textField", indexSet, indexUi) : 
+                            this.handleSets(event, setId, "textField", indexSet, indexUi) :
                             this.handleSet2FollowUp(event, indexSet, indexUi)
                         }
                         margin="normal"
@@ -261,9 +250,9 @@ class Questions extends React.Component {
 
         return (
             <div className="questions">
-                {/* <p className="question-set">Question set 1:</p>
-                <div>{numberColGroups.map((group, idx) => selectComponent(idx, group))}</div>
-                {switchComponent("Do you want to highlight the correlation between gdp and life expectancy?", this.answers.set1.switch, "set1", null, null, { marginTop: "8px" })} */}
+                <p className="question-set">Question set: charts</p>
+                <div>{selectionInOrder.length > 1 ? selectComponent(0, "I would like to ") : <div>...</div>}</div>
+                {/* switchComponent("Do you want to highlight the correlation between gdp and life expectancy?", this.answers.set1.switch, "set1", null, null, { marginTop: "8px" })}*/}
 
                 <p className="question-set mb-5">Question set: statistical summary</p>
                 {this.dataStats.map((dataList, idx) =>
@@ -274,20 +263,20 @@ class Questions extends React.Component {
                     </div>
                 )}
 
-                <a href = "#continue"><input
+                <a href="#continue"><input
                     type="button"
                     className={"button btn-create mb-5 mt-15"}
                     value="Continue"
                     onClick={() => this.handleContinue()}
-                    id = "continue"
+                    id="continue"
                 /></a>
 
-                {dataQuestion ? (dataQuestion.sentence.length !== 0 ? 
+                {dataQuestion ? (dataQuestion.sentence.length !== 0 ?
                     dataQuestion.sentence.map((qs, idx) =>
-                    <div key={"qh-" + idx}>
-                        <p className="question-set mb-15">{"Follow up question set: " + parseInt(idx+1) + "/" + followUpCount}</p>
-                        {qs.map((q, i) => textFieldComponent(q, this.answers.set2FollowUp.textField[idx][i], "set2FollowUp", idx, i, 3))}
-                    </div>) : <p className="instruction">There is no follow up questions</p>
+                        <div key={"qh-" + idx}>
+                            <p className="question-set mb-15">{"Follow up question set: " + parseInt(idx + 1) + "/" + followUpCount}</p>
+                            {qs.map((q, i) => textFieldComponent(q, this.answers.set2FollowUp.textField[idx][i], "set2FollowUp", idx, i, 3))}
+                        </div>) : <p className="instruction">There is no follow up questions</p>
                 ) : null}
                 {dataQuestion ? <input
                     type="button"
@@ -295,7 +284,7 @@ class Questions extends React.Component {
                     value="Submit"
                     onClick={() => this.handleSubmit()}
                 /> : null}
-                
+
                 {/* <p className="question-set">Question set 3:</p> */}
                 {/* {textFieldComponent("Are you focusing on some specific country or a group of them?", this.answers.set3.textField, "set3", null, null, 3)} */}
                 {/* <ComponentSelectMultiple dataKeys={dataKeys} label="Are you focusing on some specific country or a group of them?" /> */}

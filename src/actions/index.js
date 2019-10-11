@@ -44,6 +44,11 @@ export const analyzeData = (dataTable, show) => {
     selection: selectCharts(summary)
   }
 }
+export const setSelectionInOrder = (selectionInOrder) => ({
+  type: "SET_SELECTION_ORDER",
+  selectionInOrder 
+})
+
 // sumstats
 export const setAnswers = (dataAnswer, dataSentence) => ({
   type: "SET_ANSWERS",

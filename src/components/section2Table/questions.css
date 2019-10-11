@@ -1,9 +1,3 @@
-:root {
-    --qablue: #156ca6;
-    --qagrey: #808080;
-    --qablack: #333;
-  }
-
 .questions {
     font-size: 14px;
 }
@@ -23,19 +17,23 @@
     max-width: none;
 }
 
+/* grid layout */
+.order1 { order: 1; border: 5px solid var(--c-blue) !important;}
+.order2 { order: 2; }
+
 /* override material-ui styles */
 #section3 .MuiInputBase-input,
 .questions .MuiFormLabel-root,
 .questions .MuiInputBase-input,
 .questions .MuiTypography-body1,
 .MuiPaper-root .MuiMenuItem-root {
-    color: var(--qablack);
+    color: var(--c-black);
     font-size: 1.125rem;
     font-family: source-sans-pro, Helvetica, Arial, sans-serif;
     transform: scale(1);
 }
 .questions .MuiInputBase-input {
-    color: var(--qablue);
+    color: var(--c-blue);
 }
 
 /* switch */
@@ -51,13 +49,13 @@
     width: 75%;
 }
 .questions .Mui-checked {
-    color: var(--qablue) !important;
+    color: var(--c-blue) !important;
 }
 .questions .Mui-checked:hover {
     background-color: transparent !important; 
 }
 .questions .Mui-checked + .MuiSwitch-track {
-    background-color: var(--qablue) !important;  
+    background-color: var(--c-blue) !important;  
 }
 
 /* textfield */
@@ -70,10 +68,10 @@
 
 }
 .questions .MuiFormLabel-root.Mui-focused {
-    color: var(--qablue);  
+    color: var(--c-blue);  
 }
 .questions .MuiInput-underline:after {
-    border-bottom: 2px solid var(--qablue);  
+    border-bottom: 2px solid var(--c-blue);  
 }
 .questions .MuiInput-underline {
     width: 66%;
@@ -87,16 +85,12 @@
     /* border: 2px solid transparent !important; */
 }
 #section3 .MuiInput-underline:after {
-    border-bottom: 2px solid var(--qagrey);  
+    border-bottom: 2px solid var(--c-grey);  
 }
 
 /* select and menu*/
 .questions .MuiTypography-root {
     white-space: nowrap;
-}
-.questions .MuiSelect-root {
-    padding-left: 16px;
-    margin-bottom: -4px; 
 }
 .MuiPaper-root .MuiMenuItem-root {
     min-height: 28px

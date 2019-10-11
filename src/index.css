@@ -1,4 +1,12 @@
 @import url("https://use.typekit.net/vku3rtg.css");
+
+/* variables */
+:root {
+  --c-blue: #156ca6;
+  --c-grey: #808080;
+  --c-black: #333;
+}
+
 /* atomic css */
 .d-n { display: none !important; }
 .d-f { display: flex; }
