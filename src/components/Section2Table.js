@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './section2Table.css';
 import { /*analyzeData,*/ toggleData, transposeData, setColors, setDisplay } from '../actions';
-import { colors, /*colorsgray,*/ metaKeys } from '../data/config';
+import { colors, /*colorsgray,*/ metaKeys} from '../data/config';
 import summarizeData from '../data/summarizeData';
 import selectCharts from '../data/selectCharts';
 import ComponentChartlist from './section2Table/Chartlist';
@@ -68,8 +68,9 @@ class Section extends React.Component {
     // get dataChart
     if (stepActive === 2) {
       const summary = summarizeData(dataTable, show);
-      this.selection = selectCharts(summary);
       this.dataChart = summary.chart;
+      this.dataCount = summary.count;
+      this.selection = selectCharts(summary);
     }
     
     return (
@@ -118,12 +119,12 @@ class Section extends React.Component {
 
           {/* charts */}
           <div className="section2-chart">
-            <ComponentChartlist selection={this.selection} dataChart={this.dataChart} /> 
+            <ComponentChartlist dataChart={this.dataChart} selection={this.selection} /> 
           </div>
         </div>
         
         {/* questions */}
-        <ComponentQuestions selection={this.selection} dataChart={this.dataChart} callByStep="2s"/>
+        <ComponentQuestions dataChart={this.dataChart} dataCount={this.dataCount} />
 
         {/* button */}
         {/* <input

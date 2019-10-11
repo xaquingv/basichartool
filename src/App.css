@@ -81,7 +81,7 @@ p {
 .button {
   font-size: 1rem;
   font-weight: 600;
-  background-color: #156ca6;
+  background-color: var(--c-blue);
   min-width: 3rem;
   outline: 0;
   padding: 8px;

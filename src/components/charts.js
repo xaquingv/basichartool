@@ -24,26 +24,26 @@ import AreaStack          from './charts/AreaStack'
 
 // TODO: obj -> arr, sort by config file
 export const chartList = {
-  plotScatter:      PlotScatter,
-  lineContinue:     LineContinue,
-  lineDiscrete:     LineDiscrete,
-  plotDot:          PlotDot,
-  onBarDiffArrow:   OnBarArrow,
-  onBarDiffDots:    OnBarDots,
-  onBarTicks:       OnBarTicks,
-  bar:              Bars,
-  barGroup:         Bars,
-  barGroupStack:    BarStack,
-  barGroupStack100: BarStack100,
-  bar100:           Bars100,
-  brokenBar100:     BrokenBar100,
-  col:              Cols,
-  colGroup:         Cols,
-  colGroupStack:    ColStack,
-  //colGroupStack100: AreaStack,
-  areaGroupStack:   AreaStack,
-  // slopegraph:       Slopegraph,
-  //donut:          Donut,
+  plotScatter:      PlotScatter,  // 1
+  lineContinue:     LineContinue, // 2
+  lineDiscrete:     LineDiscrete, // 3
+  plotDot:          PlotDot,      // 4
+  onBarDiffArrow:   OnBarArrow,   // 5
+  onBarDiffDots:    OnBarDots,    // 6
+  onBarTicks:       OnBarTicks,   // 7
+  bar:              Bars,         // 8
+  barGroup:         Bars,         // 9
+  barGroupStack:    BarStack,     // 10
+  barGroupStack100: BarStack100,  // 11
+  bar100:           Bars100,      // 12
+  brokenBar100:     BrokenBar100, // 13
+  col:              Cols,         // 14
+  colGroup:         Cols,         // 15
+  colGroupStack:    ColStack,     // 16
+  //colGroupStack100: AreaStack,  // 19
+  areaGroupStack:   AreaStack,    // 17
+  //slopegraph:       Slopegraph, // 18
+  //donut:          Donut,        // 20 ...
   //mapChoropleth:  MapChoropleth,
   //mapBubble:      MapBubble
 }

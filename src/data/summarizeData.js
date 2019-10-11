@@ -97,6 +97,7 @@ export default function(dataTable, show) {
     // count
     rowGroup,
     rowCount:     count.row,
+    colCount:     count.col,
     // string and
     // pre calc for string / label res of axis y
     string1Col, string2Col, string3Col,
