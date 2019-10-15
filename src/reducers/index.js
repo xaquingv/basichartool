@@ -106,6 +106,9 @@ function show(show = { col: [], row: [] }, action) {
 // sumstats' answer sets
 function dataAnswer(dataAnswer = null, action) {
   switch (action.type) {
+    case 'CLEAR_DATA':
+    case 'IMPORT_DATA':
+      return null
     case 'SET_ANSWERS':
       return action.dataAnswer
     default:

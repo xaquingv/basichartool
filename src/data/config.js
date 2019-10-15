@@ -13,7 +13,7 @@ export const viewBox = "0 0 " + width + " " + height
 export let cfg_charts
 export let colors, /*colorsgray,*/ colorBarBackground
 export let metaKeys, default_metaText = {}
-export let chartNames = {}, chartTasks = {}
+export let chartNames = {}, chartInfos = {}
 
 
 export default function() {
@@ -89,7 +89,7 @@ function parseCfgJson(cfg) {
   .filter(chart => chart.seq)
   .forEach(chart => {
     chartNames[chart.id] = chart.name
-    chartTasks[chart.id] = chart.task
+    chartInfos[chart.id] = { task: chart.task,  description: chart.description} 
   })
 
 
