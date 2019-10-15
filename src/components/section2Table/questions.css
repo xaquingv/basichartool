@@ -2,7 +2,7 @@
     font-size: 14px;
 }
 .question-set {
-    margin-top: 3rem;
+    margin-top: 2rem;
     font-size: 1.35rem;
     font-weight: 600;
     color:#808080; 
@@ -74,7 +74,7 @@
     border-bottom: 2px solid var(--c-blue);  
 }
 .questions .MuiInput-underline {
-    width: 66%;
+    /* width: 66%; */
 }
 #section3 .MuiFormControl-root {
     width: 620px;

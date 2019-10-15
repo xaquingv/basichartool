@@ -30,9 +30,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 class Chartlist extends React.Component {
   componentDidUpdate() {
-    // TODO: add in action/reducer
-    this.selectionInOrder = [...document.querySelectorAll(".charts > *")].filter(el => el.getAttribute("class") !== "d-n").map(el => el.id)
-    this.props.setDataSelectionInOrder(this.selectionInOrder)
+    const selectionInOrder = [...document.querySelectorAll(".charts > div")].filter(el => !el.getAttribute("class").includes("d-n")).map(el => el.id)
+    this.props.setDataSelectionInOrder(selectionInOrder)
   }
 
   render() {
@@ -41,14 +40,16 @@ class Chartlist extends React.Component {
 
     // TODO: loop through arr, see charts.js
     // list of charts
+    let selectCount = 0
     const chartComponents = Object.keys(chartList).map((chartID, index) => {
       const isSelected = selection.indexOf(chartID) > -1
       const ComponentChart = chartList[chartID]
-
+      
+      if (isSelected) selectCount++;
       return isSelected
         ? (
           // <div key={chartID} id={chartID} onClick={() => onSelect(chartID)}>
-          <div key={chartID} id={chartID} className={index!==0 ? "order2" : "order1"}>
+          <div key={chartID} id={chartID} className={selectCount!==1 ? "order2" : "order1"}>
             <ComponentChart id={chartID} callByStep={STEP} dataChart={dataChart} />{chartNames[chartID]}
           </div>
         )
