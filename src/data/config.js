@@ -11,9 +11,9 @@ export const height = width*ratio
 export const viewBox = "0 0 " + width + " " + height
 
 export let cfg_charts
-export let colors, colorsgray, colorBarBackground
-export let metaKeys, default_metaText
-export let chartNames = {}
+export let colors, /*colorsgray,*/ colorBarBackground
+export let metaKeys, default_metaText = {}
+export let chartNames = {}, chartInfos = {}
 
 
 export default function() {
@@ -45,12 +45,10 @@ function parseCfgJson(cfg) {
   colorBarBackground = cfg.COLORS
   .find(c => c.type === "barBackground").code || "#f1f1f1"
 
-
-  /* colorsgray: pre-defined colorsgray */
-  colorsgray = cfg.COLORSGRAY
-  .filter(c => c.type === "all")
-  .sort((c1, c2) => c1.order - c2.order).map(c => c.code)
-
+  // /* colorsgray: pre-defined colorsgray */
+  // colorsgray = cfg.COLORSGRAY
+  // .filter(c => c.type === "all")
+  // .sort((c1, c2) => c1.order - c2.order).map(c => c.code)
 
   // TODO: add map colors, see mapData.js
   // ...
@@ -88,19 +86,16 @@ function parseCfgJson(cfg) {
   })
 
   cfg.CFG_CHART_DEF
-  .filter(chart => chart.num)
-  .forEach(chart => chartNames[chart.id] = chart.name)
+  .filter(chart => chart.seq)
+  .forEach(chart => {
+    chartNames[chart.id] = chart.name
+    chartInfos[chart.id] = { task: chart.task,  description: chart.description} 
+  })
 
-  //console.log(colors)
-  //console.log(cfg_charts)
-  //console.log(chartNames)
-}
 
-// TODO: add meta to config file ?
-metaKeys = ["headline", "standfirst", "legend", "source"] // note, ...
-default_metaText = {
-  "headline":   "Headline ...",
-  "standfirst": "Standfirst ...",
-  "legend":     "No keys ...",
-  "source":     ""
+  /* meta data for chart editing */
+  metaKeys = cfg.METAKEYS;
+  
+  const metaText = cfg.METATEXT
+  metaKeys.forEach((key, idx) => default_metaText[key] = metaText[idx]) 
 }

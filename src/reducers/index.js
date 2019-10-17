@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import getNewDataTable from '../data/parseDataTableRaw';
+// import { default_metaText } from '../data/config';
 
 function step(step = 1, action) {
   switch (action.type) {
@@ -105,6 +106,9 @@ function show(show = { col: [], row: [] }, action) {
 // sumstats' answer sets
 function dataAnswer(dataAnswer = null, action) {
   switch (action.type) {
+    case 'CLEAR_DATA':
+    case 'IMPORT_DATA':
+      return null
     case 'SET_ANSWERS':
       return action.dataAnswer
     default:
@@ -220,6 +224,17 @@ function selection(chartList = [], action) {
       return chartList
   }
 }
+function selectionInOrder(chartList = [], action) {
+  switch(action.type) {
+    // case 'TOGGLE_DATA':
+    // case 'TRANSPOSE_DATA':
+    // case 'SELECT_CHART':
+    case 'SET_SELECTION_ORDER':
+      return action.selectionInOrder
+    default:
+      return chartList
+  }
+}
 
 function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, width: "300px" }, action) {
   switch (action.type) {
@@ -322,6 +337,7 @@ const app = combineReducers({
   dataParagraph,
   dataChart,
   selection,
+  selectionInOrder,
   chartId,
   dataSetup,
   dataEditable
