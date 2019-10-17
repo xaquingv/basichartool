@@ -289,10 +289,11 @@ function roi(data,opt) {
 }
 
 
-function getTimeSerieDecomposition(data){
-    let candidates = [];
-    let amplitudes = [], trend = [], detrend = [], season = [], validData=[];
-    switch("month")
+function getTimeSerieDecomposition(data, freq){
+    let candidates;
+    let amplitudes = [];
+
+    switch(freq)
     {
         case "day":
             candidates = [7, 14, 30, 90, 365];
@@ -304,22 +305,21 @@ function getTimeSerieDecomposition(data){
             candidates = [3, 6, 12, 24];
         break;
         default:
-            for(let i = 3; i<= 40; i++){
-                candidates.push(i);
-            }
+            candidates = (... new Array(37)).map(d=> d = d+3);
         break;
     }
 
-    for(let i = 0; i < candidates.length; i++){
-        trend.push(applyAverageFilterWithPeriod(data, candidates[i]));
-        validData.push(data.slice(((data.length-trend[trend.length-1].length)/2),data.length-(data.length-trend[trend.length-1].length)/2));
-        detrend.push(getDetrend(validData[validData.length-1], trend[trend.length-1]));
-        season.push(getSeasonality(detrend[detrend.length-1], candidates[i]));
-        amplitudes.push(max(season[season.length-1])-min(season[season.length-1]));
-        console.log(season[season.length-1]);
-    }
 
-    let indexPeriod = amplitudes.indexOf(max(amplitudes));
+    let amplitudes = [];
+    candidates.map(candidate => {
+        let trend = applyAverageFilterWithPeriod(data, candidate);
+        let validData = data.slice(((data.length-trend.length)/2),data.length-(data.length-trend.length)/2);
+        let detrend = getDetrend(validData, trend);
+        let season = getSeasonality(detrend, candidate);
+        amplitudes.push(max(season)-min(season));
+    })
+
+    let period = amplitudes.indexOf(max(amplitudes));
 
     return [trend[indexPeriod], season[indexPeriod], getResiduals(validData[indexPeriod], trend[indexPeriod], season[indexPeriod])];
 }
