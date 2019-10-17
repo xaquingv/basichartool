@@ -169,120 +169,162 @@ function percentile(data, p) {
 }
 
 function roi(data,opt) {
-    if(data.length > 0 && data[0].keyType === "date"){
-        data.sort((a,b) => a.key - b.key);
-    }
-    //const key = data.map((d, i) => i = parseFloat(d.key.replace(",", ".")));
-    let _data = data.map((d, i) => i = d.value);
-   
-
-    let _cfft = _data.map((a,i) => a);
-    
-    _cfft = cfft(_cfft);
-    let fft = _cfft.map((a,i) => Math.sqrt(a.re*a.re+a.im*a.im));
-    let period = findPeriod(fft);
-    period = 20;
-    
-    let trend = applyAverageFilterWithPeriod(_data, period);
-    let _validData = _data.slice(((_data.length-trend.length)/2),data.length-(_data.length-trend.length)/2);
-    //trend.unshift(_data[0]);
-    //trend.push(_data[data.length-1])
-
-    let detrend = getDetrend(_validData, trend);
-    let season = getSeasonality(detrend, period);
-    let residuals = getResiduals(_validData, trend, season);
-
-   
-    //Attemp Smooth
-    let dataSmooth = smoothData(data);
-    let _dataSmooth = dataSmooth.map((d, i) => i = d.value);
-   
-    console.log("============================trend==========================")
-    //trend.map((a,i) => console.log(a+";"));
-    console.log(trend);
-    console.log("============================detrend==========================")
-    //detrend.map((a,i) => console.log(a+";"));
-    console.log(detrend);
-    console.log("============================season==========================")
-    //season.map((a,i) => console.log(a+";"));
-    console.log(season);
-    console.log("============================residuals==========================")
-    //residuals.map((a,i) => console.log(a+";"));
-    console.log(residuals);
-    console.log("============================fft==========================")
-    //fft.map((a,i) => console.log(a+";"));
-    console.log(fft);
-
-   
-    //let lr = leastSquares(key, _data);
-    let tmin = min(_dataSmooth);
-    let tmax = max(_dataSmooth);
-    let tdif = tmax - tmin;
     let result = [];
-    let indexResult = 0;
-
-
-
-    let index = 0;
-    while(index < data.length-1)
+    if(data[0].keyType === "date")
     {
-        let tslope = 0;
-        let direction = _dataSmooth[index+1] - _dataSmooth[index];
-        let follow = direction !== 0;
-        let initialIndex = index;
-        while(follow && index < _dataSmooth.length-1)
+        if(data.length > 0){
+            data.sort((a,b) => a.key - b.key);
+        }
+        //const key = data.map((d, i) => i = parseFloat(d.key.replace(",", ".")));
+        let _data = data.map((d, i) => i = d.value);
+    
+
+        //let _cfft = _data.map((a,i) => a);
+        
+        //_cfft = cfft(_cfft);
+        //let fft = _cfft.map((a,i) => Math.sqrt(a.re*a.re+a.im*a.im));
+        //let period = findPeriod(fft);
+        let trend, season, residuals;
+        [trend, season, residuals] = getTimeSerieDecomposition(_data);
+        
+        
+        //let trend = applyAverageFilterWithPeriod(_data, period);
+        //let _validData = _data.slice(((_data.length-trend.length)/2),data.length-(_data.length-trend.length)/2);
+        //trend.unshift(_data[0]);
+        //trend.push(_data[data.length-1])
+
+        //let detrend = getDetrend(_validData, trend);
+        //let season = getSeasonality(detrend, period);
+        //let residuals = getResiduals(_validData, trend, season);
+
+    
+        //Attemp Smooth
+        let dataSmooth = smoothData(data);
+        let _dataSmooth = dataSmooth.map((d, i) => i = d.value);
+    
+        console.log("============================trend==========================")
+        //trend.map((a,i) => console.log(a+";"));
+        console.log(trend);
+        //console.log("============================detrend==========================")
+        //detrend.map((a,i) => console.log(a+";"));
+        //console.log(detrend);
+        console.log("============================season==========================")
+        //season.map((a,i) => console.log(a+";"));
+        console.log(season);
+        console.log("============================residuals==========================")
+        //residuals.map((a,i) => console.log(a+";"));
+        console.log(residuals);
+        //console.log("============================fft==========================")
+        //fft.map((a,i) => console.log(a+";"));
+        //console.log(fft);
+
+    
+        //let lr = leastSquares(key, _data);
+        let tmin = min(_dataSmooth);
+        let tmax = max(_dataSmooth);
+        let tdif = tmax - tmin;
+        let indexResult = 0;
+
+
+
+        let index = 0;
+        while(index < data.length-1)
         {
-            if((direction > 0 && _dataSmooth[index] <= _dataSmooth[index+1]) || (direction < 0 && _dataSmooth[index] >= _dataSmooth[index+1]))
+            let tslope = 0;
+            let direction = _dataSmooth[index+1] - _dataSmooth[index];
+            let follow = direction !== 0;
+            let initialIndex = index;
+            while(follow && index < _dataSmooth.length-1)
             {
-                tslope = tslope + Math.abs(slope(data[index+1], data[index]));
-                index++;
+                if((direction > 0 && _dataSmooth[index] <= _dataSmooth[index+1]) || (direction < 0 && _dataSmooth[index] >= _dataSmooth[index+1]))
+                {
+                    tslope = tslope + Math.abs(slope(data[index+1], data[index]));
+                    index++;
+                }
+                else
+                {
+                    //if(direction < 0 && _data[index] >= _data[index+1])
+                    //{
+                    //    tslope = tslope + slope(data[index+1], data[index]);
+                    //    index++;
+                    //}
+                    //else
+                    //{
+                        follow = false;
+                        if(tslope > 0.1*tdif)
+                        {
+                            result[indexResult] = [data[initialIndex], data[index]];
+                            indexResult++;
+                        }
+                        else{
+                            index++;
+                        }
+                    //}
+                }
             }
-            else
+            if(index >= data.length-1)
             {
-                //if(direction < 0 && _data[index] >= _data[index+1])
-                //{
-                //    tslope = tslope + slope(data[index+1], data[index]);
-                //    index++;
-                //}
-                //else
-                //{
-                    follow = false;
-                    if(tslope > 0.1*tdif)
-                    {
-                        result[indexResult] = [data[initialIndex], data[index]];
-                        indexResult++;
-                    }
-                    else{
-                        index++;
-                    }
-                //}
+                if(tslope > 0.1*tdif)
+                {
+                    result[indexResult] = [data[initialIndex], data[index]];
+                    indexResult++;
+                }
             }
         }
-        if(index >= data.length-1)
-        {
-            if(tslope > 0.1*tdif)
-            {
-                result[indexResult] = [data[initialIndex], data[index]];
-                indexResult++;
+
+        result.sort((a, b) => Math.abs(b[0].value-b[1].value) - Math.abs(a[0].value-a[1].value));
+        /*
+        const roi = data.filter((d, i) => 
+        
+        data = data.sort((a, b) => a.value - b.value);
+        const i = Math.ceil(data.length * (p / 100)) - 1;
+        let index = i;
+        if (i < 1) index = 1;
+        else if (i >= data.length - 1) index = data.length - 2;
+        const _data = data.filter((d, i) => (d > 50) ? i > index : i < index);
+        const sorted = (p > 50) ? _data.sort((a, b) => b.value - a.value) : _data.sort((a, b) => a.value - b.value);
+        return sorted;*/
+    }
+    return result;
+}
+
+
+function getTimeSerieDecomposition(data){
+    let candidates = [];
+    let amplitudes = [], trend = [], detrend = [], season = [], validData=[];
+    switch("month")
+    {
+        case "day":
+            candidates = [7, 14, 30, 90, 365];
+        break;
+        case "week":
+            candidates = [4, 12, 52];
+        break;
+        case "month":
+            candidates = [3, 6, 12, 24];
+        break;
+        default:
+            for(let i = 3; i<= 40; i++){
+                candidates.push(i);
             }
-        }
+        break;
     }
 
-    result.sort((a, b) => Math.abs(b[0].value-b[1].value) - Math.abs(a[0].value-a[1].value));
-    return result;
+    for(let i = 0; i < candidates.length; i++){
+        trend.push(applyAverageFilterWithPeriod(data, candidates[i]));
+        validData.push(data.slice(((data.length-trend[trend.length-1].length)/2),data.length-(data.length-trend[trend.length-1].length)/2));
+        detrend.push(getDetrend(validData[validData.length-1], trend[trend.length-1]));
+        season.push(getSeasonality(detrend[detrend.length-1], candidates[i]));
+        amplitudes.push(max(season[season.length-1])-min(season[season.length-1]));
+        console.log(season[season.length-1]);
+    }
 
-    /*
-    const roi = data.filter((d, i) => 
-    
-    data = data.sort((a, b) => a.value - b.value);
-    const i = Math.ceil(data.length * (p / 100)) - 1;
-    let index = i;
-    if (i < 1) index = 1;
-    else if (i >= data.length - 1) index = data.length - 2;
-    const _data = data.filter((d, i) => (d > 50) ? i > index : i < index);
-    const sorted = (p > 50) ? _data.sort((a, b) => b.value - a.value) : _data.sort((a, b) => a.value - b.value);
-    return sorted;*/
+    let indexPeriod = amplitudes.indexOf(max(amplitudes));
+
+    return [trend[indexPeriod], season[indexPeriod], getResiduals(validData[indexPeriod], trend[indexPeriod], season[indexPeriod])];
 }
+
+
 
 function slope(a, b){
     let result;

@@ -337,8 +337,7 @@ export default function TextFieldWithdAutoComplete(props) {
           styles={selectStyles}
           inputId="react-select-single"
           TextFieldProps={{
-            // label: {label},
-            label: 'Which specific* one?',
+            label: label,
             InputLabelProps: {
               htmlFor: 'react-select-single',
               shrink: true,
@@ -355,8 +354,7 @@ export default function TextFieldWithdAutoComplete(props) {
           styles={selectStyles}
           inputId="react-select-multiple"
           TextFieldProps={{
-            // label: {label},
-            label: 'Which line(s) wouild you like to highlight?',
+            label: label,
             InputLabelProps: {
               htmlFor: 'react-select-multiple',
               shrink: true,

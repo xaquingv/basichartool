@@ -59,11 +59,6 @@ class Section extends React.Component {
       this.colors = colors;
       setDefaultColors(this.colors);
     }
-  //  if (tableBody.length > 10)
-  //    this.colors = colorsgray;
-  //  else
-  //    this.colors = colors;
-  //   setDefaultColors(this.colors);
 
     // get dataChart
     if (stepActive === 2) {
@@ -71,7 +66,7 @@ class Section extends React.Component {
       this.dataChart = summary.chart;
       this.dataCount = summary.count;
       this.selection = selectCharts(summary);
-    }
+    } 
     
     return (
       <div className={"section" + ((stepActive >= STEP) ? "" : " d-n")} id="section2">

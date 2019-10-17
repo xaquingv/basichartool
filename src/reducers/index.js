@@ -107,7 +107,6 @@ function show(show = { col: [], row: [] }, action) {
 function dataAnswer(dataAnswer = null, action) {
   switch (action.type) {
     case 'CLEAR_DATA':
-    case 'IMPORT_DATA':
       return null
     case 'SET_ANSWERS':
       return action.dataAnswer
@@ -218,6 +217,8 @@ function dataChart(dataChart = {}, action) {
 
 function selection(chartList = [], action) {
   switch (action.type) {
+    case 'CLEAR_DATA':
+      return []
     case 'ANALYZE_DATA':
       return action.selection
     default:
@@ -229,6 +230,8 @@ function selectionInOrder(chartList = [], action) {
     // case 'TOGGLE_DATA':
     // case 'TRANSPOSE_DATA':
     // case 'SELECT_CHART':
+    case 'CLEAR_DATA':
+      return []
     case 'SET_SELECTION_ORDER':
       return action.selectionInOrder
     default:
