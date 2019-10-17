@@ -14,7 +14,8 @@ function getValueByType(data, dataType) {
     case "number":
       return {
         // remove all non numeric or period, keep missing data
-        values: data.map(d => d ? +d.replace(/[^0-9.]/g, "") : d)
+        values: data.map(d => d ? +d.replace(/[^-+0-9.]/g, "") : d)
+        //values: data.map(d => +d)
       }
     case "date":
       return {
