@@ -219,14 +219,15 @@ class Questions extends React.Component {
                 // col, data, type, ...stats
                 if (idx === 0) {
                     console.log("sumstat:", dataChart.keys[idx])
-                    console.log("sumstat:", col.map((value, index) => ({ key: rowGroup[index], value, keyType })))
+                    console.log("sumstat:", col.map((value, index) => ({ key: rowGroup[index], value})))
                     console.log("sumstat:", "country")
                     console.log("sumstat:", ...typeSumstats)
                 }
                 return summarize(
                     dataChart.keys[idx],
-                    col.map((value, index) => ({ key: rowGroup[index], value, keyType })),
+                    col.map((value, index) => ({ key: rowGroup[index], value})),
                     "country", //hotfix
+                    keyType,
                     ...typeSumstats
                 )
 
