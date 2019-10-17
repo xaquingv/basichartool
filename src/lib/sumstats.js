@@ -1,6 +1,7 @@
 import mean from 'compute-nanmean'
 import median from 'compute-nanmedian'
 import mode from 'compute-mode'
+import stdev from 'compute-nanstdev'
 import min from 'compute-nanmin'
 import max from 'compute-nanmax'
 import iqr from 'compute-iqr'
@@ -8,6 +9,8 @@ import q from 'compute-nanquantiles'
 import kurtosis from 'compute-kurtosis'
 import skew from 'compute-skewness'
 import pcorr from 'compute-pcorr'
+import Complex from './complex'
+import { fdatasync } from 'fs'
 
 export function summarize(col, data, type, ...stats) {
 
@@ -71,21 +74,22 @@ export function intersect(data1, data2, ...stats) {
     // console.log(leastSquares(data1.map(d=> d=d.value),data2.map(d=> d=d.value)))
 }
 
-// function leastSquares(x, y) {
-//     const lr = {};
-//     let n = y.length;
-//     let sum_x = x.reduce((a, b) => a + b, 0);
-//     let sum_y = y.reduce((a, b) => a + b, 0);
-//     let sum_xy = x.map((d, i) => x[i] * y[i]).reduce((a, b) => a + b, 0);
-//     let sum_xx = x.map((d) => d * d).reduce((a, b) => a + b, 0);
-//     let sum_yy = y.map((d) => d * d).reduce((a, b) => a + b, 0);
+ function leastSquares(x, y) {
+     const lr = {};
+     let n = y.length;
+     let sum_x = x.reduce((a, b) => a + b, 0);
+     let sum_y = y.reduce((a, b) => a + b, 0);
+     let sum_xy = x.map((d, i) => x[i] * y[i]).reduce((a, b) => a + b, 0);
+     let sum_xx = x.map((d) => d * d).reduce((a, b) => a + b, 0);
+     let sum_yy = y.map((d) => d * d).reduce((a, b) => a + b, 0);
 
-//     lr.slope = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x);
-//     lr.intercept = (sum_y - lr.slope * sum_x) / n;
-//     lr.r2 = Math.pow((n * sum_xy - sum_x * sum_y) / Math.sqrt((n * sum_xx - sum_x * sum_x) * (n * sum_yy - sum_y * sum_y)), 2);
-//     lr.residuals = y.map((d, i) => y[i] - (lr.intercept + lr.slope * x[i]))
-//     return lr;
-// }
+     lr.slope = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x);
+     lr.intercept = (sum_y - lr.slope * sum_x) / n;
+     lr.r2 = Math.pow((n * sum_xy - sum_x * sum_y) / Math.sqrt((n * sum_xx - sum_x * sum_x) * (n * sum_yy - sum_y * sum_y)), 2);
+     lr.residuals = y.map((d, i) => y[i] - (lr.intercept + lr.slope * x[i]))
+     return lr;
+
+}
 
 function getValue(d, data) {
 
@@ -164,13 +168,55 @@ function percentile(data, p) {
     return sorted;
 }
 
-function roi(data) {
+function roi(data,opt) {
     if(data.length > 0 && data[0].keyType === "date"){
         data.sort((a,b) => a.key - b.key);
     }
+    //const key = data.map((d, i) => i = parseFloat(d.key.replace(",", ".")));
     let _data = data.map((d, i) => i = d.value);
-    let tmin = min(_data);
-    let tmax = max(_data);
+   
+
+    let _cfft = _data.map((a,i) => a);
+    
+    _cfft = cfft(_cfft);
+    let fft = _cfft.map((a,i) => Math.sqrt(a.re*a.re+a.im*a.im));
+    let period = findPeriod(fft);
+    period = 20;
+    
+    let trend = applyAverageFilterWithPeriod(_data, period);
+    let _validData = _data.slice(((_data.length-trend.length)/2),data.length-(_data.length-trend.length)/2);
+    //trend.unshift(_data[0]);
+    //trend.push(_data[data.length-1])
+
+    let detrend = getDetrend(_validData, trend);
+    let season = getSeasonality(detrend, period);
+    let residuals = getResiduals(_validData, trend, season);
+
+   
+    //Attemp Smooth
+    let dataSmooth = smoothData(data);
+    let _dataSmooth = dataSmooth.map((d, i) => i = d.value);
+   
+    console.log("============================trend==========================")
+    //trend.map((a,i) => console.log(a+";"));
+    console.log(trend);
+    console.log("============================detrend==========================")
+    //detrend.map((a,i) => console.log(a+";"));
+    console.log(detrend);
+    console.log("============================season==========================")
+    //season.map((a,i) => console.log(a+";"));
+    console.log(season);
+    console.log("============================residuals==========================")
+    //residuals.map((a,i) => console.log(a+";"));
+    console.log(residuals);
+    console.log("============================fft==========================")
+    //fft.map((a,i) => console.log(a+";"));
+    console.log(fft);
+
+   
+    //let lr = leastSquares(key, _data);
+    let tmin = min(_dataSmooth);
+    let tmax = max(_dataSmooth);
     let tdif = tmax - tmin;
     let result = [];
     let indexResult = 0;
@@ -181,12 +227,12 @@ function roi(data) {
     while(index < data.length-1)
     {
         let tslope = 0;
-        let direction = _data[index+1] - _data[index];
+        let direction = _dataSmooth[index+1] - _dataSmooth[index];
         let follow = direction !== 0;
         let initialIndex = index;
-        while(follow && index < _data.length-1)
+        while(follow && index < _dataSmooth.length-1)
         {
-            if((direction > 0 && _data[index] <= _data[index+1]) || (direction < 0 && _data[index] >= _data[index+1]))
+            if((direction > 0 && _dataSmooth[index] <= _dataSmooth[index+1]) || (direction < 0 && _dataSmooth[index] >= _dataSmooth[index+1]))
             {
                 tslope = tslope + Math.abs(slope(data[index+1], data[index]));
                 index++;
@@ -205,6 +251,9 @@ function roi(data) {
                     {
                         result[indexResult] = [data[initialIndex], data[index]];
                         indexResult++;
+                    }
+                    else{
+                        index++;
                     }
                 //}
             }
@@ -246,4 +295,178 @@ function slope(a, b){
         result = (a.value-b.value)/(akey - bkey)
     }
     return result
+}
+
+function hasEnoughVariability(key, data){
+    //TODO: try a th
+    const th = 0;
+    let sum = sumOfDifferences(key, data);
+    return sum > th ? true : false;
+}
+
+function smoothData(data){
+    let windows = 10;
+    let result = [];
+    //let smoothData = [...data];
+    let smoothData = [];
+    data.forEach((d) => {
+        let key = d.key, value = d.value, keyType = d.keyType;
+        let obj = {key:key, value:value, keyType:keyType}
+        smoothData.push(obj)
+    });
+    let key = smoothData.map((d, i) => i = parseFloat(d.key.replace(",", ".")));
+    let _data = smoothData.map((d, i) => i = d.value);
+    windows = windows>smoothData.length?Math.round(smoothData.length/2):windows;
+
+    result[0] = _data[0];
+    let i;
+    for(i = 0; i <= smoothData.length-3; i = i + windows - 2 ){
+        let limit = i+windows;
+        if(limit > smoothData.length){
+            limit = smoothData.length;
+        }
+        let hasVariability = hasEnoughVariability(key.slice(i, limit), _data.slice(i, limit));
+        if(hasVariability){
+            result = result.concat(applyAverageFilter(_data.slice(i, limit)));
+        }
+        else{
+            result = result.concat(_data.slice(i, limit));
+        }
+        //let lr = leastSquares(key.slice(i, i+windows), _data.slice(i, i+windows));
+        //console.log(sum);
+        //console.log(lr);
+    }
+    while(i<smoothData.length){
+        result.push(_data[i]);
+        i++;
+    }
+
+    smoothData.forEach((d,i) => d.value = result[i]);
+
+    return smoothData;
+}
+
+function sumOfDifferences(key, data){
+    let index = 0;
+    let sum = 0;
+    for(index = 0; index < data.length-1; index++){
+        sum = sum + Math.abs(data[index+1]-data[index])+Math.abs(key[index+1]-key[index]);
+    }
+    return sum;
+}
+
+function applyAverageFilter(data){ 
+    let moveMean = [];
+    for (var i = 1; i < data.length-1; i++)
+    {
+        let mean = (data[i] + data[i-1] + data[i+1])/3.0;
+        moveMean.push(mean);
+    }
+    return moveMean;
+}
+
+function applyAverageFilterWithPeriod(data, period){ 
+    let moveMean = [];
+    let windows = period%2 === 0 ? period+1 : period;
+    let middlePoint = (windows-1)/2;
+
+    let i;
+
+    //for(i = 0; i< middlePoint; i++){
+    //    moveMean.push(data[i]);
+    //}
+
+    for (i = middlePoint; i < data.length-middlePoint; i++)
+    {
+        let _mean = mean(data.slice(i-middlePoint, i+middlePoint+1));
+        moveMean.push(_mean);
+    }
+
+    //while(i< data.length){
+    //    moveMean.push(data[i]);
+    //    i++;
+    //}
+
+    return moveMean;
+}
+
+function getDetrend(timeseries, trend){
+    let detrend = timeseries.map((a,i) => a/trend[i]);
+    return detrend;
+}
+
+function getSeasonality(detrend, period){
+    let windows = period;
+    let i = 0;
+    let j = 0;
+    let seasonality = [];
+    if(windows > detrend.length){
+        windows = detrend.length;
+    }
+    for(i = 0; i<windows; i++)
+    {
+        seasonality[i] = 0;
+        let count = 0;
+        for(j = i; j<detrend.length; j = j + windows){
+            seasonality[i] = seasonality[i]+detrend[j];
+            count++
+        }
+        seasonality[i] = seasonality[i]/count;
+    }
+    j=0;
+    for(i = seasonality.length; i < detrend.length; i++){
+        if(j>=windows){
+            j=0;
+        }
+        seasonality.push(seasonality[j]);
+        j++;
+    }
+    return seasonality;
+}
+
+function getResiduals(timeseries, trend, season){
+    let trendPerSeason = trend.map((a,i) => a*season[i]);
+    let residuals = timeseries.map((a,i)=> a/trendPerSeason[i]);
+    return residuals; 
+}
+
+function findPeriod(data){
+    const peaks = data.filter((d,i)=> (d >= 3*stdev(data))&&(i>0));
+    return data.indexOf(peaks[0])+1;
+}
+
+function cfft(data)
+{
+	let N = data.length;
+	if( N <= 1 )
+		return data;
+ 
+    let hN = Math.floor(N / 2);
+    N = hN*2;
+    let even = [];
+    let odd = [];
+	even.length = Math.floor(hN);
+	odd.length = Math.floor(hN);
+	for(let i = 0; i < hN; ++i)
+	{
+		even[i] = data[i*2];
+		odd[i] = data[i*2+1];
+	}
+	even = cfft(even);
+	odd = cfft(odd);
+ 
+	let a = -2*Math.PI;
+	for(let k = 0; k < hN; ++k)
+	{
+		if(!(even[k] instanceof Complex))
+			even[k] = new Complex(even[k], 0);
+		if(!(odd[k] instanceof Complex))
+			odd[k] = new Complex(odd[k], 0);
+		let p = k/N;
+		let t = new Complex(0, a * p);
+		t.cexp(t).mul(odd[k], t);
+		data[k] = even[k].add(t, odd[k]);
+		data[k + hN] = even[k].sub(t, even[k]);
+	}
+	return data;
 }
