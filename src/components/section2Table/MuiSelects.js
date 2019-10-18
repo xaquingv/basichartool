@@ -29,7 +29,7 @@ export default function Selects(props) {
   const { header, labels, options } = props
   // const handleChange = index => event => {
   //   optionValues[index] = event.target.value;
-  //   console.log(optionValues[index]);
+  //   //***console.log(optionValues[index]);
   // };
 
   return (

@@ -10,10 +10,47 @@ import kurtosis from 'compute-kurtosis'
 import skew from 'compute-skewness'
 import pcorr from 'compute-pcorr'
 import Complex from './complex'
-import { fdatasync } from 'fs'
-import { d3 } from './d3-lite'
+import getSentence from './nlg/sentences'
+import {statsByType} from './statsByType'
 
-export function summarize(col, data, type, keyType, ...stats) {
+/*
+    @param {keys} {header, type, [values], format}
+    @param [cols] [{header, [values]}, ...n]
+    @param id
+
+    @return sumstats sentences
+*/
+
+export function getSumStats(data) {
+
+    const keys = data.keys, cols = data.cols, id = data.id;
+
+    const stats = statsByType(id);
+
+    let sentenceList = [], questionList = [];
+    
+    cols.map(col => {
+
+        let type = "country"; //getColumnType(col.header);
+        let data = keys.values.map((d,i)=> d = {key:d, value: col.values[i]})
+        let sumData = summarize(col.header, data, type, keys.type, ...stats);
+        let sentences = [], questions = [];
+        sumData.map(data => {
+            let sentence = getSentence(data, "sentence");
+            let question = getSentence(data, "questions");
+            sentences.push(sentence);
+            questions.push(question);
+        })
+        sentenceList.push(sentences);
+        questionList.push(questions);
+        
+    });
+
+    return {sentences: sentenceList, questions: questionList};
+
+}
+
+function summarize(col, data, type, keyType, ...stats) {
 
     stats = keyType != "date" ? stats.filter(a => a!=="roi"):stats;
 
@@ -53,7 +90,6 @@ export function summarize(col, data, type, keyType, ...stats) {
 
     });
     separateInfo(sumstats);
-    //console.log(sumstats);
     return sumstats;
 
 }
@@ -190,7 +226,7 @@ function roi(data/*, keyType*/) {
         //let fft = _cfft.map((a,i) => Math.sqrt(a.re*a.re+a.im*a.im));
         //let period = findPeriod(fft);
         let trend, season, residuals;
-        [trend, season, residuals] = getTimeSerieDecomposition(_data);
+        [trend, season, residuals] = getTimeSerieDecomposition(_data, "month");
         
         
         //let trend = applyAverageFilterWithPeriod(_data, period);
@@ -300,39 +336,45 @@ function roi(data/*, keyType*/) {
 }
 
 
-function getTimeSerieDecomposition(data){
-    let candidates = [];
-    let amplitudes = [], trend = [], detrend = [], season = [], validData=[];
-    switch("month")
+function getTimeSerieDecomposition(data, freq) {
+    let tests;
+    let amplitudes = [];
+
+    switch(freq)
     {
         case "day":
-            candidates = [7, 14, 30, 90, 365];
+            tests = [7, 14, 30, 90, 365];
         break;
         case "week":
-            candidates = [4, 12, 52];
+            tests = [4, 12, 52];
         break;
         case "month":
-            candidates = [3, 6, 12, 24];
+            tests = [3, 6, 12];
         break;
         default:
-            for(let i = 3; i<= 40; i++){
-                candidates.push(i);
-            }
+            tests = [... new Array(37)].map((d,i)=> d = i+3);
         break;
     }
 
-    for(let i = 0; i < candidates.length; i++){
-        trend.push(applyAverageFilterWithPeriod(data, candidates[i]));
-        validData.push(data.slice(((data.length-trend[trend.length-1].length)/2),data.length-(data.length-trend[trend.length-1].length)/2));
-        detrend.push(getDetrend(validData[validData.length-1], trend[trend.length-1]));
-        season.push(getSeasonality(detrend[detrend.length-1], candidates[i]));
-        amplitudes.push(max(season[season.length-1])-min(season[season.length-1]));
-        console.log(season[season.length-1]);
-    }
+    tests.map(test => {
+        const _test_tsd = decompose(data, test)
+        amplitudes.push(max(_test_tsd.season)-min(_test_tsd.season));
+    });
 
-    let indexPeriod = amplitudes.indexOf(max(amplitudes));
+    const period = tests[amplitudes.indexOf(max(amplitudes))];
 
-    return [trend[indexPeriod], season[indexPeriod], getResiduals(validData[indexPeriod], trend[indexPeriod], season[indexPeriod])];
+    const tsd = decompose(data, period);
+
+    return [tsd.trend, tsd.season, tsd.residuals];
+}
+
+function decompose(data, period) {
+    const trend = applyAverageFilterWithPeriod(data, period);
+    const validData = data.slice(((data.length-trend.length)/2),data.length-(data.length-trend.length)/2);
+    const detrend = getDetrend(validData, trend);
+    const season = getSeasonality(detrend, period);
+    const residuals = getResiduals(validData, trend, season)
+    return {trend: trend, detrend: detrend, season: season, residuals: residuals};
 }
 
 

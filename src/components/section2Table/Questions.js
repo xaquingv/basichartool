@@ -16,12 +16,12 @@ import TextField from '@material-ui/core/TextField'
 import MenuItem from "@material-ui/core/MenuItem"
 import Selects from './MuiSelects'
 import ExpansionPanel from './MuiExpansionPanel'
-import TextFieldWithAutocomplete  from './MuiTextFieldAutocompletes'
+import TextFieldWithAutocomplete from './MuiTextFieldAutocompletes'
 import TextFields from './MuiTextFields'
 
 
 const regAnyInCB = /{([^}]*)}/ // match 0 or more chars in {} (curly braces)
-const typeSumstats = ["min", "mean", "median", "max", "percentile2", "percentile98", "roi"] // roi -> regions of interest
+const sumstatTypes = ["min", "mean", "median", "max", "percentile2", "percentile98", "roi"] // roi -> regions of interest
 const questionSet1 = {
     task: "I would like to ",
     axis: "What is the axis (and size) mapping with?",
@@ -65,12 +65,12 @@ class Questions extends React.Component {
             newSentences.text[indexSet] = newSentences.edit[indexSet].map(s => s.replace(regAnyInCB, (value !== "" ? value : "{units}")))
         }
 
-        // console.log("[setId]   :", setId)
-        // console.log("[indexSet]:", indexSet)
-        // console.log("[uiType]  :", uiType)
-        // console.log("[indexUi] :", indexUi)
-        // console.log(value)
-        
+        // //***console.log("[setId]   :", setId)
+        // //***console.log("[indexSet]:", indexSet)
+        // //***console.log("[uiType]  :", uiType)
+        // //***console.log("[indexUi] :", indexUi)
+        // //***console.log(value)
+
         let newAnswers = { ...this.answers }
         if (indexSet !== null && indexUi !== null) {
             newAnswers[setId][indexSet][uiType][indexUi] = value
@@ -89,7 +89,7 @@ class Questions extends React.Component {
             const selectSelectionInOrder = this.props.selectionInOrder
             selectSelectionInOrder.forEach((select, index) => document.querySelector("#" + select).setAttribute("class", (index !== selectIndex) ? "order2" : "order1"))
             newAnswers.id = selectSelectionInOrder[selectIndex]
-            // console.log(newAnswers.id, ":", value)
+            // //***console.log(newAnswers.id, ":", value)
         }
 
         this.props.setDataAnswer(newAnswers, newSentences)
@@ -120,7 +120,7 @@ class Questions extends React.Component {
 
         const questions = dataStatsFiltered.map(stats => stats.explanation/*.map(exp => exp.q)*/)
         const index = dataStatsFiltered.map(stats => stats.index)
-        
+
         this.answers.set2FollowUp.textField = questions.map(stats => stats.map(s => ""))
         this.props.setDataQuestion({ sentence: questions, index: index }) //TODO: add answers
     }
@@ -154,26 +154,26 @@ class Questions extends React.Component {
         this.numberCols = dataChart.numberCols
         this.selectedId = dataAnswer ? dataAnswer.id : selectionInOrder[0]
         this.dataCount = dataCount
-        //console.log("cur:", dataAnswer)
-        //console.log("pre:", this.answers)
-        if (!dataAnswer) this.props.setDataAnswer(this.answers)
+        ////***console.log("cur:", dataAnswer)
+        ////***console.log("pre:", this.answers)
+        // if (!dataAnswer) this.props.setDataAnswer(this.answers)
     }
 
-    componentWillUnmount () {
-        console.log()
-        console.log("**** unmount ***")
+    componentWillUnmount() {
+        //***console.log()
+        //***console.log("**** unmount ***")
     }
 
     render() {
-        
+
         const { selectionInOrder, dataAnswer } = this.props
-        console.log("* render ***")
-        
+        //***console.log("* render ***")
+
         // require at leaset selectedId (elected chart id) to generate questions, and
         // it's default comes frmo the first chart in the selectionInOrder list
         if (selectionInOrder.length < 1) return null
-        const selectedId = dataAnswer ? dataAnswer.id : selectionInOrder[0] 
-        console.log("** data in the house:", selectedId, "***")
+        const selectedId = dataAnswer ? dataAnswer.id : selectionInOrder[0]
+        //***console.log("** data in the house:", selectedId, "***")
 
         /*
          * check if data is changed due to:
@@ -184,83 +184,131 @@ class Questions extends React.Component {
         // TODO: to be more strict in data change comparison ?
         const curDataCount = this.props.dataCount
         const preDataCount = this.dataCount
-        
+
         const isInit = dataAnswer ? false : true
         const isChangeId = selectedId !== this.selectedId
-        const isUpdateData = 
+        const isUpdateData =
             Object.keys(curDataCount).some(key => curDataCount[key] !== preDataCount[key]) ||
             (this.answers ? !selectionInOrder.every((id, index) => id === this.answers.ids[index]) : true)
-            
+
         const isDataChange = isInit || isChangeId || isUpdateData
         // debug zone
         if (isInit) {
-            console.log("==> init", isInit)
-            // console.log("cur:", dataAnswer)
-            // console.log("pre:", this.answers)
+            //***console.log("==> init", isInit)
+            // //***console.log("cur:", dataAnswer)
+            // //***console.log("pre:", this.answers)
         }
-        if (isChangeId) console.log("==> change id:", this.selectedId, "->", selectedId)
+        if (isChangeId) //***console.log("==> change id:", this.selectedId, "->", selectedId)
         if (isUpdateData) {
-            console.log("==> update: data")
-            // console.log("cur", selectionInOrder)
-            // console.log("pre:", this.answers.ids)
+            //***console.log("==> update: data")
+            // //***console.log("cur", selectionInOrder)
+            // //***console.log("pre:", this.answers.ids)
         }
 
         /* data */
         const { dataChart, dataSentence, dataQuestion } = this.props
-        const { numberCols, string1Col, rowGroup } = dataChart
+        const { keys, numberOnly, numberCols, dateFormat, col1Type, col1Header, col1ValuesToStrings } = dataChart
         if (isDataChange) {
             // TODO: refactory data flow
             this.answers = null
-            console.log(dataChart)
 
-            const keyType = string1Col.length !== 0 ? "number" : "date"
-            this.dataStats = numberCols.map((col, idx) => {
-                // params: col header, data, type of sumstats1, 2, 3, //
-                // col, data, type, ...stats
-                if (idx === 0) {
-                    console.log("sumstat:", dataChart.keys[idx])
-                    console.log("sumstat:", col.map((value, index) => ({ key: rowGroup[index], value})))
-                    console.log("sumstat:", "country")
-                    console.log("sumstat:", ...typeSumstats)
-                }
+            /* questions in set2 */
+            /*
+             * get sumstat data of each col
+             * @param {string} col header
+             * @param [{key: {string} /*col1ValuesToStrings[i]* /, value: {TYPE} /*colValue* /}] data
+             * @param {string} data type of col1
+             * @param [<string>] types of feature extraction in sumstats
+             * @param {string} data header of col1 (first col in the table)              
+             */
+            // use "string" instead of "string1"
+            const col1DataType = col1Type.indexOf("str") > -1 ? "string" : col1Type 
+            // remove the first col (or header) of data (types) if all values' type is number
+            const colHeaders = numberOnly ? keys.slice(1) : keys 
+            const sumstatCols = numberOnly ? numberCols.slice(1) : numberCols
+            this.dataStats = sumstatCols.map((col, idx) => {
+                // if (idx===0) {
+                //     //***console.log(dataChart)
+                //     //***console.log("*** sumstats***")
+                //     //***console.log(colHeaders[idx])
+                //     //***console.log(col.map((value, index) => ({ key: col1ValuesToStrings[index], value })))
+                //     //***console.log(col1Header)
+                //     //***console.log(col1ValueType)
+                //     //***console.log(...sumstatTypes) 
+                //     //***console.log("*** end of sumstats ***")
+                // }
                 return summarize(
-                    dataChart.keys[idx],
-                    col.map((value, index) => ({ key: rowGroup[index], value})),
-                    "country", //hotfix
-                    keyType,
-                    ...typeSumstats
+                    colHeaders[idx],
+                    col.map((value, index) => ({ key: col1ValuesToStrings[index], value })),
+                    col1Header,
+                    col1DataType,
+                    ...sumstatTypes
                 )
-
             })
+            /* {
+                id: <string>,
+                keys: {
+                    type: <string>,         // values' data type
+                    header: <string>,
+                    values: Array<string>,  // values in string format
+                    format: <string>,       // date format or null
+                },
+                cols: [{
+                    header: <string>,
+                    values: Array<Type>     // values
+                }, ...]
+            } */
+            const dataSumstat = {
+                id: selectedId,
+                keys: {
+                    type: col1DataType,
+                    header: col1Header,
+                    values: col1ValuesToStrings,
+                    format: dateFormat,   
+                },
+                cols: sumstatCols.map((colValues, index) => ({
+                    header: colHeaders[index],
+                    values: colValues
+                }))
+            }
+            //***console.log(dataSumstat)
 
-            // to have the same test copy
+            // get a selection of sentences via the sumstat data
+            // TODO: get ids back
             const sentences = this.dataStats.map(stats => stats.map(s => sentence(s)))
             this.sumstatSentences = {
                 edit: sentences,
-                text: [...sentences]
+                text: [...sentences] // keep the same text copy
             }
+            //***console.log(sentences)
+            //***console.log(this.sumstatSentences)
 
+
+            // TODO: check, not only answers !?
+            /* answers in all sets */
             // selectionTasks: used in Q.set1.1 is required in handleSets() 
             this.selectionTasks = selectionInOrder.map(id => chartInfos[id].task)
+
             this.answers = {
                 id: selectedId,
                 ids: selectionInOrder,
                 set1: {
                     task: { select: [this.selectionTasks[0]] },
                     unit: { textField: [""] },
-                    draw: { 
-                        select: ["default"], 
-                        textField: "" 
+                    draw: {
+                        select: ["default"],
+                        textField: ""
                     }
                 },
-                set2: this.dataStats.map(group => ({ 
-                    textField: "", 
-                    switch: group.map(s => false/*true*/) 
+                set2: sentences.map(group => ({
+                    textField: "",
+                    switch: group.map(s => false/*true*/)
                 })),
                 set2FollowUp: { textField: [] },
                 set3: { textField: "" }
             }
-            // console.log(this.answers)
+            //***console.log(this.answers)
+
         } else {
             this.answers = dataAnswer || this.answers
             this.sumstatSentences = dataSentence || this.sumstatSentences
@@ -326,8 +374,8 @@ class Questions extends React.Component {
 
         /* draw */
         if (this.answers) {
-            console.log("*** ui up running ***")
-            console.log("")
+            //***console.log("*** ui up running ***")
+            //***console.log("")
         }
         const numberColGroups = dataChart.keys
         const followUpCount = dataQuestion ? dataQuestion.sentence.length : 0
@@ -337,27 +385,27 @@ class Questions extends React.Component {
                 {/* Q1: task of the chart and more info */}
                 {selectionInOrder.length > 1 ? <div>
                     {selectComponent(0, "task", questionSet1.task, this.selectionTasks)}
-                    <ExpansionPanel info={chartInfos[this.answers.id].description}/>
+                    <ExpansionPanel info={chartInfos[this.answers.id].description} />
                 </div> : null}
 
                 {/* Q2: axis and size for plots */}
-                {this.answers.id.includes("plot") ? 
-                    <Selects header={questionSet1.axis} options={numberColGroups} labels={["x-axis", "y-axis", "size"]} /> : 
+                {this.answers.id.includes("plot") ?
+                    <Selects header={questionSet1.axis} options={numberColGroups} labels={["x-axis", "y-axis", "size"]} /> :
                     null
                 }
 
                 {/* Q3: unit(s) of number(s), x3 if plots */}
                 {/* @param: label, value, setId, indexSet = null, indexUi = null */}
                 {/* TODO: selects change to textfields */}
-                {!this.answers.id.includes("plot") ? 
+                {!this.answers.id.includes("plot") ?
                     textFieldComponent(questionSet1.unit, this.answers.set1.unit.textField, "set1", "unit", 0) :
-                    <TextFields header={questionSet1.unit} placeholder={questionSet1.placeholder} labels={numberColGroups}/>
+                    <TextFields header={questionSet1.unit} placeholder={questionSet1.placeholder} labels={numberColGroups} />
                 }
 
-                {/* Q4: line highlights */} 
-                {this.answers.id.includes("line") ? 
-                   <TextFieldWithAutocomplete suggestions={numberColGroups} renderType={"multiple"} label={questionSet1.auto.multi} /> :
-                   null
+                {/* Q4: line highlights */}
+                {this.answers.id.includes("line") ?
+                    <TextFieldWithAutocomplete suggestions={numberColGroups} renderType={"multiple"} label={questionSet1.auto.multi} /> :
+                    null
                 }
 
                 {/* Q5: stack drawing order */}
@@ -365,7 +413,7 @@ class Questions extends React.Component {
                     {selectComponent(0, "draw", questionSet1.draw.type, questionSet1.draw.opts)}
                     {this.answers.set1.draw.select[0] === questionSet1.draw.opts[2] ?
                         <TextFieldWithAutocomplete suggestions={numberColGroups} renderType={"single"} label={questionSet1.auto.single} /> :
-                    null}
+                        null}
                 </div> : null}
 
                 <p className="question-set mb-5">Question set: statistical summary</p>
