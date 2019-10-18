@@ -22,7 +22,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function TextFields(props) {
-    const { header, labels, placeholder } = props;
+    const { question, labels, placeholder } = props;
+    const { handleChange, params, answers, ss, tasks, setAnswers } = props;
     const classes = useStyles();
 
     // const [values, setValues] = React.useState({
@@ -35,7 +36,7 @@ export default function TextFields(props) {
 
     return (
         <form className={classes.root} noValidate autoComplete="off">
-            <InputLabel className={classes.inputLabel}>{header}</InputLabel>
+            <InputLabel className={classes.inputLabel}>{question}</InputLabel>
 
             <div className={classes.flexLayout}>
                 {labels.map((item, index) =>
@@ -49,6 +50,7 @@ export default function TextFields(props) {
                         InputLabelProps={{
                             shrink: true
                         }}
+                        onChange={(e) => handleChange(e, params[0], "textField", params[1], index, params[2], answers, ss, tasks, setAnswers)}
                         // fullWidth
                         // helperText="Full width!"
                     />

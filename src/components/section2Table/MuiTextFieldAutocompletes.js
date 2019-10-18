@@ -304,8 +304,8 @@ const components = {
 };
 
 export default function TextFieldWithdAutoComplete(props) {
-  const { suggestions, renderType, label } = props;
-  const options = suggestions.map(s => ({ value: s, label: s }))
+  const { question, options, renderType } = props;
+  const suggestions = options.map(s => ({ value: s, label: s }))
 
   const classes = useStyles();
   const theme = useTheme();
@@ -325,8 +325,22 @@ export default function TextFieldWithdAutoComplete(props) {
   const handleChangeSingle = value => {
     setSingle(value);
   };
-  const handleChangeMulti = value => {
-    setMulti(value);
+
+  const handleChangeMulti = obj => {
+    /* update ui */
+    setMulti(obj);
+    
+    // temp
+    /* update Set2.Q on input of text field autocomplete multi */
+    const els = [...document.querySelectorAll(".js-set2Q")];
+    if (obj) {
+      // hide or show group(s) of sentences in Set2.Q
+      els.forEach(el => el.classList.add("d-n"))
+      obj.forEach(o => document.querySelector("#" + o.value.replace(/ /g,'')).classList.remove("d-n"))
+    } else {
+      // show all questions
+      els.forEach(el => el.classList.remove("d-n"))
+    }
   };
 
   return (
@@ -337,14 +351,14 @@ export default function TextFieldWithdAutoComplete(props) {
           styles={selectStyles}
           inputId="react-select-single"
           TextFieldProps={{
-            label: label,
+            label: question,
             InputLabelProps: {
               htmlFor: 'react-select-single',
               shrink: true,
             },
           }}
-          placeholder={suggestions[0]}
-          options={options}
+          placeholder={options[0]}
+          options={suggestions}
           components={components}
           value={single}
           onChange={handleChangeSingle}
@@ -354,14 +368,14 @@ export default function TextFieldWithdAutoComplete(props) {
           styles={selectStyles}
           inputId="react-select-multiple"
           TextFieldProps={{
-            label: label,
+            label: question,
             InputLabelProps: {
               htmlFor: 'react-select-multiple',
               shrink: true,
             },
           }}
           placeholder="Select multiple"
-          options={options}
+          options={suggestions}
           components={components}
           value={multi}
           onChange={handleChangeMulti}

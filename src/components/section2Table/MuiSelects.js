@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Selects(props) {
   const classes = useStyles();
-  const { header, labels, options } = props
+  const { question, labels, options } = props
   // const handleChange = index => event => {
   //   optionValues[index] = event.target.value;
   //   //***console.log(optionValues[index]);
@@ -34,7 +34,7 @@ export default function Selects(props) {
 
   return (
     <div className={classes.root}>
-      <InputLabel className={classes.inputLabel}>{header}</InputLabel>
+      <InputLabel className={classes.inputLabel}>{question}</InputLabel>
 
       <div className={classes.flexLayout}>
         {labels.map((label, index) =>
