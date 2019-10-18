@@ -54,7 +54,6 @@ export default function(dataTable, show) {
   const dataType = dataColsAndType.map(d => d.type)
   const dataCols = dataColsAndType.map(d => d.cols)
 
-
   /* B. data summary */
   /* count and cols */
   const types = dataType.map(d => d.list[0])
@@ -88,9 +87,19 @@ export default function(dataTable, show) {
   const string1Col  = count.string1 > 0 ? string1Data[0].values : []
   const string3Col  = count.string1 > 1 ? string1Data[1].values : null
   const string2Col  = count.string2 > 0 ? cols.find(col => col.type === "string2").values : []
-  const rowGroup    = count.string1 > 0 ? string1Col : (dateData.string : [])
+  const rowGroup    = count.string1 > 0 ? string1Col : (dateData.string || [])
   // NOTE: think of string * have multi cols?
   
+  // data for sumstats
+  const col1stData = cols[0]
+  // const col1stDataHeader = col1stData[0]
+  // const col1stDataList = col1stData//.slice(1) 
+  // const col1stDataType = dataType[0].list[0]
+  // //***console.log(col1stData)
+  // //***console.log("type:", col1stData.type)
+  // //***console.log("header:", col1stData.header)
+  // //***console.log("string:", col1stData.string)
+
   /* aka. dataChart */
   // for render charts
 
@@ -111,13 +120,17 @@ export default function(dataTable, show) {
     // number
     numberCols, numbers,
     numberRows:   count.number !== 0 ? swapArray(numberCols) : [],
-    numbersButC1: numbers.slice(-(numbers.length-count.row)),
+    numbersButCol1: numbers.slice(-(numbers.length-count.row)),
     numberFormat: count.number === 1 ? numberData[0].format : null,
     numberOnly:   count.date === 0 && count.string1 === 0,
     // key (legned)
     // NOTE: in case header is null, also see getDataTable.js
     // TODO: keys turn into colGroup?
-    keys:         numberData.map(col => col.header ? col.header : "unknown title")
+    keys:         numberData.map(col => col.header ? col.header : "unknown title"),
+    // sumstats
+    col1Type: col1stData.type,
+    col1Header: col1stData.header,
+    col1ValuesToStrings: col1stData.string
   }
 
   // for chart selection
