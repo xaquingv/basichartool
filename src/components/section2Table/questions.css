@@ -1,5 +1,16 @@
 .questions {
-    font-size: 14px;
+    /* font-size: 14px; */
+    color: var(--c-black);
+}
+.q-set1-pb11 {
+    display: inline-flex;
+    vertical-align: bottom;
+    padding-bottom: 11px;
+}
+.q-set1-pb6 {
+    display: inline-flex;
+    vertical-align: bottom;
+    padding-bottom: 6px;
 }
 .question-set {
     margin-top: 2rem;
@@ -41,7 +52,7 @@
     height: 28px;
     padding: 7px 12px;
 }
-.questions .MuiButtonBase-root {
+.js-set2Q .MuiButtonBase-root {
     padding: 4px 10px;
 }
 .questions .MuiTouchRipple-root {
@@ -65,7 +76,6 @@
 }
 .MuiInputLabel-formControl {
     font-weight: 600!important;
-
 }
 .questions .MuiFormLabel-root.Mui-focused {
     color: var(--c-blue);  
@@ -73,8 +83,8 @@
 .questions .MuiInput-underline:after {
     border-bottom: 2px solid var(--c-blue);  
 }
-.questions .MuiInput-underline {
-    /* width: 66%; */
+.questions .MuiFormHelperText-root {
+    margin-top: 3px;
 }
 #section3 .MuiFormControl-root {
     width: 620px;
@@ -87,11 +97,15 @@
 #section3 .MuiInput-underline:after {
     border-bottom: 2px solid var(--c-grey);  
 }
-
-/* select and menu*/
-.questions .MuiTypography-root {
-    white-space: nowrap;
+.questions .MuiExpansionPanelSummary-content{
+    color: rgba(0, 0, 0, 0.54);
+    margin: 0;
+    transform: scale(0.75) translate(-100px, 0);
 }
+/* select and menu*/
+/* .questions .MuiTypography-root {
+    white-space: nowrap;
+} */
 .MuiPaper-root .MuiMenuItem-root {
     min-height: 28px
 }

@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
+import { minWidth } from "@material-ui/system";
 // import Select from "@material-ui/core/Select";
 /* note that <Select native /> has a much smaller bundle size footprint than <NativeSelect> */
 // import TextField from "@material-ui/core/TextField";
@@ -15,37 +16,31 @@ const useStyles = makeStyles(theme => ({
     marginTop: "1rem"
   },
   flexLayout: {
-    display: "flex",
+    display: "inline-flex",
     flexWrap: "wrap",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    minWidth: 150
   },
   formControl: {
-    width: "31%"
+    // width: "31%"
   },
 }));
 
-export default function Selects(props) {
+export default function SelectComponent(props) {
   const classes = useStyles();
-  const { header, labels, options } = props
+  const { options, index } = props
   // const handleChange = index => event => {
   //   optionValues[index] = event.target.value;
   //   //***console.log(optionValues[index]);
   // };
 
   return (
-    <div className={classes.root}>
-      <InputLabel className={classes.inputLabel}>{header}</InputLabel>
-
-      <div className={classes.flexLayout}>
-        {labels.map((label, index) =>
-          <FormControl key={index} className={classes.formControl}>
-            <InputLabel>{label}</InputLabel>
-            <NativeSelect defaultValue={options[index]} >
-              {options.map((opt, idx) => <option key={idx} value={opt}>{opt}</option>)}
-            </NativeSelect>
-          </FormControl>
-        )}
-      </div>
+    <div className={classes.flexLayout}>
+      <FormControl className={classes.formControl}>
+        <NativeSelect defaultValue={options[index]} >
+          {options.map((opt, idx) => <option key={idx} value={opt}>{opt}</option>)}
+        </NativeSelect>
+      </FormControl>
 
       {/* <FormControl key={"2"} className={classes.formControl}>
         <InputLabel htmlFor="native-simple">{dimensions[2]}</InputLabel>

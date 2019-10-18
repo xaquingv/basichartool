@@ -29,6 +29,14 @@
 .ff-ss   {font-family: source-sans-pro, Helvetica, Arial, sans-serif;}
 .ff-data {font-family: source-code-pro, monospace;}
 
+/* .d-if { display: inline-flex; } */
+/* .va-b { vertical-align: bottom; } */
+.f-18 { font-size: 18px; }
+.pb-4 { padding-bottom: 4px;}
+/* .pb-5 { padding-bottom: 6px; } */
+/* .pb-13 { padding-bottom: 11px; } */
+.as-fe { align-self: flex-end; }
+
 /* index.css */
 body {
   margin: 0;

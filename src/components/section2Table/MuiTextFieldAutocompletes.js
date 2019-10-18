@@ -10,11 +10,17 @@ import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import CancelIcon from '@material-ui/icons/Cancel';
+import { width } from '../../data/config';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
-    minWidth: 310,
+    // flexGrow: 1,
+    display: 'inline-block',
+    width: 600
+  },
+  rootSinlge: {
+    display: 'inline-block',
+    width: 300,
   },
   input: {
     display: 'flex',
@@ -303,9 +309,9 @@ const components = {
   ValueContainer,
 };
 
-export default function TextFieldWithdAutoComplete(props) {
-  const { suggestions, renderType, label } = props;
-  const options = suggestions.map(s => ({ value: s, label: s }))
+export default function TextFieldWithdAutoCompleteComponent(props) {
+  const { question, options, renderType } = props;
+  const suggestions = options.map(s => ({ value: s, label: s }))
 
   const classes = useStyles();
   const theme = useTheme();
@@ -325,49 +331,63 @@ export default function TextFieldWithdAutoComplete(props) {
   const handleChangeSingle = value => {
     setSingle(value);
   };
-  const handleChangeMulti = value => {
-    setMulti(value);
+
+  const handleChangeMulti = obj => {
+    /* update ui */
+    setMulti(obj);
+    
+    // temp
+    /* update Set2.Q on input of text field autocomplete multi */
+    const els = [...document.querySelectorAll(".js-set2Q")];
+    if (obj) {
+      // hide or show group(s) of sentences in Set2.Q
+      els.forEach(el => el.classList.add("d-n"))
+      obj.forEach(o => document.querySelector("#" + o.value.replace(/ /g,'')).classList.remove("d-n"))
+    } else {
+      // show all questions
+      els.forEach(el => el.classList.remove("d-n"))
+    }
   };
 
   return (
-    <div className={classes.root}>
-      <NoSsr> {renderType === "single" ?
+    <div className={renderType === "single" ? classes.rootSinlge : classes.root}> 
+      <NoSsr>{renderType === "single" ?
         <Select
           classes={classes}
           styles={selectStyles}
           inputId="react-select-single"
           TextFieldProps={{
-            label: label,
+            label: question,
             InputLabelProps: {
               htmlFor: 'react-select-single',
               shrink: true,
             },
           }}
-          placeholder={suggestions[0]}
-          options={options}
+          placeholder={options[0]}
+          options={suggestions}
           components={components}
           value={single}
           onChange={handleChangeSingle}
         /> :
         <Select
           classes={classes}
-          styles={selectStyles}
+          styles={selectStyles, {minWidth: "300"}}
           inputId="react-select-multiple"
           TextFieldProps={{
-            label: label,
+            label: question,
             InputLabelProps: {
               htmlFor: 'react-select-multiple',
               shrink: true,
             },
           }}
-          placeholder="Select multiple"
-          options={options}
+          placeholder="Select multiple highlights"
+          options={suggestions}
           components={components}
           value={multi}
           onChange={handleChangeMulti}
           isMulti
-        />
-      }</NoSsr>
+        />}
+      </NoSsr>
     </div>
   );
 }
