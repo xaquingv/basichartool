@@ -10,9 +10,35 @@ import kurtosis from 'compute-kurtosis'
 import skew from 'compute-skewness'
 import pcorr from 'compute-pcorr'
 import Complex from './complex'
-import { fdatasync } from 'fs'
+import getSentence from './nlg/sentences'
 
-export function summarize(col, data, type, keyType, ...stats) {
+/*
+    @param {keys} {header, type, [values], format}
+    @param [cols] [{header, [values]}, ...n]
+    @param id
+
+    @return sumstats sentences
+*/
+
+export function getSumStats(keys, cols, id) {
+
+    const stats = getListOfStats(id);
+    let sentences = [];
+    
+    cols.map(col => {
+        // const type = getColumnType(col.header);
+        let sumData = summarize(col.header, col.values, type, keys.type, ...stats);
+        let sentence = getSentence(sumData, "sentence");
+        sentences.push(sentence);
+    });
+
+    console.log(sentences.flat());
+
+    return sentences.flat();
+
+}
+
+function summarize(col, data, type, keyType, ...stats) {
 
     stats = keyType != "date" ? stats.filter(a => a!=="roi"):stats;
 
@@ -52,7 +78,6 @@ export function summarize(col, data, type, keyType, ...stats) {
 
     });
     separateInfo(sumstats);
-    //console.log(sumstats);
     return sumstats;
 
 }
