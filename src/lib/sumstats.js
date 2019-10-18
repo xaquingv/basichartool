@@ -10,16 +10,54 @@ import kurtosis from 'compute-kurtosis'
 import skew from 'compute-skewness'
 import pcorr from 'compute-pcorr'
 import Complex from './complex'
-import { fdatasync } from 'fs'
+import getSentence from './nlg/sentences'
+import {statsByType} from './statsByType'
 
-export function summarize(col, data, type, keyType, ...stats) {
+/*
+    @param {keys} {header, type, [values], format}
+    @param [cols] [{header, [values]}, ...n]
+    @param id
+
+    @return sumstats sentences
+*/
+
+export function getSumStats(data) {
+
+    const keys = data.keys, cols = data.cols, id = data.id;
+
+    const stats = statsByType(id);
+
+    let sentenceList = [], questionList = [];
+    
+    cols.map(col => {
+
+        let type = "country"; //getColumnType(col.header);
+        let data = keys.values.map((d,i)=> d = {key:d, value: col.values[i]})
+        let sumData = summarize(col.header, data, type, keys.type, ...stats);
+        let sentences = [], questions = [];
+        sumData.map(data => {
+            let sentence = getSentence(data, "sentence");
+            let question = getSentence(data, "questions");
+            sentences.push(sentence);
+            questions.push(question);
+        })
+        sentenceList.push(sentences);
+        questionList.push(questions);
+        
+    });
+
+    return {sentences: sentenceList, questions: questionList};
+
+}
+
+function summarize(col, data, type, keyType, ...stats) {
 
     stats = keyType != "date" ? stats.filter(a => a!=="roi"):stats;
 
     let sumstats = stats.map((d, i) => {
 
         const stat = d;
-        const value = getValue(compute(d, data, keyType), data);
+        const value = getValue(compute(d, data/*, keyType*/), data);
 
         if(stat==="roi")
         {
@@ -52,7 +90,6 @@ export function summarize(col, data, type, keyType, ...stats) {
 
     });
     separateInfo(sumstats);
-    //console.log(sumstats);
     return sumstats;
 
 }
@@ -98,7 +135,9 @@ function getValue(d, data) {
     let value = {};
 
     if (Array.isArray(d)) {
-        value = { data: d, exists: true, id: formatList(d.map(d => d = d.key)), value: d[d.length - 1].value }
+        if( d.length > 0){
+            value = { data: d, exists: true, id: formatList(d.map(d => d = d.key)), value: d[d.length - 1].value }
+        }
     } else if (d === closest(d, data).value) {
         let match = closest(d, data);
         value = { data: match, exists: true, id: match.key, value: match.value }
@@ -111,7 +150,7 @@ function getValue(d, data) {
     return value;
 }
 
-function compute(stat, data, keyType) {
+function compute(stat, data/*, keyType*/) {
 
     const _data = (stat === 'percentile2' || stat === 'percentile98' || stat === 'outliers' || stat === 'roi') ? data.map((d, i) => i = { key: d.key, value: d.value}) : data.map((d, i) => i = d.value);
 
@@ -127,7 +166,7 @@ function compute(stat, data, keyType) {
         case 'outliers': return outliers(_data);
         case 'percentile2': return percentile(_data, 2);
         case 'percentile98': return percentile(_data, 98);
-        case 'roi': return roi(_data, keyType)
+        case 'roi': return roi(_data/*, keyType*/)
         // case 'lr': return lr(_data[0],_data[1]);
         //Need a multidimensional array
         case 'pcorr': return pcorr(data[0].map(d => d.value), data[1].map(d => d.value));
@@ -170,10 +209,10 @@ function percentile(data, p) {
     return sorted;
 }
 
-function roi(data, keyType) {
+function roi(data/*, keyType*/) {
     let result = [];
-    if(keyType === "date")
-    {
+    //if(keyType === "date")
+    //{
         if(data.length > 0){
             data.sort((a,b) => a.key - b.key);
         }
@@ -224,7 +263,10 @@ function roi(data, keyType) {
         //let lr = leastSquares(key, _data);
         let tmin = min(_dataSmooth);
         let tmax = max(_dataSmooth);
-        let tdif = tmax - tmin;
+        let indextmin = _dataSmooth.indexOf(tmin);
+        let indextmax = _dataSmooth.indexOf(tmax);
+        let globalDiffTime = getDiffTime(dataSmooth[indextmax].key, dataSmooth[indextmin].key);
+        let tdif = (tmax - tmin)/globalDiffTime;
         let indexResult = 0;
 
 
@@ -235,6 +277,7 @@ function roi(data, keyType) {
             let tslope = 0;
             let direction = _dataSmooth[index+1] - _dataSmooth[index];
             let follow = direction !== 0;
+            index = !follow ? index++: index;
             let initialIndex = index;
             while(follow && index < _dataSmooth.length-1)
             {
@@ -253,13 +296,11 @@ function roi(data, keyType) {
                     //else
                     //{
                         follow = false;
+                        
                         if(tslope > 0.1*tdif)
                         {
                             result[indexResult] = [data[initialIndex], data[index]];
                             indexResult++;
-                        }
-                        else{
-                            index++;
                         }
                     //}
                 }
@@ -275,6 +316,10 @@ function roi(data, keyType) {
         }
 
         result.sort((a, b) => Math.abs(b[0].value-b[1].value) - Math.abs(a[0].value-a[1].value));
+        if(result.length === 0){
+            result[indexResult] = [{key: "", value: 0}, {key: "", value: 0}];
+        }
+
         /*
         const roi = data.filter((d, i) => 
         
@@ -286,7 +331,7 @@ function roi(data, keyType) {
         const _data = data.filter((d, i) => (d > 50) ? i > index : i < index);
         const sorted = (p > 50) ? _data.sort((a, b) => b.value - a.value) : _data.sort((a, b) => a.value - b.value);
         return sorted;*/
-    }
+    //}
     return result;
 }
 
@@ -336,15 +381,17 @@ function decompose(data, period) {
 
 function slope(a, b){
     let result;
-    const akey = parseFloat(a.key.replace(",", "."))
-    const bkey = parseFloat(b.key.replace(",", "."))
-    if(isNaN(akey) || isNaN(bkey)){
-        result = a.value-b.value
-    }
-    else{
-        result = (a.value-b.value)/(akey - bkey)
-    }
+    let diffTime = getDiffTime(a.key, b.key);
+    result = (a.value-b.value)/(diffTime);
     return result
+}
+
+function getDiffTime(a, b)
+{
+    
+    const date1 = new Date(a).getTime();
+    const date2 = new Date(b).getTime();
+    return Math.abs(date2-date1);
 }
 
 function hasEnoughVariability(key, data){
@@ -386,6 +433,7 @@ function smoothData(data){
         //console.log(sum);
         //console.log(lr);
     }
+    i = result.length;
     while(i<smoothData.length){
         result.push(_data[i]);
         i++;

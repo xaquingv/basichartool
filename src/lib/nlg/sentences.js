@@ -114,7 +114,7 @@ const scatterPlotSentence = {
             "Between {id} there has been a decrease of {difference} {units}"
         ],
         "neutral": [
-            "Neutral is not defined!!!!!"
+            "This reveals very little"
         ]
     },
     simpleQuestions: {
