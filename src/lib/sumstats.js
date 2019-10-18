@@ -11,6 +11,7 @@ import skew from 'compute-skewness'
 import pcorr from 'compute-pcorr'
 import Complex from './complex'
 import getSentence from './nlg/sentences'
+import {statsByType} from './statsByType'
 
 /*
     @param {keys} {header, type, [values], format}
@@ -20,21 +21,32 @@ import getSentence from './nlg/sentences'
     @return sumstats sentences
 */
 
-export function getSumStats(keys, cols, id) {
+export function getSumStats(data) {
 
-    const stats = getListOfStats(id);
-    let sentences = [];
+    const keys = data.keys, cols = data.cols, id = data.id;
+
+    const stats = statsByType(id);
+
+    let sentenceList = [], questionList = [];
     
     cols.map(col => {
-        // const type = getColumnType(col.header);
-        let sumData = summarize(col.header, col.values, type, keys.type, ...stats);
-        let sentence = getSentence(sumData, "sentence");
-        sentences.push(sentence);
+
+        let type = "country"; //getColumnType(col.header);
+        let data = keys.values.map((d,i)=> d = {key:d, value: col.values[i]})
+        let sumData = summarize(col.header, data, type, keys.type, ...stats);
+        let sentences = [], questions = [];
+        sumData.map(data => {
+            let sentence = getSentence(data, "sentence");
+            let question = getSentence(data, "questions");
+            sentences.push(sentence);
+            questions.push(question);
+        })
+        sentenceList.push(sentences);
+        questionList.push(questions);
+        
     });
 
-    console.log(sentences.flat());
-
-    return sentences.flat();
+    return {sentences: sentenceList, questions: questionList};
 
 }
 
