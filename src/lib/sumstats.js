@@ -12,12 +12,14 @@ import pcorr from 'compute-pcorr'
 import Complex from './complex'
 import { fdatasync } from 'fs'
 
-export function summarize(col, data, type, ...stats) {
+export function summarize(col, data, type, keyType, ...stats) {
+
+    stats = keyType != "date" ? stats.filter(a => a!=="roi"):stats;
 
     let sumstats = stats.map((d, i) => {
 
         const stat = d;
-        const value = getValue(compute(d, data), data);
+        const value = getValue(compute(d, data, keyType), data);
 
         if(stat==="roi")
         {
@@ -109,9 +111,9 @@ function getValue(d, data) {
     return value;
 }
 
-function compute(stat, data) {
+function compute(stat, data, keyType) {
 
-    const _data = (stat === 'percentile2' || stat === 'percentile98' || stat === 'outliers' || stat === 'roi') ? data.map((d, i) => i = { key: d.key, value: d.value, keyType: d.keyType }) : data.map((d, i) => i = d.value);
+    const _data = (stat === 'percentile2' || stat === 'percentile98' || stat === 'outliers' || stat === 'roi') ? data.map((d, i) => i = { key: d.key, value: d.value}) : data.map((d, i) => i = d.value);
 
     switch (stat) {
 
@@ -125,7 +127,7 @@ function compute(stat, data) {
         case 'outliers': return outliers(_data);
         case 'percentile2': return percentile(_data, 2);
         case 'percentile98': return percentile(_data, 98);
-        case 'roi': return roi(_data)
+        case 'roi': return roi(_data, keyType)
         // case 'lr': return lr(_data[0],_data[1]);
         //Need a multidimensional array
         case 'pcorr': return pcorr(data[0].map(d => d.value), data[1].map(d => d.value));
@@ -168,9 +170,9 @@ function percentile(data, p) {
     return sorted;
 }
 
-function roi(data,opt) {
+function roi(data, keyType) {
     let result = [];
-    if(data[0].keyType === "date")
+    if(keyType === "date")
     {
         if(data.length > 0){
             data.sort((a,b) => a.key - b.key);
@@ -329,6 +331,8 @@ function decompose(data, period) {
     const residuals = getResiduals(validData, trend, season)
     return {trend: trend, detrend: detrend, season: season, residuals: residuals};
 }
+
+
 
 function slope(a, b){
     let result;

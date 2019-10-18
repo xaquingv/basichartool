@@ -147,75 +147,111 @@ class Questions extends React.Component {
     componentDidMount() {
         this.string1Col = []
         this.numberCols = [[]]
-        this.answers = {}
+        this.answers = null
     }
     componentDidUpdate() {
         const { dataChart, dataCount, dataAnswer, selectionInOrder } = this.props
         this.numberCols = dataChart.numberCols
         this.selectedId = dataAnswer ? dataAnswer.id : selectionInOrder[0]
         this.dataCount = dataCount
+        //console.log("cur:", dataAnswer)
+        //console.log("pre:", this.answers)
+        if (!dataAnswer) this.props.setDataAnswer(this.answers)
+    }
+
+    componentWillUnmount () {
+        console.log()
+        console.log("**** unmount ***")
     }
 
     render() {
-        const { dataChart, dataCount, selectionInOrder} = this.props
-        if (!dataChart || selectionInOrder.length === 0) { return null; }
+        
+        const { selectionInOrder, dataAnswer } = this.props
+        console.log("* render ***")
+        
+        // require at leaset selectedId (elected chart id) to generate questions, and
+        // it's default comes frmo the first chart in the selectionInOrder list
+        if (selectionInOrder.length < 1) return null
+        const selectedId = dataAnswer ? dataAnswer.id : selectionInOrder[0] 
+        console.log("** data in the house:", selectedId, "***")
+
+        /*
+         * check if data is changed due to:
+         * 1. init state (new) 
+         * 2. change chart (Q.set1.1)
+         * 3. update input data or toggle/transpaort table data
+         */
+        // TODO: to be more strict in data change comparison ?
+        const curDataCount = this.props.dataCount
+        const preDataCount = this.dataCount
+        
+        const isInit = dataAnswer ? false : true
+        const isChangeId = selectedId !== this.selectedId
+        const isUpdateData = 
+            Object.keys(curDataCount).some(key => curDataCount[key] !== preDataCount[key]) ||
+            (this.answers ? !selectionInOrder.every((id, index) => id === this.answers.ids[index]) : true)
+            
+        const isDataChange = isInit || isChangeId || isUpdateData
+        // debug zone
+        if (isInit) {
+            console.log("==> init", isInit)
+            // console.log("cur:", dataAnswer)
+            // console.log("pre:", this.answers)
+        }
+        if (isChangeId) console.log("==> change id:", this.selectedId, "->", selectedId)
+        if (isUpdateData) {
+            console.log("==> update: data")
+            // console.log("cur", selectionInOrder)
+            // console.log("pre:", this.answers.ids)
+        }
 
         /* data */
-        const { dataAnswer, dataSentence, dataQuestion } = this.props
-        const { dateCol, numberCols, string1Col } = dataChart
-        const numberColGroups = dataChart.keys
-        const selectedId = dataAnswer ? dataAnswer.id : selectionInOrder[0] 
-        this.selectionTasks = selectionInOrder.map(id => chartInfos[id].task)
-
-        // TODO: to be more strict in data change comparison
-        // init 
-        const isInit = !dataAnswer === undefined
-        // update data or table
-        const isChangeId = selectedId !== this.selectedId
-        // update set1 questions
-        const isChangeCounts = Object.entries(dataCount).some(arr => {
-            const key = arr[0]
-            const val = arr[1]
-            const preDataCount = this.dataCount
-            return preDataCount[key] !== val
-        })
-        this.isDataChange = isInit || isChangeCounts || isChangeId
-        // debug zone
-        if (isInit) console.log("=> data changed: init")
-        else if (isChangeId) console.log("=> data changed:", this.selectedId, "->", selectedId)
-        else if (isChangeCounts) console.log("=> data changed: counts")
-        // console.log(selectionInOrder[0], "(init)")
-        // console.log(dataAnswer? dataAnswer.id : selectionInOrder[0], "(cur)")
-        // console.log(this.selectedId, "(pre)")
-
-        if (this.isDataChange) {
+        const { dataChart, dataSentence, dataQuestion } = this.props
+        const { numberCols, string1Col, rowGroup } = dataChart
+        if (isDataChange) {
             // TODO: refactory data flow
             this.answers = null
+            console.log(dataChart)
 
-            const keys = string1Col.length !== 0 ? string1Col : dateCol.map(date => date.toString())
             const keyType = string1Col.length !== 0 ? "number" : "date"
-        
             this.dataStats = numberCols.map((col, idx) => {
-                // params: col header, data, type of sumstats1, 2, 3, ///
+                // params: col header, data, type of sumstats1, 2, 3, //
+                // col, data, type, ...stats
+                if (idx === 0) {
+                    console.log("sumstat:", dataChart.keys[idx])
+                    console.log("sumstat:", col.map((value, index) => ({ key: rowGroup[index], value})))
+                    console.log("sumstat:", "country")
+                    console.log("sumstat:", ...typeSumstats)
+                }
                 return summarize(
                     dataChart.keys[idx],
-                    col.map((value, index) => ({ key: keys[index], value, keyType })),
+                    col.map((value, index) => ({ key: rowGroup[index], value})),
                     "country", //hotfix
+                    keyType,
                     ...typeSumstats
                 )
+
             })
+
             // to have the same test copy
             const sentences = this.dataStats.map(stats => stats.map(s => sentence(s)))
             this.sumstatSentences = {
                 edit: sentences,
                 text: [...sentences]
             }
+
+            // selectionTasks: used in Q.set1.1 is required in handleSets() 
+            this.selectionTasks = selectionInOrder.map(id => chartInfos[id].task)
             this.answers = {
                 id: selectedId,
+                ids: selectionInOrder,
                 set1: {
                     task: { select: [this.selectionTasks[0]] },
                     unit: { textField: [""] },
-                    draw: { select: ["default"], textField: "" }
+                    draw: { 
+                        select: ["default"], 
+                        textField: "" 
+                    }
                 },
                 set2: this.dataStats.map(group => ({ 
                     textField: "", 
@@ -229,13 +265,8 @@ class Questions extends React.Component {
             this.answers = dataAnswer || this.answers
             this.sumstatSentences = dataSentence || this.sumstatSentences
         }
-        // if (this.answers) {
-        //     console.log("stack?", this.answers.id)
-        //     console.log("specific?", this.answers.set1.draw.select)
-            // console.log(dataCount.number)
-            // console.log(numberColGroups)
-        // }
 
+        /* ui components */
         const selectComponent = (index, type, label, options) => {
             return (
                 <TextField
@@ -292,6 +323,13 @@ class Questions extends React.Component {
             )
         }
 
+
+        /* draw */
+        if (this.answers) {
+            console.log("*** ui up running ***")
+            console.log("")
+        }
+        const numberColGroups = dataChart.keys
         const followUpCount = dataQuestion ? dataQuestion.sentence.length : 0
         return this.answers ? (
             <div className="questions">

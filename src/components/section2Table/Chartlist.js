@@ -19,7 +19,9 @@ const messageError = `
 
 const mapStateToProps = (state) => ({
   step: state.step,
-  dataMeta: state.dataTable.meta
+  stepActive: state.stepActive,
+  dataMeta: state.dataTable.meta,
+  dataAnswer: state.dataAnswer
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -30,12 +32,19 @@ const mapDispatchToProps = (dispatch) => ({
 
 class Chartlist extends React.Component {
   componentDidUpdate() {
-    const selectionInOrder = [...document.querySelectorAll(".charts > div")].filter(el => !el.getAttribute("class").includes("d-n")).map(el => el.id)
+    // selectionInOrder: filter out hidden chart(s), and 
+    // in case of no charts available, as warning msg take a <div> as well: el.id!==""
+    const selectionInOrder = this.props.stepActive < 2 ?
+      [] :  
+      [...document.querySelectorAll(".charts > div")]
+        .filter(el => !el.getAttribute("class").includes("d-n") && el.id!=="")
+        .map(el => el.id)
+
     this.props.setDataSelectionInOrder(selectionInOrder)
   }
 
   render() {
-    const { selection, dataChart/*, onSelect*/ } = this.props
+    const { selection, dataChart } = this.props
     if (!selection) { return null; }
 
     // TODO: loop through arr, see charts.js
@@ -46,6 +55,7 @@ class Chartlist extends React.Component {
       const ComponentChart = chartList[chartID]
       
       if (isSelected) selectCount++;
+      console.log()
       return isSelected
         ? (
           // <div key={chartID} id={chartID} onClick={() => onSelect(chartID)}>
