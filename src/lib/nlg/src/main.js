@@ -161,7 +161,7 @@ exports.NaturalLanguage =
                   "positiveFactor": 100
                 },
                 "level": {
-                  "threshold": 0.09,
+                  "threshold": 0.00,
                   "sensitiveness": 1
                 }
               };
@@ -312,7 +312,7 @@ exports.NaturalLanguage =
             if (absoluteDifference < levelConfig.threshold) {
               level = 0;
             } else {
-              level = Math.ceil(data.difference / levelConfig.sensitiveness);
+              level = /*Math.ceil(*/data.difference / levelConfig.sensitiveness/*)*/;
               if (level > 3) { level = 3; }
               if (level < -3) { level = -3; }
             }
