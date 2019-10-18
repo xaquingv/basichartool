@@ -46,7 +46,7 @@ class LineDiscrete extends React.Component {
 
     /* data */
     const { id, data, colors, callByStep } = this.props
-    //const numbers = data.numberOnly ? data.numbersButC1 : data.numbers
+    //const numbers = data.numberOnly ? data.numbersButCol1 : data.numbers
     //const numCols = data.numberCols.slice(1, data.numberCols.length)
 
     // scale

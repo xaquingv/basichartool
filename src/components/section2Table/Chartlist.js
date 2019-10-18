@@ -55,7 +55,7 @@ class Chartlist extends React.Component {
       const ComponentChart = chartList[chartID]
       
       if (isSelected) selectCount++;
-      console.log()
+      //***console.log()
       return isSelected
         ? (
           // <div key={chartID} id={chartID} onClick={() => onSelect(chartID)}>
