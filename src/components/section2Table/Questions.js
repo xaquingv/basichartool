@@ -418,7 +418,7 @@ class Questions extends React.Component {
                 {this.sumstatSentences.text.map((sentence, idx) =>
                     <div key={"qh-" + idx} className="mb-5 js-set2Q" id={numberColGroups[idx].replace(/ /g,'')}>
                         <p><span className="question-group">{numberColGroups[idx]}</span></p>
-                        {dataList.map((data, i) => switchComponent(this.sumstatSentences.text[idx][i], this.answers.set2[idx].switch[i], "set2", idx, i))}
+                        {sentence.map((s, i) => switchComponent(s, this.answers.set2[idx].switch[i], "set2", idx, i))}
                     </div>
                 )}
 
