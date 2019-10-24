@@ -1,42 +1,77 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import InfoIcon from '@material-ui/icons/Info';
+import React from "react";
+import { withStyles } from "@material-ui/core/styles";
+import MuiExpansionPanel from "@material-ui/core/ExpansionPanel";
+import MuiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import MuiExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import Typography from "@material-ui/core/Typography";
+import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 
-const useStyles = makeStyles(theme => ({
+const ExpansionPanel = withStyles({
   root: {
-    width: '100%',
+    backgroundColor: "transparent",
+    width: "66%",
+    boxShadow: "none",
+    marginLeft: "128px",
+    "&:before": {
+      display: "none"
+    },
+    "&$expanded": {
+      marginLeft: "128px"
+    }
   },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
-    paddingLeft: '5px',
-  },
-  details: {
-    padding: '10px',
-  },
-}));
+  expanded: {}
+})(MuiExpansionPanel);
 
-export default function ExpansionPanelComponent(props) {
-  const classes = useStyles();
+const ExpansionPanelSummary = withStyles({
+  root: {
+    minHeight: 10,
+    padding: 0,
+    "&$expanded": {
+      minHeight: 10,
+      margin: 0
+    }
+  },
+  content: {
+    "&$expanded": {
+      minHeight: 10,
+      margin: 0
+    }
+  },
+  expanded: {
+    minHeight: 10,
+    margin: 0 
+  }
+})(MuiExpansionPanelSummary);
+
+const ExpansionPanelDetails = withStyles(theme => ({
+  root: {
+    padding: '0 0 10px 0'
+  }
+}))(MuiExpansionPanelDetails);
+
+export default function CustomizedExpansionPanels(props) {
+  const [expanded, setExpanded] = React.useState("");
+  
+  const handleChange = panel => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
 
   return (
-    <div className={classes.root}>
-      <ExpansionPanel>
+    <div>
+      <ExpansionPanel
+        square
+        expanded={expanded === "panel1"}
+        onChange={handleChange("panel1")}
+      >
         <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
+          aria-controls="panel1d-content"
+          id="panel1d-header"
         >
-          <InfoIcon />
-          <Typography className={classes.heading}>more info</Typography>
+          <InfoRoundedIcon color="action"/>&nbsp;
+          <Typography>More info</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Typography className={classes.details}>{props.info}</Typography>
+          <Typography>{props.info}</Typography>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>

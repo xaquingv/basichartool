@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
+import { minWidth } from "@material-ui/system";
 // import Select from "@material-ui/core/Select";
 /* note that <Select native /> has a much smaller bundle size footprint than <NativeSelect> */
 // import TextField from "@material-ui/core/TextField";
@@ -17,7 +18,8 @@ const useStyles = makeStyles(theme => ({
   flexLayout: {
     display: "inline-flex",
     flexWrap: "wrap",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    minWidth: 150
   },
   formControl: {
     // width: "31%"
