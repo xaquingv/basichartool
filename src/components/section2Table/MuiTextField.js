@@ -4,25 +4,22 @@ import InputLabel from "@material-ui/core/InputLabel";
 import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles(theme => ({
-    inputLabel: {
-        fontWeight: "600",
-        marginTop: "1rem"
-    },
     flexLayout: {
-        display: "flex",
-        flexWrap: "wrap",
-    justifyContent: "space-between"
+        display: "inline-flex",
+        // flexWrap: "wrap",
+        // justifyContent: "space-between"
     },
     textField: {
-        width: "31%",
+        // width: "31%",
         height: 32
         // marginLeft: theme.spacing(1),
         // marginRight: theme.spacing(1),
     }
 }));
 
-export default function TextFields(props) {
-    const { question, labels, placeholder } = props;
+export default function TextFieldComponent(props) {
+    // const { labels, placeholder } = props;
+    const { index, helpText, placeholder } = props;
     const { handleChange, params, answers, ss, tasks, setAnswers } = props;
     const classes = useStyles();
 
@@ -35,27 +32,21 @@ export default function TextFields(props) {
     // };
 
     return (
-        <form className={classes.root} noValidate autoComplete="off">
-            <InputLabel className={classes.inputLabel}>{question}</InputLabel>
+        // <form className={classes.flexLayout} noValidate autoComplete="off">
+        <div className={classes.flexLayout}>
+            <TextField
+                key={index}
+                id="standard-full-width"
+                className={classes.textField}
+                margin="normal"
+                placeholder={placeholder}
+                InputLabelProps={{
+                    shrink: true
+                }}
+                onChange={(e) => handleChange(e, params[0], "textField", params[1], index, params[2], answers, ss, tasks, setAnswers)}
+                helperText={helpText}
+            />
 
-            <div className={classes.flexLayout}>
-                {labels.map((item, index) =>
-                    <TextField
-                        key={index}
-                        id="standard-full-width"
-                        label={item}
-                        className={classes.textField}
-                        placeholder={placeholder}
-                        margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        onChange={(e) => handleChange(e, params[0], "textField", params[1], index, params[2], answers, ss, tasks, setAnswers)}
-                        // fullWidth
-                        // helperText="Full width!"
-                    />
-                )}
-            </div>
             {/* <TextField
                 id="standard-name"
                 label="Name"
@@ -79,6 +70,6 @@ export default function TextFields(props) {
                 className={classes.textField}
                 margin="normal"
             /> */}
-        </form>
+        </div>
     );
 }

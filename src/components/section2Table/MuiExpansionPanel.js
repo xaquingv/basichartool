@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function OneExpansionPanel(props) {
+export default function ExpansionPanelComponent(props) {
   const classes = useStyles();
 
   return (

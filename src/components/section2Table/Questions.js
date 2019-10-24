@@ -6,7 +6,6 @@ import { chartInfos } from '../../data/config';
 
 /* summary statistics and nlg */
 import { getSumStats } from '../../lib/sumstats'
-import sentence from '../../lib/nlg/sentences'
 import write from '../../lib/write-data'
 
 /* material ui and react ui */
@@ -14,14 +13,13 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import MenuItem from "@material-ui/core/MenuItem"
-import Selects from './MuiSelects'
+import Selects from './MuiSelect'
 import ExpansionPanel from './MuiExpansionPanel'
 import TextFieldWithAutocomplete from './MuiTextFieldAutocompletes'
-import TextFields from './MuiTextFields'
+import TextFields from './MuiTextField'
 
 
 const regAnyInCB = /{([^}]*)}/ // match 0 or more chars in {} (curly braces)
-const sumstatTypes = ["min", "mean", "median", "max", "percentile2", "percentile98", "roi"] // roi -> regions of interest
 const questionSet1 = {
     task: "I want to show ",
     axis: "What is the axis (and size) mapping with?",
@@ -29,7 +27,7 @@ const questionSet1 = {
     line: "",
     draw: {
         type: "What order would you like to this stack chart?",
-        opts: ["default", "biggest", "specific*"],
+        opts: ["as is.", "starting by largest.", "starting with ..."],
     },
     auto: {
         multi: 'Which line(s) wouild you like to highlight?',
@@ -58,28 +56,22 @@ class Questions extends React.Component {
     handleSets(event, setId, uiType, indexSet = null, indexUi = null, id, ans, ss, tks, setData) {
 
         let newSentences;
-        const selectedId = id || this.selectedId
+        const selectedId = id || this.answers.id
         const answers = ans || this.answers
         const sentences = ss || this.sumstatSentences
         const tasks = tks || this.selectionTasks
         const value = (uiType === "switch" ? event.target.checked : event.target.value)
 
         // case: replace unit(s) with users input
+
         if (setId === "set1" && indexSet === "unit") {
             newSentences = { ...sentences }
-        
             const replaceText = "{" + value + "}"
             const setSentences = (index) => {
                 newSentences.edit[index] = newSentences.edit[index].map(s => s.replace(regAnyInCB, replaceText))
                 newSentences.text[index] = newSentences.edit[index].map(s => s.replace(regAnyInCB, (value !== "" ? value : "{units}")))
             }
-            
-            // 1 or 3 dimensions depens on the data chart
-            if (selectedId.includes("plot")) {
-                setSentences(indexUi)
-            } else {
-                newSentences.edit.forEach((set, idx) => setSentences(idx))
-            }
+            setSentences(indexUi)
         }
 
         let newAnswers = { ...answers }
@@ -102,6 +94,7 @@ class Questions extends React.Component {
             newAnswers.id = selectSelectionInOrder[selectIndex]
             // console.log(newAnswers.id, ":", value)
         }
+        console.log(newAnswers)
 
         if (this) {
             this.props.setDataAnswer(newAnswers, newSentences)
@@ -183,7 +176,7 @@ class Questions extends React.Component {
         // it's default comes frmo the first chart in the selectionInOrder list
         if (selectionInOrder.length < 1) return null
         const selectedId = dataAnswer ? dataAnswer.id : selectionInOrder[0]
-        //console.log("** data in the house:", selectedId, "***")
+        console.log("** data in the house:", selectedId, "***")
 
         /*
          * check if data is changed due to:
@@ -218,16 +211,15 @@ class Questions extends React.Component {
         /* data */
         const { dataChart, dataSentence, dataQuestion } = this.props
         const { keys, numberOnly, numberCols, dateFormat, col1Type, col1Header, col1ValuesToStrings } = dataChart
+        // use "string" instead of "string1"
+        const col1DataType = col1Type.indexOf("str") > -1 ? "string" : col1Type
+        /* questions in set2 */
+        // remove the first col (or header) of data (types) if all values' type is number
+        const colHeaders = numberOnly ? keys.slice(1) : keys
+        const sumstatCols = numberOnly ? numberCols.slice(1) : numberCols
         if (isDataChange) {
             // TODO: refactory data flow
             this.answers = null
-
-            /* questions in set2 */
-            // use "string" instead of "string1"
-            const col1DataType = col1Type.indexOf("str") > -1 ? "string" : col1Type 
-            // remove the first col (or header) of data (types) if all values' type is number
-            const colHeaders = numberOnly ? keys.slice(1) : keys 
-            const sumstatCols = numberOnly ? numberCols.slice(1) : numberCols
 
             /* get sentences and questions back from the getSumStats
              * @params: {
@@ -250,7 +242,7 @@ class Questions extends React.Component {
                     type: col1DataType,
                     header: col1Header,
                     values: col1ValuesToStrings,
-                    format: dateFormat,   
+                    format: dateFormat,
                 },
                 cols: sumstatCols.map((colValues, index) => ({
                     header: colHeaders[index],
@@ -259,11 +251,11 @@ class Questions extends React.Component {
             }
             const sumStats = getSumStats(dataSumstat)
             this.questions = sumStats.questions
-            
+
             const sentences = sumStats.sentences
             this.sumstatSentences = {
                 edit: sentences,
-                text: sentences // keep a text copy to replace unit string
+                text: [...sentences] // keep a text copy to replace unit string
             }
             // console.log("s:", sentences)
 
@@ -279,9 +271,10 @@ class Questions extends React.Component {
                     task: { select: [this.selectionTasks[0]] },
                     unit: { textField: ["", "", ""] },
                     draw: {
-                        select: ["default"],
+                        select: ["as is."],
                         textField: ""
-                    }
+                    },
+                    cols: { textField: [""] }
                 },
                 set2: sentences.map(group => ({
                     textField: "",
@@ -303,10 +296,9 @@ class Questions extends React.Component {
                 <TextField
                     key={"select-" + index}
                     select
-                    label={label}
+                    // label={label}
                     value={this.answers.set1[type]["select"][index]}
                     onChange={(event) => this.handleSets(event, "set1", "select", type, index)}
-                    style={{ width: "100%" }}
                 >
                     {options.map((opt, index) => (
                         <MenuItem key={index} value={opt}>
@@ -355,68 +347,102 @@ class Questions extends React.Component {
         }
 
 
-        /* draw * /
-        if (this.answers) {
-            console.log("*** ui up running ***")
-            console.log("")
-        }*/
+        /* draw */
         const numberColGroups = dataChart.keys
+        const numberColHeader = numberColGroups.length > 3 ? (numberColGroups.slice(0, 3).join(", ") + ", ...") : numberColGroups.join(", ")
         const followUpCount = dataQuestion ? dataQuestion.sentence.length : 0
-        if (dataQuestion) {
-            //console.log("f:", dataQuestion)
-        }
+        // if (this.answers) {
+        //     // console.log("*** ui up running ***")
+        //     // console.log("")
+        //     // console.log(numberColGroups)
+        // }
         return this.answers ? (
-            <div className="questions">
+            <div className="questions f-18">
                 {/* Set1 Questions */}
                 <p className="question-set">{"Question set: chart " + this.answers.id}</p>
-                
+
                 {/* Q1: task of the chart and more info */}
                 {selectionInOrder.length > 1 ? <div>
-                    {selectComponent(0, "task", questionSet1.task, this.selectionTasks)}
-                    <ExpansionPanel info={chartInfos[this.answers.id].description} />
+                    <div className="d-if va-b pb-5">I want to&nbsp;<b>show</b>&nbsp;</div>
+                    {selectComponent(0, "task", "", this.selectionTasks)}
+                    {/* TODO: <ExpansionPanel info={chartInfos[this.answers.id].description} /> */}
                 </div> : null}
 
                 {/* Q2: axis and size for plots */}
-                {this.answers.id.includes("plot") ?
-                    <Selects question={questionSet1.axis} options={numberColGroups} labels={["x-axis", "y-axis", "size"]} /> :
-                    null
-                }
+                {this.answers.id.includes("plot") ? <div>
+                    <div className="d-if va-b pb-5">So use the&nbsp;<b>x-axis</b>&nbsp;for&nbsp;</div>
+                    <Selects options={numberColGroups} index={0} />
+                    <div className="d-if va-b pb-5">,&nbsp;<b>y-axis</b>&nbsp;for&nbsp;</div>
+                    <Selects options={numberColGroups} index={1} />
+                    {numberColGroups.length > 2 ? <div className="d-if va-b pb-5">, and&nbsp;<b>size</b>&nbsp;for&nbsp;</div> : null}
+                    {numberColGroups.length > 2 ? <Selects options={numberColGroups} index={2} /> : null}
+                </div> : null}
 
                 {/* Q3: unit(s) of number(s), x3 if plots */}
                 {/* @param: label, value, setId, indexSet = null, indexUi = null */}
-                {/* TODO: selects change to textfields */}
-                {!this.answers.id.includes("plot") ?
-                    textFieldComponent(questionSet1.unit, this.answers.set1.unit.textField[0], "set1", "unit", 0) :
-                    <TextFields 
-                        question={questionSet1.unit} labels={numberColGroups} placeholder={questionSet1.placeholder} 
-                        handleChange={this.handleSets} params={["set1", "unit", this.selectedId]} 
+                <div>
+                    <div className="d-if va-b pb-13">The numbers on the table refer to&nbsp;</div>
+                    <TextFields
+                        index={0} helpText={this.answers.id.includes("plot") ? numberColGroups[0] : numberColHeader} placeholder={"required*"}
+                        handleChange={this.handleSets} params={["set1", "unit", this.answers.id]}
                         answers={this.answers} ss={this.sumstatSentences} tasks={this.selectionTasks}
                         setAnswers={this.props.setDataAnswer}
                     />
-                }
+                    {this.answers.id.includes("plot") ? <span>,{' '}</span> : null}
+                    {this.answers.id.includes("plot") ?
+                        <TextFields
+                            index={1} helpText={numberColGroups[1]} placeholder={"required*"}
+                            handleChange={this.handleSets} params={["set1", "unit", this.answers.id]}
+                            answers={this.answers} ss={this.sumstatSentences} tasks={this.selectionTasks}
+                            setAnswers={this.props.setDataAnswer}
+                        /> : null
+                    }
+                    {this.answers.id.includes("plot") && numberColGroups.length === 3 ? <span>,{' '}</span> : null}
+                    {this.answers.id.includes("plot") && numberColGroups.length === 3 ?
+                        <TextFields
+                            index={2} helpText={numberColGroups[2]} placeholder={"required*"}
+                            handleChange={this.handleSets} params={["set1", "unit", this.answers.id]}
+                            answers={this.answers} ss={this.sumstatSentences} tasks={this.selectionTasks}
+                            setAnswers={this.props.setDataAnswer}
+                        /> : null
+                    }
+                    <div>-- is it $/€/£, people, or years?</div>
+                </div>
 
-                {/* Q5: line highlights */}
-                {this.answers.id.includes("line") ?
-                    <TextFieldWithAutocomplete question={questionSet1.auto.multi} options={numberColGroups} renderType={"multiple"} 
-                        handleChange={this.handleSet2QuestionsFilter} 
-                    /> :
-                    null
-                }
+                {/* Q4: header of number cols */}
+                {col1DataType !== "date" ? <div>
+                    <div className="d-if va-b pb-13">{numberColHeader[0].toUpperCase() + numberColHeader.slice(1) + ' are'}&nbsp;</div>
+                    <TextFields
+                        index={0} helpText={""} placeholder={col1Header}
+                        handleChange={this.handleSets} params={["set1", "cols", this.answers.id]}
+                        answers={this.answers} ss={this.sumstatSentences} tasks={this.selectionTasks}
+                        setAnswers={this.props.setDataAnswer}
+                    />
+                </div > : null}
 
-                {/* Q6: stack drawing order */}
-                {this.answers.id.includes("Stack") ? <div className="d-f">
+                {/* Q5: stack drawing order */}
+                {this.answers.id.includes("Stack") ? <div>
+                    <div className="d-if va-b pb-5">And&nbsp;<b>stack</b>&nbsp;the chart&nbsp;</div>
                     {selectComponent(0, "draw", questionSet1.draw.type, questionSet1.draw.opts)}
+                    <span>{' '}</span>
                     {this.answers.set1.draw.select[0] === questionSet1.draw.opts[2] ?
-                        <TextFieldWithAutocomplete question={questionSet1.auto.single} options={numberColGroups} renderType={"single"} /> :
+                        <TextFieldWithAutocomplete question={""} options={numberColGroups} renderType={"single"} /> :
                         null}
                 </div> : null}
 
+                {/* Q6: line highlights */}
+                {this.answers.id.includes("line") ? <div className="d-f">
+                    <div className="as-fe pb-4">And&nbsp;<b>highlight</b>&nbsp;</div>
+                    <TextFieldWithAutocomplete question={""} options={numberColGroups} renderType={"multiple"}
+                        handleChange={this.handleSet2QuestionsFilter}
+                    /> 
+                </div> : null}
 
                 {/* Set2 Questions */}
                 <p className="question-set mb-5">Question set: statistical summary</p>
                 {/* grouped sentences for toggle */}
                 {this.sumstatSentences.text.map((sentence, idx) =>
-                    <div key={"qh-" + idx} className="mb-5 js-set2Q" id={numberColGroups[idx].replace(/ /g,'')}>
+                    <div key={"qh-" + idx} className="mb-5 js-set2Q" id={numberColGroups[idx].replace(/ /g, '')}>
                         <p><span className="question-group">{numberColGroups[idx]}</span></p>
                         {sentence.map((s, i) => switchComponent(s, this.answers.set2[idx].switch[i], "set2", idx, i))}
                     </div>
@@ -429,7 +455,7 @@ class Questions extends React.Component {
                     onClick={() => this.handleContinue()}
                     id="continue"
                 /></a>
-                
+
                 {/* follow-up questions */}
                 {dataQuestion ? (dataQuestion.sentence.length !== 0 ?
                     dataQuestion.sentence.map((qs, idx) =>

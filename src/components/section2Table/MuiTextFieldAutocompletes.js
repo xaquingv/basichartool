@@ -10,11 +10,13 @@ import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import CancelIcon from '@material-ui/icons/Cancel';
+import { width } from '../../data/config';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
-    minWidth: 310,
+    // flexGrow: 1,
+    minWidth: 540,
+    display: 'inline-block'
   },
   input: {
     display: 'flex',
@@ -303,7 +305,7 @@ const components = {
   ValueContainer,
 };
 
-export default function TextFieldWithdAutoComplete(props) {
+export default function TextFieldWithdAutoCompleteComponent(props) {
   const { question, options, renderType } = props;
   const suggestions = options.map(s => ({ value: s, label: s }))
 
@@ -374,7 +376,7 @@ export default function TextFieldWithdAutoComplete(props) {
               shrink: true,
             },
           }}
-          placeholder="Select multiple"
+          placeholder="Select multiple highlights"
           options={suggestions}
           components={components}
           value={multi}
