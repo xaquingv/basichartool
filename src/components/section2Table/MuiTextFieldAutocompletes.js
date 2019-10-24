@@ -15,8 +15,12 @@ import { width } from '../../data/config';
 const useStyles = makeStyles(theme => ({
   root: {
     // flexGrow: 1,
-    minWidth: 540,
-    display: 'inline-block'
+    display: 'inline-block',
+    width: 600
+  },
+  rootSinlge: {
+    display: 'inline-block',
+    width: 300,
   },
   input: {
     display: 'flex',
@@ -346,8 +350,8 @@ export default function TextFieldWithdAutoCompleteComponent(props) {
   };
 
   return (
-    <div className={classes.root}>
-      <NoSsr> {renderType === "single" ?
+    <div className={renderType === "single" ? classes.rootSinlge : classes.root}> 
+      <NoSsr>{renderType === "single" ?
         <Select
           classes={classes}
           styles={selectStyles}
@@ -367,7 +371,7 @@ export default function TextFieldWithdAutoCompleteComponent(props) {
         /> :
         <Select
           classes={classes}
-          styles={selectStyles}
+          styles={selectStyles, {minWidth: "300"}}
           inputId="react-select-multiple"
           TextFieldProps={{
             label: question,
@@ -382,8 +386,8 @@ export default function TextFieldWithdAutoCompleteComponent(props) {
           value={multi}
           onChange={handleChangeMulti}
           isMulti
-        />
-      }</NoSsr>
+        />}
+      </NoSsr>
     </div>
   );
 }

@@ -21,19 +21,10 @@ import TextFields from './MuiTextField'
 
 const regAnyInCB = /{([^}]*)}/ // match 0 or more chars in {} (curly braces)
 const questionSet1 = {
-    task: "I want to show ",
-    axis: "What is the axis (and size) mapping with?",
-    unit: "What are the numbers referring to? (e.g. dollars, people, years ...)",
-    line: "",
     draw: {
         type: "What order would you like to this stack chart?",
         opts: ["as is.", "starting by largest.", "starting with ..."],
-    },
-    auto: {
-        multi: 'Which line(s) wouild you like to highlight?',
-        single: 'Which specific* one?'
-    },
-    placeholder: "Please type your answer here ..."
+    }
 }
 
 
@@ -51,7 +42,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 
-class Questions extends React.Component {
+class Questions extends React.PureComponent {
 
     handleSets(event, setId, uiType, indexSet = null, indexUi = null, id, ans, ss, tks, setData) {
 
@@ -63,7 +54,6 @@ class Questions extends React.Component {
         const value = (uiType === "switch" ? event.target.checked : event.target.value)
 
         // case: replace unit(s) with users input
-
         if (setId === "set1" && indexSet === "unit") {
             newSentences = { ...sentences }
             const replaceText = "{" + value + "}"
@@ -92,9 +82,8 @@ class Questions extends React.Component {
             const selectSelectionInOrder = this.props.selectionInOrder
             selectSelectionInOrder.forEach((select, index) => document.querySelector("#" + select).setAttribute("class", (index !== selectIndex) ? "order2" : "order1"))
             newAnswers.id = selectSelectionInOrder[selectIndex]
-            // console.log(newAnswers.id, ":", value)
         }
-        console.log(newAnswers)
+        // console.log(newAnswers)
 
         if (this) {
             this.props.setDataAnswer(newAnswers, newSentences)
@@ -103,49 +92,31 @@ class Questions extends React.Component {
         }
     }
 
-    handleSet2FollowUp(event, index1, index2) {
-        const { setDataAnswer } = this.props
+    handleSet2FollowUp(event, index) {
         const newAnswers = { ...this.answers }
-        const newAnswerTextFields = newAnswers.set2FollowUp.textField
-        newAnswerTextFields[index1][index2] = event.target.value
-        setDataAnswer(newAnswers)
+        newAnswers.set2FollowUp.textField[index[0]][index[1]][index[2]] = event.target.value
+        this.props.setDataAnswer(newAnswers)
     }
 
-    handleContinue() {
-        const dataStatsFiltered = this.questions
-            .map((question, index) => question
-                .map((q, i) => ({
-                    index: { set: index, ui: i },
-                    explanation: q
-                })).filter((s, i) => this.answers.set2[index].switch[i])
-            ).flat()
+    // handleSubmit() {
+    //     const { dataQuestion, setDataParagraph, dataChart } = this.props
+    //     const newQuestionAnswer = this.answers.set2FollowUp.textField.map((as, idx) => as.map((a, i) => ({ a, q: dataQuestion.sentence[idx][i] })))
+    //     const dataParagraph = newQuestionAnswer.map((qas, i) => {
+    //         const index = dataQuestion.index[i]
+    //         return {
+    //             //index: index,
+    //             data: {
+    //                 ...this.dataStats[index.set][index.ui],
+    //                 units: this.answers.set2[index.set].textField
+    //             },
+    //             explanation: qas.filter(qa => qa.a !== "")
+    //         }
+    //     }).filter(d => d.explanation.length !== 0)
 
-        const questions = dataStatsFiltered.map(stats => stats.explanation/*.map(exp => exp.q)*/)
-        const index = dataStatsFiltered.map(stats => stats.index)
-        // console.log("q:", questions)
-
-        this.answers.set2FollowUp.textField = questions.map(stats => stats.map(s => ""))
-        this.props.setDataQuestion({ sentence: questions, index: index }) //TODO: add answers
-    }
-
-    handleSubmit() {
-        const { dataQuestion, setDataParagraph, dataChart } = this.props
-        const newQuestionAnswer = this.answers.set2FollowUp.textField.map((as, idx) => as.map((a, i) => ({ a, q: dataQuestion.sentence[idx][i] })))
-        const dataParagraph = newQuestionAnswer.map((qas, i) => {
-            const index = dataQuestion.index[i]
-            return {
-                //index: index,
-                data: {
-                    ...this.dataStats[index.set][index.ui],
-                    units: this.answers.set2[index.set].textField
-                },
-                explanation: qas.filter(qa => qa.a !== "")
-            }
-        }).filter(d => d.explanation.length !== 0)
-
-        const chartId = document.querySelector(".charts div").id
-        setDataParagraph(write(dataParagraph), dataChart, chartId)
-    }
+    //     const chartId = document.querySelector(".charts div").id
+    //     //console.log(dataParagraph)
+    //     setDataParagraph(write(dataParagraph), dataChart, chartId)
+    // }
 
     componentDidMount() {
         this.string1Col = []
@@ -176,7 +147,7 @@ class Questions extends React.Component {
         // it's default comes frmo the first chart in the selectionInOrder list
         if (selectionInOrder.length < 1) return null
         const selectedId = dataAnswer ? dataAnswer.id : selectionInOrder[0]
-        console.log("** data in the house:", selectedId, "***")
+        // console.log("** data in the house:", selectedId, "***")
 
         /*
          * check if data is changed due to:
@@ -251,6 +222,7 @@ class Questions extends React.Component {
             }
             const sumStats = getSumStats(dataSumstat)
             this.questions = sumStats.questions
+            // console.log(this.questions)
 
             const sentences = sumStats.sentences
             this.sumstatSentences = {
@@ -278,10 +250,14 @@ class Questions extends React.Component {
                 },
                 set2: sentences.map(group => ({
                     textField: "",
-                    switch: group.map(s => false/*true*/)
+                    switch: group.map(() => false)
                 })),
-                set2FollowUp: { textField: [] },
-                // set3: { textField: "" }
+                set2FollowUp: { 
+                    textField: this.questions.map((group) => 
+                        group.map((qs) => 
+                            qs.map(() => "")
+                    ))
+                },
             }
             //console.log(this.answers)
 
@@ -325,21 +301,22 @@ class Questions extends React.Component {
             );
         }
 
-        const textFieldComponent = (label, value, setId, indexSet = null, indexUi = null, rowNumber = 1, style = {}) => {
+        const textFieldComponent = (label, value, index) => {
             return (
-                <div key={"tf-" + indexSet + indexUi}>
+                <div key={"tf-" + index.join("")}>
                     <TextField
                         multiline
                         label={label}
-                        rowsMax={rowNumber}
+                        rowsMax={3}
                         value={value}
                         placeholder="Please type your answer here, or leave it empty to skip."
-                        onChange={(event) => setId !== "set2FollowUp" ?
-                            this.handleSets(event, setId, "textField", indexSet, indexUi) :
-                            this.handleSet2FollowUp(event, indexSet, indexUi)
+                        onChange={(event) => 
+                            // setId !== "set2FollowUp" ?
+                            // this.handleSets(event, setId, "textField", indexSet, indexUi) :
+                            this.handleSet2FollowUp(event, index)
                         }
                         margin="normal"
-                        style={{ width: "100%", ...style }}
+                        style={{ width: "66%", minWidth: "600px", marginTop: "5px", marginLeft: "46px"}}
                         InputLabelProps={{ shrink: true, }}
                     />
                 </div>
@@ -350,7 +327,6 @@ class Questions extends React.Component {
         /* draw */
         const numberColGroups = dataChart.keys
         const numberColHeader = numberColGroups.length > 3 ? (numberColGroups.slice(0, 3).join(", ") + ", ...") : numberColGroups.join(", ")
-        const followUpCount = dataQuestion ? dataQuestion.sentence.length : 0
         // if (this.answers) {
         //     // console.log("*** ui up running ***")
         //     // console.log("")
@@ -363,7 +339,7 @@ class Questions extends React.Component {
 
                 {/* Q1: task of the chart and more info */}
                 {selectionInOrder.length > 1 ? <div>
-                    <div className="d-if va-b pb-5">I want to&nbsp;<b>show</b>&nbsp;</div>
+                    <div className="d-if va-b pb-5">{"I want to "}<b>show</b>&nbsp;</div>
                     {selectComponent(0, "task", "", this.selectionTasks)}
                     {/* TODO: <ExpansionPanel info={chartInfos[this.answers.id].description} /> */}
                 </div> : null}
@@ -397,7 +373,7 @@ class Questions extends React.Component {
                             setAnswers={this.props.setDataAnswer}
                         /> : null
                     }
-                    {this.answers.id.includes("plot") && numberColGroups.length === 3 ? <span>,{' '}</span> : null}
+                    {this.answers.id.includes("plot") && numberColGroups.length === 3 ? <span>,{' and '}</span> : null}
                     {this.answers.id.includes("plot") && numberColGroups.length === 3 ?
                         <TextFields
                             index={2} helpText={numberColGroups[2]} placeholder={"required*"}
@@ -441,40 +417,25 @@ class Questions extends React.Component {
                 {/* Set2 Questions */}
                 <p className="question-set mb-5">Question set: statistical summary</p>
                 {/* grouped sentences for toggle */}
-                {this.sumstatSentences.text.map((sentence, idx) =>
-                    <div key={"qh-" + idx} className="mb-5 js-set2Q" id={numberColGroups[idx].replace(/ /g, '')}>
-                        <p><span className="question-group">{numberColGroups[idx]}</span></p>
-                        {sentence.map((s, i) => switchComponent(s, this.answers.set2[idx].switch[i], "set2", idx, i))}
+                {this.sumstatSentences.text.map((sentences, index) =>
+                    <div key={"qh-" + index} className="mb-5 js-set2Q" id={numberColGroups[index].replace(/ /g, '')}>
+                        <p><span className="question-group">{numberColGroups[index]}</span></p>
+                        {sentences.map((s, idx) => <div>
+                            {switchComponent(s, this.answers.set2[index].switch[idx], "set2", index, idx)}
+                            {this.answers.set2[index].switch[idx] ?
+                                this.questions[index][idx].map((q, i) => textFieldComponent(q, this.answers.set2FollowUp.textField[index][idx][i], [index, idx, i])) 
+                            : null}
+                        </div>)}
                     </div>
                 )}
 
-                <a href="#continue"><input
-                    type="button"
-                    className={"button btn-create mb-5 mt-15"}
-                    value="Continue"
-                    onClick={() => this.handleContinue()}
-                    id="continue"
-                /></a>
-
-                {/* follow-up questions */}
-                {dataQuestion ? (dataQuestion.sentence.length !== 0 ?
-                    dataQuestion.sentence.map((qs, idx) =>
-                        <div key={"qh-" + idx}>
-                            <p className="question-set mb-15">{"Follow up question set: " + parseInt(idx + 1) + "/" + followUpCount}</p>
-                            {qs.map((q, i) => textFieldComponent(q, this.answers.set2FollowUp.textField[idx][i], "set2FollowUp", idx, i, 3))}
-                        </div>) : <p className="instruction">There is no follow up questions</p>
-                ) : null}
-                {dataQuestion ? <input
+                {/* {dataQuestion ? <input
                     type="button"
                     className={"button btn-create mb-5 mt-15"}
                     value="Submit"
                     onClick={() => this.handleSubmit()}
-                /> : null}
+                /> : null} */}
 
-                {/* <p className="question-set">Question set 3:</p> */}
-                {/* {textFieldComponent("Are you focusing on some specific country or a group of them?", this.answers.set3.textField, "set3", null, null, 3)} */}
-                {/* <ComponentSelectMultiple dataKeys={dataKeys} label="Are you focusing on some specific country or a group of them?" /> */}
-                {/* {selectMultipleComponent("Are you focusing on some specific country or a group of them?")} */}
             </div>
         ) : null
     }

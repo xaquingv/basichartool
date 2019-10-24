@@ -1,5 +1,6 @@
 .questions {
     /* font-size: 14px; */
+    color: var(--c-black);
 }
 .question-set {
     margin-top: 2rem;
@@ -65,7 +66,6 @@
 }
 .MuiInputLabel-formControl {
     font-weight: 600!important;
-
 }
 .questions .MuiFormLabel-root.Mui-focused {
     color: var(--c-blue);  
