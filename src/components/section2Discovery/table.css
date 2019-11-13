@@ -1,4 +1,4 @@
-.section2-table {
+#table {
   background-color: #fcfcfc;   
   overflow: scroll;
   width: calc(100% - 320px);
@@ -7,12 +7,6 @@
   box-shadow: inset 0 0 6px rgba(0,0,0,.15);
   /*margin-bottom: 30px;*/
 }
-.section2-chart {
-  background-color: #F0F0F0;   
-  overflow: scroll;
-  width: 320px;
-  max-height: calc(100vh - 328px); /*230px*/
-}
 
 table {
   font-family: source-code-pro, monospace;
@@ -20,11 +14,8 @@ table {
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
-/*  border: 1px solid #fff; /*n-4*/
 }
-tbody tr:nth-child(even) {
-   /* background-color: #f6f6f6;*/ /*n-6*/
-}
+
 thead tr {
     background-color: #e0e0e0; /*n-5*/
     border-bottom: 1px solid #F0F0F0; /*n-4*/

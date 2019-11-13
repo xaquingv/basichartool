@@ -1,3 +1,10 @@
+#chartlist {
+  background-color: #F0F0F0;   
+  overflow: scroll;
+  width: 320px;
+  max-height: calc(100vh - 328px); /*230px*/
+}
+
 .charts {
   padding-left:.5rem;
   display: flex;
@@ -29,7 +36,7 @@
 } */
 
 /* hotfix for card layout */
-.section2-chart svg {
+#chartlist svg {
   width: 100% !important;
   height: 100% !important;
   margin-top: 0 !important;

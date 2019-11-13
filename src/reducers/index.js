@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import getNewDataTable from '../data/parseDataTableRaw';
+import selectCharts from '../data/selectCharts';
 // import { default_metaText } from '../data/config';
 
 function step(step = 1, action) {
@@ -9,13 +9,11 @@ function step(step = 1, action) {
       return action.step
 
     // sections
-    // case 'INPUT_DATA'
     case 'CLEAR_DATA':
       return 1
     case 'IMPORT_DATA':
     case 'TOGGLE_DATA':
     case 'TRANSPOSE_DATA':
-      //case 'ANALYZE_DATA':
       return 2
     case 'SELECT_CHART':
     case 'SET_PARAGRAPH':
@@ -35,7 +33,6 @@ function stepActive(stepActive = 1, action) {
     case 'TOGGLE_DATA':
     case 'TRANSPOSE_DATA':
       return 2
-    //case 'ANALYZE_DATA':
     case 'SELECT_CHART':
     case 'SET_PARAGRAPH':
       return 3
@@ -45,24 +42,14 @@ function stepActive(stepActive = 1, action) {
   }
 }
 
+// TODO: move meta to dataChart?
 function dataTable(dataTable = {}, action) {
   switch (action.type) {
     case 'CLEAR_DATA':
       return ""
     case 'IMPORT_DATA':
-      // TODO: move meta to dataChart?
-      return action.dataTable
-
     case 'TRANSPOSE_DATA':
-      // swap rows and cols
-      const { meta, rows, cols } = dataTable
-      const newDataTableRaw = {
-        meta,
-        rows: cols,
-        cols: rows
-      }
-      return getNewDataTable(newDataTableRaw)
-
+      return action.dataTable
     default:
       return dataTable
   }
@@ -72,96 +59,69 @@ function show(show = { col: [], row: [] }, action) {
   switch (action.type) {
     case 'CLEAR_DATA':
       return ""
+
     case 'IMPORT_DATA':
-      return {
-        row: action.dataTable.rows.map(() => true),
-        col: action.dataTable.cols.map(() => true)
-      }
     case 'TRANSPOSE_DATA':
-      // due to header shift
-      // row has an extra toggle that is not used at the end of the list
-      // TODO: fix untitles cutting the headers
-      return {
-        row: show.col.slice(1).concat([true]),
-        col: [true].concat(show.row.slice(0, -1))
-      }
-
     case 'TOGGLE_DATA':
-      const { target, index } = action
-      const newVal = show[target][index] ? false : true
-
-      let newShow = { ...show }
-      newShow[target] = [
-        ...show[target].slice(0, index),
-        newVal,
-        ...show[target].slice(index + 1),
-      ]
-      return newShow
+      return action.show
 
     default:
       return show
   }
 }
 
-// sumstats' answer sets
-function dataAnswer(dataAnswer = null, action) {
+function selection(chartList = [], action) {
   switch (action.type) {
     case 'CLEAR_DATA':
-      return null
-    case 'SET_ANSWERS':
-      return action.dataAnswer
+      return []
+    case 'IMPORT_DATA':
+    case 'TRANSPOSE_DATA':
+    case 'TOGGLE_DATA':
+      return selectCharts(action.dataSummary)
     default:
-      return dataAnswer
+      return chartList
   }
 }
-// sumstats' question sets for text editing
-function dataSentence(dataSentence = null, action) {
+function selectionInOrder(chartList = [], action) {
   switch (action.type) {
-    case 'SET_ANSWERS':
-      return action.dataSentence || dataSentence
+    case 'CLEAR_DATA':
+      return []
+    case 'SET_SELECTION_ORDER':
+      return action.selectionInOrder
     default:
-      return dataSentence
-  }
-}
-// sumstats' follow up questions
-function dataQuestion(dataQuestion = null, action) {
-  switch (action.type) {
-    case 'SET_QUESTIONS':
-      return action.dataQuestion
-    default:
-      return dataQuestion
-  }
-}
-// sumstats' paragraph data
-function dataParagraph(dataParagraph = null, action) {
-  switch (action.type) {
-    case 'SET_PARAGRAPH':
-      return action.dataParagraph
-    default:
-      return dataParagraph
+      return chartList
   }
 }
 
-function chartId(id = "", action) {
+function dataCount(dataCount = {}, action) {
   switch (action.type) {
-    case 'SELECT_CHART':
-    case 'SET_PARAGRAPH':
-      return action.chartId || id
+    case 'CLEAR_DATA':
+      return {}
+    case 'IMPORT_DATA':
+    case 'TRANSPOSE_DATA':
+    case 'TOGGLE_DATA':
+      return action.dataSummary.count
     default:
-      return id
-  }
+      return dataCount
+  }  
 }
 
 function dataChart(dataChart = {}, action) {
   switch (action.type) {
-    // reset
-    // TODO: debug
-    case 'ANALYZE_DATA':
-    //case 'SET_PARAGRAPH':
-      const resetDataChart = { legend: [], scales: {}, margin: undefined, indent: 0, marginTop: 0 }
+    // init
+    // TODO: debug ?
+    case 'IMPORT_DATA':
+      const initDataChart = { legend: [], scales: {}, margin: undefined, indent: 0, marginTop: 0 }
       return {
-        ...resetDataChart,
-        ...action.dataChart,
+        ...initDataChart,
+        ...action.dataSummary.chart,
+      }
+
+    case 'TRANSPOSE_DATA':
+    case 'TOGGLE_DATA':
+      return {
+        ...dataChart,
+        ...action.dataSummary.chart
       }
 
     /* TODO: rename and clean up */
@@ -215,27 +175,52 @@ function dataChart(dataChart = {}, action) {
   }
 }
 
-function selection(chartList = [], action) {
+// sumstats' answer sets
+function dataAnswer(dataAnswer = null, action) {
   switch (action.type) {
     case 'CLEAR_DATA':
-      return []
-    case 'ANALYZE_DATA':
-      return action.selection
+      return null
+    case 'SET_ANSWERS':
+      return action.dataAnswer
     default:
-      return chartList
+      return dataAnswer
   }
 }
-function selectionInOrder(chartList = [], action) {
-  switch(action.type) {
-    // case 'TOGGLE_DATA':
-    // case 'TRANSPOSE_DATA':
-    // case 'SELECT_CHART':
-    case 'CLEAR_DATA':
-      return []
-    case 'SET_SELECTION_ORDER':
-      return action.selectionInOrder
+// sumstats' question sets for text editing
+function dataSentence(dataSentence = null, action) {
+  switch (action.type) {
+    case 'SET_ANSWERS':
+      return action.dataSentence || dataSentence
     default:
-      return chartList
+      return dataSentence
+  }
+}
+// sumstats' follow up questions
+function dataQuestion(dataQuestion = null, action) {
+  switch (action.type) {
+    case 'SET_QUESTIONS':
+      return action.dataQuestion
+    default:
+      return dataQuestion
+  }
+}
+// sumstats' paragraph data
+function dataParagraph(dataParagraph = null, action) {
+  switch (action.type) {
+    case 'SET_PARAGRAPH':
+      return action.dataParagraph
+    default:
+      return dataParagraph
+  }
+}
+
+function chartId(id = "", action) {
+  switch (action.type) {
+    case 'SELECT_CHART':
+    case 'SET_PARAGRAPH':
+      return action.chartId || id
+    default:
+      return id
   }
 }
 
@@ -333,14 +318,15 @@ const app = combineReducers({
   step,
   stepActive,
   show,
+  selection,
+  selectionInOrder,
+  dataChart,
   dataTable,
+  dataCount,
   dataAnswer,
   dataSentence,
   dataQuestion,
   dataParagraph,
-  dataChart,
-  selection,
-  selectionInOrder,
   chartId,
   dataSetup,
   dataEditable

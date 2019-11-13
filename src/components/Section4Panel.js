@@ -78,6 +78,7 @@ class Section extends React.Component {
     this.props.setWidth("860px")
   }
   componentDidUpdate() {
+    console.log("render step 3")
     const { stepActive, chartId, chartData} = this.props
     if (stepActive < STEP) return
 

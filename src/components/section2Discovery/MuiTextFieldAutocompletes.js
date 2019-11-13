@@ -10,11 +10,9 @@ import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { width } from '../../data/config';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    // flexGrow: 1,
     display: 'inline-block',
     width: 600
   },

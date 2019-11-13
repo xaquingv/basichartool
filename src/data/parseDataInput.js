@@ -20,15 +20,10 @@ detect
 export default function(dataInput) {
     /* dataInput (raw input string to lines) */
     // detect file type
-    const dataMatch = {
-      tab: dataInput.match(/\t/g),
-      //comma: dataInput.match(/,f/g),
-    }
-    // TODO: csv with comma in quotes ("hi, sth. like this") is not parsed and json?
-    const dataType = dataMatch.tab ? "tsv" : "csv"
-    // string => lines
+    const fileType = dataInput.match(/\t/g) ? "tsv" : "csv"
+    // transfer string => lines
     const dataLines = dataInput.split(/\n/g)
-    // let dataLines = dataInput.split(/[\n|\r]/g);
+    // or dataLines = dataInput.split(/[\n|\r]/g);
     // ref: http://stackoverflow.com/questions/10059142/reading-r-carriage-return-vs-n-newline-from-console-with-getc
     // console.log(dataLines);
 
@@ -42,12 +37,13 @@ export default function(dataInput) {
 
     /* 1. meta , rows */
     // parse from data input
+    // TODO: csv with comma in quotes ("hi, sth. like this") is not parsed and json?
     dataLines.forEach(row => {
-      switch(dataType) {
+      switch(fileType) {
         case "tsv": row = row.split("\t"); break
         case "csv": row = row.split(",");  break
         case "json": console.log("add a parser"); break
-        default: console.log("need a new type:", dataType)
+        default: console.log("need a new file type:", fileType)
       }
       parseRow(dataTableRaw, row)
     });
@@ -70,16 +66,19 @@ export default function(dataInput) {
     /* 3. flag, head, type, body (of dataTableDraw) */
     // add properties from parseDataTableRaw.js including dataTableRaw and dataTableDraw
     const dataTable = getDataTable(dataTableRaw)
-    /*
+    
+    /* debug zone:
     console.log("input -> table")
     // in this file
     console.log("dataTableRaw: parse from dataInput (this file)")
     console.log(dataTableRaw)
     // in parseDataTableRaw.js
-    console.log("dataTable: parse for table view and transformations (getDataTable.js)")
+    console.log("dataTableDraw: parse for table view and transformations (via parseDataTableRaw.js)")
+    console.log(dataTableDraw)
+    // combine
+    console.log("dataTable:")
     console.log(dataTable)
     */
-
     return dataTable
 }
 
@@ -111,6 +110,7 @@ function parseRow(dataTableRaw, row) {
   }
 }
 
+// TODO: parse JSON
 /*
 //http://stackoverflow.com/questions/3710204/how-to-check-if-a-string-is-a-valid-json-string-in-javascript-without-using-try
 function IsJsonString(str) {

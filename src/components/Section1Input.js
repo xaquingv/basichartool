@@ -4,8 +4,6 @@ import './section1Input.css';
 import { importData, clearData } from '../actions';
 import fetchConfig from '../data/config'
 
-// read https://facebook.github.io/react/docs/forms.html
-//const STEP = 1;
 const instruction = "Type your data or copy & paste it from a spreadsheet."
 
 const mapStateToProps = (state) => ({
@@ -13,10 +11,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onClickImport: (textarea) => {
-    dispatch(importData(textarea.value))
+    // in case of empty input
+    textarea.value.trim() && dispatch(importData(textarea.value))
   },
   onClickClear: (textarea/*, textInput*/) => {
-    //[textarea, textInput].forEach(input => input.value= "")
+    // [textarea, textInput].forEach(input => input.value= "")
     textarea.value = ""
     dispatch(clearData());
   }
@@ -39,10 +38,9 @@ class Section extends React.Component {
   }
 
   render() {
+    console.log("render step 1")
     let textarea, textInput;
-
-    const {/*state,*/ onClickImport, onClickClear } = this.props;
-    //console.log(state);
+    const {onClickImport, onClickClear } = this.props;
 
     return (
       <div className="section" id="section1" ref={(node) => this.node = node}>
@@ -58,6 +56,10 @@ class Section extends React.Component {
           <input type="button" className="button btn-import" value="Import" onClick={() => onClickImport(textarea)} />
           <input type="button" className="button btn-clear" value="Clear" onClick={() => onClickClear(textarea, textInput)} />
         </div>
+
+        {/* test hidden ground */}
+        <span className="test ff-data js-test-x"></span>
+        <span className="test ff-ss js-test-y"></span>
       </div>
     );
   }

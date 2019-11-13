@@ -1,6 +1,6 @@
 import parseDataInput from '../data/parseDataInput';
+import parseDataTableRaw from '../data/parseDataTableRaw';
 import summarizeData from '../data/summarizeData';
-import selectCharts from '../data/selectCharts';
 
 /* navigation */
 export const changeStep = (step) => ({
@@ -16,40 +16,71 @@ export const activeStep = (stepActive) => ({
 export const clearData = () => ({
   type: "CLEAR_DATA",
 })
-/*export const inputData = (dataInput) => ({
-  type: "INPUT_DATA",
-  dataInput
-})*/
-export const importData = (dataInput) => ({
-  type: "IMPORT_DATA",
-  dataTable: dataInput === "" ? {} : parseDataInput(dataInput)
-})
-
-/* section 2 */
-export const transposeData = () => ({
-  type: "TRANSPOSE_DATA",
-})
-export const toggleData = ({type, index}) => ({
-  type: "TOGGLE_DATA",
-  target: type,
-  index
-})
-// analyze data to get a selection of charts
-export const analyzeData = (dataTable, show) => {
-  const summary = summarizeData(dataTable, show)
+export const importData = (dataInput) => {
+  let dataTable = dataInput === "" ? {} : parseDataInput(dataInput)
+  let show = {
+    row: dataTable.rows.map(() => true),
+    col: dataTable.cols.map(() => true)
+  }
   return {
-    type: "ANALYZE_DATA",
-    dataBrief: summary,
-    dataChart: summary.chart,
-    selection: selectCharts(summary)
+    type: "IMPORT_DATA",
+    dataTable,
+    show,
+    dataSummary: summarizeData(dataTable, show)
   }
 }
+
+/* section 2 */
+// table
+export const transposeData = (dataTable, show) => {
+  // swap rows and cols
+  const { meta, rows, cols } = dataTable
+  let newDataTableRaw = {
+    meta,
+    rows: cols,
+    cols: rows
+  }
+  /* dataTable = dataTableRaw + dataTableDraw */
+  let newDataTable = parseDataTableRaw(newDataTableRaw)
+  /* show
+   * due to header shift
+   * row has an extra toggle that is not used at the end of the list
+   * TODO: fix untitles cutting the headers */
+  let newShow = {
+    row: show.col.slice(1).concat([true]),
+    col: [true].concat(show.row.slice(0, -1))
+  }
+  return {
+    type: "TRANSPOSE_DATA",
+    dataTable: newDataTable,
+    show: newShow,
+    dataSummary: summarizeData(newDataTable, newShow)
+  }
+}
+
+export const toggleData = (dataTable, show, { type, index }) => {
+  const newVal = show[type][index] ? false : true
+  /* show */
+  let newShow = { ...show }
+  newShow[type] = [
+    ...show[type].slice(0, index),
+    newVal,
+    ...show[type].slice(index + 1),
+  ]
+  return {
+    type: "TOGGLE_DATA",
+    show: newShow,
+    dataSummary: summarizeData(dataTable, newShow)
+  }
+}
+
+// chart list
 export const setSelectionInOrder = (selectionInOrder) => ({
   type: "SET_SELECTION_ORDER",
-  selectionInOrder 
+  selectionInOrder
 })
 
-// sumstats
+// questions: sumstats
 export const setAnswers = (dataAnswer, dataSentence) => ({
   type: "SET_ANSWERS",
   dataAnswer,
@@ -144,7 +175,7 @@ export const updateAxisDataOnTypes = (type1, type2, dataTarget, dataTargetExtra)
   dataTarget,
   dataTargetExtra
 })
-export const updateScaleRange = (type, range) =>({
+export const updateScaleRange = (type, range) => ({
   type: "UPDATE_RANGE",
   target: type,
   range

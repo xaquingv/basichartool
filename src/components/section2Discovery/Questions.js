@@ -29,6 +29,8 @@ const questionSet1 = {
 
 
 const mapStateToProps = (state) => ({
+    dataCount: state.dataCount,
+    dataChart: state.dataChart,
     dataAnswer: state.dataAnswer,
     dataSentence: state.dataSentence,
     dataQuestion: state.dataQuestion,
@@ -139,6 +141,7 @@ class Questions extends React.PureComponent {
     // }
 
     render() {
+        console.log("render step 2: qa")
 
         const { selectionInOrder, dataAnswer } = this.props
         //console.log("* render ***")
@@ -335,7 +338,9 @@ class Questions extends React.PureComponent {
         //     // console.log("")
         //     // console.log(numberColGroups)
         // }
-        return this.answers ? (
+        
+        if (!this.answers) { return null; }
+        return (
             <div className="questions f-18">
                 {/* Set1 Questions */}
                 <p className="question-set">{"Question set: chart " + this.answers.id}</p>
@@ -440,7 +445,7 @@ class Questions extends React.PureComponent {
                 /> : null} */}
 
             </div>
-        ) : null
+        )
     }
 }
 
