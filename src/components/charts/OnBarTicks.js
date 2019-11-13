@@ -11,38 +11,40 @@ const tickWidth = 6
 const tickBorderRadius = 2
 const margin = tickWidth / 2
 
-const mapStateToProps = (state, props) => ({
-  data: { ...state.dataChart, ...props.dataChart },
+const mapStateToProps = state => ({
+  data: state.dataChart,
   axis: state.dataEditable.axis,
   colors: state.dataSetup.colors
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  onSelect: (data, keys, scale, margins) => dispatch(appendChartData(data, keys, scale, margins))
+const mapDispatchToProps = dispatch => ({
+  onSelect: (keys, scale, margins) => dispatch(appendChartData(keys, scale, margins))
 })
 
 
 class TickOnBar extends React.Component {
+  appendChartData() {
+    if (this.props.isSelected) { 
+      const { data, onSelect } = this.props
+      onSelect(data.keys, this.scale, {left: margin, right: margin}) 
+    }
+  }
 
   componentDidMount() {
     this.renderChart()
+    this.appendChartData()
   }
   componentDidUpdate() {
+    this.appendChartData()
     this.renderChart()
   }
 
   render() {
-    const {data, onSelect, callByStep} = this.props
-
-    // step 2: Discover
-    const setChartData = () => {
-      if (callByStep === 2) { onSelect(data, data.keys, this.scale, {left: margin, right: margin}) }
-    }
-
-    // step 3: Edit
+    const {data, callByStep} = this.props
     const isLabel = callByStep === 3
+    
     return (
-      <div className="canvas" ref="div" onClick={setChartData}>
+      <div className="canvas" ref="div">
         {data.rowGroup.map((label, i) =>
         <ComponentRow isLabel={isLabel} label={label} key={i}/>
         )}

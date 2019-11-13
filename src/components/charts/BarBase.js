@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import ComponentEditor from '../section4Panel/Editor'
+import ComponentEditor from '../section3Edit/Editor'
 
 
 const mapStateToProps = (state) => ({

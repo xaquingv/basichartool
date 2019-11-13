@@ -1,6 +1,6 @@
 import {d3} from '../../lib/d3-lite'
 import {colorBarBackground, width} from '../../data/config'
-import {isHighlight, dropColorToHighlight} from '../section4Panel/paletteDropColorHack'
+import {isHighlight, dropColorToHighlight} from '../section3Edit/paletteDropColorHack'
 
 const rowHeight = 24
 const barHeightDefault = 16

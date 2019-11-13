@@ -1,6 +1,6 @@
 import {d3} from '../../lib/d3-lite'
 import {colorBarBackground} from '../../data/config'
-import {dropColorOnShape} from '../section4Panel/paletteDropColorHack'
+import {dropColorOnShape} from '../section3Edit/paletteDropColorHack'
 
 const barHeight = 16
 const barMarginBottom = 8     //style1

@@ -1,25 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import './section4Panel.css'
+import './section3Edit.css'
 // import scrollTo from '../lib/scrollTo'
 import { default_metaText, ratio } from '../data/config'
-import { chartList } from './charts'
+import { chartComponents } from './charts'
 import { updateWidth, setParagraph } from '../actions'
 
-import ComponentSize from './section4Panel/Size'
-import ComponentResponsive from './section4Panel/Responsive'
-import ComponentPalette from './section4Panel/Palette'
-import ComponentDisplay from './section4Panel/Display'
-import ComponentEditor from './section4Panel/Editor'
-import ComponentLegend from './section4Panel/Legend'
-import ComponentXLabel from './section4Panel/LabelX'
-import ComponentSetAxis from './section4Panel/SetAxis'
-import ComponentXAxis from './section4Panel/AxisX'
-import ComponentYAxis from './section4Panel/AxisY'
-import responsiveXTexts from './section4Panel/axisXTextAndSvgResponsive'
-import responsiveXLabel from './section4Panel/axisXLabelResponsive'
-import responsiveYTexts from './section4Panel/axisYTextResponsive'
-// import TextField from '@material-ui/core/TextField'
+import ComponentSize from './section3Edit/Size'
+import ComponentResponsive from './section3Edit/Responsive'
+import ComponentPalette from './section3Edit/Palette'
+import ComponentDisplay from './section3Edit/Display'
+import ComponentEditor from './section3Edit/Editor'
+import ComponentLegend from './section3Edit/Legend'
+import ComponentXLabel from './section3Edit/LabelX'
+import ComponentSetAxis from './section3Edit/SetAxis'
+import ComponentXAxis from './section3Edit/AxisX'
+import ComponentYAxis from './section3Edit/AxisY'
+import responsiveXTexts from './section3Edit/axisXTextAndSvgResponsive'
+import responsiveXLabel from './section3Edit/axisXLabelResponsive'
+import responsiveYTexts from './section3Edit/axisYTextResponsive'
 
 const STEP = 3;
 
@@ -116,8 +115,10 @@ class Section extends React.Component {
     const isOnBar = chartId.includes("onBar")
     const isBarBased = chartId.toLowerCase().includes("bar") //&& !chartId.includes("broken")
     const isPlot = chartId.toLowerCase().includes("plot")
+    const isRender = stepActive >= STEP
+    // if (isRender) console.log("render step 3:", paragraphData)
 
-    const ComponentChart = chartList[chartId]
+    const ComponentChart = chartComponents[chartId]
     const chartComponent = ComponentChart
       ? (
         <div
@@ -134,7 +135,7 @@ class Section extends React.Component {
         </div>
       ) : null
 
-    const graphComponent = stepActive >= STEP
+    const graphComponent = isRender
       ? (
         <div className="graph js-graph" style={{ width: graphWidth }}>
           {/* header */}
@@ -157,7 +158,7 @@ class Section extends React.Component {
         </div>
       ) : null
 
-    const setupComponent = stepActive >= STEP
+    const setupComponent = isRender
       ? (
         <div className="setup row-flex">
           <div className="setup-p1">
@@ -173,41 +174,22 @@ class Section extends React.Component {
         </div>
       ) : null
 
-    // const textFieldComponent = (value, index) => {
-    //   return (
-    //     <div key={"tf-" + index} className="d-f j-c">
-    //       <TextField
-    //         multiline
-    //         value={value}
-    //         placeholder="Edit this paragraph"
-    //         onChange={(event) => this.handleEdit(event, index)}
-    //         margin="normal"
-    //         style={{ width: "620" }}
-    //         InputLabelProps={{ shrink: true, }}
-    //       />
-    //     </div>
-    //   )
-    // }
-
     return (
-      <div className={"section" + ((stepActive >= STEP) ? "" : " d-n")} id="section3">
+      <div className={"section" + ((isRender) ? "" : " d-n")} id="section3">
         <h1>3. Edit your Visualization</h1>
+        
+        {/* 3.1: setup */}
         {setupComponent}
-        {/* {graphComponent} */}
-        {/* {articleComponent} */}
-        <div className={"headline"} >
-          <ComponentEditor text={"Headline"} bold={true} />
-        </div>
-        {
-          paragraphData ? paragraphData.map((p, i) =>
+
+        {/* 3.2: article with paragraph(es) and graph(s) */}
+        {/* note that any styles inside graph needs to be either included in the template.js or inline */}
+        <div className="headline"><ComponentEditor text={"Headline"} bold={true} /></div>
+        {paragraphData ? paragraphData.map((p, i) =>
             <div key={"p-" + i} id={"p-" + i}>
-              {/* {textFieldComponent(p.paragraph, i)} */}
-              <div className="paragraph"><ComponentEditor text={p.paragraph}/></div>
+              <div className="paragraph"><ComponentEditor text={p} /></div>
               {graphComponent}
             </div>
-          ) : null
-        }
-        {/* any styles inside graph needs to be either included in the template.js or inline */}
+        ) : null}
       </div>
     )
   }

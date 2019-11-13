@@ -8,50 +8,38 @@ import { width, height, viewBox } from '../../data/config'
 
 const rangeSize = [3, 30];
 
-const mapStateToProps = (state, props) => ({
-  //data: state.dataChart,
-  data: { ...state.dataChart, ...props.dataChart },
+const mapStateToProps = state => ({
+  data: state.dataChart,
   axis: state.dataEditable.axis,
   colors: state.dataSetup.colors,
-  dataParagraph: state.dataParagraph
+  dataParagraph: state.dataParagraph // ?
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  onSelect: (data, keys, scale, margin) => dispatch(appendChartData(data, keys, scale, margin))
+const mapDispatchToProps = dispatch => ({
+  onSelect: (keys, scale, margin) => dispatch(appendChartData(keys, scale, margin))
 })
 
 
 class ScatterPlot extends React.Component {
+  appendChartData() {
+    if (this.props.isSelected) { 
+      const { onSelect } = this.props
+      const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : [""]
+      onSelect(legendKeys, this.scale, this.margin) 
+    }
+  }
 
   componentDidMount() {
     this.renderChart()
-    this.isChartDataSet = false
+    this.appendChartData()
   }
   componentDidUpdate() {
+    this.appendChartData()
     this.renderChart()
-
-    // TODO: think of how to set this data properly
-    const { data, onSelect } = this.props 
-    if (!this.isChartDataSet) {
-      const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : [""]
-      onSelect(data, legendKeys, this.scale, this.margin)
-      // console.log("update key/scale/margin")
-      // console.log("d", data)
-      // console.log("l", legendKeys)
-      // console.log("s", this.scale)
-      // console.log("m", this.margin)
-      this.isChartDataSet = true
-    }
   }
 
   render() {
-    const { data, onSelect, callByStep } = this.props
-    const setChartData = () => {
-      //if (callByStep === 2) {
-        const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : [""]
-        onSelect(data, legendKeys, this.scale, this.margin)
-      //}
-    }
+    const { data, callByStep } = this.props
 
     // get viewBox
     let svg = document.querySelector(".js-graph svg");
@@ -76,7 +64,7 @@ class ScatterPlot extends React.Component {
         paddingTop: "3px",
         // paddingRight: "2px",
         marginTop: data.marginTop + "%",
-      }} onClick={setChartData}></svg>
+      }}></svg>
     )
   }
 

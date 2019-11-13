@@ -1,9 +1,9 @@
 import {d3} from '../../lib/d3-lite'
-import {isHighlight, dropColorToHighlight} from '../section4Panel/paletteDropColorHack'
+import {isHighlight, dropColorToHighlight} from '../section3Edit/paletteDropColorHack'
 
 export default function(els, dataChart, opt = {}) {
   const isStack = opt.id.indexOf("Stack") > -1
-
+  
   // HACK: for highlight event
   const isOneColor = isHighlight(opt.callByStep)
   if (isOneColor) { dataChart.map((d, i) => {d.value[0].index = i; return d}) }

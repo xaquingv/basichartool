@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {d3} from '../../lib/d3-lite'
 import {colors} from '../../data/config'
 import {appendChartData} from '../../actions'
-import {dropColorOnShape} from '../section4Panel/paletteDropColorHack'
+import {dropColorOnShape} from '../section3Edit/paletteDropColorHack'
 import {addBarsBackground, drawBarSticks} from './onBar'
 import ComponentRow from './BarBase'
 
@@ -12,47 +12,47 @@ const headSize = 12
 const headTop = (barHeight - headSize) / 2
 const tickShift = 5
 
-const mapStateToProps = (state, props) => ({
-  selectedChartId: state.chartId,
-  data: { ...state.dataChart, ...props.dataChart },
+const mapStateToProps = state => ({
+  data: state.dataChart,
   axis: state.dataEditable.axis
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  onSelect: (data, keys, scale, margins) => dispatch(appendChartData(data, keys, scale, margins))
+const mapDispatchToProps = dispatch => ({
+  onSelect: (keys, scale, margins) => dispatch(appendChartData(keys, scale, margins))
 })
 
 
 // TODO: still res issue to sort out
 class ArrowOnBar extends React.Component {
+  appendChartData() {
+    if (this.props.isSelected) { 
+      const { data, onSelect } = this.props
+      const key = data.keys
+      const legendKeys = ["Change from " + key[0] + " to " + key[1]]
+      onSelect(legendKeys, this.scale, this.margin/*{left: margin, right: margin}*/)
+    }
+  }
 
   componentDidMount() {
     this.renderChart()
+    this.appendChartData()
   }
   componentDidUpdate() {
+    this.appendChartData()
     this.renderChart()
   }
 
   render() {
-    const {data, onSelect, callByStep} = this.props
+    const {data, callByStep} = this.props
     //console.log("render:", callByStep)
     //console.log("[this]", this.margin)
     //console.log("[data]", data.margin)
-
-    // step 2: Discover
-    const setChartData = () => {
-      if (callByStep === 2) {
-        const key = data.keys
-        const legendKeys = ["Change from " + key[0] + " to " + key[1]]
-        onSelect(data, legendKeys, this.scale, this.margin/*{left: margin, right: margin}*/)
-      }
-    }
 
     // step 3: Edit
     const isLabel = callByStep === 3
     if (callByStep === 3) { this.margin = data.margin }
     return (
-      <div className="canvas" ref="div" onClick={setChartData}>
+      <div className="canvas" ref="div">
         {data.string1Col.map((label, i) =>
         <ComponentRow isLabel={isLabel} label={label} key={i}/>
         )}

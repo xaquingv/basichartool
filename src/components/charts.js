@@ -23,7 +23,7 @@ import AreaStack          from './charts/AreaStack'
 //import Treemap
 
 // TODO: obj -> arr, sort by config file
-export const chartList = {
+export const chartComponents = {
   plotScatter:      PlotScatter,  // 1
   lineContinue:     LineContinue, // 2
   lineDiscrete:     LineDiscrete, // 3

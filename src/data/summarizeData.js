@@ -35,7 +35,6 @@ function getValueByType(data, dataType) {
 }
 
 export default function(dataTable, show) {
-
   /* A. data filter on toggle */
   // row
   const dataRows = dataTable.flag.isHeader ? [true].concat(show.row.slice(0, -1)) : show.row
@@ -145,5 +144,6 @@ export default function(dataTable, show) {
 
 
   const output = {count, value, chart}
+  // console.log(output)
   return output
 }

@@ -7,32 +7,37 @@ import drawChart from './plot'
 import {appendChartData} from '../../actions'
 import {width, height, viewBox} from '../../data/config'
 
-const mapStateToProps = (state, props) => ({
-  data: { ...state.dataChart, ...props.dataChart },
+const mapStateToProps = state => ({
+  data: state.dataChart,
   axis: state.dataEditable.axis,
   colors: state.dataSetup.colors
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
+const mapDispatchToProps = dispatch => ({
+  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
 })
 
 
 class DotPlot extends React.Component {
+  appendChartData() {
+    if (this.props.isSelected) { 
+      const { data, onSelect } = this.props
+      const keys = data.numberOnly ? data.keys.slice(1, data.keys.length) : data.keys
+      onSelect(keys, this.scale) 
+    }
+  }
 
   componentDidMount() {
     this.renderChart()
+    this.appendChartData()
   }
   componentDidUpdate() {
+    this.appendChartData()
     this.renderChart()
   }
 
   render() {
-    const {data, onSelect, callByStep} = this.props
-    const keys = data.numberOnly ? data.keys.slice(1, data.keys.length) : data.keys
-    const setChartData = () => {
-      if (callByStep === 2) { onSelect(data, keys, this.scale) }
-    }
+    const {data} = this.props
 
     return (
       <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
@@ -41,7 +46,7 @@ class DotPlot extends React.Component {
         height: data.height + "%",
         padding: "3px",
         marginTop: data.marginTop + "%"
-      }} onClick={setChartData}></svg>
+      }}></svg>
     )
   }
 

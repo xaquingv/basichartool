@@ -1,4 +1,5 @@
 import parseDataInput from '../data/parseDataInput';
+import parseDataTableRaw from '../data/parseDataTableRaw';
 import summarizeData from '../data/summarizeData';
 import selectCharts from '../data/selectCharts';
 
@@ -16,54 +17,120 @@ export const activeStep = (stepActive) => ({
 export const clearData = () => ({
   type: "CLEAR_DATA",
 })
-/*export const inputData = (dataInput) => ({
-  type: "INPUT_DATA",
-  dataInput
-})*/
-export const importData = (dataInput) => ({
-  type: "IMPORT_DATA",
-  dataTable: dataInput === "" ? {} : parseDataInput(dataInput)
-})
-
-/* section 2 */
-export const transposeData = () => ({
-  type: "TRANSPOSE_DATA",
-})
-export const toggleData = ({type, index}) => ({
-  type: "TOGGLE_DATA",
-  target: type,
-  index
-})
-// analyze data to get a selection of charts
-export const analyzeData = (dataTable, show) => {
-  const summary = summarizeData(dataTable, show)
+export const importData = (dataInput) => {
+  let dataTable = dataInput === "" ? {} : parseDataInput(dataInput)
+  let show = {
+    row: dataTable.rows.map(() => true),
+    col: dataTable.cols.map(() => true)
+  }
+  let dataSummary = summarizeData(dataTable, show)
   return {
-    type: "ANALYZE_DATA",
-    dataBrief: summary,
-    dataChart: summary.chart,
-    selection: selectCharts(summary)
+    type: "IMPORT_DATA",
+    dataTable,
+    show,
+    dataSummary, 
+    selection: selectCharts(dataSummary)
   }
 }
-export const setSelectionInOrder = (selectionInOrder) => ({
-  type: "SET_SELECTION_ORDER",
-  selectionInOrder 
-})
 
-// sumstats
-export const setAnswers = (dataAnswer, dataSentence) => ({
-  type: "SET_ANSWERS",
-  dataAnswer,
-  dataSentence
+/* section 2 */
+// table
+export const transposeData = (dataTable, show) => {
+  // swap rows and cols
+  const { meta, rows, cols } = dataTable
+  let newDataTableRaw = {
+    meta,
+    rows: cols,
+    cols: rows
+  }
+  /* dataTable = dataTableRaw + dataTableDraw */
+  let newDataTable = parseDataTableRaw(newDataTableRaw)
+  /* show
+   * due to header shift
+   * row has an extra toggle that is not used at the end of the list
+   * TODO: fix untitles cutting the headers */
+  let newShow = {
+    row: show.col.slice(1).concat([true]),
+    col: [true].concat(show.row.slice(0, -1))
+  }
+  let dataSummary = summarizeData(newDataTable, newShow)
+  return {
+    type: "TRANSPOSE_DATA",
+    dataTable: newDataTable,
+    show: newShow,
+    dataSummary, 
+    selection: selectCharts(dataSummary)
+  }
+}
+
+export const toggleData = (dataTable, show, { type, index }) => {
+  // toggle on/off a row or col (type)
+  const newVal = show[type][index] ? false : true
+  /* show */
+  let newShow = { ...show }
+  newShow[type] = [
+    ...show[type].slice(0, index),
+    newVal,
+    ...show[type].slice(index + 1),
+  ]
+  let dataSummary = summarizeData(dataTable, newShow)
+  return {
+    type: "TOGGLE_DATA",
+    show: newShow,
+    dataSummary, 
+    selection: selectCharts(dataSummary)
+  }
+}
+
+// chart list
+export const removeChartDuplicate = (selection, removeId) => {
+  let index = selection.indexOf(removeId)
+  let newSelection = index !== -1 ? selection.slice(0, index).concat(selection.slice(index+1)) : selection
+  return {
+    type: "REMOVE_CHART_DUPLICATE",
+    selection: newSelection
+  }
+}
+
+// questions: sumstats
+// set 1
+export const setChartId = (chartId) => ({
+  type: "SET_CHART_ID",
+  chartId
 })
-export const setQuestions = (dataQuestion) => ({
-  type: "SET_QUESTIONS",
+export const setAxisMapper = (axisMapper) => ({
+  type: "SET_AXIS_MAPPER",
+  axisMapper
+})
+export const setDrawingOrder = (drawingOrder) => ({
+  type: "SET_DRAWING_ORDER",
+  drawingOrder
+})
+export const setHighlights = (highlights) => ({
+  type: "SET_HIGHLIGHTS",
+  highlights
+})
+// set 2
+export const setAnswers = (dataAnswer) => ({
+  type: "SET_ANSWERS",
+  dataAnswer
+})
+export const setQuestionSentences = (dataSentence, dataQuestion) => ({
+  type: "SET_QUESTION_SENTENCES",
+  dataSentence,
   dataQuestion
 })
-export const setParagraph = (dataParagraph, dataChart, chartId) => ({
+export const setSumstat = (dataSentence, dataQuestion, dataAnswer) => ({
+  type: "SET_SUMSTAT",
+  dataSentence,
+  dataQuestion,
+  dataAnswer
+})
+export const setParagraph = (dataParagraph/*, dataChart, chartId*/) => ({
   type: "SET_PARAGRAPH",
   dataParagraph,
-  dataChart,
-  chartId
+  // dataChart,
+  // chartId
 })
 
 /* section 3 */
@@ -75,19 +142,23 @@ export const setColors = (colors) => ({
   type: "SET_COLORS",
   colors
 })
-export const appendChartData = (dataChart, legend, scales, margin) => ({
+export const setDisplay = (switches) => ({
+  type: "SET_DISPLAY",
+  displaySwitches: switches
+})
+export const initSetup = (colors, switches) => ({
+  type: "INIT_SETUP",
+  colors,
+  displaySwitches: switches
+})
+export const appendChartData = (legend, scales, margin) => ({
   type: "APPEND_DATA",
-  dataChart,
   legend,
   scales,
   margin
 })
 
 /* section 4 */
-export const setDisplay = (switches) => ({
-  type: "SET_DISPLAY",
-  displaySwitches: switches
-})
 export const updateDisplay = (key) => ({
   type: "UPDATE_DISPLAY",
   metaKey: key
@@ -144,7 +215,7 @@ export const updateAxisDataOnTypes = (type1, type2, dataTarget, dataTargetExtra)
   dataTarget,
   dataTargetExtra
 })
-export const updateScaleRange = (type, range) =>({
+export const updateScaleRange = (type, range) => ({
   type: "UPDATE_RANGE",
   target: type,
   range

@@ -4,37 +4,44 @@ import { d3 } from '../../lib/d3-lite'
 import { appendChartData } from '../../actions'
 import { width, height, viewBox } from '../../data/config'
 
-const mapStateToProps = (state, props) => ({
-  data: { ...state.dataChart, ...props.dataChart },
+const mapStateToProps = state => ({
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
+const mapDispatchToProps = dispatch => ({
+  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
 })
 
 
 class Area extends React.Component {
+  appendChartData() {
+    if (this.props.isSelected) { 
+      const { data, onSelect } = this.props
+      onSelect(data.keys, this.scale) 
+    }
+  }
 
   componentDidMount() {
     this.renderChart()
+    this.appendChartData()
   }
   componentDidUpdate() {
+    this.appendChartData()
     this.renderChart()
   }
 
   render() {
-    const { data, onSelect, callByStep } = this.props
-    const setChartData = () => {
-      if (callByStep === 2) { onSelect(data, data.keys, this.scale) }
-    }
+    const { data } = this.props
 
     return (
-      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
-        top: "-1px",
-        width: "calc(100% - " + (data.indent) + "px)",
-        height: data.height + "%"
-      }} onClick={setChartData}>
+      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" 
+        style={{
+          top: "-1px",
+          width: "calc(100% - " + (data.indent) + "px)",
+          height: data.height + "%"
+        }}
+      >
         <line ref="line" x1="0" x2="100%" y1="50%" y2="50%"></line>
       </svg>
     )
