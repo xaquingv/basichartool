@@ -53,10 +53,10 @@ function parseCfgJson(cfg) {
   // TODO: add map colors, see mapData.js
   // ...
 
-  /* charts: cfg for chart selection
-  // TODO: sort by order and filter by on/off flag */
+  /* charts: cfg for chart selection */
   cfg_charts = cfg.CFG_CHARTS
-  .filter(chart => JSON.parse(chart.active))
+  .filter(chart => JSON.parse(chart.active)) // filter by on/off flag
+  .sort((chartA, chartB) => chartA.seq - chartB.seq) // sort by order
   .map(chart => {
 
     // 1. count => 5 features:

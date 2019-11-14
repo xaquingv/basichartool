@@ -1,6 +1,7 @@
 import parseDataInput from '../data/parseDataInput';
 import parseDataTableRaw from '../data/parseDataTableRaw';
 import summarizeData from '../data/summarizeData';
+import selectCharts from '../data/selectCharts';
 
 /* navigation */
 export const changeStep = (step) => ({
@@ -22,11 +23,13 @@ export const importData = (dataInput) => {
     row: dataTable.rows.map(() => true),
     col: dataTable.cols.map(() => true)
   }
+  let dataSummary = summarizeData(dataTable, show)
   return {
     type: "IMPORT_DATA",
     dataTable,
     show,
-    dataSummary: summarizeData(dataTable, show)
+    dataSummary, 
+    selection: selectCharts(dataSummary)
   }
 }
 
@@ -50,11 +53,13 @@ export const transposeData = (dataTable, show) => {
     row: show.col.slice(1).concat([true]),
     col: [true].concat(show.row.slice(0, -1))
   }
+  let dataSummary = summarizeData(newDataTable, newShow)
   return {
     type: "TRANSPOSE_DATA",
     dataTable: newDataTable,
     show: newShow,
-    dataSummary: summarizeData(newDataTable, newShow)
+    dataSummary, 
+    selection: selectCharts(dataSummary)
   }
 }
 
@@ -67,18 +72,24 @@ export const toggleData = (dataTable, show, { type, index }) => {
     newVal,
     ...show[type].slice(index + 1),
   ]
+  let dataSummary = summarizeData(dataTable, newShow)
   return {
     type: "TOGGLE_DATA",
     show: newShow,
-    dataSummary: summarizeData(dataTable, newShow)
+    dataSummary, 
+    selection: selectCharts(dataSummary)
   }
 }
 
 // chart list
-export const setSelectionInOrder = (selectionInOrder) => ({
-  type: "SET_SELECTION_ORDER",
-  selectionInOrder
-})
+export const removeChartDuplicate = (selection, removeId) => {
+  let index = selection.indexOf(removeId)
+  let newSelection = index !== -1 ? selection.slice(0, index).concat(selection.slice(index+1)) : selection
+  return {
+    type: "REMOVE_CHART_DUPLICATE",
+    selection: newSelection
+  }
+}
 
 // questions: sumstats
 export const setAnswers = (dataAnswer, dataSentence) => ({

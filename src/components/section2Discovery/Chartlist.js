@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import './chartlist.css'
 import { chartNames } from '../../data/config'
-import { selectChart, setSelectionInOrder } from '../../actions'
+import { selectChart, removeChartDuplicate } from '../../actions'
 import { chartList } from '../charts'
 
 
@@ -14,23 +14,24 @@ const mapStateToProps = (state) => ({
   selection: state.selection
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch, props) => ({
   onSelect: (chartId) => dispatch(selectChart(chartId)),
-  setDataSelectionInOrder: (selectionInOrder) => dispatch(setSelectionInOrder(selectionInOrder))
+  removeSelectionChartDuplicate: (selection, removeId) => dispatch(removeChartDuplicate(selection, removeId))
 })
 
 
 class Chartlist extends React.PureComponent {
   componentDidUpdate() {
-    // selectionInOrder: filter out hidden chart(s), and 
-    // in case of no charts available, as warning msg take a <div> as well: el.id!==""
-    const selectionInOrder = this.props.stepActive < 2 ?
-      [] :
-      [...document.querySelectorAll(".charts > div")]
-        .filter(el => !el.getAttribute("class").includes("d-n") && el.id !== "")
-        .map(el => el.id)
-
-    this.props.setDataSelectionInOrder(selectionInOrder)
+    // check if discrete and conti are the same
+    // if the same (duplicate), remove the discrete line
+    const pathDiscrete = document.querySelector("#lineDiscrete path")
+    const pathContinue = document.querySelector("#lineContinue path")
+    if (!pathDiscrete || !pathContinue) {
+      return
+    } else 
+    if (pathDiscrete.getAttribute("d") === pathContinue.getAttribute("d")) {
+      this.props.removeSelectionChartDuplicate(this.props.selection, "lineDiscrete")
+    }
   }
 
   render() {

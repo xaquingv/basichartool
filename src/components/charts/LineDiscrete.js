@@ -7,7 +7,8 @@ import { appendChartData } from '../../actions'
 
 const mapStateToProps = (state, props) => ({
   data: { ...state.dataChart, ...props.dataChart },
-  colors: state.dataSetup.colors
+  colors: state.dataSetup.colors, 
+  selection: state.selection
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -70,24 +71,6 @@ class LineDiscrete extends React.Component {
 
     /* draw */
     drawChart(this.refs, dataChart, this.scale, colors)
-
-    if (callByStep === 3) return
-    d3.select("#" + id).classed("d-n", false)
-
-    // TODO: move to another validatetion file
-    /* validate special */
-    // double check if discrete and conti are the same
-    // if the same (duplicate), hide the discrete line
-    // if (callByStep === 3) return
-    // ps. d3.select() is not null while the ele doesn't exist
-    // that's why there r both document* and d3*
-    const pathDiscrete = document.querySelector("#lineDiscrete path")
-    const pathContinue = document.querySelector("#lineContinue path")
-    if (!pathContinue) {
-      return
-    } else if (pathDiscrete.getAttribute("d") === pathContinue.getAttribute("d")) {
-      d3.select("#lineDiscrete").classed("d-n", true)
-    }
   }
 }
 

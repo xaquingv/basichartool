@@ -30,6 +30,7 @@
   "CFG_CHARTS": [
     {
       "num": "1",
+      "seq": 8,
       "id": "bar",
       "row": "[2, 25]",
       "date": "[0, 0]",
@@ -48,6 +49,7 @@
     },
     {
       "num": "2",
+      "seq": 9,
       "id": "barGroup",
       "row": "[2, 25]",
       "date": "[0, 0]",
@@ -66,6 +68,7 @@
     },
     {
       "num": "3",
+      "seq": 10,
       "id": "barGroupStack",
       "row": "[2, 25]",
       "date": "[0, 0]",
@@ -84,6 +87,7 @@
     },
     {
       "num": "4",
+      "seq": 11,
       "id": "barGroupStack100",
       "row": "[2, 25]",
       "date": "[0, 0]",
@@ -102,6 +106,7 @@
     },
     {
       "num": "6",
+      "seq": 5,
       "id": "onBarDiffArrow",
       "row": "[4, 25]",
       "date": "[0, 0]",
@@ -120,6 +125,7 @@
     },
     {
       "num": "7",
+      "seq": 6,
       "id": "onBarDiffDots",
       "row": "[4, 25]",
       "date": "[0, 0]",
@@ -138,6 +144,7 @@
     },
     {
       "num": "18a",
+      "seq": 18,
       "id": "slopegraph",
       "row": "[4, 25]",
       "date": "[0, 0]",
@@ -156,6 +163,7 @@
     },
     {
       "num": "18b",
+      "seq": 18,
       "id": "slopegraph",
       "row": "[4, 25]",
       "date": "[0, 0]",
@@ -174,6 +182,7 @@
     },
     {
       "num": "9a",
+      "seq": 14,
       "id": "col",
       "row": "[2, 10]",
       "date": "[0, 0]",
@@ -192,6 +201,7 @@
     },
     {
       "num": "10a",
+      "seq": 15,
       "id": "colGroup",
       "row": "[2, 10]",
       "date": "[0, 0]",
@@ -210,6 +220,7 @@
     },
     {
       "num": "11a",
+      "seq": 16,
       "id": "colGroupStack",
       "row": "[2, 10]",
       "date": "[0, 0]",
@@ -228,6 +239,7 @@
     },
     {
       "num": "9b",
+      "seq": 14,
       "id": "col",
       "row": "[2, 100]",
       "date": "[1, 1]",
@@ -246,6 +258,7 @@
     },
     {
       "num": "10b",
+      "seq": 15,
       "id": "colGroup",
       "row": "[2, 100]",
       "date": "[1, 1]",
@@ -264,6 +277,7 @@
     },
     {
       "num": "11b",
+      "seq": 16,
       "id": "colGroupStack",
       "row": "[2, 100]",
       "date": "[1, 1]",
@@ -282,6 +296,7 @@
     },
     {
       "num": "12",
+      "seq": 17,
       "id": "areaGroupStack",
       "row": "[2, 100]",
       "date": "[1, 1]",
@@ -300,6 +315,7 @@
     },
     {
       "num": "5",
+      "seq": 12,
       "id": "bar100",
       "row": "[2, 25]",
       "date": "[0, 0]",
@@ -318,6 +334,7 @@
     },
     {
       "num": "17a",
+      "seq": 13,
       "id": "brokenBar100",
       "row": "[2, 10]",
       "date": "[0, 0]",
@@ -336,6 +353,7 @@
     },
     {
       "num": "17b",
+      "seq": 13,
       "id": "brokenBar100",
       "row": "[1, 1]",
       "date": "[0, 0]",
@@ -354,6 +372,7 @@
     },
     {
       "num": "16",
+      "seq": 1,
       "id": "plotScatter",
       "row": "[10, Infinity]",
       "date": "[0, 0]",
@@ -372,6 +391,7 @@
     },
     {
       "num": "15b",
+      "seq": 4,
       "id": "plotDot",
       "row": "[20, Infinity]",
       "date": "[0, 0]",
@@ -390,6 +410,7 @@
     },
     {
       "num": "8a",
+      "seq": 7,
       "id": "onBarTicks",
       "row": "[2, 25]",
       "date": "[0, 0]",
@@ -408,6 +429,7 @@
     },
     {
       "num": "8b",
+      "seq": 7,
       "id": "onBarTicks",
       "row": "[2, 25]",
       "date": "[1, 1]",
@@ -426,6 +448,7 @@
     },
     {
       "num": "13a",
+      "seq": 3,
       "id": "lineDiscrete",
       "row": "[4, Infinity]",
       "date": "[1, 1]",
@@ -444,6 +467,7 @@
     },
     {
       "num": "13b",
+      "seq": 3,
       "id": "lineDiscrete",
       "row": "[25, Infinity]",
       "date": "[0, 0]",
@@ -462,6 +486,7 @@
     },
     {
       "num": "14a",
+      "seq": 2,
       "id": "lineContinue",
       "row": "[4, Infinity]",
       "date": "[1, 1]",
@@ -480,6 +505,7 @@
     },
     {
       "num": "14b",
+      "seq": 2,
       "id": "lineContinue",
       "row": "[20, Infinity]",
       "date": "[0, 0]",

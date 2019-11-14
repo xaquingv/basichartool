@@ -29,12 +29,13 @@ const questionSet1 = {
 
 
 const mapStateToProps = (state) => ({
+    chartId: state.chartId,
     dataCount: state.dataCount,
     dataChart: state.dataChart,
     dataAnswer: state.dataAnswer,
     dataSentence: state.dataSentence,
     dataQuestion: state.dataQuestion,
-    selectionInOrder: state.selectionInOrder
+    selection: state.selection
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -49,7 +50,6 @@ class Questions extends React.PureComponent {
     handleSets(event, setId, uiType, indexSet = null, indexUi = null, id, ans, ss, tks, setData) {
 
         let newSentences;
-        const selectedId = id || this.answers.id
         const answers = ans || this.answers
         const sentences = ss || this.sumstatSentences
         const tasks = tks || this.selectionTasks
@@ -81,7 +81,7 @@ class Questions extends React.PureComponent {
         // update selection order and add border to the first chart
         if (setId === "set1" && indexSet === "task") {
             const selectIndex = tasks.findIndex(task => task === value)
-            const selectSelectionInOrder = this.props.selectionInOrder
+            const selectSelectionInOrder = this.props.selection
             selectSelectionInOrder.forEach((select, index) => document.querySelector("#" + select).setAttribute("class", (index !== selectIndex) ? "order2" : "order1"))
             newAnswers.id = selectSelectionInOrder[selectIndex]
         }
@@ -126,9 +126,9 @@ class Questions extends React.PureComponent {
         this.answers = null
     }
     componentDidUpdate() {
-        const { dataChart, dataCount, dataAnswer, selectionInOrder } = this.props
+        const { chartId, dataChart, dataCount } = this.props
         this.numberCols = dataChart.numberCols
-        this.selectedId = dataAnswer ? dataAnswer.id : selectionInOrder[0]
+        this.selectedId = chartId
         this.dataCount = dataCount
         //console.log("cur:", dataAnswer)
         //console.log("pre:", this.answers)
@@ -141,15 +141,13 @@ class Questions extends React.PureComponent {
     // }
 
     render() {
-        console.log("render step 2: qa")
-
-        const { selectionInOrder, dataAnswer } = this.props
-        //console.log("* render ***")
+        const { chartId, selection, dataAnswer } = this.props
+        console.log("render step 2: qa -", chartId, selection)
 
         // require at leaset selectedId (elected chart id) to generate questions, and
-        // it's default comes frmo the first chart in the selectionInOrder list
-        if (selectionInOrder.length < 1) return null
-        const selectedId = dataAnswer ? dataAnswer.id : selectionInOrder[0]
+        // it's default comes frmo the first chart in the selection list
+        if (selection.length < 1) return null
+        const selectedId = chartId
         // console.log("** data in the house:", selectedId, "***")
 
         /*
@@ -159,14 +157,15 @@ class Questions extends React.PureComponent {
          * 3. update input data or toggle/transpaort table data
          */
         // TODO: to be more strict in data change comparison ?
-        const curDataCount = this.props.dataCount
-        const preDataCount = this.dataCount
+        //const curDataCount = this.props.dataCount
+        //const preDataCount = this.dataCount
+        //console.log(curDataCount, preDataCount)
 
         const isInit = dataAnswer ? false : true
         const isChangeId = selectedId !== this.selectedId
         const isUpdateData =
-            Object.keys(curDataCount).some(key => curDataCount[key] !== preDataCount[key]) ||
-            (this.answers ? !selectionInOrder.every((id, index) => id === this.answers.ids[index]) : true)
+            //Object.keys(curDataCount).some(key => curDataCount[key] !== preDataCount[key]) ||
+            (this.answers ? !selection.every((id, index) => id === this.answers.ids[index]) : true)
 
         const isDataChange = isInit || isChangeId || isUpdateData
         /*/ debug zone
@@ -178,7 +177,7 @@ class Questions extends React.PureComponent {
         if (isChangeId) console.log("==> change id:", this.selectedId, "->", selectedId)
         if (isUpdateData) {
             console.log("==> update: data")
-            // console.log("cur", selectionInOrder)
+            // console.log("cur", selection)
             // console.log("pre:", this.answers.ids)
         }*/
 
@@ -237,11 +236,11 @@ class Questions extends React.PureComponent {
             // TODO: check, not only answers !?
             /* answers in all sets */
             // selectionTasks: used in Q.set1.1 is required in handleSets() 
-            this.selectionTasks = selectionInOrder.map(id => chartInfos[id].task)
+            this.selectionTasks = selection.map(id => chartInfos[id].task)
 
             this.answers = {
                 id: selectedId,
-                ids: selectionInOrder,
+                ids: selection,
                 set1: {
                     task: { select: [this.selectionTasks[0]] },
                     unit: { textField: ["", "", ""] },
@@ -346,7 +345,7 @@ class Questions extends React.PureComponent {
                 <p className="question-set">{"Question set: chart " + this.answers.id}</p>
 
                 {/* Q1: task of the chart and more info */}
-                {selectionInOrder.length > 1 ? <div style={{marginBottom: '-18px'}}>
+                {selection.length > 1 ? <div style={{marginBottom: '-18px'}}>
                     <div className="q-set1-pb6">"I want to"&nbsp;<b>show</b>&nbsp;</div>
                     {selectComponent(0, "task", "", this.selectionTasks)}
                     <ExpansionPanel info={chartInfos[this.answers.id].description} />

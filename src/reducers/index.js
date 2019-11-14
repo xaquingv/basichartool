@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import selectCharts from '../data/selectCharts';
 // import { default_metaText } from '../data/config';
 
 function step(step = 1, action) {
@@ -70,6 +69,21 @@ function show(show = { col: [], row: [] }, action) {
   }
 }
 
+function chartId(id = "", action) {
+  switch (action.type) {
+    case 'IMPORT_DATA':
+    case 'TRANSPOSE_DATA':
+    case 'TOGGLE_DATA':
+    case 'REMOVE_CHART_DUPLICATE':
+      return action.selection[0]
+    case 'SELECT_CHART':
+    case 'SET_PARAGRAPH':
+      return action.chartId || id
+    default:
+      return id
+  }
+}
+
 function selection(chartList = [], action) {
   switch (action.type) {
     case 'CLEAR_DATA':
@@ -77,17 +91,8 @@ function selection(chartList = [], action) {
     case 'IMPORT_DATA':
     case 'TRANSPOSE_DATA':
     case 'TOGGLE_DATA':
-      return selectCharts(action.dataSummary)
-    default:
-      return chartList
-  }
-}
-function selectionInOrder(chartList = [], action) {
-  switch (action.type) {
-    case 'CLEAR_DATA':
-      return []
-    case 'SET_SELECTION_ORDER':
-      return action.selectionInOrder
+    case 'REMOVE_CHART_DUPLICATE':
+      return action.selection
     default:
       return chartList
   }
@@ -214,16 +219,6 @@ function dataParagraph(dataParagraph = null, action) {
   }
 }
 
-function chartId(id = "", action) {
-  switch (action.type) {
-    case 'SELECT_CHART':
-    case 'SET_PARAGRAPH':
-      return action.chartId || id
-    default:
-      return id
-  }
-}
-
 function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, width: "300px" }, action) {
   switch (action.type) {
     // reset
@@ -319,7 +314,6 @@ const app = combineReducers({
   stepActive,
   show,
   selection,
-  selectionInOrder,
   dataChart,
   dataTable,
   dataCount,
