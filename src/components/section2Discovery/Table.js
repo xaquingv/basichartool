@@ -18,10 +18,12 @@ const mapDispatchToProps = (dispatch) => ({
 class Table extends React.PureComponent {
 
   render() {
-    console.log("render step 2: table")
     const { dataTable, show, onToggle, onTranspose } = this.props;
     const dataTypes = dataTable.type;
+    
+    // require dataTable to generate the table
     if (!dataTypes) { return null; }
+    console.log("render step 2: table")
 
     return (
       <div id="table">

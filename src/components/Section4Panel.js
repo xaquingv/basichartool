@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import './section4Panel.css'
 // import scrollTo from '../lib/scrollTo'
 import { default_metaText, ratio } from '../data/config'
-import { chartList } from './charts'
+import { chartComponents } from './charts'
 import { updateWidth, setParagraph } from '../actions'
 
 import ComponentSize from './section4Panel/Size'
@@ -117,7 +117,7 @@ class Section extends React.Component {
     const isBarBased = chartId.toLowerCase().includes("bar") //&& !chartId.includes("broken")
     const isPlot = chartId.toLowerCase().includes("plot")
 
-    const ComponentChart = chartList[chartId]
+    const ComponentChart = chartComponents[chartId]
     const chartComponent = ComponentChart
       ? (
         <div

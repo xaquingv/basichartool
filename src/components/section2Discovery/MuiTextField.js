@@ -43,7 +43,7 @@ export default function TextFieldComponent(props) {
                 InputLabelProps={{
                     shrink: true
                 }}
-                onChange={(e) => handleChange(e, params[0], "textField", params[1], index, params[2], answers, ss, tasks, setAnswers)}
+                onChange={(e) => handleChange(e, params[0], "textField", params[1], index, params[2], answers, ss, setAnswers)}
                 helperText={helpText}
             />
 

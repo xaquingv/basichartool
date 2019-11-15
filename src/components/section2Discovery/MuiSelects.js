@@ -1,0 +1,55 @@
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
+const useStyles = makeStyles(theme => ({
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+    },
+    selectEmpty: {
+        marginTop: theme.spacing(2),
+    },
+}));
+
+export default function SimpleSelect(props) {
+    const { options, value, setChange, qaId, data } = props;
+    const classes = useStyles();
+
+    const handleChange = event => {
+        const newValue = event.target.value
+        switch (qaId) {
+            // task for the chart
+            case "S1Q1":
+                setChange(newValue); break
+            // axis (and size) mapper in plot 
+            case "S1Q2":
+                const newMapper = [...data]
+                newMapper[data.indexOf(value)] = newValue
+                newMapper[data.indexOf(newValue)] = value
+                setChange(newMapper)
+            // stack order
+            case "S1Q5":
+                setChange(newValue)
+            default:
+                console.log("add", qaId, "setChange action")
+        }
+    };
+    
+    return (
+        <FormControl className={classes["formControl"]}>
+            <Select
+                value={value}
+                onChange={handleChange}
+                displayEmpty
+                className={classes.selectEmpty}
+            >
+                {options.map((opt, idx) =>
+                    <MenuItem key={idx} value={opt.key}>{opt.txt}</MenuItem>
+                )}
+            </Select>
+        </FormControl>
+    );
+}

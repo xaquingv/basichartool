@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import './questions.css'
-import { setAnswers, setQuestions, setParagraph } from '../../actions'
+import { setAnswers, setQuestions, setParagraph, setChartId, setAxisMapper, setDrawingOrder } from '../../actions'
 import { chartInfos } from '../../data/config';
 
 /* summary statistics and nlg */
@@ -13,7 +13,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import MenuItem from "@material-ui/core/MenuItem"
-import Selects from './MuiSelect'
+// import Selects from './MuiSelect'
+import SelectSimple from './MuiSelects'
 import ExpansionPanel from './MuiExpansionPanel'
 import TextFieldWithAutocomplete from './MuiTextFieldAutocompletes'
 import TextFields from './MuiTextField'
@@ -26,33 +27,42 @@ const questionSet1 = {
         opts: ["as is.", "starting by largest.", "starting with ..."],
     }
 }
+const optDrawing = [
+    {key: 0, txt: "as is."},
+    {key: 1, txt: "starting by largest."},
+    {key: 2, txt: "starting with ..."}
+]
 
-
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
     chartId: state.chartId,
     dataCount: state.dataCount,
     dataChart: state.dataChart,
+    axisMapper: state.axisMapper,
+    drawingOrder: state.drawingOrder,
     dataAnswer: state.dataAnswer,
     dataSentence: state.dataSentence,
     dataQuestion: state.dataQuestion,
     selection: state.selection
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
     setDataAnswer: (answers, sentences) => dispatch(setAnswers(answers, sentences)),
-    setDataQuestion: (questions) => dispatch(setQuestions(questions)),
-    setDataParagraph: (paragraph, chart, id) => dispatch(setParagraph(paragraph, chart, id))
+    setDataQuestion: questions => dispatch(setQuestions(questions)),
+    setDataParagraph: (paragraph, chart, id) => dispatch(setParagraph(paragraph, chart, id)),
+    // selects
+    setSelectedChartId: id => dispatch(setChartId(id)),
+    setPlotAxisMapper: mapping => dispatch(setAxisMapper(mapping)),
+    setStackDrawingOrder: mapping => dispatch(setDrawingOrder(mapping))
 })
 
 
 class Questions extends React.PureComponent {
 
-    handleSets(event, setId, uiType, indexSet = null, indexUi = null, id, ans, ss, tks, setData) {
+    handleSets(event, setId, uiType, indexSet = null, indexUi = null, id, ans, ss, setData) {
 
         let newSentences;
         const answers = ans || this.answers
         const sentences = ss || this.sumstatSentences
-        const tasks = tks || this.selectionTasks
         const value = (uiType === "switch" ? event.target.checked : event.target.value)
 
         // case: replace unit(s) with users input
@@ -76,16 +86,6 @@ class Questions extends React.PureComponent {
         } else {
             newAnswers[setId][uiType] = value
         }
-
-        // TODO: debug, check on https://reactjs.org/docs/forms.html#controlled-components
-        // update selection order and add border to the first chart
-        if (setId === "set1" && indexSet === "task") {
-            const selectIndex = tasks.findIndex(task => task === value)
-            const selectSelectionInOrder = this.props.selection
-            selectSelectionInOrder.forEach((select, index) => document.querySelector("#" + select).setAttribute("class", (index !== selectIndex) ? "order2" : "order1"))
-            newAnswers.id = selectSelectionInOrder[selectIndex]
-        }
-        // console.log(newAnswers)
 
         if (this) {
             this.props.setDataAnswer(newAnswers, newSentences)
@@ -120,6 +120,12 @@ class Questions extends React.PureComponent {
     //     setDataParagraph(write(dataParagraph), dataChart, chartId)
     // }
 
+    // handleChartId(event) {
+    //     const chartId = event.target.value
+    //     console.log("change chart id:", chartId, this.props)
+    //     this.props.setSelectedChartId(chartId)
+    // }
+
     componentDidMount() {
         this.string1Col = []
         this.numberCols = [[]]
@@ -128,7 +134,7 @@ class Questions extends React.PureComponent {
     componentDidUpdate() {
         const { chartId, dataChart, dataCount } = this.props
         this.numberCols = dataChart.numberCols
-        this.selectedId = chartId
+        this.chartId = chartId
         this.dataCount = dataCount
         //console.log("cur:", dataAnswer)
         //console.log("pre:", this.answers)
@@ -141,14 +147,11 @@ class Questions extends React.PureComponent {
     // }
 
     render() {
-        const { chartId, selection, dataAnswer } = this.props
-        console.log("render step 2: qa -", chartId, selection)
-
-        // require at leaset selectedId (elected chart id) to generate questions, and
-        // it's default comes frmo the first chart in the selection list
-        if (selection.length < 1) return null
-        const selectedId = chartId
-        // console.log("** data in the house:", selectedId, "***")
+        const { chartId, selection, axisMapper, drawingOrder, dataAnswer, setSelectedChartId, setPlotAxisMapper, setStackDrawingOrder } = this.props
+        
+        // require at leaset chartId to generate questions
+        if (!chartId) { return null; }
+        console.log("render step 2: qa -", chartId)
 
         /*
          * check if data is changed due to:
@@ -162,7 +165,7 @@ class Questions extends React.PureComponent {
         //console.log(curDataCount, preDataCount)
 
         const isInit = dataAnswer ? false : true
-        const isChangeId = selectedId !== this.selectedId
+        const isChangeId = chartId !== this.chartId
         const isUpdateData =
             //Object.keys(curDataCount).some(key => curDataCount[key] !== preDataCount[key]) ||
             (this.answers ? !selection.every((id, index) => id === this.answers.ids[index]) : true)
@@ -174,7 +177,7 @@ class Questions extends React.PureComponent {
             // console.log("cur:", dataAnswer)
             // console.log("pre:", this.answers)
         }
-        if (isChangeId) console.log("==> change id:", this.selectedId, "->", selectedId)
+        if (isChangeId) console.log("==> change id:", this.chartId, "->", chartId)
         if (isUpdateData) {
             console.log("==> update: data")
             // console.log("cur", selection)
@@ -210,7 +213,7 @@ class Questions extends React.PureComponent {
              * } 
              */
             const dataSumstat = {
-                id: selectedId,
+                id: chartId,
                 keys: {
                     type: col1DataType,
                     header: col1Header,
@@ -235,17 +238,14 @@ class Questions extends React.PureComponent {
 
             // TODO: check, not only answers !?
             /* answers in all sets */
-            // selectionTasks: used in Q.set1.1 is required in handleSets() 
-            this.selectionTasks = selection.map(id => chartInfos[id].task)
 
             this.answers = {
-                id: selectedId,
+                // id: chartId,
                 ids: selection,
                 set1: {
-                    task: { select: [this.selectionTasks[0]] },
                     unit: { textField: ["", "", ""] },
                     draw: {
-                        select: ["as is."],
+                        // select: ["as is."],
                         textField: ""
                     },
                     cols: { textField: [""] }
@@ -269,26 +269,6 @@ class Questions extends React.PureComponent {
         }
 
         /* ui components */
-        const selectComponent = (index, type, label, options) => {
-            return (
-                <TextField
-                    key={"select-" + index}
-                    select
-                    // label={label}
-                    value={this.answers.set1[type]["select"][index]}
-                    onChange={(event) => this.handleSets(event, "set1", "select", type, index)}
-                    style={{minWidth: "150px"}}
-                    // helperText="more info"
-                >
-                    {options.map((opt, index) => (
-                        <MenuItem key={index} value={opt}>
-                            {opt}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            )
-        }
-
         const switchComponent = (label, checked, setId, indexSet, indexUi, style = {}) => {
             return (
                 <div key={"switch-" + indexSet + indexUi}>
@@ -339,26 +319,32 @@ class Questions extends React.PureComponent {
         // }
         
         if (!this.answers) { return null; }
+        // selects
+        const optSelection = selection.map(id => ({key: id, txt: chartInfos[id].task}))
+        const optHeaders = numberColGroups.map((header, index) => ({key: index, txt: header}))
+        // text fields
+        // ...
         return (
             <div className="questions f-18">
                 {/* Set1 Questions */}
-                <p className="question-set">{"Question set: chart " + this.answers.id}</p>
+                <p className="question-set">{"Question set: chart " + chartId}</p>
 
                 {/* Q1: task of the chart and more info */}
                 {selection.length > 1 ? <div style={{marginBottom: '-18px'}}>
-                    <div className="q-set1-pb6">"I want to"&nbsp;<b>show</b>&nbsp;</div>
-                    {selectComponent(0, "task", "", this.selectionTasks)}
-                    <ExpansionPanel info={chartInfos[this.answers.id].description} />
+                    <div className="q-set1-pb6">I want to&nbsp;<b>show</b>&nbsp;</div>
+                    <SelectSimple qaId="S1Q1" options={optSelection} value={chartId} setChange={setSelectedChartId} />
+                    <ExpansionPanel info={chartInfos[chartId].description} />
                 </div> : null}
 
                 {/* Q2: axis and size for plots */}
-                {this.answers.id.includes("plot") ? <div>
+                {/* TODO: loop optHeaders instead */}
+                {chartId.includes("plot") ? <div>
                     <div className="q-set1-pb6">So use the&nbsp;<b>x-axis</b>&nbsp;for&nbsp;</div>
-                    <Selects options={numberColGroups} index={0} />
+                    <SelectSimple qaId="S1Q2" options={optHeaders} value={axisMapper[0]} setChange={setPlotAxisMapper} data={axisMapper}/>
                     <div className="q-set1-pb6">,&nbsp;<b>y-axis</b>&nbsp;for&nbsp;</div>
-                    <Selects options={numberColGroups} index={1} />
+                    <SelectSimple qaId="S1Q2" options={optHeaders} value={axisMapper[1]} setChange={setPlotAxisMapper} data={axisMapper}/>
                     {numberColGroupsCount > 2 ? <div className="q-set1-pb6">, and&nbsp;<b>size</b>&nbsp;for&nbsp;</div> : null}
-                    {numberColGroupsCount > 2 ? <Selects options={numberColGroups} index={2} /> : null}
+                    {numberColGroupsCount > 2 ? <SelectSimple qaId="S1Q2" options={optHeaders} value={axisMapper[2]} setChange={setPlotAxisMapper} data={axisMapper}/> : null}
                 </div> : null}
 
                 {/* Q3: unit(s) of number(s), x3 if plots */}
@@ -366,26 +352,26 @@ class Questions extends React.PureComponent {
                 <div>
                     <div className="q-set1-pb11">The numbers on the table refer to&nbsp;</div>
                     <TextFields
-                        index={0} helpText={this.answers.id.includes("plot") ? numberColGroups[0] : numberColHeader} placeholder={"required*"}
-                        handleChange={this.handleSets} params={["set1", "unit", this.answers.id]}
-                        answers={this.answers} ss={this.sumstatSentences} tasks={this.selectionTasks}
+                        index={0} helpText={chartId.includes("plot") ? numberColGroups[0] : numberColHeader} placeholder={"required*"}
+                        handleChange={this.handleSets} params={["set1", "unit", chartId]}
+                        answers={this.answers} ss={this.sumstatSentences}
                         setAnswers={this.props.setDataAnswer}
                     />
-                    {this.answers.id.includes("plot") ? <span>,{' '}</span> : null}
-                    {this.answers.id.includes("plot") ?
+                    {chartId.includes("plot") ? <span>,{' '}</span> : null}
+                    {chartId.includes("plot") ?
                         <TextFields
                             index={1} helpText={numberColGroups[1]} placeholder={"required*"}
-                            handleChange={this.handleSets} params={["set1", "unit", this.answers.id]}
-                            answers={this.answers} ss={this.sumstatSentences} tasks={this.selectionTasks}
+                            handleChange={this.handleSets} params={["set1", "unit", chartId]}
+                            answers={this.answers} ss={this.sumstatSentences}
                             setAnswers={this.props.setDataAnswer}
                         /> : null
                     }
-                    {this.answers.id.includes("plot") && numberColGroupsCount === 3 ? <span>,{' and '}</span> : null}
-                    {this.answers.id.includes("plot") && numberColGroupsCount === 3 ?
+                    {chartId.includes("plot") && numberColGroupsCount === 3 ? <span>,{' and '}</span> : null}
+                    {chartId.includes("plot") && numberColGroupsCount === 3 ?
                         <TextFields
                             index={2} helpText={numberColGroups[2]} placeholder={"required*"}
-                            handleChange={this.handleSets} params={["set1", "unit", this.answers.id]}
-                            answers={this.answers} ss={this.sumstatSentences} tasks={this.selectionTasks}
+                            handleChange={this.handleSets} params={["set1", "unit", chartId]}
+                            answers={this.answers} ss={this.sumstatSentences}
                             setAnswers={this.props.setDataAnswer}
                         /> : null
                     }
@@ -397,24 +383,24 @@ class Questions extends React.PureComponent {
                     <div className="q-set1-pb11">{numberColHeader[0].toUpperCase() + numberColHeader.slice(1) + ' are'}&nbsp;</div>
                     <TextFields
                         index={0} helpText={""} placeholder={col1Header}
-                        handleChange={this.handleSets} params={["set1", "cols", this.answers.id]}
-                        answers={this.answers} ss={this.sumstatSentences} tasks={this.selectionTasks}
+                        handleChange={this.handleSets} params={["set1", "cols", chartId]}
+                        answers={this.answers} ss={this.sumstatSentences}
                         setAnswers={this.props.setDataAnswer}
                     />
                 </div > : null}
 
                 {/* Q5: stack drawing order */}
-                {this.answers.id.includes("Stack") ? <div>
+                {chartId.includes("Stack") ? <div>
                     <div className="q-set1-pb6">And&nbsp;<b>stack</b>&nbsp;the chart&nbsp;</div>
-                    {selectComponent(0, "draw", questionSet1.draw.type, questionSet1.draw.opts)}
+                    <SelectSimple qaId="S1Q5" options={optDrawing} value={drawingOrder} setChange={setStackDrawingOrder} />
                     <span>{' '}</span>
-                    {this.answers.set1.draw.select[0] === questionSet1.draw.opts[2] ?
+                    {drawingOrder === 2 ?
                         <TextFieldWithAutocomplete question={""} options={numberColGroups} renderType={"single"} /> :
                         null}
                 </div> : null}
 
                 {/* Q6: line highlights */}
-                {this.answers.id.includes("line") && numberColGroupsCount > 3 ? <div className="d-f">
+                {chartId.includes("line") && numberColGroupsCount > 3 ? <div className="d-f">
                     <div className="as-fe pb-4">And&nbsp;<b>highlight</b>&nbsp;</div>
                     <TextFieldWithAutocomplete question={""} options={numberColGroups} renderType={"multiple"}
                         handleChange={this.handleSet2QuestionsFilter}
@@ -422,8 +408,8 @@ class Questions extends React.PureComponent {
                 </div> : null}
 
                 {/* Set2 Questions */}
-                <p className="question-set mb-5">Question set: statistical summary</p>
-                {/* grouped sentences for toggle */}
+                {/* <p className="question-set mb-5">Question set: statistical summary</p>
+                {/* grouped sentences for toggle * /}
                 {this.sumstatSentences.text.map((sentences, index) =>
                     <div key={"qh-" + index} className="mb-5 js-set2Q" id={numberColGroups[index].replace(/ /g, '')}>
                         <p><span className="question-group">{numberColGroups[index]}</span></p>
@@ -434,7 +420,7 @@ class Questions extends React.PureComponent {
                             : null}
                         </div>)}
                     </div>
-                )}
+                )} */}
 
                 {/* {dataQuestion ? <input
                     type="button"

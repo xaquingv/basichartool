@@ -682,7 +682,7 @@
       "seq": "2",
       "id": "lineContinue",
       "name": "Line",
-      "task": "the ebb and flow of the ${col_definition}",
+      "task": "the ebb and flow of the ${col_definition} 1",
       "usage": "trend/change over time, distribution",
       "description": "If you want to see a trend over time. If you have missing data, it will show the gaps"
     },
@@ -691,7 +691,7 @@
       "seq": "3",
       "id": "lineDiscrete",
       "name": "Discrete line",
-      "task": "the ebb and flow of the ${col_definition}",
+      "task": "the ebb and flow of the ${col_definition} 2",
       "usage": "discover trend, patterns, irregularity over time",
       "description": "If you want to see trend over time, you may be missing dates but you want a continuous evenly spaced line, like in a stock chart"
     },

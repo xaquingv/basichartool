@@ -3,13 +3,14 @@ import { connect } from 'react-redux'
 import './chartlist.css'
 import { chartNames } from '../../data/config'
 import { selectChart, removeChartDuplicate } from '../../actions'
-import { chartList } from '../charts'
+import { chartComponents } from '../charts'
 
 
 const STEP = 2;
+const MSG_WARNING = "There is NO RESULT!!"
 
 const mapStateToProps = (state) => ({
-  stepActive: state.stepActive,
+  chartIdFirst: state.chartId,
   dataChart: state.dataChart,
   selection: state.selection
 })
@@ -22,46 +23,49 @@ const mapDispatchToProps = (dispatch, props) => ({
 
 class Chartlist extends React.PureComponent {
   componentDidUpdate() {
-    // check if discrete and conti are the same
-    // if the same (duplicate), remove the discrete line
-    const pathDiscrete = document.querySelector("#lineDiscrete path")
-    const pathContinue = document.querySelector("#lineContinue path")
-    if (!pathDiscrete || !pathContinue) {
-      return
-    } else 
-    if (pathDiscrete.getAttribute("d") === pathContinue.getAttribute("d")) {
-      this.props.removeSelectionChartDuplicate(this.props.selection, "lineDiscrete")
+    const selection = this.props.selection
+    if (selection.indexOf("lineDiscrete") > -1 && selection.indexOf("lineContinue") > -1) {
+      // check if discrete and conti are the same
+      // if the same (duplicate), remove the discrete line from the selection list
+      const pathDiscrete = document.querySelector("#lineDiscrete path")
+      const pathContinue = document.querySelector("#lineContinue path")
+      if (pathDiscrete && pathContinue && pathDiscrete.getAttribute("d") === pathContinue.getAttribute("d")) {
+        this.props.removeSelectionChartDuplicate(selection, "lineDiscrete")
+      }
     }
   }
 
   render() {
-    console.log("render step 2: charts", this.props.selection)
-    const { selection, dataChart } = this.props
+    const { selection, dataChart, chartIdFirst } = this.props
+    
+    // require a selection of charts to generate chartList
     if (!selection) { return null; }
+    console.log("render step 2: charts", this.props.selection)
 
-    // TODO: loop through arr, see charts.js
-    // list of charts
-    let selectCount = 0
-    const chartComponents = Object.keys(chartList).map((chartID, index) => {
-      const isSelected = selection.indexOf(chartID) > -1
-      const ComponentChart = chartList[chartID]
-
-      if (isSelected) selectCount++;
-      return isSelected
-        ? (
-          // <div key={chartID} id={chartID} onClick={() => onSelect(chartID)}>
-          <div key={chartID} id={chartID} className={selectCount !== 1 ? "order2" : "order1"}>
-            <ComponentChart id={chartID} callByStep={STEP} dataChart={dataChart} />{chartNames[chartID]}
+    // case1/2: list of charts in selection
+    const chartComponentsInSelection = Object.keys(chartComponents).map((chartId) => {
+      if (selection.indexOf(chartId) > -1) {
+        const ComponentChart = chartComponents[chartId]
+        return (
+          <div key={chartId} id={chartId} className={chartId === chartIdFirst ? "order1" : "order2"}>
+            <ComponentChart id={chartId} callByStep={STEP} dataChart={dataChart} />
+            {chartNames[chartId]}
           </div>
         )
-        : null
+      } else {
+        return null
+      }
     })
+    
+    // case2/2: no chart in selection
+    const warningMessage = <div className="warning">{MSG_WARNING}</div>
 
     return (
       <div id="chartlist">
-        <div className="charts">
-          {selection.length > 0 ? chartComponents : <div className="warning">There is NO RESULT!!</div>}
-        </div>
+        <div className="charts">{selection.length > 0 ? 
+          chartComponentsInSelection : 
+          warningMessage
+        }</div>
       </div>
     )
   }

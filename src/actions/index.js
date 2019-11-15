@@ -64,6 +64,7 @@ export const transposeData = (dataTable, show) => {
 }
 
 export const toggleData = (dataTable, show, { type, index }) => {
+  // toggle on/off a row or col (type)
   const newVal = show[type][index] ? false : true
   /* show */
   let newShow = { ...show }
@@ -92,6 +93,19 @@ export const removeChartDuplicate = (selection, removeId) => {
 }
 
 // questions: sumstats
+export const setChartId = (chartId) => ({
+  type: "SET_CHART_ID",
+  chartId
+})
+export const setAxisMapper = (axisMapper) => ({
+  type: "SET_AXIS_MAPPER",
+  axisMapper
+})
+export const setDrawingOrder = (drawingOrder) => ({
+  type: "SET_DRAWING_ORDER",
+  drawingOrder
+})
+
 export const setAnswers = (dataAnswer, dataSentence) => ({
   type: "SET_ANSWERS",
   dataAnswer,

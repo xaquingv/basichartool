@@ -76,9 +76,11 @@ function chartId(id = "", action) {
     case 'TOGGLE_DATA':
     case 'REMOVE_CHART_DUPLICATE':
       return action.selection[0]
-    case 'SELECT_CHART':
-    case 'SET_PARAGRAPH':
-      return action.chartId || id
+    case 'SET_CHART_ID':
+      return action.chartId
+    // case 'SELECT_CHART':
+    // case 'SET_PARAGRAPH':
+    // return action.chartId || id
     default:
       return id
   }
@@ -128,6 +130,12 @@ function dataChart(dataChart = {}, action) {
         ...dataChart,
         ...action.dataSummary.chart
       }
+    case 'SET_AXIS_MAPPER':
+      let newDataChart = {...dataChart}
+      newDataChart.numberCols = action.axisMapper.map(index => dataChart.numberCols[index]) 
+      console.log(dataChart.numberCols)
+      console.log(newDataChart.numberCols)
+      return dataChart//newDataChart
 
     /* TODO: rename and clean up */
     case 'APPEND_DATA':
@@ -181,6 +189,13 @@ function dataChart(dataChart = {}, action) {
 }
 
 // sumstats' answer sets
+function axisMapper(axisMapper = [0, 1, 2], action) {
+  return action.type === 'SET_AXIS_MAPPER' ? action.axisMapper : axisMapper
+}
+function drawingOrder(drawingOrder = 0, action) {
+  return action.type === "SET_DRAWING_ORDER" ? action.drawingOrder : drawingOrder
+}
+
 function dataAnswer(dataAnswer = null, action) {
   switch (action.type) {
     case 'CLEAR_DATA':
@@ -317,6 +332,8 @@ const app = combineReducers({
   dataChart,
   dataTable,
   dataCount,
+  axisMapper,
+  drawingOrder,
   dataAnswer,
   dataSentence,
   dataQuestion,
