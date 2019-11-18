@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+// ref: codesandbox.io/s/material-demo-35ywt
 
 const useStyles = makeStyles(theme => ({
     formControl: {
@@ -23,16 +24,19 @@ export default function SimpleSelect(props) {
         switch (qaId) {
             // task for the chart
             case "S1Q1":
-                setChange(newValue); break
+                setChange(newValue)
+                break
             // axis (and size) mapper in plot 
             case "S1Q2":
                 const newMapper = [...data]
                 newMapper[data.indexOf(value)] = newValue
                 newMapper[data.indexOf(newValue)] = value
                 setChange(newMapper)
+                break
             // stack order
             case "S1Q5":
                 setChange(newValue)
+                break
             default:
                 console.log("add", qaId, "setChange action")
         }

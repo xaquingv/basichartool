@@ -106,13 +106,13 @@ export const setDrawingOrder = (drawingOrder) => ({
   drawingOrder
 })
 
-export const setAnswers = (dataAnswer, dataSentence) => ({
+export const setAnswers = (dataAnswer) => ({
   type: "SET_ANSWERS",
-  dataAnswer,
-  dataSentence
+  dataAnswer
 })
-export const setQuestions = (dataQuestion) => ({
-  type: "SET_QUESTIONS",
+export const setQuestionSentences = (dataSentence, dataQuestion) => ({
+  type: "SET_QUESTION_SENTENCES",
+  dataSentence,
   dataQuestion
 })
 export const setParagraph = (dataParagraph, dataChart, chartId) => ({

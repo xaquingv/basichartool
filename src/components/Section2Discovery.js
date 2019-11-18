@@ -50,7 +50,7 @@ class Section extends React.Component {
     /* end of setup1 */
 
     const isRender = stepActive >= STEP;
-
+    console.log("render step 2")
     return (
       <div className={"section" + (isRender ? "" : " d-n")} id="section2">
         <h1>2. Discover your dataset</h1>

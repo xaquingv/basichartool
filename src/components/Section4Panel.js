@@ -116,6 +116,8 @@ class Section extends React.Component {
     const isOnBar = chartId.includes("onBar")
     const isBarBased = chartId.toLowerCase().includes("bar") //&& !chartId.includes("broken")
     const isPlot = chartId.toLowerCase().includes("plot")
+    const isRender = stepActive >= STEP
+    console.log("render step 3")
 
     const ComponentChart = chartComponents[chartId]
     const chartComponent = ComponentChart
@@ -134,7 +136,7 @@ class Section extends React.Component {
         </div>
       ) : null
 
-    const graphComponent = stepActive >= STEP
+    const graphComponent = isRender
       ? (
         <div className="graph js-graph" style={{ width: graphWidth }}>
           {/* header */}
@@ -157,7 +159,7 @@ class Section extends React.Component {
         </div>
       ) : null
 
-    const setupComponent = stepActive >= STEP
+    const setupComponent = isRender
       ? (
         <div className="setup row-flex">
           <div className="setup-p1">
@@ -173,43 +175,22 @@ class Section extends React.Component {
         </div>
       ) : null
 
-    // const textFieldComponent = (value, index) => {
-    //   return (
-    //     <div key={"tf-" + index} className="d-f j-c">
-    //       <TextField
-    //         multiline
-    //         value={value}
-    //         placeholder="Edit this paragraph"
-    //         onChange={(event) => this.handleEdit(event, index)}
-    //         margin="normal"
-    //         style={{ width: "620" }}
-    //         InputLabelProps={{ shrink: true, }}
-    //       />
-    //     </div>
-    //   )
-    // }
-    
-    console.log("render step 3")
-
     return (
-      <div className={"section" + ((stepActive >= STEP) ? "" : " d-n")} id="section3">
+      <div className={"section" + ((isRender) ? "" : " d-n")} id="section3">
         <h1>3. Edit your Visualization</h1>
+        
+        {/* 3.1: setup */}
         {setupComponent}
-        {/* {graphComponent} */}
-        {/* {articleComponent} */}
-        <div className={"headline"} >
-          <ComponentEditor text={"Headline"} bold={true} />
-        </div>
-        {
-          paragraphData ? paragraphData.map((p, i) =>
+
+        {/* 3.2: article with paragraph(es) and graph(s) */}
+        {/* note that any styles inside graph needs to be either included in the template.js or inline */}
+        <div className="headline"><ComponentEditor text={"Headline"} bold={true} /></div>
+        {paragraphData ? paragraphData.map((p, i) =>
             <div key={"p-" + i} id={"p-" + i}>
-              {/* {textFieldComponent(p.paragraph, i)} */}
-              <div className="paragraph"><ComponentEditor text={p.paragraph}/></div>
+              <div className="paragraph"><ComponentEditor text={p.paragraph} /></div>
               {graphComponent}
             </div>
-          ) : null
-        }
-        {/* any styles inside graph needs to be either included in the template.js or inline */}
+        ) : null}
       </div>
     )
   }

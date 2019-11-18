@@ -86,10 +86,10 @@ function chartId(id = "", action) {
   }
 }
 
-function selection(chartList = [], action) {
+function selection(chartList = null, action) {
   switch (action.type) {
     case 'CLEAR_DATA':
-      return []
+      return null
     case 'IMPORT_DATA':
     case 'TRANSPOSE_DATA':
     case 'TOGGLE_DATA':
@@ -110,7 +110,7 @@ function dataCount(dataCount = {}, action) {
       return action.dataSummary.count
     default:
       return dataCount
-  }  
+  }
 }
 
 function dataChart(dataChart = {}, action) {
@@ -131,8 +131,8 @@ function dataChart(dataChart = {}, action) {
         ...action.dataSummary.chart
       }
     case 'SET_AXIS_MAPPER':
-      let newDataChart = {...dataChart}
-      newDataChart.numberCols = action.axisMapper.map(index => dataChart.numberCols[index]) 
+      let newDataChart = { ...dataChart }
+      newDataChart.numberCols = action.axisMapper.map(index => dataChart.numberCols[index])
       console.log(dataChart.numberCols)
       console.log(newDataChart.numberCols)
       return dataChart//newDataChart
@@ -188,14 +188,14 @@ function dataChart(dataChart = {}, action) {
   }
 }
 
-// sumstats' answer sets
+// sumstats' answers in set1
 function axisMapper(axisMapper = [0, 1, 2], action) {
   return action.type === 'SET_AXIS_MAPPER' ? action.axisMapper : axisMapper
 }
 function drawingOrder(drawingOrder = 0, action) {
   return action.type === "SET_DRAWING_ORDER" ? action.drawingOrder : drawingOrder
 }
-
+// sumstats' answers in set2
 function dataAnswer(dataAnswer = null, action) {
   switch (action.type) {
     case 'CLEAR_DATA':
@@ -206,19 +206,23 @@ function dataAnswer(dataAnswer = null, action) {
       return dataAnswer
   }
 }
-// sumstats' question sets for text editing
+// sumstats' sentence sets with swtiches
 function dataSentence(dataSentence = null, action) {
   switch (action.type) {
-    case 'SET_ANSWERS':
-      return action.dataSentence || dataSentence
+    case 'CLEAR_DATA':
+      return null
+    case 'SET_QUESTION_SENTENCES':
+      return action.dataSentence
     default:
       return dataSentence
   }
 }
-// sumstats' follow up questions
+// sumstats' follow up questions with textfields
 function dataQuestion(dataQuestion = null, action) {
   switch (action.type) {
-    case 'SET_QUESTIONS':
+    case 'CLEAR_DATA':
+      return null
+    case 'SET_QUESTION_SENTENCES':
       return action.dataQuestion
     default:
       return dataQuestion
@@ -227,6 +231,8 @@ function dataQuestion(dataQuestion = null, action) {
 // sumstats' paragraph data
 function dataParagraph(dataParagraph = null, action) {
   switch (action.type) {
+    case 'CLEAR_DATA':
+      return null
     case 'SET_PARAGRAPH':
       return action.dataParagraph
     default:
