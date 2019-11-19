@@ -11,6 +11,7 @@ import write from '../../lib/write-data'
 /* material ui and react ui */
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
+import SwitchLabel from './MuiSwitch'
 import SelectSimple from './MuiSelects'
 import ExpansionPanel from './MuiExpansionPanel'
 import TextFields from './MuiTextField'
@@ -51,12 +52,6 @@ const mapDispatchToProps = dispatch => ({
 
 
 class Questions extends React.PureComponent {
-
-    setChange(event, indexSet, indexUi) {
-        let newAnswers = { ...this.answers }
-        newAnswers.switches[indexSet][indexUi] = event.target.checked
-        this.props.setDataAnswer(newAnswers)
-    }
 
     // handleSubmit() {
     //     const { dataQuestion, setDataParagraph, dataChart } = this.props
@@ -193,23 +188,6 @@ class Questions extends React.PureComponent {
             this.questions = dataQuestion || this.questions
         }
 
-        /* ui components */
-        const switchComponent = (label, checked, indexSet, indexUi, style = {}) => {
-            return (
-                <div key={"switch-" + indexSet + indexUi}>
-                    <FormControlLabel
-                        control={<Switch
-                            checked={checked}
-                            onChange={(event) => this.setChange(event, indexSet, indexUi)}
-                            color="primary"
-                        />}
-                        label={label}
-                        style={style}
-                    />
-                </div>
-            );
-        }
-
         /* draw */
         const numberColGroups = dataChart.keys
         const numberColGroupsCount = numberColGroups.length
@@ -326,7 +304,10 @@ class Questions extends React.PureComponent {
                     <div key={"qh-" + index} className="mb-5 js-set2Q" id={numberColGroups[index].replace(/ /g, '')}>
                         <p><span className="question-group">{numberColGroups[index]}</span></p>
                         {sentences.map((s, idx) => <div>
-                            {switchComponent(s, this.answers.switches[index][idx], index, idx)}
+                            <SwitchLabel 
+                                label={s} checked={this.answers.switches[index][idx]} 
+                                setChange={setDataAnswer} data={{answers: this.answers, index: [index, idx]}}
+                            />
                             {this.answers.switches[index][idx] ?
                                 this.questions.text[index][idx].map((q, i) =>
                                     <TextFields
