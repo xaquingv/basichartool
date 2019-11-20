@@ -71,6 +71,8 @@ function show(show = { col: [], row: [] }, action) {
 
 function chartId(id = "", action) {
   switch (action.type) {
+    case 'CLEAR_DATA':
+      return "";
     case 'IMPORT_DATA':
     case 'TRANSPOSE_DATA':
     case 'TOGGLE_DATA':
@@ -199,8 +201,12 @@ function drawingOrder(drawingOrder = 0, action) {
 function dataAnswer(dataAnswer = null, action) {
   switch (action.type) {
     case 'CLEAR_DATA':
+    case 'IMPORT_DATA':
+    case 'TRANSPOSE_DATA':
+    case 'TOGGLE_DATA':
       return null
     case 'SET_ANSWERS':
+    case 'SET_SUMSTAT':
       return action.dataAnswer
     default:
       return dataAnswer
@@ -210,7 +216,11 @@ function dataAnswer(dataAnswer = null, action) {
 function dataSentence(dataSentence = null, action) {
   switch (action.type) {
     case 'CLEAR_DATA':
+    case 'IMPORT_DATA':
+    case 'TRANSPOSE_DATA':
+    case 'TOGGLE_DATA':
       return null
+    case 'SET_SUMSTAT':
     case 'SET_QUESTION_SENTENCES':
       return action.dataSentence
     default:
@@ -221,7 +231,11 @@ function dataSentence(dataSentence = null, action) {
 function dataQuestion(dataQuestion = null, action) {
   switch (action.type) {
     case 'CLEAR_DATA':
+    case 'IMPORT_DATA':
+    case 'TRANSPOSE_DATA':
+    case 'TOGGLE_DATA':
       return null
+    case 'SET_SUMSTAT':
     case 'SET_QUESTION_SENTENCES':
       return action.dataQuestion
     default:
@@ -232,6 +246,9 @@ function dataQuestion(dataQuestion = null, action) {
 function dataParagraph(dataParagraph = null, action) {
   switch (action.type) {
     case 'CLEAR_DATA':
+    case 'IMPORT_DATA':
+    case 'TRANSPOSE_DATA':
+    case 'TOGGLE_DATA':
       return null
     case 'SET_PARAGRAPH':
       return action.dataParagraph

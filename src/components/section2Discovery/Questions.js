@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import './questions.css'
-import { setChartId, setAxisMapper, setDrawingOrder, setAnswers, setQuestionSentences, setParagraph } from '../../actions'
+import { setChartId, setAxisMapper, setDrawingOrder, setAnswers, setQuestionSentences, setParagraph, setSumstat } from '../../actions'
 import { chartInfos } from '../../data/config';
 
 /* summary statistics and nlg */
@@ -9,8 +9,6 @@ import { getSumStats } from '../../lib/sumstats'
 import write from '../../lib/write-data'
 
 /* material ui and react ui */
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Switch from '@material-ui/core/Switch'
 import SwitchLabel from './MuiSwitch'
 import SelectSimple from './MuiSelects'
 import ExpansionPanel from './MuiExpansionPanel'
@@ -29,14 +27,13 @@ const mapStateToProps = state => ({
     selection: state.selection,
     dataCount: state.dataCount,
     dataChart: state.dataChart,
-    // dataSumstat
+    // Set1: dataAnswerSet1
+    axisMapper: state.axisMapper,
+    drawingOrder: state.drawingOrder,
+    // Set2: dataSumstat and dataAnswer
     dataSentence: state.dataSentence,
     dataQuestion: state.dataQuestion,
-    // dataAnswerSet2
-    dataAnswer: state.dataAnswer,
-    // dataAnswerSet1
-    axisMapper: state.axisMapper,
-    drawingOrder: state.drawingOrder
+    dataAnswer: state.dataAnswer
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -45,8 +42,9 @@ const mapDispatchToProps = dispatch => ({
     setPlotAxisMapper: mapping => dispatch(setAxisMapper(mapping)),
     setStackDrawingOrder: mapping => dispatch(setDrawingOrder(mapping)),
     // set2
-    setDataSentenceQuestion: (sentences, questions) => dispatch(setQuestionSentences(sentences, questions)),
     setDataAnswer: (answers) => dispatch(setAnswers(answers)),
+    setDataSentenceQuestion: (sentences, questions) => dispatch(setQuestionSentences(sentences, questions)),
+    setDataSumstat: (sentences, questions, answers) => dispatch(setSumstat(sentences, questions, answers)),
     setDataParagraph: (paragraph, chart, id) => dispatch(setParagraph(paragraph, chart, id))
 })
 
@@ -73,16 +71,11 @@ class Questions extends React.PureComponent {
     //     setDataParagraph(write(dataParagraph), dataChart, chartId)
     // }
 
-    componentDidMount() {
-        this.answers = null
-    }
     componentDidUpdate() {
-        const { chartId, dataCount } = this.props
-        this.chartId = chartId
-        this.dataCount = dataCount
-        //console.log("cur:", dataAnswer)
-        //console.log("pre:", this.answers)
-        // if (!dataAnswer) this.props.setDataAnswer(this.answers)
+        const { dataSentence, setDataSumstat } = this.props
+        if (!dataSentence) {
+            setDataSumstat(this.sentences, this.questions, this.answers)
+        }
     }
 
     render() {
@@ -92,52 +85,21 @@ class Questions extends React.PureComponent {
         if (!chartId) { return null; }
         console.log("render step 2: qa -", chartId)
 
-        /*
-         * check if data is changed due to:
-         * 1. init state (new) 
-         * 2. change chart (Q.set1.1)
-         * 3. update input data or toggle/transpaort table data
-         */
-        // TODO: to be more strict in data change comparison ?
-        //const curDataCount = this.props.dataCount
-        //const preDataCount = this.dataCount
-        //console.log(curDataCount, preDataCount)
-        console.log(dataSentence)
-        console.log(dataAnswer)
-        const isInit = dataSentence || dataAnswer ? false : true
-        const isChangeId = chartId !== this.chartId
-        const isUpdateData =
-            //Object.keys(curDataCount).some(key => curDataCount[key] !== preDataCount[key]) ||
-            (this.answers ? !selection.every((id, index) => id === this.answers.ids[index]) : true)
-
-        const isDataChange = isInit || isChangeId || isUpdateData
-        // debug zone
-        if (isInit) {
-            console.log("==> init", isInit)
-            // console.log("cur:", dataAnswer)
-            // console.log("pre:", this.answers)
-        }
-        if (isChangeId) console.log("==> change id:", this.chartId, "->", chartId)
-        if (isUpdateData) {
-            console.log("==> update: data")
-            // console.log("cur", selection)
-            // console.log("pre:", this.answers.ids)
-        }
-
         /* data */
         const { dataChart } = this.props
         const { keys, numberOnly, numberCols, dateFormat, col1Type, col1Header, col1ValuesToStrings } = dataChart
         // use "string" instead of "string1"
         const col1DataType = col1Type.indexOf("str") > -1 ? "string" : col1Type
-        /* questions in set2 */
-        // remove the first col (or header) of data (types) if all values' type is number
-        const colHeaders = numberOnly ? keys.slice(1) : keys
-        const sumstatCols = numberOnly ? numberCols.slice(1) : numberCols
 
-        let sumstatSentences, sumstatQuestions
-        if (isDataChange) {
-            // TODO: refactory data flow
-            //this.answers = null
+        /* summary statisitc */
+        if (dataSentence) {
+            this.sentences = dataSentence
+            this.questions = dataQuestion
+            this.answers = dataAnswer
+        } else {
+            // remove the first col (or header) of data (types) if all values' type is number
+            const colHeaders = numberOnly ? keys.slice(1) : keys
+            const sumstatCols = numberOnly ? numberCols.slice(1) : numberCols
 
             // get sentences and questions back from the getSumStats
             const dataSumstat = {                   // @params:
@@ -156,8 +118,8 @@ class Questions extends React.PureComponent {
                 }))
             }
             const sumStats = getSumStats(dataSumstat)
-            sumstatSentences = sumStats.sentences
-            sumstatQuestions = sumStats.questions
+            const sumstatSentences = sumStats.sentences
+            const sumstatQuestions = sumStats.questions
             this.sentences = {
                 text: sumstatSentences,     // display text
                 edit: [...sumstatSentences] // edit copy to know where to replace the unit* string
@@ -167,11 +129,8 @@ class Questions extends React.PureComponent {
                 edit: [...sumstatQuestions]
             }
 
-            // TODO: check, not only answers !?
-            // answers in set 2
+            // init answers
             this.answers = {
-                ids: selection,
-                // TODO: change to switches and remove textfield
                 switches: sumstatSentences.map(group =>
                     group.map(() => false)
                 ),
@@ -180,30 +139,21 @@ class Questions extends React.PureComponent {
                         qs.map(() => "")
                     ))
             }
-            //console.log(this.answers)
-
-        } else {
-            this.answers = dataAnswer || this.answers
-            this.sentences = dataSentence || this.sentences
-            this.questions = dataQuestion || this.questions
         }
 
         /* draw */
+        // if (!this.sentences) { return null; }
         const numberColGroups = dataChart.keys
         const numberColGroupsCount = numberColGroups.length
         const numberColHeader = numberColGroupsCount > 3 ? (numberColGroups.slice(0, 3).join(", ") + ", ...") : numberColGroups.join(", ")
-        // if (this.answers) {
-        //     // console.log("*** ui up running ***")
-        //     // console.log("")
-        //     // console.log(numberColGroups)
-        // }
 
-        if (!this.answers) { return null; }
-        const {setSelectedChartId, setPlotAxisMapper, setStackDrawingOrder, setDataSentenceQuestion, setDataAnswer} = this.props
-        const isPlot = chartId.includes("plot")
         // selects
         const optSelection = selection.map(id => ({ key: id, txt: chartInfos[id].task }))
         const optHeaders = numberColGroups.map((header, index) => ({ key: index, txt: header }))
+        // datastore actions
+        const { setSelectedChartId, setPlotAxisMapper, setStackDrawingOrder, setDataSentenceQuestion, setDataAnswer } = this.props
+        
+        const isPlot = chartId.includes("plot")
         return (
             <div className="questions f-18">
                 {/* Set1 Questions */}
@@ -297,22 +247,22 @@ class Questions extends React.PureComponent {
                     />
                 </div> : null}
 
-                {/* Set2 Questions: <switch> sentences and questions/answers <textfield>*/}
+                {/* Set2 Questions: <switch> sentences and questions <textfield>*/}
                 <p className="question-set mb-5">Question set: statistical summary</p>
                 {/* grouped sentences for toggle */}
                 {this.sentences.text.map((sentences, index) =>
-                    <div key={"qh-" + index} className="mb-5 js-set2Q" id={numberColGroups[index].replace(/ /g, '')}>
+                    <div key={"sq-" + index} className="mb-5 js-set2Q" id={numberColGroups[index].replace(/ /g, '')}>
                         <p><span className="question-group">{numberColGroups[index]}</span></p>
-                        {sentences.map((s, idx) => <div>
-                            <SwitchLabel 
-                                label={s} checked={this.answers.switches[index][idx]} 
-                                setChange={setDataAnswer} data={{answers: this.answers, index: [index, idx]}}
+                        {sentences.map((s, idx) => <div key={"s-" + index + idx}>
+                            <SwitchLabel
+                                label={s} checked={this.answers.switches[index][idx]}
+                                setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx] }}
                             />
                             {this.answers.switches[index][idx] ?
                                 this.questions.text[index][idx].map((q, i) =>
                                     <TextFields
-                                        qaId="set2" label={q}
-                                        setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx, i] }} 
+                                        qaId="set2" label={q} key={"q-" + index + idx + i}
+                                        setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx, i] }}
                                     />
                                 )
                                 : null

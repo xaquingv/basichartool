@@ -115,6 +115,12 @@ export const setQuestionSentences = (dataSentence, dataQuestion) => ({
   dataSentence,
   dataQuestion
 })
+export const setSumstat = (dataSentence, dataQuestion, dataAnswer) => ({
+  type: "SET_SUMSTAT",
+  dataSentence,
+  dataQuestion,
+  dataAnswer
+})
 export const setParagraph = (dataParagraph, dataChart, chartId) => ({
   type: "SET_PARAGRAPH",
   dataParagraph,

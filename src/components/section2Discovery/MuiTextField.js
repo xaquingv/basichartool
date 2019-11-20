@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-// import InputLabel from "@material-ui/core/InputLabel";
 import TextField from "@material-ui/core/TextField";
 
 const phSet1 = "Required*"
@@ -41,7 +40,6 @@ export default function TextFieldComponent(props) {
     };
 
     const isSet1 = qaId !== "set2";
-    const index = isSet1 ? [] : data.index;
     const replaceText = (originEdit, value) => {
         const newText = originEdit.map(s => s.replace(regAnyInCB, (value !== "" ? value : "{units}"))); 
         return newText
@@ -69,17 +67,16 @@ export default function TextFieldComponent(props) {
             // ui
             setValue(value);
             // datastore
-            const newAnswers = { ...data.answers };
+            const {answers, index} = data
+            const newAnswers = { ...answers };
             newAnswers.textfields[index[0]][index[1]][index[2]] = value;
             setChange(newAnswers);
         }
     }
 
     return (
-        // <form className={classes.flexLayout} noValidate autoComplete="off">
         <div className={classes.flexLayout}>
             <TextField
-                key={index.join("")}
                 multiline
                 rowsMax={isSet1 ? 1 : 3}
                 className={isSet1 ? classes.textFieldSet1 : classes.textFieldSet2}
