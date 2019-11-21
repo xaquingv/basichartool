@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import './questions.css'
-import { setChartId, setAxisMapper, setDrawingOrder, setAnswers, setQuestionSentences, setParagraph, setSumstat } from '../../actions'
+import { setChartId, setAxisMapper, setDrawingOrder, setHighlights, setAnswers, setQuestionSentences, setParagraph, setSumstat } from '../../actions'
 import { chartInfos } from '../../data/config';
 
 /* summary statistics and nlg */
@@ -13,7 +13,8 @@ import SwitchLabel from './MuiSwitch'
 import SelectSimple from './MuiSelects'
 import ExpansionPanel from './MuiExpansionPanel'
 import TextFields from './MuiTextField'
-import TextFieldWithAutocomplete from './MuiTextFieldAutocompletes'
+import Autocomplete from './MuiAutocomplete'
+// import Collapse from '@material-ui/core/Collapse';
 
 
 const optDrawing = [
@@ -30,6 +31,7 @@ const mapStateToProps = state => ({
     // Set1: dataAnswerSet1
     axisMapper: state.axisMapper,
     drawingOrder: state.drawingOrder,
+    lineHighlights: state.lineHighlights,
     // Set2: dataSumstat and dataAnswer
     dataSentence: state.dataSentence,
     dataQuestion: state.dataQuestion,
@@ -40,7 +42,8 @@ const mapDispatchToProps = dispatch => ({
     // set1 selects
     setSelectedChartId: id => dispatch(setChartId(id)),
     setPlotAxisMapper: mapping => dispatch(setAxisMapper(mapping)),
-    setStackDrawingOrder: mapping => dispatch(setDrawingOrder(mapping)),
+    setStackDrawingOrder: order => dispatch(setDrawingOrder(order)),
+    setLineHighlights: highlights => dispatch(setHighlights(highlights)),
     // set2
     setDataAnswer: (answers) => dispatch(setAnswers(answers)),
     setDataSentenceQuestion: (sentences, questions) => dispatch(setQuestionSentences(sentences, questions)),
@@ -72,14 +75,15 @@ class Questions extends React.PureComponent {
     // }
 
     componentDidUpdate() {
-        const { dataSentence, setDataSumstat } = this.props
-        if (!dataSentence) {
+        const { chartId, dataSentence, setDataSumstat } = this.props
+        if (!dataSentence && chartId) {
             setDataSumstat(this.sentences, this.questions, this.answers)
         }
     }
 
     render() {
-        const { chartId, selection, axisMapper, drawingOrder, dataSentence, dataQuestion, dataAnswer } = this.props
+        const { chartId, selection, axisMapper, drawingOrder, lineHighlights, dataSentence, dataQuestion, dataAnswer } = this.props
+        const { setSelectedChartId, setPlotAxisMapper, setStackDrawingOrder, setLineHighlights, setDataSentenceQuestion, setDataAnswer } = this.props
 
         // require at leaset chartId to generate questions
         if (!chartId) { return null; }
@@ -150,9 +154,9 @@ class Questions extends React.PureComponent {
         // selects
         const optSelection = selection.map(id => ({ key: id, txt: chartInfos[id].task }))
         const optHeaders = numberColGroups.map((header, index) => ({ key: index, txt: header }))
-        // datastore actions
-        const { setSelectedChartId, setPlotAxisMapper, setStackDrawingOrder, setDataSentenceQuestion, setDataAnswer } = this.props
-        
+        // autocomplete
+        const highlights = lineHighlights.map(h => h.key)
+
         const isPlot = chartId.includes("plot")
         return (
             <div className="questions f-18">
@@ -160,29 +164,31 @@ class Questions extends React.PureComponent {
                 <p className="question-set">{"Question set: chart " + chartId}</p>
 
                 {/* Q1: task of the chart and more info */}
-                {selection.length > 1 ? <div style={{ marginBottom: '-18px' }}>
-                    <div className="q-set1-pb6">I want to&nbsp;<b>show</b>&nbsp;</div>
+                {selection.length > 1 ? <div className="flex-baseline" style={{marginBottom: -16}}>
+                    <div className="ws-n">I want to&nbsp;<b>show</b>&nbsp;</div>
+                    <div className="flex-column">
                     <SelectSimple
-                        qaId="S1Q1" options={optSelection} value={chartId}
+                        qaId="S1Q1" options={optSelection} value={chartId} styles={{width: "600px"}}
                         setChange={setSelectedChartId}
                     />
                     <ExpansionPanel info={chartInfos[chartId].description} />
+                    </div>
                 </div> : null}
 
                 {/* Q2: axis and size for plots */}
                 {/* TODO: loop optHeaders instead ? */}
-                {isPlot ? <div>
-                    <div className="q-set1-pb6">So use the&nbsp;<b>x-axis</b>&nbsp;for&nbsp;</div>
+                {isPlot ? <div className="flex-baseline">
+                    <div>So use the&nbsp;<b>x-axis</b>&nbsp;for&nbsp;</div>
                     <SelectSimple
                         qaId="S1Q2" options={optHeaders} value={axisMapper[0]}
                         setChange={setPlotAxisMapper} data={axisMapper}
                     />
-                    <div className="q-set1-pb6">,&nbsp;<b>y-axis</b>&nbsp;for&nbsp;</div>
+                    <div>,&nbsp;<b>y-axis</b>&nbsp;for&nbsp;</div>
                     <SelectSimple
                         qaId="S1Q2" options={optHeaders} value={axisMapper[1]}
                         setChange={setPlotAxisMapper} data={axisMapper}
                     />
-                    {numberColGroupsCount > 2 ? <div className="q-set1-pb6">, and&nbsp;<b>size</b>&nbsp;for&nbsp;</div> : null}
+                    {numberColGroupsCount > 2 ? <div>, and&nbsp;<b>size</b>&nbsp;for&nbsp;</div> : null}
                     {numberColGroupsCount > 2 ? <SelectSimple
                         qaId="S1Q2" options={optHeaders} value={axisMapper[2]}
                         setChange={setPlotAxisMapper} data={axisMapper}
@@ -190,8 +196,8 @@ class Questions extends React.PureComponent {
                 </div> : null}
 
                 {/* Q3: unit(s) of number(s), x3 if plots */}
-                <div>
-                    <div className="q-set1-pb11">The numbers on the table refer to&nbsp;</div>
+                <div className="flex-baseline">
+                    <div>The numbers on the table refer to&nbsp;</div>
                     {isPlot ?
                         <TextFields
                             helpText={numberColGroups[0]}
@@ -199,12 +205,12 @@ class Questions extends React.PureComponent {
                             data={{ sentences: this.sentences, questions: this.questions, index: 0 }}
                         /> :
                         <TextFields
-                            helpText={numberColHeader}
+                            helpText={numberColHeader} styles={{width: "300px"}}
                             setChange={setDataSentenceQuestion}
                             data={{ sentences: this.sentences, questions: this.questions, isOnlyTF: true }}
                         />
                     }
-                    {isPlot ? <span>,{' '}</span> : null}
+                    {isPlot ? <div>,{' '}</div> : null}
                     {isPlot ?
                         <TextFields
                             helpText={numberColGroups[1]}
@@ -212,7 +218,7 @@ class Questions extends React.PureComponent {
                             data={{ sentences: this.sentences, questions: this.questions, index: 1 }}
                         /> : null
                     }
-                    {isPlot && numberColGroupsCount === 3 ? <span>,{' and '}</span> : null}
+                    {isPlot && numberColGroupsCount === 3 ? <div>,{' and '}</div> : null}
                     {isPlot && numberColGroupsCount === 3 ?
                         <TextFields
                             helpText={numberColGroups[2]}
@@ -220,38 +226,35 @@ class Questions extends React.PureComponent {
                             data={{ sentences: this.sentences, questions: this.questions, index: 2 }}
                         /> : null
                     }
-                    <div>-- is it $/€/£, people, or years?</div>
                 </div>
+                <div>-- is it $/€/£, people, or years?</div>
 
                 {/* Q4: header of number cols */}
-                {col1DataType !== "date" ? <div>
-                    <div className="q-set1-pb11">{numberColHeader[0].toUpperCase() + numberColHeader.slice(1) + ' are'}&nbsp;</div>
+                {col1DataType !== "date" ? <div className="flex-baseline">
+                    <div>{numberColHeader[0].toUpperCase() + numberColHeader.slice(1) + ' are'}&nbsp;</div>
                     <TextFields defaultValue={col1Header} />
                 </div > : null}
 
                 {/* Q5: stack drawing order */}
-                {chartId.includes("Stack") ? <div>
-                    <div className="q-set1-pb6">And&nbsp;<b>stack</b>&nbsp;the chart&nbsp;</div>
+                {chartId.includes("Stack") ? <div className="flex-baseline">
+                    <div>And&nbsp;<b>stack</b>&nbsp;the chart&nbsp;</div>
                     <SelectSimple qaId="S1Q5" options={optDrawing} value={drawingOrder} setChange={setStackDrawingOrder} />
-                    <span>{' '}</span>
-                    {drawingOrder === 2 ?
-                        <TextFieldWithAutocomplete question={""} options={numberColGroups} renderType={"single"} /> :
-                        null}
+                    <div>{' '}</div>
+                    {drawingOrder === 2 ? <Autocomplete options={optHeaders} isSingle={true}/> : null}
                 </div> : null}
 
                 {/* Q6: line highlights */}
-                {chartId.includes("line") && numberColGroupsCount > 3 ? <div className="d-f">
-                    <div className="as-fe pb-4">And&nbsp;<b>highlight</b>&nbsp;</div>
-                    <TextFieldWithAutocomplete question={""} options={numberColGroups} renderType={"multiple"}
-                        handleChange={this.handleSet2QuestionsFilter}
-                    />
+                {/* TODO: add condition */}
+                {chartId.includes("line") && numberColGroupsCount > 3 ? <div className="flex-baseline">
+                    <div>And&nbsp;<b>highlight</b>&nbsp;</div>
+                    <Autocomplete options={optHeaders} value={lineHighlights} setChange={setLineHighlights} />
                 </div> : null}
 
                 {/* Set2 Questions: <switch> sentences and questions <textfield>*/}
                 <p className="question-set mb-5">Question set: statistical summary</p>
                 {/* grouped sentences for toggle */}
                 {this.sentences.text.map((sentences, index) =>
-                    <div key={"sq-" + index} className="mb-5 js-set2Q" id={numberColGroups[index].replace(/ /g, '')}>
+                    <div key={"sq-" + index} className={"mb-5" + (highlights.indexOf(index) > -1 ? "" : " d-n")} id={numberColGroups[index].replace(/ /g, '')}>
                         <p><span className="question-group">{numberColGroups[index]}</span></p>
                         {sentences.map((s, idx) => <div key={"s-" + index + idx}>
                             <SwitchLabel

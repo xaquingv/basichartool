@@ -2,16 +2,16 @@
     /* font-size: 14px; */
     color: var(--c-black);
 }
-.q-set1-pb11 {
-    display: inline-flex;
-    vertical-align: bottom;
-    padding-bottom: 11px;
+.flex-baseline {
+    display: flex;
+    align-items: baseline;
+    margin-top: 16px;
 }
-.q-set1-pb6 {
-    display: inline-flex;
-    vertical-align: bottom;
-    padding-bottom: 6px;
+.flex-column {
+    display: flex;
+    flex-direction: column;
 }
+
 .question-set {
     margin-top: 2rem;
     font-size: 1.35rem;
@@ -38,7 +38,7 @@
 .questions .MuiInputBase-input,
 .questions .MuiTypography-body1,
 .MuiPaper-root .MuiMenuItem-root {
-    color: var(--c-black);
+    /* color: var(--c-black); */
     font-size: 1.125rem;
     font-family: source-sans-pro, Helvetica, Arial, sans-serif;
     transform: scale(1);
@@ -46,14 +46,14 @@
 .questions .MuiInputBase-input {
     color: var(--c-blue);
 }
+/* .questions .MuiTypography-body1 {
+    font-family: source-sans-pro, Helvetica, Arial, sans-serif; 
+} */
 
 /* switch */
 .questions .MuiSwitch-root {
     height: 28px;
     padding: 7px 12px;
-}
-.js-set2Q .MuiButtonBase-root {
-    padding: 4px 10px;
 }
 .questions .MuiTouchRipple-root {
     left: 5px;
@@ -70,10 +70,6 @@
 }
 
 /* textfield */
-.questions .MuiFormControl-root {
-    /* width: 67%; */
-    margin-top: 1rem;
-}
 .MuiInputLabel-formControl {
     font-weight: 600!important;
 }
@@ -109,3 +105,10 @@
 .MuiPaper-root .MuiMenuItem-root {
     min-height: 28px
 }
+
+.questions .MuiAutocomplete-tag {
+    margin: 0 4px 0 0;
+}
+/* .questions .MuiChip-root {
+    height: 24px;
+} */

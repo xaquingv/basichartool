@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch, props) => ({
 class Chartlist extends React.PureComponent {
   componentDidUpdate() {
     const selection = this.props.selection
-    if (selection.indexOf("lineDiscrete") > -1 && selection.indexOf("lineContinue") > -1) {
+    if (selection && (selection.indexOf("lineDiscrete") > -1 && selection.indexOf("lineContinue") > -1)) {
       // check if discrete and conti are the same
       // if the same (duplicate), remove the discrete line from the selection list
       const pathDiscrete = document.querySelector("#lineDiscrete path")

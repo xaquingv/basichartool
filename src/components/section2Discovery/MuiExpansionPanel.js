@@ -9,14 +9,14 @@ import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 const ExpansionPanel = withStyles({
   root: {
     backgroundColor: "transparent",
-    width: "66%",
     boxShadow: "none",
-    marginLeft: "128px",
+    width: 600,
+    marginLeft: 8,
     "&:before": {
       display: "none"
     },
     "&$expanded": {
-      marginLeft: "128px"
+      marginLeft: 8,
     }
   },
   expanded: {}
@@ -45,32 +45,33 @@ const ExpansionPanelSummary = withStyles({
 
 const ExpansionPanelDetails = withStyles(theme => ({
   root: {
-    padding: '0 0 10px 0'
+    padding: '0 0 8px 0'
   }
 }))(MuiExpansionPanelDetails);
 
 export default function CustomizedExpansionPanels(props) {
   const [expanded, setExpanded] = React.useState("");
   
-  const handleChange = panel => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
+  const handleChange = toggle => (event, newExpanded) => {
+    setExpanded(newExpanded ? toggle : false);
   };
 
   return (
     <div>
       <ExpansionPanel
         square
-        expanded={expanded === "panel1"}
-        onChange={handleChange("panel1")}
+        expanded={expanded === "toggle"}
+        onChange={handleChange("toggle")}
       >
         <ExpansionPanelSummary
           aria-controls="panel1d-content"
           id="panel1d-header"
         >
-          <InfoRoundedIcon color="action"/>&nbsp;
+          <InfoRoundedIcon style={{marginLeft: -4}} color="action"/>&nbsp;
           <Typography>More info</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
+          {/* TODO: sync style */}
           <Typography>{props.info}</Typography>
         </ExpansionPanelDetails>
       </ExpansionPanel>

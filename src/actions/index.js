@@ -93,6 +93,7 @@ export const removeChartDuplicate = (selection, removeId) => {
 }
 
 // questions: sumstats
+// set 1
 export const setChartId = (chartId) => ({
   type: "SET_CHART_ID",
   chartId
@@ -105,7 +106,11 @@ export const setDrawingOrder = (drawingOrder) => ({
   type: "SET_DRAWING_ORDER",
   drawingOrder
 })
-
+export const setHighlights = (highlights) => ({
+  type: "SET_HIGHLIGHTS",
+  highlights
+})
+// set 2
 export const setAnswers = (dataAnswer) => ({
   type: "SET_ANSWERS",
   dataAnswer

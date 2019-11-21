@@ -197,6 +197,9 @@ function axisMapper(axisMapper = [0, 1, 2], action) {
 function drawingOrder(drawingOrder = 0, action) {
   return action.type === "SET_DRAWING_ORDER" ? action.drawingOrder : drawingOrder
 }
+function lineHighlights(highlights = [], action) {
+  return action.type === "SET_HIGHLIGHTS" ? action.highlights : highlights
+}
 // sumstats' answers in set2
 function dataAnswer(dataAnswer = null, action) {
   switch (action.type) {
@@ -357,6 +360,7 @@ const app = combineReducers({
   dataCount,
   axisMapper,
   drawingOrder,
+  lineHighlights,
   dataAnswer,
   dataSentence,
   dataQuestion,
