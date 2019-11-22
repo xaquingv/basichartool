@@ -7,11 +7,13 @@ const useStyles = makeStyles(theme => ({
     single: {
         display: "inline-flex",
         width: 300,
+        height: 32,
         marginLeft: theme.spacing(1)
     },
     multiple: {
         display: "inline-flex",
         minWidth: 600,
+        height: 32,
         marginLeft: theme.spacing(1),
     }
     // TODO: chips' height
@@ -60,7 +62,7 @@ export default function AutocompleteTextField(props) {
                 renderInput={params => (
                     <TextField
                         {...params}
-                        placeholder={value.length === 0 ? "Please type one or more highlights. Required*" : ""} //TODO
+                        placeholder={value.length === 0 ? "Please type one or more highlights. Required*" : ""}
                         margin="none"
                         fullWidth
                     />

@@ -17,8 +17,7 @@ const useStyles = makeStyles(theme => ({
     textFieldSet2: {
         width: "66%",
         minWidth: "600px",
-        marginTop: "5px",
-        marginLeft: "46px"
+        margin: "5px 0 -12px 47px"
     }
 }));
 

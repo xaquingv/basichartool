@@ -1,10 +1,11 @@
 .questions {
-    /* font-size: 14px; */
+    font-size: 18px;
     color: var(--c-black);
 }
 .flex-baseline {
     display: flex;
     align-items: baseline;
+    min-height: 36px;
     margin-top: 16px;
 }
 .flex-column {
@@ -33,82 +34,20 @@
 .order2 { order: 2; }
 
 /* override material-ui styles */
-#section3 .MuiInputBase-input,
 .questions .MuiFormLabel-root,
 .questions .MuiInputBase-input,
-.questions .MuiTypography-body1,
-.MuiPaper-root .MuiMenuItem-root {
-    /* color: var(--c-black); */
+.questions .MuiTypography-body1 {
     font-size: 1.125rem;
-    font-family: source-sans-pro, Helvetica, Arial, sans-serif;
     transform: scale(1);
 }
-.questions .MuiInputBase-input {
-    color: var(--c-blue);
-}
-/* .questions .MuiTypography-body1 {
-    font-family: source-sans-pro, Helvetica, Arial, sans-serif; 
-} */
-
-/* switch */
-.questions .MuiSwitch-root {
-    height: 28px;
-    padding: 7px 12px;
-}
-.questions .MuiTouchRipple-root {
-    left: 5px;
-    width: 75%;
-}
-.questions .Mui-checked {
+.MuiInputBase-input {
     color: var(--c-blue) !important;
-}
-.questions .Mui-checked:hover {
-    background-color: transparent !important; 
-}
-.questions .Mui-checked + .MuiSwitch-track {
-    background-color: var(--c-blue) !important;  
-}
-
-/* textfield */
-.MuiInputLabel-formControl {
-    font-weight: 600!important;
-}
-.questions .MuiFormLabel-root.Mui-focused {
-    color: var(--c-blue);  
-}
-.questions .MuiInput-underline:after {
-    border-bottom: 2px solid var(--c-blue);  
-}
-.questions .MuiFormHelperText-root {
-    margin-top: 3px;
-}
-#section3 .MuiFormControl-root {
-    width: 620px;
-}
-#section3 .MuiInput-underline,
-#section3 .MuiInput-underline:before {
-    border: 0;
-    /* border: 2px solid transparent !important; */
-}
-#section3 .MuiInput-underline:after {
-    border-bottom: 2px solid var(--c-grey);  
 }
 .questions .MuiExpansionPanelSummary-content{
     color: rgba(0, 0, 0, 0.54);
     margin: 0;
     transform: scale(0.75) translate(-100px, 0);
 }
-/* select and menu*/
-/* .questions .MuiTypography-root {
-    white-space: nowrap;
-} */
-.MuiPaper-root .MuiMenuItem-root {
-    min-height: 28px
-}
-
 .questions .MuiAutocomplete-tag {
     margin: 0 4px 0 0;
 }
-/* .questions .MuiChip-root {
-    height: 24px;
-} */

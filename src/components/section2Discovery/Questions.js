@@ -15,7 +15,24 @@ import ExpansionPanel from './MuiExpansionPanel'
 import TextFields from './MuiTextField'
 import Autocomplete from './MuiAutocomplete'
 // import Collapse from '@material-ui/core/Collapse';
+import { ThemeProvider } from '@material-ui/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
 
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: "#156ca6",
+        }
+    },
+    typography: {
+        // htmlFontSize: '1.125rem',
+        fontFamily: ["source-sans-pro", "Helvetica", "Arial", "sans-serif"].join(','),
+        // root:  { fontSize: '1.125rem' },
+        // body1: { fontSize: '1.125rem' },
+        // input: { fontSize: '1.125rem' },
+        // label: { fontSize: '1.125rem' }
+    },
+});
 
 const optDrawing = [
     { key: 0, txt: "as is." },
@@ -147,6 +164,9 @@ class Questions extends React.PureComponent {
 
         /* draw */
         // if (!this.sentences) { return null; }
+        const isPlot = chartId.includes("plot")
+        const isLine = chartId.includes("line")
+
         const numberColGroups = dataChart.keys
         const numberColGroupsCount = numberColGroups.length
         const numberColHeader = numberColGroupsCount > 3 ? (numberColGroups.slice(0, 3).join(", ") + ", ...") : numberColGroups.join(", ")
@@ -155,132 +175,137 @@ class Questions extends React.PureComponent {
         const optSelection = selection.map(id => ({ key: id, txt: chartInfos[id].task }))
         const optHeaders = numberColGroups.map((header, index) => ({ key: index, txt: header }))
         // autocomplete
-        const highlights = lineHighlights.map(h => h.key)
+        const isHighlight = lineHighlights.length > 0
+        const keyHighlights = lineHighlights.map(h => h.key)
+        const groupFilter = this.sentences.text.map((s, i) => (isLine && isHighlight) ? keyHighlights.includes(i) : true)
+        // console.log(keyHighlights)
+        // console.log(groupFilter) 
 
-        const isPlot = chartId.includes("plot")
         return (
-            <div className="questions f-18">
-                {/* Set1 Questions */}
-                <p className="question-set">{"Question set: chart " + chartId}</p>
+            <div className="questions">
+                <ThemeProvider theme={theme}>
+                    {/* Set1 Questions */}
+                    <p className="question-set">{"Question set: chart " + chartId}</p>
 
-                {/* Q1: task of the chart and more info */}
-                {selection.length > 1 ? <div className="flex-baseline" style={{marginBottom: -16}}>
-                    <div className="ws-n">I want to&nbsp;<b>show</b>&nbsp;</div>
-                    <div className="flex-column">
-                    <SelectSimple
-                        qaId="S1Q1" options={optSelection} value={chartId} styles={{width: "600px"}}
-                        setChange={setSelectedChartId}
-                    />
-                    <ExpansionPanel info={chartInfos[chartId].description} />
-                    </div>
-                </div> : null}
-
-                {/* Q2: axis and size for plots */}
-                {/* TODO: loop optHeaders instead ? */}
-                {isPlot ? <div className="flex-baseline">
-                    <div>So use the&nbsp;<b>x-axis</b>&nbsp;for&nbsp;</div>
-                    <SelectSimple
-                        qaId="S1Q2" options={optHeaders} value={axisMapper[0]}
-                        setChange={setPlotAxisMapper} data={axisMapper}
-                    />
-                    <div>,&nbsp;<b>y-axis</b>&nbsp;for&nbsp;</div>
-                    <SelectSimple
-                        qaId="S1Q2" options={optHeaders} value={axisMapper[1]}
-                        setChange={setPlotAxisMapper} data={axisMapper}
-                    />
-                    {numberColGroupsCount > 2 ? <div>, and&nbsp;<b>size</b>&nbsp;for&nbsp;</div> : null}
-                    {numberColGroupsCount > 2 ? <SelectSimple
-                        qaId="S1Q2" options={optHeaders} value={axisMapper[2]}
-                        setChange={setPlotAxisMapper} data={axisMapper}
-                    /> : null}
-                </div> : null}
-
-                {/* Q3: unit(s) of number(s), x3 if plots */}
-                <div className="flex-baseline">
-                    <div>The numbers on the table refer to&nbsp;</div>
-                    {isPlot ?
-                        <TextFields
-                            helpText={numberColGroups[0]}
-                            setChange={setDataSentenceQuestion}
-                            data={{ sentences: this.sentences, questions: this.questions, index: 0 }}
-                        /> :
-                        <TextFields
-                            helpText={numberColHeader} styles={{width: "300px"}}
-                            setChange={setDataSentenceQuestion}
-                            data={{ sentences: this.sentences, questions: this.questions, isOnlyTF: true }}
-                        />
-                    }
-                    {isPlot ? <div>,{' '}</div> : null}
-                    {isPlot ?
-                        <TextFields
-                            helpText={numberColGroups[1]}
-                            setChange={setDataSentenceQuestion}
-                            data={{ sentences: this.sentences, questions: this.questions, index: 1 }}
-                        /> : null
-                    }
-                    {isPlot && numberColGroupsCount === 3 ? <div>,{' and '}</div> : null}
-                    {isPlot && numberColGroupsCount === 3 ?
-                        <TextFields
-                            helpText={numberColGroups[2]}
-                            setChange={setDataSentenceQuestion}
-                            data={{ sentences: this.sentences, questions: this.questions, index: 2 }}
-                        /> : null
-                    }
-                </div>
-                <div>-- is it $/€/£, people, or years?</div>
-
-                {/* Q4: header of number cols */}
-                {col1DataType !== "date" ? <div className="flex-baseline">
-                    <div>{numberColHeader[0].toUpperCase() + numberColHeader.slice(1) + ' are'}&nbsp;</div>
-                    <TextFields defaultValue={col1Header} />
-                </div > : null}
-
-                {/* Q5: stack drawing order */}
-                {chartId.includes("Stack") ? <div className="flex-baseline">
-                    <div>And&nbsp;<b>stack</b>&nbsp;the chart&nbsp;</div>
-                    <SelectSimple qaId="S1Q5" options={optDrawing} value={drawingOrder} setChange={setStackDrawingOrder} />
-                    <div>{' '}</div>
-                    {drawingOrder === 2 ? <Autocomplete options={optHeaders} isSingle={true}/> : null}
-                </div> : null}
-
-                {/* Q6: line highlights */}
-                {/* TODO: add condition */}
-                {chartId.includes("line") && numberColGroupsCount > 3 ? <div className="flex-baseline">
-                    <div>And&nbsp;<b>highlight</b>&nbsp;</div>
-                    <Autocomplete options={optHeaders} value={lineHighlights} setChange={setLineHighlights} />
-                </div> : null}
-
-                {/* Set2 Questions: <switch> sentences and questions <textfield>*/}
-                <p className="question-set mb-5">Question set: statistical summary</p>
-                {/* grouped sentences for toggle */}
-                {this.sentences.text.map((sentences, index) =>
-                    <div key={"sq-" + index} className={"mb-5" + (highlights.indexOf(index) > -1 ? "" : " d-n")} id={numberColGroups[index].replace(/ /g, '')}>
-                        <p><span className="question-group">{numberColGroups[index]}</span></p>
-                        {sentences.map((s, idx) => <div key={"s-" + index + idx}>
-                            <SwitchLabel
-                                label={s} checked={this.answers.switches[index][idx]}
-                                setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx] }}
+                    {/* Q1: task of the chart and more info */}
+                    {selection.length > 1 ? <div className="flex-baseline" style={{ marginBottom: -16 }}>
+                        <div className="ws-n">I want to&nbsp;<b>show</b>&nbsp;</div>
+                        <div className="flex-column">
+                            <SelectSimple
+                                qaId="S1Q1" options={optSelection} value={chartId} styles={{ width: "600px" }}
+                                setChange={setSelectedChartId}
                             />
-                            {this.answers.switches[index][idx] ?
-                                this.questions.text[index][idx].map((q, i) =>
-                                    <TextFields
-                                        qaId="set2" label={q} key={"q-" + index + idx + i}
-                                        setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx, i] }}
-                                    />
-                                )
-                                : null
-                            }
-                        </div>)}
-                    </div>
-                )}
+                            <ExpansionPanel info={chartInfos[chartId].description} />
+                        </div>
+                    </div> : null}
 
-                {/* {dataQuestion ? <input
+                    {/* Q2: axis and size for plots */}
+                    {/* TODO: loop optHeaders instead ? */}
+                    {isPlot ? <div className="flex-baseline">
+                        <div>So use the&nbsp;<b>x-axis</b>&nbsp;for&nbsp;</div>
+                        <SelectSimple
+                            qaId="S1Q2" options={optHeaders} value={axisMapper[0]}
+                            setChange={setPlotAxisMapper} data={axisMapper}
+                        />
+                        <div>,&nbsp;<b>y-axis</b>&nbsp;for&nbsp;</div>
+                        <SelectSimple
+                            qaId="S1Q2" options={optHeaders} value={axisMapper[1]}
+                            setChange={setPlotAxisMapper} data={axisMapper}
+                        />
+                        {numberColGroupsCount > 2 ? <div>, and&nbsp;<b>size</b>&nbsp;for&nbsp;</div> : null}
+                        {numberColGroupsCount > 2 ? <SelectSimple
+                            qaId="S1Q2" options={optHeaders} value={axisMapper[2]}
+                            setChange={setPlotAxisMapper} data={axisMapper}
+                        /> : null}
+                    </div> : null}
+
+                    {/* Q3: unit(s) of number(s), x3 if plots */}
+                    <div className="flex-baseline">
+                        <div>The numbers on the table refer to&nbsp;</div>
+                        {isPlot ?
+                            <TextFields
+                                helpText={numberColGroups[0]}
+                                setChange={setDataSentenceQuestion}
+                                data={{ sentences: this.sentences, questions: this.questions, index: 0 }}
+                            /> :
+                            <TextFields
+                                helpText={numberColHeader} styles={{ width: "300px" }}
+                                setChange={setDataSentenceQuestion}
+                                data={{ sentences: this.sentences, questions: this.questions, isOnlyTF: true }}
+                            />
+                        }
+                        {isPlot ? <div>,{' '}</div> : null}
+                        {isPlot ?
+                            <TextFields
+                                helpText={numberColGroups[1]}
+                                setChange={setDataSentenceQuestion}
+                                data={{ sentences: this.sentences, questions: this.questions, index: 1 }}
+                            /> : null
+                        }
+                        {isPlot && numberColGroupsCount === 3 ? <div>,{' and '}</div> : null}
+                        {isPlot && numberColGroupsCount === 3 ?
+                            <TextFields
+                                helpText={numberColGroups[2]}
+                                setChange={setDataSentenceQuestion}
+                                data={{ sentences: this.sentences, questions: this.questions, index: 2 }}
+                            /> : null
+                        }
+                    </div>
+                    <div>-- is it $/€/£, people, or years?</div>
+
+                    {/* Q4: header of number cols */}
+                    {col1DataType !== "date" ? <div className="flex-baseline">
+                        <div>{numberColHeader[0].toUpperCase() + numberColHeader.slice(1) + ' are'}&nbsp;</div>
+                        <TextFields defaultValue={col1Header} />
+                    </div > : null}
+
+                    {/* Q5: stack drawing order */}
+                    {chartId.includes("Stack") ? <div className="flex-baseline">
+                        <div>And&nbsp;<b>stack</b>&nbsp;the chart&nbsp;</div>
+                        <SelectSimple qaId="S1Q5" options={optDrawing} value={drawingOrder} setChange={setStackDrawingOrder} />
+                        <div>{' '}</div>
+                        {drawingOrder === 2 ? <Autocomplete options={optHeaders} isSingle={true} /> : null}
+                    </div> : null}
+
+                    {/* Q6: line highlights */}
+                    {/* TODO: add condition */}
+                    {isLine && numberColGroupsCount > 3 ? <div className="flex-baseline">
+                        <div>And&nbsp;<b>highlight</b>&nbsp;</div>
+                        <Autocomplete options={optHeaders} value={lineHighlights} setChange={setLineHighlights} />
+                    </div> : null}
+
+                    {/* Set2 Questions: <switch> sentences and questions <textfield>*/}
+                    <p className="question-set mb-5">Question set: statistical summary</p>
+                    {/* grouped sentences for toggle */}
+                    {this.sentences.text.map((sentences, index) =>
+                        <div key={"sq-" + index} className={"mb-5" + (groupFilter[index] ? "" : " d-n")} id={numberColGroups[index].replace(/ /g, '')}>
+                            <p><span className="question-group">{numberColGroups[index]}</span></p>
+                            {sentences.map((s, idx) => <div key={"s-" + index + idx}>
+                                <SwitchLabel
+                                    label={s} checked={this.answers.switches[index][idx]}
+                                    setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx] }}
+                                />
+                                {this.answers.switches[index][idx] ?
+                                    this.questions.text[index][idx].map((q, i) =>
+                                        <TextFields
+                                            qaId="set2" label={q} key={"q-" + index + idx + i}
+                                            setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx, i] }}
+                                        />
+                                    )
+                                    : null
+                                }
+                            </div>)}
+                        </div>
+                    )}
+
+                    {/* {dataQuestion ? <input
                     type="button"
                     className={"button btn-create mb-5 mt-15"}
                     value="Submit"
                     onClick={() => this.handleSubmit()}
                 /> : null} */}
 
+                </ThemeProvider>
             </div>
         )
     }
