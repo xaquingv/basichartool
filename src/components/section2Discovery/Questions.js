@@ -25,12 +25,8 @@ const theme = createMuiTheme({
         }
     },
     typography: {
-        // htmlFontSize: '1.125rem',
         fontFamily: ["source-sans-pro", "Helvetica", "Arial", "sans-serif"].join(','),
-        // root:  { fontSize: '1.125rem' },
         // body1: { fontSize: '1.125rem' },
-        // input: { fontSize: '1.125rem' },
-        // label: { fontSize: '1.125rem' }
     },
 });
 
@@ -65,7 +61,8 @@ const mapDispatchToProps = dispatch => ({
     setDataAnswer: (answers) => dispatch(setAnswers(answers)),
     setDataSentenceQuestion: (sentences, questions) => dispatch(setQuestionSentences(sentences, questions)),
     setDataSumstat: (sentences, questions, answers) => dispatch(setSumstat(sentences, questions, answers)),
-    setDataParagraph: (paragraph, chart, id) => dispatch(setParagraph(paragraph, chart, id))
+    setDataParagraph: () => dispatch(setParagraph())
+    // setDataParagraph: (paragraph) => dispatch(setParagraph(paragraph))
 })
 
 
@@ -90,6 +87,28 @@ class Questions extends React.PureComponent {
     //     //console.log(dataParagraph)
     //     setDataParagraph(write(dataParagraph), dataChart, chartId)
     // }
+
+    handleSubmit() {
+        const { chartId, dataAnswer, lineHighlights, setDataParagraph } = this.props
+        const { switches, textfields } = dataAnswer
+        const keyHighlights = lineHighlights.map(h => h.key) 
+        const isGroupFilter = chartId.includes("line") && keyHighlights.length > 0
+        console.log("submit:", dataAnswer)
+
+        let answers = []
+        textfields
+        .map((tf, idx) => ({tf, idx}))
+        .filter((data, idx) => isGroupFilter ? keyHighlights.includes(idx) : true)
+        .forEach((data, index) => {
+            if (switches[data.idx][index]) {
+                answers.push(data.tf)
+            }
+        })
+        // TODO: add filter to answers for skipping empty content
+        console.log(answers)
+        // TODO: ...
+        setDataParagraph();
+    }
 
     componentDidUpdate() {
         const { chartId, dataSentence, setDataSumstat } = this.props
@@ -178,8 +197,6 @@ class Questions extends React.PureComponent {
         const isHighlight = lineHighlights.length > 0
         const keyHighlights = lineHighlights.map(h => h.key)
         const groupFilter = this.sentences.text.map((s, i) => (isLine && isHighlight) ? keyHighlights.includes(i) : true)
-        // console.log(keyHighlights)
-        // console.log(groupFilter) 
 
         return (
             <div className="questions">
@@ -285,25 +302,27 @@ class Questions extends React.PureComponent {
                                     label={s} checked={this.answers.switches[index][idx]}
                                     setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx] }}
                                 />
-                                {this.answers.switches[index][idx] ?
-                                    this.questions.text[index][idx].map((q, i) =>
+                                {this.answers.switches[index][idx] ? 
+                                    this.questions.text[index][idx].map((q, i) => <div style={{width:600, paddingLeft: 46, color: "rgba(0, 0, 0, 0.54)"}}>
+                                        {q}
                                         <TextFields
-                                            qaId="set2" label={q} key={"q-" + index + idx + i}
+                                            qaId="set2" key={"q-" + index + idx + i}
                                             setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx, i] }}
                                         />
-                                    )
+                                    </div>)
                                     : null
                                 }
                             </div>)}
                         </div>
                     )}
 
-                    {/* {dataQuestion ? <input
+                    {/* submit button */}
+                    {dataAnswer ? <input
                     type="button"
                     className={"button btn-create mb-5 mt-15"}
                     value="Submit"
                     onClick={() => this.handleSubmit()}
-                /> : null} */}
+                /> : null}
 
                 </ThemeProvider>
             </div>

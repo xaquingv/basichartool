@@ -10,14 +10,13 @@ const regAnyInCB = /{([^}]*)}/
 
 const useStyles = makeStyles(theme => ({
     textFieldSet1: {
-        width: "150px",
+        width: 150,
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
     },
     textFieldSet2: {
-        width: "66%",
-        minWidth: "600px",
-        margin: "5px 0 -12px 47px"
+        width: "100%",
+        marginBottom: -12
     }
 }));
 
@@ -65,6 +64,11 @@ export default function TextFieldComponent(props) {
             setChange(newAnswers);
         }
     }
+    const handleKeyDown = event => {
+        if (isSet1 && event.keyCode === 13){
+            handleBlur(event)
+        }
+    }
 
     return (
         <TextField
@@ -72,10 +76,10 @@ export default function TextFieldComponent(props) {
             rowsMax={isSet1 ? 1 : 3}
             className={isSet1 ? classes.textFieldSet1 : classes.textFieldSet2}
             style={styles}
-            label={label}
             placeholder={isSet1 ? phSet1 : phSet2}
             value={value}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             onBlur={handleBlur}
             helperText={helpText || " "}
             InputLabelProps={{ shrink: true, }}

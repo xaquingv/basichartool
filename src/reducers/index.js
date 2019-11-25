@@ -253,8 +253,8 @@ function dataParagraph(dataParagraph = null, action) {
     case 'TRANSPOSE_DATA':
     case 'TOGGLE_DATA':
       return null
-    case 'SET_PARAGRAPH':
-      return action.dataParagraph
+    // case 'SET_PARAGRAPH':
+    //   return action.dataParagraph
     default:
       return dataParagraph
   }
