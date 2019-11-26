@@ -38,7 +38,7 @@ class Section extends React.Component {
   }
 
   render() {
-    console.log("render step 1")
+    // console.log("render step 1")
     let textarea, textInput;
     const {onClickImport, onClickClear } = this.props;
 

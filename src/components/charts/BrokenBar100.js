@@ -6,30 +6,36 @@ import { appendChartData } from '../../actions'
 
 const barHeight = 72
 
-const mapStateToProps = (state, props) => ({
-  data: { ...state.dataChart, ...props.dataChart },
+const mapStateToProps = state => ({
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
+const mapDispatchToProps = dispatch => ({
+  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
 })
 
 
 class BrokenBar extends React.Component {
+  appendChartData() {
+    if (this.props.isSelected) {
+      const { data, onSelect } = this.props
+      const legendKeys = data.string1Col.length !== 0 ? data.string1Col : data.keys
+      onSelect(legendKeys, this.scale)
+    }
+  }
 
   componentDidMount() {
     this.renderChart()
+    this.appendChartData()
   }
   componentDidUpdate() {
+    this.appendChartData()
     this.renderChart()
   }
 
   render() {
-    const { data, onSelect, callByStep } = this.props
-    const setChartData = () => {
-      if (callByStep === 2) { onSelect(data, data.string1Col, this.scale) }
-    }
+    const { callByStep } = this.props
 
     const drawLabel = callByStep === 3 ?
       (
@@ -40,7 +46,7 @@ class BrokenBar extends React.Component {
       ) : null
 
     return (
-      <div className="canvas" ref="div" onClick={setChartData}>
+      <div className="canvas" ref="div">
         <div className="bar" ref="bars"></div>
         {drawLabel}
       </div>

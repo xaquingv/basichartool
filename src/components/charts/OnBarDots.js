@@ -10,41 +10,47 @@ const dotSzie = 10
 const dotTop = (barHeight - dotSzie) / 2
 const margin = dotSzie/2
 
-const mapStateToProps = (state, props) => ({
-  data: { ...state.dataChart, ...props.dataChart },
+const mapStateToProps = state => ({
+  data: state.dataChart,
   axis: state.dataEditable.axis,
   colors: state.dataSetup.colors
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  onSelect: (data, keys, scale, margins) => dispatch(appendChartData(data, keys, scale, margins))
+const mapDispatchToProps = dispatch => ({
+  onSelect: (keys, scale, margins) => dispatch(appendChartData(keys, scale, margins))
 })
 
 
 class DotsOnBar extends React.Component {
+  appendChartData() {
+    const { isSelected } = this.props
+    if (isSelected) { 
+      const { data, onSelect } = this.props
+      onSelect(data.keys, this.scale, {left: margin, right: margin}) 
+    }
+  }
 
   componentDidMount() {
     this.renderChart()
   }
   componentDidUpdate() {
+    this.appendChartData()
+    
+    // TODO: double check
+    const { callByStep, colors } = this.props
+    if (callByStep === 2) {
+      d3.select(".js-graph .canvas").attr("data-bg-color", colors[6])
+    }
+
     this.renderChart()
   }
 
   render() {
-    const {data, onSelect, colors, callByStep} = this.props
-
-    // step 2: Discover
-    const setChartData = () => {
-      if (callByStep === 2) {
-        onSelect(data, data.keys, this.scale, {left: margin, right: margin})
-        d3.select(".js-graph .canvas").attr("data-bg-color", colors[6])
-      }
-    }
-
-    // step 3: Edit
+    const {data, callByStep} = this.props
     const isLabel = callByStep === 3
+    
     return (
-      <div className="canvas" ref="div" onClick={setChartData}>
+      <div className="canvas" ref="div">
         {data.string1Col.map((label, i) =>
         <ComponentRow isLabel={isLabel} label={label} key={i}/>
         )}

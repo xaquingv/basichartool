@@ -1,25 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import './section4Panel.css'
+import './section3Edit.css'
 // import scrollTo from '../lib/scrollTo'
 import { default_metaText, ratio } from '../data/config'
 import { chartComponents } from './charts'
 import { updateWidth, setParagraph } from '../actions'
 
-import ComponentSize from './section4Panel/Size'
-import ComponentResponsive from './section4Panel/Responsive'
-import ComponentPalette from './section4Panel/Palette'
-import ComponentDisplay from './section4Panel/Display'
-import ComponentEditor from './section4Panel/Editor'
-import ComponentLegend from './section4Panel/Legend'
-import ComponentXLabel from './section4Panel/LabelX'
-import ComponentSetAxis from './section4Panel/SetAxis'
-import ComponentXAxis from './section4Panel/AxisX'
-import ComponentYAxis from './section4Panel/AxisY'
-import responsiveXTexts from './section4Panel/axisXTextAndSvgResponsive'
-import responsiveXLabel from './section4Panel/axisXLabelResponsive'
-import responsiveYTexts from './section4Panel/axisYTextResponsive'
-// import TextField from '@material-ui/core/TextField'
+import ComponentSize from './section3Edit/Size'
+import ComponentResponsive from './section3Edit/Responsive'
+import ComponentPalette from './section3Edit/Palette'
+import ComponentDisplay from './section3Edit/Display'
+import ComponentEditor from './section3Edit/Editor'
+import ComponentLegend from './section3Edit/Legend'
+import ComponentXLabel from './section3Edit/LabelX'
+import ComponentSetAxis from './section3Edit/SetAxis'
+import ComponentXAxis from './section3Edit/AxisX'
+import ComponentYAxis from './section3Edit/AxisY'
+import responsiveXTexts from './section3Edit/axisXTextAndSvgResponsive'
+import responsiveXLabel from './section3Edit/axisXLabelResponsive'
+import responsiveYTexts from './section3Edit/axisYTextResponsive'
 
 const STEP = 3;
 
@@ -117,7 +116,7 @@ class Section extends React.Component {
     const isBarBased = chartId.toLowerCase().includes("bar") //&& !chartId.includes("broken")
     const isPlot = chartId.toLowerCase().includes("plot")
     const isRender = stepActive >= STEP
-    console.log("render step 3")
+    // if (isRender) console.log("render step 3:")
 
     const ComponentChart = chartComponents[chartId]
     const chartComponent = ComponentChart

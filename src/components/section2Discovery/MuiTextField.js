@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function TextFieldComponent(props) {
-    const { qaId, defaultValue, helpText, label, styles } = props;
+    const { qaId, defaultValue, helpText, styles } = props;
     const { setChange, data } = props;
 
     const classes = useStyles();

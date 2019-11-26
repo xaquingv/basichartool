@@ -4,12 +4,12 @@ import './table.css'
 import { toggleData, transposeData } from '../../actions';
 
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   show: state.show,
   dataTable: state.dataTable,
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   onTranspose: (dataTable, show) => dispatch(transposeData(dataTable, show)),
   onToggle: (dataTable, show, i, type) => dispatch(toggleData(dataTable, show, { type, index: i })),
 })
@@ -23,7 +23,7 @@ class Table extends React.PureComponent {
     
     // require dataTable to generate the table
     if (!dataTypes) { return null; }
-    console.log("render step 2: table")
+    // console.log("render step 2: table")
 
     return (
       <div id="table">

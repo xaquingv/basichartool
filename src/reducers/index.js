@@ -13,6 +13,7 @@ function step(step = 1, action) {
     case 'IMPORT_DATA':
     case 'TOGGLE_DATA':
     case 'TRANSPOSE_DATA':
+    case 'SET_CHART_ID':
       return 2
     case 'SELECT_CHART':
     case 'SET_PARAGRAPH':
@@ -31,6 +32,7 @@ function stepActive(stepActive = 1, action) {
     case 'IMPORT_DATA':
     case 'TOGGLE_DATA':
     case 'TRANSPOSE_DATA':
+    case 'SET_CHART_ID':
       return 2
     case 'SELECT_CHART':
     case 'SET_PARAGRAPH':
@@ -58,12 +60,10 @@ function show(show = { col: [], row: [] }, action) {
   switch (action.type) {
     case 'CLEAR_DATA':
       return ""
-
     case 'IMPORT_DATA':
     case 'TRANSPOSE_DATA':
     case 'TOGGLE_DATA':
       return action.show
-
     default:
       return show
   }
@@ -116,40 +116,55 @@ function dataCount(dataCount = {}, action) {
 }
 
 function dataChart(dataChart = {}, action) {
+  const initDataChart = { legend: [], scales: {}, margin: undefined, indent: 0, marginTop: 0 }
+  
   switch (action.type) {
     // init
-    // TODO: debug ?
+    // TODO: apply on setParagragh (step3), 
+    // otherwise (step2), only action.dataSummary.chart is needed 
     case 'IMPORT_DATA':
-      const initDataChart = { legend: [], scales: {}, margin: undefined, indent: 0, marginTop: 0 }
-      return {
-        ...initDataChart,
-        ...action.dataSummary.chart,
-      }
-
     case 'TRANSPOSE_DATA':
     case 'TOGGLE_DATA':
       return {
-        ...dataChart,
-        ...action.dataSummary.chart
+        ...initDataChart,
+        ...action.dataSummary.chart,
+        isInit: true,
       }
+    case 'SET_CHART_ID':
+      return {
+        ...dataChart,
+        ...initDataChart,
+        isInit: true
+      }
+
     case 'SET_AXIS_MAPPER':
       let newDataChart = { ...dataChart }
       newDataChart.numberCols = action.axisMapper.map(index => dataChart.numberCols[index])
-      console.log(dataChart.numberCols)
-      console.log(newDataChart.numberCols)
+      // console.log(dataChart.numberCols)
+      // console.log(newDataChart.numberCols)
       return dataChart//newDataChart
 
     /* TODO: rename and clean up */
+    // case 'SET_PARAGRAPH':
+    //   console.log("reset append")
+    //   return {
+    //     ...dataChart,
+    //     isInit: true
+    // }
+      
     case 'APPEND_DATA':
+      console.log("chart data:", dataChart)
+      console.log("append:", action)
       return {
-        ...action.dataChart,
+        ...dataChart,
         legend: action.legend,
         scales: action.scales,
         margin: action.margin,
         ranges: {
           x: action.scales.x ? action.scales.x.domain() : null,
           y: action.scales.y ? action.scales.y.domain() : null
-        }
+        },
+        isInit: false
       }
 
     // res y
@@ -269,6 +284,12 @@ function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, 
         ...dataSetup,
         pickColor: ""//dataSetup.colors[0]//"#000000"
       }
+    case 'INIT_SETUP':
+      return {
+        ...dataSetup,
+        colors: action.colors,
+        display: action.displaySwitches 
+      }
     // setup
     case 'SET_DISPLAY':
       return {
@@ -281,16 +302,6 @@ function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, 
       return {
         ...dataSetup,
         display: newSwitches
-      }
-    case 'UPDATE_SIZE':
-      return {
-        ...dataSetup,
-        size: action.size
-      }
-    case 'UPDATE_WIDTH':
-      return {
-        ...dataSetup,
-        width: action.width
       }
     case 'SET_COLORS':
       return {
@@ -309,7 +320,16 @@ function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, 
         ...dataSetup,
         colors: newColors
       }
-
+    case 'UPDATE_SIZE':
+      return {
+        ...dataSetup,
+        size: action.size
+      }
+    case 'UPDATE_WIDTH':
+      return {
+        ...dataSetup,
+        width: action.width
+      }
     default:
       return dataSetup
   }
@@ -353,19 +373,22 @@ function dataEditable(dataEditable = {}, action) {
 const app = combineReducers({
   step,
   stepActive,
+  // step2
   show,
   selection,
+  chartId,
   dataChart,
   dataTable,
   dataCount,
   axisMapper,
   drawingOrder,
   lineHighlights,
+  // step2: sumstat
   dataAnswer,
   dataSentence,
   dataQuestion,
   dataParagraph,
-  chartId,
+  // step3
   dataSetup,
   dataEditable
 });

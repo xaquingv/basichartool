@@ -6,37 +6,39 @@ import { appendChartData } from '../../actions'
 import ComponentRow from './BarBase'
 import drawChart from './bar'
 
-const mapStateToProps = (state, props) => ({
-  data: { ...state.dataChart, ...props.dataChart },
+const mapStateToProps = state => ({
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
+const mapDispatchToProps = dispatch => ({
+  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
 })
 
 class Bars100 extends React.Component {
+  appendChartData() {
+    if (this.props.isSelected) { 
+      const { data, onSelect } = this.props
+      const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : data.keys
+      onSelect(legendKeys, this.scale) 
+    }
+  }
 
   componentDidMount() {
     this.renderChart()
+    this.appendChartData()
   }
   componentDidUpdate() {
+    this.appendChartData()
     this.renderChart()
   }
 
   render() {
-    const { data, onSelect, callByStep } = this.props
-    // step 2: Discover
-    const setChartData = () => {
-      if (callByStep === 2) {
-        const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : data.keys
-        onSelect(data, legendKeys, this.scale)
-      }
-    }
-    // step 3: Edit
+    const { data, callByStep } = this.props
     const isLabel = callByStep === 3
+    
     return (
-      <div className="canvas" ref="div" onClick={setChartData}>
+      <div className="canvas" ref="div">
         {data.string1Col.map((label, i) =>
           <ComponentRow isLabel={isLabel} label={label} key={i} />
         )}

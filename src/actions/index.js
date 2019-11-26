@@ -142,19 +142,23 @@ export const setColors = (colors) => ({
   type: "SET_COLORS",
   colors
 })
-export const appendChartData = (dataChart, legend, scales, margin) => ({
+export const setDisplay = (switches) => ({
+  type: "SET_DISPLAY",
+  displaySwitches: switches
+})
+export const initSetup = (colors, switches) => ({
+  type: "INIT_SETUP",
+  colors,
+  displaySwitches: switches
+})
+export const appendChartData = (legend, scales, margin) => ({
   type: "APPEND_DATA",
-  dataChart,
   legend,
   scales,
   margin
 })
 
 /* section 4 */
-export const setDisplay = (switches) => ({
-  type: "SET_DISPLAY",
-  displaySwitches: switches
-})
 export const updateDisplay = (key) => ({
   type: "UPDATE_DISPLAY",
   metaKey: key

@@ -123,7 +123,7 @@ class Questions extends React.PureComponent {
 
         // require at leaset chartId to generate questions
         if (!chartId) { return null; }
-        console.log("render step 2: qa -", chartId)
+        // console.log("render step 2: qa -", chartId)
 
         /* data */
         const { dataChart } = this.props

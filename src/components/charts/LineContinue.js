@@ -1,51 +1,58 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {d3} from '../../lib/d3-lite'
-import {appendChartData} from '../../actions'
-import {width, height, viewBox} from '../../data/config'
+import { connect } from 'react-redux'
+import { d3 } from '../../lib/d3-lite'
+import { appendChartData } from '../../actions'
+import { width, height, viewBox } from '../../data/config'
 import drawChart from './line'
 
-const mapStateToProps = (state, props) => ({
-  data: { ...state.dataChart, ...props.dataChart },
+const mapStateToProps = state => ({
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
+const mapDispatchToProps = dispatch => ({
+  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
 })
 
 
 class Line extends React.Component {
+  appendChartData() {
+    if (this.props.isSelected) { 
+      const { data, onSelect } = this.props 
+      const keys = data.numberOnly ? data.keys.slice(1, data.keys.length) : data.keys
+      onSelect(keys, this.scale) 
+    }
+  }
 
   componentDidMount() {
     this.renderChart()
+    this.appendChartData()
   }
   componentDidUpdate() {
+    this.appendChartData()
     this.renderChart()
   }
 
   render() {
-    const {data, onSelect, callByStep} = this.props
-    const keys = data.numberOnly ? data.keys.slice(1, data.keys.length) : data.keys
-    const setChartData = () => {
-      if (callByStep === 2) { onSelect(data, keys, this.scale) }
-    }
+    const { data } = this.props
 
     return (
-      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
-        top: "-2px",
-        width: "calc(100% - " + (data.indent+1) + "px)",
-        height: data.height + "%",
-        padding: "1px",
-        marginTop: data.marginTop + "%"
-      }} onClick={setChartData}></svg>
+      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" 
+        style={{
+          top: "-2px",
+          width: "calc(100% - " + (data.indent + 1) + "px)",
+          height: data.height + "%",
+          padding: "1px",
+          marginTop: data.marginTop + "%"
+        }}
+      ></svg>
     )
   }
 
   renderChart() {
 
     /* data */
-    const {data, colors/*, callByStep*/} = this.props
+    const { data, colors } = this.props
     const dataX = data.dateCol || data.numberCols[0]
     const numbers = data.numberOnly ? data.numbersButCol1 : data.numbers
     const numberCols = data.numberOnly ? data.numberCols.slice(1, data.numberCols.length) : data.numberCols
@@ -54,19 +61,19 @@ class Line extends React.Component {
     // scale
     this.scale = {}
     this.scale.x = scaleTime()
-    .domain(d3.extent(dataX))
-    .range([0, width])
+      .domain(d3.extent(dataX))
+      .range([0, width])
 
     this.scale.y = d3.scaleLinear()
-    .domain(d3.extent(numbers))
-    .range([height, 0])
+      .domain(d3.extent(numbers))
+      .range([height, 0])
 
     // chart
     const dataChart = numberCols.map(numberCol =>
       numberCol.map((number, i) => ({
         x: dataX[i],
         y: number
-    })))
+      })))
 
 
     /* draw */

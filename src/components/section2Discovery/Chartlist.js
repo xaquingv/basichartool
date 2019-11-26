@@ -9,14 +9,14 @@ import { chartComponents } from '../charts'
 const STEP = 2;
 const MSG_WARNING = "There is NO RESULT!!"
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   chartIdFirst: state.chartId,
-  dataChart: state.dataChart,
-  selection: state.selection
+  selection: state.selection,
+  isInit: state.dataChart.isInit
 })
 
-const mapDispatchToProps = (dispatch, props) => ({
-  onSelect: (chartId) => dispatch(selectChart(chartId)),
+const mapDispatchToProps = dispatch => ({
+  onSelect: chartId => dispatch(selectChart(chartId)),
   removeSelectionChartDuplicate: (selection, removeId) => dispatch(removeChartDuplicate(selection, removeId))
 })
 
@@ -36,19 +36,22 @@ class Chartlist extends React.PureComponent {
   }
 
   render() {
-    const { selection, dataChart, chartIdFirst } = this.props
+    const { selection, chartIdFirst, isInit } = this.props
     
     // require a selection of charts to generate chartList
     if (!selection) { return null; }
-    console.log("render step 2: charts", this.props.selection)
+    // console.log("render step 2: charts", this.props.selection)
 
     // case1/2: list of charts in selection
     const chartComponentsInSelection = Object.keys(chartComponents).map((chartId) => {
       if (selection.indexOf(chartId) > -1) {
         const ComponentChart = chartComponents[chartId]
+        const isFirstChart = (chartId === chartIdFirst)
+        const isSelected = isFirstChart && isInit
+        if(isSelected) console.log("append data")
         return (
-          <div key={chartId} id={chartId} className={chartId === chartIdFirst ? "order1" : "order2"}>
-            <ComponentChart id={chartId} callByStep={STEP} dataChart={dataChart} />
+          <div key={chartId} id={chartId} className={isFirstChart ? "order1" : "order2"}>
+            <ComponentChart id={chartId} callByStep={STEP} isSelected={isSelected} />
             {chartNames[chartId]}
           </div>
         )

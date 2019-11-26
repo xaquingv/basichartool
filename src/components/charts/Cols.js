@@ -7,39 +7,44 @@ import { width, height, viewBox } from '../../data/config'
 import { getDomainByDataRange } from '../../data/calcScaleDomain'
 import drawChart from './col'
 
-const mapStateToProps = (state, props) => ({
-  data: { ...state.dataChart, ...props.dataChart },
+const mapStateToProps = state => ({
+  data: state.dataChart,
   colors: state.dataSetup.colors
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  onSelect: (data, keys, scale) => dispatch(appendChartData(data, keys, scale))
+const mapDispatchToProps = dispatch => ({
+  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
 })
 
 
 class Cols extends React.Component {
+  appendChartData() {
+    if (this.props.isSelected) { 
+      const { data, onSelect } = this.props
+      const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : data.keys
+      onSelect(legendKeys, this.scale)
+    }
+  }
 
   componentDidMount() {
     this.renderChart()
+    this.appendChartData()
   }
   componentDidUpdate() {
+    this.appendChartData()
     this.renderChart()
   }
 
   render() {
-    const { data, onSelect, callByStep } = this.props
-    const setChartData = () => {
-      if (callByStep === 2) {
-        const legendKeys = this.colorKeys.length !== 0 ? this.colorKeys : data.keys
-        onSelect(data, legendKeys, this.scale)
-      }
-    }
+    const { data } = this.props
 
     return (
-      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" style={{
-        width: "calc(100% - " + (data.indent) + "px)",
-        height: "calc(" + data.height + "% + 1px)"
-      }} onClick={setChartData}></svg>
+      <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" 
+        style={{
+          width: "calc(100% - " + (data.indent) + "px)",
+          height: "calc(" + data.height + "% + 1px)"
+        }}
+      ></svg>
     )
   }
 
