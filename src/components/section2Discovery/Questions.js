@@ -61,8 +61,7 @@ const mapDispatchToProps = dispatch => ({
     setDataAnswer: (answers) => dispatch(setAnswers(answers)),
     setDataSentenceQuestion: (sentences, questions) => dispatch(setQuestionSentences(sentences, questions)),
     setDataSumstat: (sentences, questions, answers) => dispatch(setSumstat(sentences, questions, answers)),
-    setDataParagraph: () => dispatch(setParagraph())
-    // setDataParagraph: (paragraph) => dispatch(setParagraph(paragraph))
+    setDataParagraph: (paragraph) => dispatch(setParagraph(paragraph))
 })
 
 
@@ -88,26 +87,43 @@ class Questions extends React.PureComponent {
     //     setDataParagraph(write(dataParagraph), dataChart, chartId)
     // }
 
+    // TODO: ...
     handleSubmit() {
-        const { chartId, dataAnswer, lineHighlights, setDataParagraph } = this.props
+        const { chartId, dataAnswer, dataSentence, dataQuestion, lineHighlights, setDataParagraph } = this.props
         const { switches, textfields } = dataAnswer
         const keyHighlights = lineHighlights.map(h => h.key) 
         const isGroupFilter = chartId.includes("line") && keyHighlights.length > 0
-        console.log("submit:", dataAnswer)
-
-        let answers = []
+        // console.log("submit as group?", isGroupFilter)
+        // console.log("a:", dataAnswer.switches.flat()) ...
+        
+        let paragraphs = []
+        // group level
         textfields
-        .map((tf, idx) => ({tf, idx}))
-        .filter((data, idx) => isGroupFilter ? keyHighlights.includes(idx) : true)
+        .filter((data, index) => isGroupFilter ? keyHighlights.includes(index) : true)
         .forEach((data, index) => {
-            if (switches[data.idx][index]) {
-                answers.push(data.tf)
-            }
+            // sentence level
+            const tfs = data
+            .map((d, i) => ({as:d, gIndex:index, sIndex: i}))
+            .filter((d, i) => switches[index][i])
+            .map(d => {
+                const dummyAnswer = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat odio, facilisis tincidunt risus at, placerat porta magna. Ut vel pulvinar ipsum, vel cursus erat."
+            
+                const s = dataSentence.text[d.gIndex][d.sIndex]
+                const p = "[Paragraph" + d.sIndex + "] " + s + d.as.filter(answers => answers.trim() !== "").map(answers => answers + dummyAnswer)
+                paragraphs.push(p)
+                
+                return {
+                    ...d, s, p,
+                    qs: dataQuestion.text[d.gIndex][d.sIndex] 
+                }
+            })
+            console.log(tfs) 
         })
-        // TODO: add filter to answers for skipping empty content
-        console.log(answers)
-        // TODO: ...
-        setDataParagraph();
+        console.log(paragraphs)
+        
+        const dummyParagraph = "[Dummy paragraph] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nunc lacus, egestas vel pharetra ac, cursus ut sapien. In ac ligula nec odio consectetur facilisis eu posuere justo. In hac habitasse platea dictumst. Integer ac lectus id mi maximus iaculis. Nulla facilisi. Ut eu dictum turpis. Aenean suscipit venenatis odio."
+        paragraphs = paragraphs.length === 0 ? [dummyParagraph] : paragraphs
+        setDataParagraph(paragraphs)
     }
 
     componentDidUpdate() {

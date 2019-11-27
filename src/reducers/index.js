@@ -145,24 +145,18 @@ function dataChart(dataChart = {}, action) {
       return dataChart//newDataChart
 
     /* TODO: rename and clean up */
-    // case 'SET_PARAGRAPH':
-    //   console.log("reset append")
-    //   return {
-    //     ...dataChart,
-    //     isInit: true
-    // }
-      
     case 'APPEND_DATA':
-      console.log("chart data:", dataChart)
-      console.log("append:", action)
+      // console.log("chart data:", dataChart)
+      // console.log("append:", action)
+      const { legend, scales, margin } = action
       return {
         ...dataChart,
-        legend: action.legend,
-        scales: action.scales,
-        margin: action.margin,
+        legend,
+        scales,
+        margin,
         ranges: {
-          x: action.scales.x ? action.scales.x.domain() : null,
-          y: action.scales.y ? action.scales.y.domain() : null
+          x: scales.x ? scales.x.domain() : null,
+          y: scales.y ? scales.y.domain() : null
         },
         isInit: false
       }
@@ -268,8 +262,8 @@ function dataParagraph(dataParagraph = null, action) {
     case 'TRANSPOSE_DATA':
     case 'TOGGLE_DATA':
       return null
-    // case 'SET_PARAGRAPH':
-    //   return action.dataParagraph
+    case 'SET_PARAGRAPH':
+      return action.dataParagraph
     default:
       return dataParagraph
   }

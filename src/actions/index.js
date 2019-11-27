@@ -126,9 +126,9 @@ export const setSumstat = (dataSentence, dataQuestion, dataAnswer) => ({
   dataQuestion,
   dataAnswer
 })
-export const setParagraph = (/*dataParagraph, dataChart, chartId*/) => ({
+export const setParagraph = (dataParagraph/*, dataChart, chartId*/) => ({
   type: "SET_PARAGRAPH",
-  // dataParagraph,
+  dataParagraph,
   // dataChart,
   // chartId
 })

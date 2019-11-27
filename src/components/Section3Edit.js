@@ -116,7 +116,7 @@ class Section extends React.Component {
     const isBarBased = chartId.toLowerCase().includes("bar") //&& !chartId.includes("broken")
     const isPlot = chartId.toLowerCase().includes("plot")
     const isRender = stepActive >= STEP
-    // if (isRender) console.log("render step 3:")
+    if (isRender) console.log("render step 3:", paragraphData)
 
     const ComponentChart = chartComponents[chartId]
     const chartComponent = ComponentChart
@@ -184,12 +184,12 @@ class Section extends React.Component {
         {/* 3.2: article with paragraph(es) and graph(s) */}
         {/* note that any styles inside graph needs to be either included in the template.js or inline */}
         <div className="headline"><ComponentEditor text={"Headline"} bold={true} /></div>
-        {/* {paragraphData ? paragraphData.map((p, i) => */}
-            {/* <div key={"p-" + i} id={"p-" + i}> */}
-              {/* <div className="paragraph"><ComponentEditor text={p.paragraph} /></div> */}
+        {paragraphData ? paragraphData.map((p, i) =>
+            <div key={"p-" + i} id={"p-" + i}>
+              <div className="paragraph"><ComponentEditor text={p} /></div>
               {graphComponent}
-            {/* </div> */}
-        {/* ) : null} */}
+            </div>
+        ) : null}
       </div>
     )
   }

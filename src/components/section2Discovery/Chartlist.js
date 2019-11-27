@@ -48,7 +48,7 @@ class Chartlist extends React.PureComponent {
         const ComponentChart = chartComponents[chartId]
         const isFirstChart = (chartId === chartIdFirst)
         const isSelected = isFirstChart && isInit
-        if(isSelected) console.log("append data")
+        if(isSelected) console.log("append data:", chartIdFirst)
         return (
           <div key={chartId} id={chartId} className={isFirstChart ? "order1" : "order2"}>
             <ComponentChart id={chartId} callByStep={STEP} isSelected={isSelected} />
