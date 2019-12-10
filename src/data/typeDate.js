@@ -26,6 +26,8 @@ const formatList = [
   "%m/%d/%y %H:%M",
   "%m/%d/%y %I:%M %p",
   "%H:%M:%S",                   // extend
+  "%Y-%m",
+  "%YM%m",                        //TODO: temp
 
   // linear
   //"%Y",                       // -> parse sp.2

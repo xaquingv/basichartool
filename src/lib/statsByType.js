@@ -23,11 +23,11 @@ export function statsByType(id) {
 
     switch (id) {
         case "lineContinue":
-        return ["median", "min", "max", "roi"];
+        return ["min", "max", "roi"];
         break;
 
         case "lineDiscrete":
-        return ["median", "min", "max", "roi"];
+        return ["min", "max", "roi"];
         break;
 
         case "plotDot":

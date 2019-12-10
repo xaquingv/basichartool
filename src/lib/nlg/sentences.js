@@ -30,7 +30,7 @@ const scatterPlotType = {
     getDisplayInfo(data) {
         const result = {};
         result.column = data.column.toLowerCase();
-        result.value = data.value;
+        result.value = data.value.toFixed(data.precision);
         if (typeof data.type !== "undefined") {
             result.type = data.type.toLowerCase();
         }
@@ -48,6 +48,12 @@ const scatterPlotType = {
         }
         if (typeof data.difference !== "undefined" && data.difference !== "na") {
             result.difference = Number.isInteger(data.difference) ? Math.abs(data.difference): Math.abs(data.difference).toFixed(data.precision);
+        }
+        if (typeof data.value2 !== "undefined") {
+            result.value2 = data.value2.toFixed(data.precision);
+        }
+        if (typeof data.kind !== "undefined") {
+            result.kind = data.kind;
         }
         return result;
     },
@@ -90,28 +96,39 @@ const scatterPlotSentence = {
                 "{id} rank at the bottom in {column} — below {value} {units}"
             ],
             "max": [
-                "At the top, {id}’s {column} is at {value} {units}",
                 "The {statDefinition} {column} is {id}’s at {value} {units}",
-                "{id} has the {statDefinition} {column}: {value} {units}",
-                "{id}’s {column} is the {statDefinition} at {value} {units}",
-                "{id} ranks at the top in {column} at {value} {units}"
+                "{id} recorded the {statDefinition} {column}: {value} {units}",
+                "The {column} in {id} was the {statDefinition}: {value} {units}"
             ],
             "min": [
-                "At the bottom of the ranking, {id}’s {column} at {value} {units}",
                 "The {statDefinition} {column} is {id}’s at {value} {units}",
-                "{id} has the {statDefinition} {column}: {value} {units}",
-                "{id}’s {column} is the {statDefinition} at {value} {units}",
-                "{id} ranks at the bottom in {column} at {value} {units}"
+                "{id} recorded the {statDefinition} {column}: {value} {units}",
+                "The {column} in {id} was the {statDefinition}: {value} {units}"
             ],
+            "period": [
+                "The {id} for the time series is {value}"
+            ],
+            "residuals": [
+                "At {id}, the {column} was {value2} — an outlier of {value}",
+                "The {column} on {id} was {value2}. An unusual value ({value})",
+                "There´s an big deviation from the trend ({value}) on {id}. The {column} is {value2}"            ],
+            "peaksAndTroughs": [
+                "There´s a local {kind} of {value}{units} on {id}",
+                "{column} on {id} was {value} — a {kind}",
+                "On {id}, there´s a {kind} with a value of {value}"            ],
             "default": [
                 "{id} is {value}"
             ]
         },
         "positive": [
-            "Between {id} there has been an increase of {difference} {units}"
+            "Between {id} there was an increase of {difference} {units}-points",
+            "There was a {difference} {units}-point-increase between {id}",
+            "There was a big jump between {id} — of {difference} {units}-points"
         ],
         "negative": [
-            "Between {id} there has been a decrease of {difference} {units}"
+            "Between {id} there was an decrease of {difference} {units}-points",
+            "There was a {difference} {units}-point-decrease between {id}",
+            "There was a big plunge between {id} — of {difference} {units}-points"
         ],
         "neutral": [
             "This reveals very little"
@@ -146,8 +163,8 @@ const scatterPlotSentence = {
                 "If this is unusual (or historically hasn’t been like this), what has happened recently to rank it in the top?"
             ],
             "min": [
-                "Why does {id} have the lowest {column}?",
-                "Has there been a recent change? What has happened to rank it in the top?"
+                "Can you pinpoint any reason that explains why {id} has the lowest {column} down?",
+                "Looking at the big picture — even beyond the time series, is this value exceptional?"
             ],
             "default": [
 
