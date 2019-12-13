@@ -1,6 +1,6 @@
 import {d3} from '../../lib/d3-lite'
 
-export default function (els, dataChart, scale, colors) {
+export default function (els, dataChart, scale) {
 
   const line = d3.line()
   .defined(d => d.y !== null)
@@ -15,7 +15,6 @@ export default function (els, dataChart, scale, colors) {
   // new
   svg.enter()
   .append("path")
-  //.insert("path", ":first-child")
   .attr("fill", "none")
   .attr("stroke-width", "2px")
   .attr("shape-rendering", "auto")
@@ -23,8 +22,8 @@ export default function (els, dataChart, scale, colors) {
   .attr("stroke-opacity", .75)
   // update
   .merge(svg)
-  .attr("stroke", (d, i) => colors ? colors[i] : false)
-  .attr("d", d => line(d))
+  .attr("stroke", d => d.color)
+  .attr("d", d => line(d.line))
 
   // remove
   svg.exit().remove()

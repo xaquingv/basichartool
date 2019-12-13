@@ -57,7 +57,7 @@ class Line extends React.Component {
     const numbers = data.numberOnly ? data.numbersButCol1 : data.numbers
     const numberCols = data.numberOnly ? data.numberCols.slice(1, data.numberCols.length) : data.numberCols
     const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
-
+    
     // scale
     this.scale = {}
     this.scale.x = scaleTime()
@@ -67,17 +67,20 @@ class Line extends React.Component {
     this.scale.y = d3.scaleLinear()
       .domain(d3.extent(numbers))
       .range([height, 0])
-
-    // chart
-    const dataChart = numberCols.map(numberCol =>
-      numberCol.map((number, i) => ({
+    
+      // chart
+    const dataChart = numberCols.map((numberCol, iCol) => {
+      const color = colors[iCol]   
+      const line = numberCol.map((number, i) => ({
         x: dataX[i],
-        y: number
-      })))
-
+        y: number 
+      }))
+      return {color, line}
+    }).reverse() // reverse to draw the first chart last
+      
 
     /* draw */
-    drawChart(this.refs, dataChart, this.scale, colors)
+    drawChart(this.refs, dataChart, this.scale)
   }
 }
 

@@ -6,7 +6,7 @@ import { chartInfos } from '../../data/config';
 
 /* summary statistics and nlg */
 import { getSumStats } from '../../lib/sumstats'
-import write from '../../lib/write-data'
+// import write from '../../lib/write-data'
 
 /* material ui and react ui */
 import SwitchLabel from './MuiSwitch'
@@ -91,42 +91,42 @@ class Questions extends React.PureComponent {
     handleSubmit() {
         const { chartId, dataAnswer, dataSentence, dataQuestion, lineHighlights, setDataParagraph } = this.props
         const { switches, textfields } = dataAnswer
-        const keyHighlights = lineHighlights.map(h => h.key) 
+        const keyHighlights = lineHighlights.map(h => h.key)
         const isGroupFilter = chartId.includes("line") && keyHighlights.length > 0
         // console.log("submit as group?", isGroupFilter)
         // console.log("a:", dataAnswer.switches.flat()) ...
-        
+
         let paragraphs = []
         // group level
         textfields
-        .filter((data, index) => isGroupFilter ? keyHighlights.includes(index) : true)
-        .forEach((data, index) => {
-            // sentence level
-            const tfs = data
-            .map((d, i) => ({as:d, gIndex:index, sIndex: i}))
-            .filter((d, i) => switches[index][i])
-            .map(d => {
-                const dummyAnswer = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat odio, facilisis tincidunt risus at, placerat porta magna. Ut vel pulvinar ipsum, vel cursus erat."
-            
-                const s = dataSentence.text[d.gIndex][d.sIndex]
-                const p = "[Paragraph" + d.sIndex + "] " + s + d.as.filter(answers => answers.trim() !== "").map(answers => answers + dummyAnswer)
-                paragraphs.push(p)
-                
-                return {
-                    ...d, s, p,
-                    qs: dataQuestion.text[d.gIndex][d.sIndex] 
-                }
+            .filter((data, index) => isGroupFilter ? keyHighlights.includes(index) : true)
+            .forEach((data, index) => {
+                // sentence level
+                const tfs = data
+                    .map((d, i) => ({ as: d, gIndex: index, sIndex: i }))
+                    .filter((d, i) => switches[index][i])
+                    .map(d => {
+                        const dummyAnswer = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat odio, facilisis tincidunt risus at, placerat porta magna. Ut vel pulvinar ipsum, vel cursus erat."
+
+                        const s = dataSentence.text[d.gIndex][d.sIndex]
+                        const p = "[Paragraph" + d.sIndex + "] " + s + d.as.filter(answers => answers.trim() !== "").map(answers => answers + dummyAnswer)
+                        paragraphs.push(p)
+
+                        return {
+                            ...d, s, p,
+                            qs: dataQuestion.text[d.gIndex][d.sIndex]
+                        }
+                    })
+                console.log("*** [dummy] arguments for nlg ***")
+                console.log(tfs)
             })
-            console.log("*** [dummy] arguments for nlg ***")
-            console.log(tfs) 
-        })
         console.log("*** [dummy] paragraphs ***")
-        
+
         const dummyParagraph = "[Dummy paragraph] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nunc lacus, egestas vel pharetra ac, cursus ut sapien. In ac ligula nec odio consectetur facilisis eu posuere justo. In hac habitasse platea dictumst. Integer ac lectus id mi maximus iaculis. Nulla facilisi. Ut eu dictum turpis. Aenean suscipit venenatis odio."
         paragraphs = paragraphs.length === 0 ? [dummyParagraph] : paragraphs
         console.log(paragraphs)
         console.log("*** end of [dummy] content ***")
-        
+
         setDataParagraph(paragraphs)
     }
 
@@ -322,13 +322,10 @@ class Questions extends React.PureComponent {
                                     label={s} checked={this.answers.switches[index][idx]}
                                     setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx] }}
                                 />
-                                {this.answers.switches[index][idx] ? 
-                                    this.questions.text[index][idx].map((q, i) => <div style={{width:600, paddingLeft: 46, color: "rgba(0, 0, 0, 0.54)"}}>
+                                {this.answers.switches[index][idx] ?
+                                    this.questions.text[index][idx].map((q, i) => <div key={"q-" + index + idx + i} style={{ width: 600, paddingLeft: 46, color: "rgba(0, 0, 0, 0.54)" }}>
                                         {q}
-                                        <TextFields
-                                            qaId="set2" key={"q-" + index + idx + i}
-                                            setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx, i] }}
-                                        />
+                                        <TextFields qaId="set2" setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx, i] }} />
                                     </div>)
                                     : null
                                 }
@@ -338,11 +335,11 @@ class Questions extends React.PureComponent {
 
                     {/* submit button */}
                     {dataAnswer ? <input
-                    type="button"
-                    className={"button btn-create mb-5 mt-15"}
-                    value="Submit"
-                    onClick={() => this.handleSubmit()}
-                /> : null}
+                        type="button"
+                        className={"button btn-create mb-5 mt-15"}
+                        value="Submit"
+                        onClick={() => this.handleSubmit()}
+                    /> : null}
 
                 </ThemeProvider>
             </div>

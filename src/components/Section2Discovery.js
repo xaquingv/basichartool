@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { toggleData, transposeData, setDisplay, initSetup } from '../actions';
+import { toggleData, transposeData, initSetup } from '../actions';
 import { colors, metaKeys } from '../data/config';
 import ComponentTable from './section2Discovery/Table'
 import ComponentChartlist from './section2Discovery/Chartlist';
@@ -12,14 +12,15 @@ const instruction = "Toggle a col/row's header to select and deselect data, or t
 const mapStateToProps = state => ({
   stepActive: state.stepActive,
   dataMeta: state.dataTable.meta,
-  dataSentence: state.dataSentence
+  dataSentence: state.dataSentence,
+  dataChart: state.dataChart
 })
 
 const mapDispatchToProps = dispatch => ({
   onTranspose: (dataTable, show) => dispatch(transposeData(dataTable, show)),
   onToggle: (dataTable, show, i, type) => dispatch(toggleData(dataTable, show, { type, index: i })),
   setDefaultSetup: (colors, display) => dispatch(initSetup(colors, display)),
-  setDefaultDisplay: display => dispatch(setDisplay(display))
+  // setDefaultDisplay: display => dispatch(setDisplay(display))
   // TODO:
   // onChangeFormat: () => {}
 })
@@ -32,36 +33,37 @@ class Section extends React.Component {
   }
 
   componentDidUpdate() {
-    const { stepActive, dataMeta, setDefaultSetup, setDefaultDisplay, dataSentence } = this.props;
-    // console.log("render step 2: did update")
+    const { stepActive, dataMeta, dataChart, setDefaultSetup, dataSentence } = this.props;
+    // console.log("render step 2: did update", dataChart)
 
     // TODO: use isImport or isClear to update display
-    /* setup1: palette colors and display controls */
-    if (stepActive === 2 && !this.colors) {
-      this.colors = colors;
-      // setDefaultColors(this.colors);
-      
-      this.metaKeys = metaKeys;
-      const display = {};
-      metaKeys.forEach(key => {
-        display[key] = (key === "standfirst" && !dataMeta[key]) ? false : true;
-      })
-      setDefaultSetup(colors, display)
-    }
+    /* setup1: palette colors and display controls (on/off) of meta info (headline, standfirst, ...) */
+    // note that once there is a change in dataTable, dataSentence will be set to null
+    // thus it's used to see if dataSetup needs to be (re-)init 
     if (stepActive === 2 && !dataSentence) {
+      const numberCols = dataChart.numberCols;
+      const displaySwitches = {};
+      
+      // palette colors
+      // line > 10, only color the first line as highlight, keep others lightgrey
+      this.colors = numberCols.length > 10 ?
+        numberCols.map((col, idx) => idx === 0 ? colors[0] : colors[6]) :
+        colors
+
+      // display controls
       this.metaKeys = metaKeys;
-      const display = {};
       metaKeys.forEach(key => {
-        display[key] = (key === "standfirst" && !dataMeta[key]) ? false : true;
+        displaySwitches[key] = (key === "standfirst" && !dataMeta[key]) ? false : true;
       })
-      setDefaultDisplay(display);
-    }  
+
+      setDefaultSetup(this.colors, displaySwitches)
+    }
   }
 
   render() {
     const isRender = this.props.stepActive >= STEP;
     // console.log("render step 2")
-    
+
     return (
       <div className={"section" + (isRender ? "" : " d-n")} id="section2">
         <h1>2. Discover your dataset</h1>

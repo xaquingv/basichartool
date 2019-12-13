@@ -51,6 +51,7 @@ class LineDiscrete extends React.Component {
 
     /* data */
     const { data, colors } = this.props
+    const numberCols = data.numberCols
     //const numbers = data.numberOnly ? data.numbersButCol1 : data.numbers
     //const numCols = data.numberCols.slice(1, data.numberCols.length)
 
@@ -66,15 +67,17 @@ class LineDiscrete extends React.Component {
       .range([height, 0])
 
     // chart
-    const dataChart = data.numberCols.map(numberCol =>
-      numberCol.map((number, i) => ({
+    const dataChart = numberCols.map((numberCol, iCol) => {
+      const color = colors[iCol]   
+      const line = numberCol.map((number, i) => ({
         x: i,
         y: number
-      })))
-
+      }))
+      return {color, line}
+    }).reverse() // reverse to draw the first chart last
 
     /* draw */
-    drawChart(this.refs, dataChart, this.scale, colors)
+    drawChart(this.refs, dataChart, this.scale)
   }
 }
 

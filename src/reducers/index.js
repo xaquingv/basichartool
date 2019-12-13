@@ -77,7 +77,7 @@ function chartId(id = "", action) {
     case 'TRANSPOSE_DATA':
     case 'TOGGLE_DATA':
     case 'REMOVE_CHART_DUPLICATE':
-      return action.selection[0]
+      return action.selection.length !==0 ? action.selection[0] : ""
     case 'SET_CHART_ID':
       return action.chartId
     // case 'SELECT_CHART':
@@ -310,6 +310,7 @@ function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, 
     case 'DROP_COLOR':
       let newColors = dataSetup.colors.slice()
       newColors[action.dropIndex] = dataSetup.pickColor ? dataSetup.pickColor : dataSetup.colors[action.dropIndex]
+      console.log("new colors:", newColors)
       return {
         ...dataSetup,
         colors: newColors
