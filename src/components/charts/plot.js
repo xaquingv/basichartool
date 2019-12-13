@@ -6,7 +6,11 @@ const chartType = {
   line: { r: 3, stroke: 0, opacity: 1 }
 }
 
-export default function (els, dataChart, scale, who, colors, step, margin, countries) {
+export default function (
+  els, dataChart, scale, who, colors, step, 
+  margin = { left: 0, right: 0, top: 0, bottom: 0 }
+  /*, countries*/) {
+
   // data
   // TODO: double check render seq
   let r = chartType[who].r
@@ -16,9 +20,6 @@ export default function (els, dataChart, scale, who, colors, step, margin, count
     const svgWidth = elSvg.getBoundingClientRect().width
     r = Math.round(chartType[who].r * width * 10 / svgWidth) / 10
   }
-
-  margin = margin ? margin : { left: 0, right: 0, top: 0, bottom: 0 }
-  //console.log("plot", margin)
 
   // init gs
   //console.log(dataChart)
@@ -75,20 +76,20 @@ export default function (els, dataChart, scale, who, colors, step, margin, count
   // remove
   gs.exit().remove()
 
-  if (step === 3 && countries) {
-    const els = document.querySelectorAll(".js-graph");
-    [...els].forEach((el, idx) => {
-      // console.log(els);
-      const titles = countries[idx].replace("and ", "").split(", ");
-      // console.log(titles)
-      titles.forEach((title, i) => {
-        let elCircle = el.querySelector('circle[title^="' + title + '"]');
-        // console.log(elCircle, idx, i)
-        if (elCircle) {
-          elCircle.setAttribute("stroke", "black")
-          elCircle.setAttribute("stroke-width", "2")
-        }
-      })
-    })
-  }
+  // if (step === 3 && countries) {
+  //   const els = document.querySelectorAll(".js-graph");
+  //   [...els].forEach((el, idx) => {
+  //     // console.log(els);
+  //     const titles = countries[idx].replace("and ", "").split(", ");
+  //     // console.log(titles)
+  //     titles.forEach((title, i) => {
+  //       let elCircle = el.querySelector('circle[title^="' + title + '"]');
+  //       // console.log(elCircle, idx, i)
+  //       if (elCircle) {
+  //         elCircle.setAttribute("stroke", "black")
+  //         elCircle.setAttribute("stroke-width", "2")
+  //       }
+  //     })
+  //   })
+  // }
 }

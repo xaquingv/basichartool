@@ -6,7 +6,7 @@ import { chartInfos } from '../../data/config';
 
 /* summary statistics and nlg */
 import { getSumStats } from '../../lib/sumstats'
-import write from '../../lib/write-data'
+// import write from '../../lib/write-data'
 
 /* material ui and react ui */
 import SwitchLabel from './MuiSwitch'
@@ -41,7 +41,9 @@ const mapStateToProps = state => ({
     selection: state.selection,
     dataCount: state.dataCount,
     dataChart: state.dataChart,
+    dataSetup: state.dataSetup,
     // Set1: dataAnswerSet1
+    stepActive: state.stepActive,
     axisMapper: state.axisMapper,
     drawingOrder: state.drawingOrder,
     lineHighlights: state.lineHighlights,
@@ -56,12 +58,12 @@ const mapDispatchToProps = dispatch => ({
     setSelectedChartId: id => dispatch(setChartId(id)),
     setPlotAxisMapper: mapping => dispatch(setAxisMapper(mapping)),
     setStackDrawingOrder: order => dispatch(setDrawingOrder(order)),
-    setLineHighlights: highlights => dispatch(setHighlights(highlights)),
+    setLineHighlights: (highlights, colors) => dispatch(setHighlights(highlights, colors)),
     // set2
-    setDataAnswer: (answers) => dispatch(setAnswers(answers)),
+    setDataAnswer: answers => dispatch(setAnswers(answers)),
     setDataSentenceQuestion: (sentences, questions) => dispatch(setQuestionSentences(sentences, questions)),
-    setDataSumstat: (sentences, questions, answers) => dispatch(setSumstat(sentences, questions, answers)),
-    setDataParagraph: (paragraph) => dispatch(setParagraph(paragraph))
+    setDataSumstat: (sentences, questions, answers, highlights) => dispatch(setSumstat(sentences, questions, answers, highlights)),
+    setDataParagraph: paragraph => dispatch(setParagraph(paragraph))
 })
 
 
@@ -91,54 +93,54 @@ class Questions extends React.PureComponent {
     handleSubmit() {
         const { chartId, dataAnswer, dataSentence, dataQuestion, lineHighlights, setDataParagraph } = this.props
         const { switches, textfields } = dataAnswer
-        const keyHighlights = lineHighlights.map(h => h.key) 
+        const keyHighlights = lineHighlights.map(h => h.key)
         const isGroupFilter = chartId.includes("line") && keyHighlights.length > 0
         // console.log("submit as group?", isGroupFilter)
         // console.log("a:", dataAnswer.switches.flat()) ...
-        
+
         let paragraphs = []
         // group level
         textfields
-        .filter((data, index) => isGroupFilter ? keyHighlights.includes(index) : true)
-        .forEach((data, index) => {
-            // sentence level
-            const tfs = data
-            .map((d, i) => ({as:d, gIndex:index, sIndex: i}))
-            .filter((d, i) => switches[index][i])
-            .map(d => {
-                const dummyAnswer = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat odio, facilisis tincidunt risus at, placerat porta magna. Ut vel pulvinar ipsum, vel cursus erat."
-            
-                const s = dataSentence.text[d.gIndex][d.sIndex]
-                const p = "[Paragraph" + d.sIndex + "] " + s + d.as.filter(answers => answers.trim() !== "").map(answers => answers + dummyAnswer)
-                paragraphs.push(p)
-                
-                return {
-                    ...d, s, p,
-                    qs: dataQuestion.text[d.gIndex][d.sIndex] 
-                }
+            .filter((data, index) => isGroupFilter ? keyHighlights.includes(index) : true)
+            .forEach((data, index) => {
+                // sentence level
+                const tfs = data
+                    .map((d, i) => ({ as: d, gIndex: index, sIndex: i }))
+                    .filter((d, i) => switches[index][i])
+                    .map(d => {
+                        const dummyAnswer = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat odio, facilisis tincidunt risus at, placerat porta magna. Ut vel pulvinar ipsum, vel cursus erat."
+
+                        const s = dataSentence.text[d.gIndex][d.sIndex]
+                        const p = "[Paragraph" + d.sIndex + "] " + s + d.as.filter(answers => answers.trim() !== "").map(answers => answers + dummyAnswer)
+                        paragraphs.push(p)
+
+                        return {
+                            ...d, s, p,
+                            qs: dataQuestion.text[d.gIndex][d.sIndex]
+                        }
+                    })
+                console.log("*** [dummy] arguments for nlg ***")
+                console.log(tfs)
             })
-            console.log("*** [dummy] arguments for nlg ***")
-            console.log(tfs) 
-        })
         console.log("*** [dummy] paragraphs ***")
-        
+
         const dummyParagraph = "[Dummy paragraph] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nunc lacus, egestas vel pharetra ac, cursus ut sapien. In ac ligula nec odio consectetur facilisis eu posuere justo. In hac habitasse platea dictumst. Integer ac lectus id mi maximus iaculis. Nulla facilisi. Ut eu dictum turpis. Aenean suscipit venenatis odio."
         paragraphs = paragraphs.length === 0 ? [dummyParagraph] : paragraphs
         console.log(paragraphs)
         console.log("*** end of [dummy] content ***")
-        
+
         setDataParagraph(paragraphs)
     }
 
     componentDidUpdate() {
         const { chartId, dataSentence, setDataSumstat } = this.props
         if (!dataSentence && chartId) {
-            setDataSumstat(this.sentences, this.questions, this.answers)
+            setDataSumstat(this.sentences, this.questions, this.answers, this.highlights)
         }
     }
 
     render() {
-        const { chartId, selection, axisMapper, drawingOrder, lineHighlights, dataSentence, dataQuestion, dataAnswer } = this.props
+        const { chartId, selection, axisMapper, drawingOrder, lineHighlights, dataSentence, dataQuestion, dataAnswer, dataSetup, stepActive } = this.props
         const { setSelectedChartId, setPlotAxisMapper, setStackDrawingOrder, setLineHighlights, setDataSentenceQuestion, setDataAnswer } = this.props
 
         // require at leaset chartId to generate questions
@@ -148,14 +150,25 @@ class Questions extends React.PureComponent {
         /* data */
         const { dataChart } = this.props
         const { keys, numberOnly, numberCols, dateFormat, col1Type, col1Header, col1ValuesToStrings } = dataChart
+
+        const numberColGroups = dataChart.keys
+        const numberColGroupsCount = numberColGroups.length
+        const numberColHeader = numberColGroupsCount > 3 ? (numberColGroups.slice(0, 3).join(", ") + ", ...") : numberColGroups.join(", ")
+
+        // selects
+        const optSelection = selection.map(id => ({ key: id, txt: chartInfos[id].task }))
+        const optHeaders = numberColGroups.map((header, index) => ({ key: index, txt: header }))
+
         // use "string" instead of "string1"
         const col1DataType = col1Type.indexOf("str") > -1 ? "string" : col1Type
-
+        // console.log("this:", this.highlights)
+        // console.log("line:", lineHighlights)
         /* summary statisitc */
         if (dataSentence) {
             this.sentences = dataSentence
             this.questions = dataQuestion
             this.answers = dataAnswer
+            this.highlights = lineHighlights
         } else {
             // remove the first col (or header) of data (types) if all values' type is number
             const colHeaders = numberOnly ? keys.slice(1) : keys
@@ -199,6 +212,9 @@ class Questions extends React.PureComponent {
                         qs.map(() => "")
                     ))
             }
+
+            this.highlights = numberColGroupsCount > 10 ?
+                [optHeaders[0]] : optHeaders
         }
 
         /* draw */
@@ -206,17 +222,11 @@ class Questions extends React.PureComponent {
         const isPlot = chartId.includes("plot")
         const isLine = chartId.includes("line")
 
-        const numberColGroups = dataChart.keys
-        const numberColGroupsCount = numberColGroups.length
-        const numberColHeader = numberColGroupsCount > 3 ? (numberColGroups.slice(0, 3).join(", ") + ", ...") : numberColGroups.join(", ")
-
-        // selects
-        const optSelection = selection.map(id => ({ key: id, txt: chartInfos[id].task }))
-        const optHeaders = numberColGroups.map((header, index) => ({ key: index, txt: header }))
         // autocomplete
-        const isHighlight = lineHighlights.length > 0
-        const keyHighlights = lineHighlights.map(h => h.key)
-        const groupFilter = this.sentences.text.map((s, i) => (isLine && isHighlight) ? keyHighlights.includes(i) : true)
+        // const isHighlight = lineHighlights.length > 0
+        const keyHighlights = this.highlights.map(h => h.key)
+        const groupFilter = this.sentences.text.map((s, i) => isLine ? keyHighlights.includes(i) : true)
+        // const groupFilter = this.sentences.text.map((s, i) => (isLine && isHighlight) ? keyHighlights.includes(i) : true)
 
         return (
             <div className="questions">
@@ -304,11 +314,17 @@ class Questions extends React.PureComponent {
                         {drawingOrder === 2 ? <Autocomplete options={optHeaders} isSingle={true} /> : null}
                     </div> : null}
 
-                    {/* Q6: line highlights */}
-                    {/* TODO: add condition */}
-                    {isLine && numberColGroupsCount > 3 ? <div className="flex-baseline">
-                        <div>And&nbsp;<b>highlight</b>&nbsp;</div>
-                        <Autocomplete options={optHeaders} value={lineHighlights} setChange={setLineHighlights} />
+                    {/* Q6: line highlights, max 10 lines (colors) */}
+                    {/* case 1: 0-5, show all */}
+                    {/* case 2: 5-10, highlights all */}
+                    {/* case 3: 10-, only highlight the first one */}
+                    {isLine && numberColGroupsCount > 5 ? <div className="flex-baseline">
+                        <div>And&nbsp;<b>highlight</b>&nbsp;(max. 10 lines)</div>
+                        <Autocomplete 
+                            options={optHeaders} value={this.highlights} 
+                            setChange={setLineHighlights} 
+                            data={{ colors: dataSetup.colorLines, stepActive: stepActive }}
+                        />
                     </div> : null}
 
                     {/* Set2 Questions: <switch> sentences and questions <textfield>*/}
@@ -322,13 +338,10 @@ class Questions extends React.PureComponent {
                                     label={s} checked={this.answers.switches[index][idx]}
                                     setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx] }}
                                 />
-                                {this.answers.switches[index][idx] ? 
-                                    this.questions.text[index][idx].map((q, i) => <div style={{width:600, paddingLeft: 46, color: "rgba(0, 0, 0, 0.54)"}}>
+                                {this.answers.switches[index][idx] ?
+                                    this.questions.text[index][idx].map((q, i) => <div key={"q-" + index + idx + i} style={{ width: 600, paddingLeft: 46, color: "rgba(0, 0, 0, 0.54)" }}>
                                         {q}
-                                        <TextFields
-                                            qaId="set2" key={"q-" + index + idx + i}
-                                            setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx, i] }}
-                                        />
+                                        <TextFields qaId="set2" setChange={setDataAnswer} data={{ answers: this.answers, index: [index, idx, i] }} />
                                     </div>)
                                     : null
                                 }
@@ -338,11 +351,11 @@ class Questions extends React.PureComponent {
 
                     {/* submit button */}
                     {dataAnswer ? <input
-                    type="button"
-                    className={"button btn-create mb-5 mt-15"}
-                    value="Submit"
-                    onClick={() => this.handleSubmit()}
-                /> : null}
+                        type="button"
+                        className={"button btn-create mb-5 mt-15"}
+                        value="Submit"
+                        onClick={() => this.handleSubmit()}
+                    /> : null}
 
                 </ThemeProvider>
             </div>

@@ -3,11 +3,12 @@ import { connect } from 'react-redux'
 import { d3 } from '../../lib/d3-lite'
 import { appendChartData } from '../../actions'
 import { width, height, viewBox } from '../../data/config'
-import drawChart from './line'
+import drawLine from './line'
+// import drawPlot from './plot'
 
 const mapStateToProps = state => ({
   data: state.dataChart,
-  colors: state.dataSetup.colors
+  colors: state.dataSetup.colorLines
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -52,12 +53,12 @@ class Line extends React.Component {
   renderChart() {
 
     /* data */
-    const { data, colors } = this.props
+    const { data, colors/*, callByStep*/ } = this.props
     const dataX = data.dateCol || data.numberCols[0]
     const numbers = data.numberOnly ? data.numbersButCol1 : data.numbers
     const numberCols = data.numberOnly ? data.numberCols.slice(1, data.numberCols.length) : data.numberCols
     const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
-
+    
     // scale
     this.scale = {}
     this.scale.x = scaleTime()
@@ -67,17 +68,21 @@ class Line extends React.Component {
     this.scale.y = d3.scaleLinear()
       .domain(d3.extent(numbers))
       .range([height, 0])
-
-    // chart
-    const dataChart = numberCols.map(numberCol =>
-      numberCol.map((number, i) => ({
+    
+      // chart
+    const dataChart = numberCols.map((numberCol, iCol) => {
+      const color = colors[iCol]   
+      const line = numberCol.map((number, i) => ({
         x: dataX[i],
-        y: number
-      })))
-
+        y: number 
+      }))
+      return {color, line}
+    }).reverse() // reverse to draw the first chart last
+      
 
     /* draw */
-    drawChart(this.refs, dataChart, this.scale, colors)
+    drawLine(this.refs, dataChart, this.scale)
+    // dataChart.forEach(data => drawPlot(this.refs, data.line, this.scale, "line", colors, callByStep))
   }
 }
 

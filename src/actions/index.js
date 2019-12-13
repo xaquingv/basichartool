@@ -106,9 +106,10 @@ export const setDrawingOrder = (drawingOrder) => ({
   type: "SET_DRAWING_ORDER",
   drawingOrder
 })
-export const setHighlights = (highlights) => ({
+export const setHighlights = (highlights, colors) => ({
   type: "SET_HIGHLIGHTS",
-  highlights
+  highlights,
+  colors
 })
 // set 2
 export const setAnswers = (dataAnswer) => ({
@@ -120,17 +121,16 @@ export const setQuestionSentences = (dataSentence, dataQuestion) => ({
   dataSentence,
   dataQuestion
 })
-export const setSumstat = (dataSentence, dataQuestion, dataAnswer) => ({
+export const setSumstat = (dataSentence, dataQuestion, dataAnswer, highlights) => ({
   type: "SET_SUMSTAT",
   dataSentence,
   dataQuestion,
-  dataAnswer
+  dataAnswer,
+  highlights
 })
-export const setParagraph = (dataParagraph/*, dataChart, chartId*/) => ({
+export const setParagraph = (dataParagraph) => ({
   type: "SET_PARAGRAPH",
-  dataParagraph,
-  // dataChart,
-  // chartId
+  dataParagraph
 })
 
 /* section 3 */
@@ -178,6 +178,11 @@ export const pickColor = (color) => ({
 export const dropColorTo = (i) => ({
   type: "DROP_COLOR",
   dropIndex: i
+})
+export const dropColorLineTo = (i, highlights = []) => ({
+  type: "DROP_COLORLINE",
+  dropIndex: i,
+  highlights
 })
 // texts on y axis with ticks
 export const appendAxisYScaleRes = (widthIndent, height, marginTop) => ({
