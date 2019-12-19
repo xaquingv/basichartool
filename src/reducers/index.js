@@ -77,7 +77,7 @@ function chartId(id = "", action) {
     case 'TRANSPOSE_DATA':
     case 'TOGGLE_DATA':
     case 'REMOVE_CHART_DUPLICATE':
-      return action.selection.length !==0 ? action.selection[0] : ""
+      return action.selection.length !== 0 ? action.selection[0] : ""
     case 'SET_CHART_ID':
       return action.chartId
     // case 'SELECT_CHART':
@@ -117,7 +117,7 @@ function dataCount(dataCount = {}, action) {
 
 function dataChart(dataChart = {}, action) {
   const initDataChart = { legend: [], scales: {}, margin: undefined, indent: 0, marginTop: 0 }
-  
+
   switch (action.type) {
     // init
     // TODO: apply on setParagragh (step3), 
@@ -207,7 +207,19 @@ function drawingOrder(drawingOrder = 0, action) {
   return action.type === "SET_DRAWING_ORDER" ? action.drawingOrder : drawingOrder
 }
 function lineHighlights(highlights = [], action) {
-  return action.type === "SET_HIGHLIGHTS" ? action.highlights : highlights
+  switch (action.type) {
+    case 'CLEAR_DATA':
+    case 'IMPORT_DATA':
+    case 'TRANSPOSE_DATA':
+    case 'TOGGLE_DATA':
+      return null
+    case 'SET_SUMSTAT':
+    case "SET_HIGHLIGHTS":
+      return action.highlights
+    default:
+      return highlights
+
+  }
 }
 // sumstats' answers in set2
 function dataAnswer(dataAnswer = null, action) {
@@ -282,7 +294,7 @@ function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, 
       return {
         ...dataSetup,
         colors: action.colors,
-        display: action.displaySwitches 
+        display: action.displaySwitches
       }
     // setup
     case 'SET_DISPLAY':
@@ -297,6 +309,7 @@ function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, 
         ...dataSetup,
         display: newSwitches
       }
+    case 'SET_HIGHLIGHTS':
     case 'SET_COLORS':
       return {
         ...dataSetup,
@@ -310,7 +323,6 @@ function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, 
     case 'DROP_COLOR':
       let newColors = dataSetup.colors.slice()
       newColors[action.dropIndex] = dataSetup.pickColor ? dataSetup.pickColor : dataSetup.colors[action.dropIndex]
-      console.log("new colors:", newColors)
       return {
         ...dataSetup,
         colors: newColors

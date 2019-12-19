@@ -106,9 +106,10 @@ export const setDrawingOrder = (drawingOrder) => ({
   type: "SET_DRAWING_ORDER",
   drawingOrder
 })
-export const setHighlights = (highlights) => ({
+export const setHighlights = (highlights, colors) => ({
   type: "SET_HIGHLIGHTS",
-  highlights
+  highlights,
+  colors
 })
 // set 2
 export const setAnswers = (dataAnswer) => ({
@@ -120,11 +121,12 @@ export const setQuestionSentences = (dataSentence, dataQuestion) => ({
   dataSentence,
   dataQuestion
 })
-export const setSumstat = (dataSentence, dataQuestion, dataAnswer) => ({
+export const setSumstat = (dataSentence, dataQuestion, dataAnswer, highlights) => ({
   type: "SET_SUMSTAT",
   dataSentence,
   dataQuestion,
-  dataAnswer
+  dataAnswer,
+  highlights
 })
 export const setParagraph = (dataParagraph/*, dataChart, chartId*/) => ({
   type: "SET_PARAGRAPH",
