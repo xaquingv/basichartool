@@ -177,9 +177,10 @@ export const pickColor = (color) => ({
   type: "PICK_COLOR",
   pickColor: color
 })
-export const dropColorTo = (i) => ({
+export const dropColorTo = (i, highlights = []) => ({
   type: "DROP_COLOR",
-  dropIndex: i
+  dropIndex: i,
+  highlights
 })
 // texts on y axis with ticks
 export const appendAxisYScaleRes = (widthIndent, height, marginTop) => ({

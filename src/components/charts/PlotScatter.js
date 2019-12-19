@@ -146,8 +146,9 @@ class ScatterPlot extends React.Component {
     })]
 
     /* draw */
-    const countries = dataParagraph ?  dataParagraph.map(p => p.data.key) : null
-    drawChart(this.refs, dataChart, this.scale, "scatter", colors, callByStep, this.margin, countries)
+    //console.log(dataParagraph)
+    //const countries = dataParagraph ?  dataParagraph.map(p => p.data.key) : null
+    drawChart(this.refs, dataChart, this.scale, "scatter", colors, callByStep, this.margin/*, countries*/)
     // TOOD: reset view box
   }
 

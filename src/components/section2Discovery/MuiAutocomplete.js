@@ -3,7 +3,7 @@ import React from 'react';
 import { colors } from '../../data/config';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles(theme => ({
     single: {
@@ -43,6 +43,7 @@ export default function AutocompleteTextField(props) {
         // remap colors
         let newColors = [...data.colors].map(() => defaultColor)
         filteredValue.forEach((value, index) => newColors[value.key] = colors[index])
+        
         setChange(filteredValue, newColors);
     }
 

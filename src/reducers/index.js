@@ -214,7 +214,8 @@ function lineHighlights(highlights = [], action) {
     case 'TOGGLE_DATA':
       return null
     case 'SET_SUMSTAT':
-    case "SET_HIGHLIGHTS":
+    case 'SET_HIGHLIGHTS':
+    case 'DROP_COLOR':
       return action.highlights
     default:
       return highlights
