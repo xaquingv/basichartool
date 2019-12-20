@@ -3,11 +3,12 @@ import { connect } from 'react-redux'
 import { d3 } from '../../lib/d3-lite'
 import { appendChartData } from '../../actions'
 import { width, height, viewBox } from '../../data/config'
-import drawChart from './line'
+import drawLine from './line'
+// import drawPlot from './plot'
 
 const mapStateToProps = state => ({
   data: state.dataChart,
-  colors: state.dataSetup.colors
+  colors: state.dataSetup.colorLines
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -52,7 +53,7 @@ class Line extends React.Component {
   renderChart() {
 
     /* data */
-    const { data, colors } = this.props
+    const { data, colors/*, callByStep*/ } = this.props
     const dataX = data.dateCol || data.numberCols[0]
     const numbers = data.numberOnly ? data.numbersButCol1 : data.numbers
     const numberCols = data.numberOnly ? data.numberCols.slice(1, data.numberCols.length) : data.numberCols
@@ -80,7 +81,8 @@ class Line extends React.Component {
       
 
     /* draw */
-    drawChart(this.refs, dataChart, this.scale)
+    drawLine(this.refs, dataChart, this.scale)
+    // dataChart.forEach(data => drawPlot(this.refs, data.line, this.scale, "line", colors, callByStep))
   }
 }
 

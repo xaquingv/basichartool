@@ -215,7 +215,7 @@ function lineHighlights(highlights = [], action) {
       return null
     case 'SET_SUMSTAT':
     case 'SET_HIGHLIGHTS':
-    case 'DROP_COLOR':
+    case 'DROP_COLORLINE':
       return action.highlights
     default:
       return highlights
@@ -282,7 +282,7 @@ function dataParagraph(dataParagraph = null, action) {
   }
 }
 
-function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, width: "300px" }, action) {
+function dataSetup(dataSetup = { colors: [], colorLines: [], display: {}, legend: [], size: {}, width: "300px" }, action) {
   switch (action.type) {
     // reset
     case 'SELECT_CHART':
@@ -295,6 +295,7 @@ function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, 
       return {
         ...dataSetup,
         colors: action.colors,
+        colorLines: action.colors,
         display: action.displaySwitches
       }
     // setup
@@ -311,11 +312,15 @@ function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, 
         display: newSwitches
       }
     case 'SET_HIGHLIGHTS':
-    case 'SET_COLORS':
       return {
         ...dataSetup,
-        colors: action.colors
+        colorLines: action.colors
       }
+    // case 'SET_COLORS':
+    //   return {
+    //     ...dataSetup,
+    //     colors: action.colors
+    //   }
     case 'PICK_COLOR':
       return {
         ...dataSetup,
@@ -326,8 +331,16 @@ function dataSetup(dataSetup = { colors: [], display: {}, legend: [], size: {}, 
       newColors[action.dropIndex] = dataSetup.pickColor ? dataSetup.pickColor : dataSetup.colors[action.dropIndex]
       return {
         ...dataSetup,
-        colors: newColors
+        colors: newColors,
       }
+    case 'DROP_COLORLINE': {
+      let newColors = dataSetup.colorLines.slice()
+      newColors[action.dropIndex] = dataSetup.pickColor ? dataSetup.pickColor : dataSetup.colorLines[action.dropIndex]
+      return {
+        ...dataSetup,
+        colorLines: newColors
+      }
+    }
     case 'UPDATE_SIZE':
       return {
         ...dataSetup,

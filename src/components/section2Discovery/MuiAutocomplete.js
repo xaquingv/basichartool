@@ -23,7 +23,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function AutocompleteTextField(props) {
     // const state = useSelector(state => state)
-    const defaultColor = colors[6]
     const { options, isSingle, value, setChange, data } = props;
     const flatProps = {
         options: options.map(option => option.txt)
@@ -35,15 +34,27 @@ export default function AutocompleteTextField(props) {
     const handleChangeSingle = (event, newValue) => {
         setValue(newValue);
     }
+    
     const handleChangeMultiple = (event, newValue) => {
         // remove duplicate itmes
         let filteredValue = newValue.filter((value, index) => index === newValue.findIndex(v => v.key === value.key))
+        
         // remove items > 10
         if (filteredValue > 10) filteredValue.splice(10)
-        // remap colors
-        let newColors = [...data.colors].map(() => defaultColor)
-        filteredValue.forEach((value, index) => newColors[value.key] = colors[index])
         
+        // remap colors
+        const colorLines = data.colors
+        let nextColor = colors.find(r => !colorLines.includes(r)) // next available color
+        let newColors = [...colorLines].map(() => "")
+        filteredValue.forEach((value, index) => {
+            const key = value.key
+            // step 2: use default color palette (a)
+            // step 3: use mapped color (b), or next available color (c)
+            newColors[key] = colorLines[key] ? 
+                (data.stepActive === 2 ? colors[index] /*(a)*/ : colorLines[key] /*(b)*/) : 
+                nextColor /*(c)*/
+        })
+
         setChange(filteredValue, newColors);
     }
 

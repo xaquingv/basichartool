@@ -71,7 +71,7 @@ class ScatterPlot extends React.Component {
   renderChart() {
 
     /* data */
-    const { data, colors, axis, callByStep, dataParagraph } = this.props
+    const { data, colors, axis, callByStep/*, dataParagraph*/ } = this.props
 
     const names = data.string1Col
     const numberCols = data.numberCols
@@ -148,6 +148,7 @@ class ScatterPlot extends React.Component {
     /* draw */
     //console.log(dataParagraph)
     //const countries = dataParagraph ?  dataParagraph.map(p => p.data.key) : null
+    console.log(dataChart)
     drawChart(this.refs, dataChart, this.scale, "scatter", colors, callByStep, this.margin/*, countries*/)
     // TOOD: reset view box
   }

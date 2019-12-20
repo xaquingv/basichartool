@@ -43,6 +43,7 @@ const mapStateToProps = state => ({
     dataChart: state.dataChart,
     dataSetup: state.dataSetup,
     // Set1: dataAnswerSet1
+    stepActive: state.stepActive,
     axisMapper: state.axisMapper,
     drawingOrder: state.drawingOrder,
     lineHighlights: state.lineHighlights,
@@ -139,7 +140,7 @@ class Questions extends React.PureComponent {
     }
 
     render() {
-        const { chartId, selection, axisMapper, drawingOrder, lineHighlights, dataSentence, dataQuestion, dataAnswer, dataSetup } = this.props
+        const { chartId, selection, axisMapper, drawingOrder, lineHighlights, dataSentence, dataQuestion, dataAnswer, dataSetup, stepActive } = this.props
         const { setSelectedChartId, setPlotAxisMapper, setStackDrawingOrder, setLineHighlights, setDataSentenceQuestion, setDataAnswer } = this.props
 
         // require at leaset chartId to generate questions
@@ -322,7 +323,7 @@ class Questions extends React.PureComponent {
                         <Autocomplete 
                             options={optHeaders} value={this.highlights} 
                             setChange={setLineHighlights} 
-                            data={{ colors: dataSetup.colors }}
+                            data={{ colors: dataSetup.colorLines, stepActive: stepActive }}
                         />
                     </div> : null}
 

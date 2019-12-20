@@ -7,7 +7,7 @@ import { appendChartData } from '../../actions'
 
 const mapStateToProps = state => ({
   data: state.dataChart,
-  colors: state.dataSetup.colors
+  colors: state.dataSetup.colorLines
 })
 
 const mapDispatchToProps = dispatch => ({

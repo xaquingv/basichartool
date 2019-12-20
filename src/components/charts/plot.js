@@ -6,7 +6,11 @@ const chartType = {
   line: { r: 3, stroke: 0, opacity: 1 }
 }
 
-export default function (els, dataChart, scale, who, colors, step, margin/*, countries*/) {
+export default function (
+  els, dataChart, scale, who, colors, step, 
+  margin = { left: 0, right: 0, top: 0, bottom: 0 }
+  /*, countries*/) {
+
   // data
   // TODO: double check render seq
   let r = chartType[who].r
@@ -16,9 +20,6 @@ export default function (els, dataChart, scale, who, colors, step, margin/*, cou
     const svgWidth = elSvg.getBoundingClientRect().width
     r = Math.round(chartType[who].r * width * 10 / svgWidth) / 10
   }
-
-  margin = margin ? margin : { left: 0, right: 0, top: 0, bottom: 0 }
-  //console.log("plot", margin)
 
   // init gs
   //console.log(dataChart)

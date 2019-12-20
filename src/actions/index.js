@@ -128,11 +128,9 @@ export const setSumstat = (dataSentence, dataQuestion, dataAnswer, highlights) =
   dataAnswer,
   highlights
 })
-export const setParagraph = (dataParagraph/*, dataChart, chartId*/) => ({
+export const setParagraph = (dataParagraph) => ({
   type: "SET_PARAGRAPH",
-  dataParagraph,
-  // dataChart,
-  // chartId
+  dataParagraph
 })
 
 /* section 3 */
@@ -177,8 +175,12 @@ export const pickColor = (color) => ({
   type: "PICK_COLOR",
   pickColor: color
 })
-export const dropColorTo = (i, highlights = []) => ({
+export const dropColorTo = (i) => ({
   type: "DROP_COLOR",
+  dropIndex: i
+})
+export const dropColorLineTo = (i, highlights = []) => ({
+  type: "DROP_COLORLINE",
   dropIndex: i,
   highlights
 })
