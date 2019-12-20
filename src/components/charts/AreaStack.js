@@ -39,7 +39,7 @@ class Area extends React.Component {
         style={{
           top: "-1px",
           width: "calc(100% - " + (data.indent) + "px)",
-          height: data.height + "%"
+          height: "100%"//data.height + "%"
         }}
       >
         <line ref="line" x1="0" x2="100%" y1="50%" y2="50%"></line>
