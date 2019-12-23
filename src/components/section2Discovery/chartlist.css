@@ -58,7 +58,6 @@
 }
 
 /* temp: disable charts */
-#colGroupStack100 > *,
 #slopegraph > * {
   opacity: 0.3;
   background-color: #eaeaea;

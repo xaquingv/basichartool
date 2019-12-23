@@ -37,7 +37,7 @@ class AxisY extends React.Component {
   setAxisData() {
     const {id, scales} = this.props
     this.axisY = scales.y.copy().range([100, 0])
-    this.ticks = id === "colGroupStack100" ? [0, 25, 50, 75, 100] : this.axisY.ticks(5)
+    this.ticks = id === "colGroupStack100" ? [100, 75, 50, 25, 0] : this.axisY.ticks(5)
 
     // extend for lines and plots but cols
     if (id.indexOf("col") === -1) {
@@ -101,7 +101,6 @@ class AxisY extends React.Component {
 
     const indexTick0 = this.ticks.indexOf(0)
     const indexTickSolidGrid = indexTick0 > -1 ? indexTick0 : 0
-
 
     /* draw */
     const drawAxisText = (text, i) =>

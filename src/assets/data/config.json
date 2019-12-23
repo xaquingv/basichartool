@@ -238,6 +238,25 @@
       "key": "group, stack"
     },
     {
+      "num": "18a",
+      "seq": 17,
+      "id": "colGroupStack100",
+      "row": "[2, 10]",
+      "date": "[0, 0]",
+      "string1": "[1, 1]",
+      "string2": "[0, 0]",
+      "number": "[2, 10]",
+      "numberH_format": "",
+      "number_rangeType": "[1]",
+      "number_hasNull": "",
+      "date_hasRepeat": " ",
+      "date_max": "",
+      "string1_hasRepeat": "false",
+      "string1_format": "",
+      "active": "true",
+      "key": "group, stack, 100%"
+    },
+    {
       "num": "9b",
       "seq": 14,
       "id": "col",
@@ -295,8 +314,27 @@
       "key": "group, stack"
     },
     {
-      "num": "12",
+      "num": "18b",
       "seq": 17,
+      "id": "colGroupStack100",
+      "row": "[2, 100]",
+      "date": "[1, 1]",
+      "string1": "[0, 0]",
+      "string2": "[0, 0]",
+      "number": "[2, 10]",
+      "numberH_format": "",
+      "number_rangeType": "[-1, 1]",
+      "number_hasNull": "",
+      "date_hasRepeat": "false",
+      "date_max": "",
+      "string1_hasRepeat": " ",
+      "string1_format": "",
+      "active": "true",
+      "key": "group, stack, 100%"
+    },
+    {
+      "num": "12",
+      "seq": 18,
       "id": "areaGroupStack",
       "row": "[2, 100]",
       "date": "[1, 1]",
@@ -652,10 +690,10 @@
     },
     {
       "num": "12",
-      "seq": "",
+      "seq": "17",
       "id": "colGroupStack100",
       "name": "Stacked percentage columns",
-      "task": "",
+      "task": "compare ranking in categories and proportional, side by side (over time)",
       "usage": "change over time, ex. survey",
       "description": "If you want to see the evolution in the makeup of something, like in the percentage of females in tenure-track positions in academia"
     },
@@ -670,7 +708,7 @@
     },
     {
       "num": "",
-      "seq": "17",
+      "seq": "18",
       "id": "areaGroupStack",
       "name": "Stacked area",
       "task": "discover trend and change as part of a whole over time",

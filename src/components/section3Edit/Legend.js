@@ -74,7 +74,7 @@ class Legend extends React.Component {
     }
 
     return (
-      <div className={"legend" + (display ? "" : " d-n")} style={{ marginLeft: marginLeft }}>{drawLegend}</div>
+      <div className={"legend" + (display ? "" : " d-n")} /*style={{ marginLeft: marginLeft }}*/>{drawLegend}</div>
     )
   }
 }

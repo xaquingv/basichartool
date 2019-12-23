@@ -13,6 +13,7 @@ import OnBarDots          from './charts/OnBarDots'
 import OnBarTicks         from './charts/OnBarTicks'
 import Cols               from './charts/Cols'
 import ColStack           from './charts/ColStack'
+import ColStack100        from './charts/ColStack100'
 import AreaStack          from './charts/AreaStack'
 //import ColHistogram
 //import ColMatrix
@@ -40,9 +41,9 @@ export const chartComponents = {
   col:              Cols,         // 14
   colGroup:         Cols,         // 15
   colGroupStack:    ColStack,     // 16
-  //colGroupStack100: AreaStack,  // 19
-  areaGroupStack:   AreaStack,    // 17
-  //slopegraph:       Slopegraph, // 18
+  colGroupStack100: ColStack100,  // 17
+  areaGroupStack:   AreaStack,    // 18
+  //slopegraph:       Slopegraph, // 19
   //donut:          Donut,        // 20 ...
   //mapChoropleth:  MapChoropleth,
   //mapBubble:      MapBubble
