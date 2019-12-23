@@ -32,6 +32,7 @@ export function getDomainExtend(domain, ticks/*, yRange*/) {
     extDomain[0] = ticks[0] - diff//.concat(ticks)
   }
   // top
+  // TODO: should not extent
   if (domain[1] - ticks[last] > diff/3) {
     extTicks = extTicks.concat(ticks[last] + diff)
     extDomain[1] = extTicks[extTicks.length-1]

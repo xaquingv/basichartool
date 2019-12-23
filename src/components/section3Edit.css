@@ -111,6 +111,7 @@
 }
 .header {
   margin-bottom: 30px;
+  text-align: center;
 }
 .headline {
   color: black;
@@ -138,7 +139,7 @@
 }
 .legend {
   line-height: 18px;
-  text-align: center; /* center */
+  /* text-align: center; center */
 }
 .legend-item {
   white-space: nowrap;

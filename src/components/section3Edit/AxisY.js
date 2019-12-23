@@ -36,18 +36,25 @@ class AxisY extends React.Component {
 
   setAxisData() {
     const {id, scales} = this.props
+    const isTickFixed = id === "colGroupStack100" || id === "areaStack100"
+    const isRangeFlex = id.includes("line") || id.includes("plot")    
+    // init
     this.axisY = scales.y.copy().range([100, 0])
-    this.ticks = id === "colGroupStack100" ? [0, 25, 50, 75, 100] : this.axisY.ticks(5)
+    this.ticks = isTickFixed ? [100, 75, 50, 25, 0] : this.axisY.ticks(5)
 
-    // extend for lines and plots but cols
-    if (id.indexOf("col") === -1) {
+    // extend for lines and plots
+    if (isRangeFlex) {
       const extend = getDomainExtend(this.axisY.domain(), this.ticks)
       this.axisY.domain(extend.domain)
       this.ticks = extend.ticks
     }
 
     this.axisData = {range: this.axisY.domain(), ticks: this.ticks}
+    console.log("isTickFixed:", isTickFixed)
+    console.log("isRangeFlex:", isRangeFlex)
+    console.log(this.axisData)
   }
+
   resetAxisData() {
     this.axisY.domain(this.props.axis.y.range)
     this.ticks = this.props.axis.y.ticks
@@ -82,6 +89,9 @@ class AxisY extends React.Component {
     const domain = this.axisY.domain()
     const height = Math.round(((axisRanges.y[1] - axisRanges.y[0]) / (domain[1] - domain[0]))*10000)/100
     const marginTop = Math.round(((domain[1] - axisRanges.y[1]) / (domain[1] - domain[0]))*10000)*ratio/100
+    console.log(marginTop)
+    console.log("domain:", domain)
+    console.log("ranges:", axisRanges)
 
     this.svgHeight = /*extend.*/height ? /*extend.*/height : 100
     this.svgMarginTop = /*extend.*/marginTop ? /*extend.*/marginTop : 0
@@ -101,7 +111,6 @@ class AxisY extends React.Component {
 
     const indexTick0 = this.ticks.indexOf(0)
     const indexTickSolidGrid = indexTick0 > -1 ? indexTick0 : 0
-
 
     /* draw */
     const drawAxisText = (text, i) =>

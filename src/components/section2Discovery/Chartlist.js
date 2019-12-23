@@ -24,6 +24,10 @@ const mapDispatchToProps = dispatch => ({
 class Chartlist extends React.PureComponent {
   componentDidUpdate() {
     const selection = this.props.selection
+
+    /* validate special: remove one or more duplicated chart(s) */
+    
+    /* case: line discrete vs conti. */
     if (selection && (selection.indexOf("lineDiscrete") > -1 && selection.indexOf("lineContinue") > -1)) {
       // check if discrete and conti are the same
       // if the same (duplicate), remove the discrete line from the selection list
@@ -33,6 +37,10 @@ class Chartlist extends React.PureComponent {
         this.props.removeSelectionChartDuplicate(selection, "lineDiscrete")
       }
     }
+    
+    /* case: stack vs. stack100 in bar/col/area */
+    // TODO ...
+    // compare sum
   }
 
   render() {

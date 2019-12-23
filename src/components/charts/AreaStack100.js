@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { d3 } from '../../lib/d3-lite'
 import { appendChartData } from '../../actions'
 import { width, height, viewBox } from '../../data/config'
-import { getDomainByDataRange } from '../../data/calcScaleDomain'
 
 const mapStateToProps = state => ({
   data: state.dataChart,
@@ -43,7 +42,7 @@ class Area extends React.Component {
           height: "100%"//data.height + "%"
         }}
       >
-        {/* <line ref="line" x1="0" x2="100%" y1="50%" y2="50%"></line> */}
+        <line ref="line" x1="0" x2="100%" y1="50%" y2="50%"></line>
       </svg>
     )
   }
@@ -55,20 +54,20 @@ class Area extends React.Component {
     const dates = data.dateCol
     const numberRows = data.numberRows
     const numberRowSums = numberRows.map(ns => ns.reduce((n1, n2) => n1 + n2))
-    const domain = getDomainByDataRange(numberRowSums)
+
 
     // chart part 1/2
     const dataChartGroup = dates.map((date, i) => ({
         date, 
-        ...numberRows[i] 
+        ...numberRows[i].map(n => 100 * n/numberRowSums[i]) // rescale to 100%
     }))
 
     let keys = Object.keys(dataChartGroup[0])
     keys.splice(keys.indexOf("date"), 1)
-
+    
     const stack = d3.stack().keys(keys)
     const dataChart = stack(dataChartGroup)
-
+    
     // scale
     const scaleTime = data.dateHasDay ? d3.scaleTime : d3.scaleLinear
 
@@ -78,7 +77,7 @@ class Area extends React.Component {
       .range([0, width])
 
     this.scale.y = d3.scaleLinear()
-      .domain(domain)
+      .domain([0, 100])
       .range([height, 0])
 
     // chart part 2/2
@@ -111,11 +110,11 @@ class Area extends React.Component {
     svg.exit().remove()
 
     // 50% line
-    // d3.select(els.line)
-    //   .attr("fill-opacity", 1)
-    //   .attr("stroke", "white")
-    //   .attr("stroke-width", 1)
-    //   .attr("stroke-dasharray", "3, 3")
+    d3.select(els.line)
+      .attr("fill-opacity", 1)
+      .attr("stroke", "white")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "3, 3")
   }
 }
 
