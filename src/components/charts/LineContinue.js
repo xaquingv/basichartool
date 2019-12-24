@@ -36,7 +36,7 @@ class Line extends React.Component {
 
   render() {
     const { data } = this.props
-
+    
     return (
       <svg ref="svg" viewBox={viewBox} preserveAspectRatio="none" 
         style={{
@@ -68,8 +68,9 @@ class Line extends React.Component {
     this.scale.y = d3.scaleLinear()
       .domain(d3.extent(numbers))
       .range([height, 0])
-    
-      // chart
+    console.log("lineC:", d3.extent(numbers))
+
+    // chart
     const dataChart = numberCols.map((numberCol, iCol) => {
       const color = colors[iCol]   
       const line = numberCol.map((number, i) => ({

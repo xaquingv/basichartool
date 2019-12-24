@@ -5,7 +5,7 @@ export default function () {
 
   const elsTick = document.querySelectorAll(".axis-x-tick")
   const elsText = document.querySelectorAll(".axis-x-text")
-  const elAxisX = document.querySelector(".axis-x")
+  const elAxisX = document.querySelector(".axis-x") || document.querySelector(".label-x")
   const elChart = document.querySelector(".js-chart")
   const elTest = document.querySelector(".js-test-x")
 
