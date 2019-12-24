@@ -51,6 +51,7 @@ class BarStack100 extends React.Component {
     const { data, colors, callByStep } = this.props
     const numberRows = data.numberRows
     const numberRowSums = numberRows.map(ns => Math.round(ns.reduce((n1, n2) => n1 + n2) * 100) / 100)
+    console.log("row:", numberRowSums)
 
     // scale
     this.scale = {}

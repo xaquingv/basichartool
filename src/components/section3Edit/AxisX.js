@@ -21,20 +21,15 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 class AxisX extends React.Component {
-  setAxisData() {
+  setAxisData(isTickFixed) {
     const { id, dataChart, isBarBased } = this.props
     const { scales, dateCol, string1Col, dateString, dateFormat, dateHasDay, rowCount, numberCols } = dataChart
 
     // TODO: dataX should come with scales, assign in charts
     this.dataX = dateCol || (string1Col.length !== 0 ? string1Col : numberCols[0])
     this.axisX = scales.x.copy()
-      .domain(id.includes("100") ? [0, 100] : scales.x.domain()) // ui range @setup2
+      .domain(isTickFixed ? [0, 100] : scales.x.domain()) // ui range @setup2
       .range([0, 100]) // d3 range
-
-    // debug
-    //console.log("d:", dateCol);
-    //console.log("s:", string1Col);
-    //console.log("n:", numberCols[0]);
 
     this.ticks = getTickSteps(id, isBarBased, this.dataX, dateFormat, rowCount, this.axisX)
     this.texts = getTickTexts(id, isBarBased, this.dataX, dateFormat, dateHasDay, this.axisX.domain(), this.ticks)
@@ -73,17 +68,18 @@ class AxisX extends React.Component {
 
   render() {
     if (!this.props.dataChart.scales.x) return null
+
     /* data */
     const { id, dataChart, chartSize, isOnBar, isPlot, unit, axis, isBarBased } = this.props
     const { indent, string1Width } = dataChart
+    const isTickFixed = id.indexOf("bar") > -1 && id.indexOf("100") > -1
 
     if (!axis) {
-      this.setAxisData()
+      this.setAxisData(isTickFixed)
     } else {
       this.resetAxisData()
     }
-    const is100 = id.indexOf("100") > -1
-    this.texts[0] = appendFormatToNum(this.texts[0], unit, dataChart.numberFormat, is100, isBarBased, true) // true - isX
+    this.texts[0] = appendFormatToNum(this.texts[0], unit, dataChart.numberFormat, isTickFixed, isBarBased, true) // true - isX
 
     // wrap for drawing
     const tickData = getTickTextWidths(this.texts).map((width, i) => ({
@@ -95,7 +91,6 @@ class AxisX extends React.Component {
 
     const chartWidth = chartSize.w || 300
     const marginLeft = id.includes("broken") || (string1Width > chartWidth / 3) ? 1 : string1Width + 1
-
 
     /* draw */
     const drawAxisTicks = tickData.map((tick, i) =>

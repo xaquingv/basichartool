@@ -1,5 +1,5 @@
 import LineDiscrete       from './charts/LineDiscrete'
-import LineContinue     from './charts/LineContinue'
+import LineContinue       from './charts/LineContinue'
 import PlotDot            from './charts/PlotDot'
 import PlotScatter        from './charts/PlotScatter'
 // import Slopegraph         from './charts/Slopegraph'
@@ -15,12 +15,13 @@ import Cols               from './charts/Cols'
 import ColStack           from './charts/ColStack'
 import ColStack100        from './charts/ColStack100'
 import AreaStack          from './charts/AreaStack'
-//import ColHistogram
-//import ColMatrix
+import AreaStack100       from './charts/AreaStack100'
 //import LineContiWithPlot  from './charts/LineContiWithPlot'
 //import MapChoropleth      from './charts/MapChoropleth'
 //import MapBubble          from './charts/MapBubble'
 //import Donut              from './charts/Donut'
+//import ColMatrix
+//import ColHistogram
 //import Treemap
 
 // TODO: obj -> arr, sort by config file
@@ -41,10 +42,11 @@ export const chartComponents = {
   col:              Cols,         // 14
   colGroup:         Cols,         // 15
   colGroupStack:    ColStack,     // 16
-  colGroupStack100: ColStack100,  // 17
-  areaGroupStack:   AreaStack,    // 18
-  //slopegraph:       Slopegraph, // 19
-  //donut:          Donut,        // 20 ...
-  //mapChoropleth:  MapChoropleth,
-  //mapBubble:      MapBubble
+  areaStack:        AreaStack,    // 17
+  colGroupStack100: ColStack100,  // 18
+  areaStack100:     AreaStack100, // 19
+  //slopegraph:       Slopegraph, // 20
+  //donut:          Donut,        // ...
+  //mapChoropleth:  MapChoropleth,// 21
+  //mapBubble:      MapBubble     // 22
 }

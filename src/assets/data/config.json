@@ -315,7 +315,7 @@
     },
     {
       "num": "18b",
-      "seq": 17,
+      "seq": 18,
       "id": "colGroupStack100",
       "row": "[2, 100]",
       "date": "[1, 1]",
@@ -334,8 +334,27 @@
     },
     {
       "num": "12",
-      "seq": 18,
-      "id": "areaGroupStack",
+      "seq": 17,
+      "id": "areaStack",
+      "row": "[2, 100]",
+      "date": "[1, 1]",
+      "string1": "[0, 0]",
+      "string2": "[0, 0]",
+      "number": "[2, 10]",
+      "numberH_format": "",
+      "number_rangeType": "[1]",
+      "number_hasNull": "",
+      "date_hasRepeat": "false",
+      "date_max": "",
+      "string1_hasRepeat": " ",
+      "string1_format": "",
+      "active": "true",
+      "key": "group, stack"
+    },
+    {
+      "num": "19",
+      "seq": 19,
+      "id": "areaStack100",
       "row": "[2, 100]",
       "date": "[1, 1]",
       "string1": "[0, 0]",
@@ -690,10 +709,10 @@
     },
     {
       "num": "12",
-      "seq": "17",
+      "seq": "18",
       "id": "colGroupStack100",
       "name": "Stacked percentage columns",
-      "task": "compare ranking in categories and proportional, side by side (over time)",
+      "task": "compare ranking in categories and proportional (%), side by side (over time)",
       "usage": "change over time, ex. survey",
       "description": "If you want to see the evolution in the makeup of something, like in the percentage of females in tenure-track positions in academia"
     },
@@ -709,9 +728,18 @@
     {
       "num": "",
       "seq": "18",
-      "id": "areaGroupStack",
+      "id": "areaStack",
       "name": "Stacked area",
       "task": "discover trend and change as part of a whole over time",
+      "usage": "change over time",
+      "description": ""
+    },
+    {
+      "num": "",
+      "seq": "19",
+      "id": "areaStack100",
+      "name": "Stacked percentage area",
+      "task": "discover trend and change in proportional (%) over time",
       "usage": "change over time",
       "description": ""
     },

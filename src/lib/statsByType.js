@@ -10,8 +10,8 @@ export function statsByType(id) {
         -colGroup
         -colGroupStack
         -colGroupStack100
-        -areaGroupStack
-        -areaGroupStack100
+        -areaStack
+        -areaStack100
         -slopegraph
         -bar100
         -brokenBar100
@@ -46,10 +46,10 @@ export function statsByType(id) {
         case "colGroupStack100":
         return ["median", "mean", "percentile2", "percentile98"];
 
-        case "areaGroupStack":
+        case "areaStack":
         return ["median", "mean", "percentile2", "percentile98"];
 
-        case "areaGroupStack100":
+        case "areaStack100":
         return ["median", "mean", "percentile2", "percentile98"];
 
         case "slopegraph":

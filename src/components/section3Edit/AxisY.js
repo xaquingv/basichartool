@@ -36,11 +36,14 @@ class AxisY extends React.Component {
 
   setAxisData() {
     const {id, scales} = this.props
+    const isTickFixed = id === "colGroupStack100" || id === "areaStack100"
+    
+    // init
     this.axisY = scales.y.copy().range([100, 0])
-    this.ticks = id === "colGroupStack100" ? [100, 75, 50, 25, 0] : this.axisY.ticks(5)
+    this.ticks = isTickFixed ? [100, 75, 50, 25, 0] : this.axisY.ticks(5)
 
-    // extend for lines and plots but cols
-    if (id.indexOf("col") === -1) {
+    // extend for lines and plots
+    if (!isTickFixed) {
       const extend = getDomainExtend(this.axisY.domain(), this.ticks)
       this.axisY.domain(extend.domain)
       this.ticks = extend.ticks
@@ -48,6 +51,7 @@ class AxisY extends React.Component {
 
     this.axisData = {range: this.axisY.domain(), ticks: this.ticks}
   }
+
   resetAxisData() {
     this.axisY.domain(this.props.axis.y.range)
     this.ticks = this.props.axis.y.ticks
