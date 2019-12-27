@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import './questions.css'
-import { setChartId, setAxisMapper, setDrawingOrder, setHighlights, setAnswers, setQuestionSentences, setParagraph, setSumstat } from '../../actions'
-import { chartInfos } from '../../data/config';
+import { setChartId, setAxisMapper, setHighlights, setAnswers, setQuestionSentences, setParagraph, setSumstat } from '../../actions'
+import { chartInfos } from '../../data/config'
 
 /* summary statistics and nlg */
-import { getSumStats } from '../../lib/sumstats'
 // import write from '../../lib/write-data'
+import { getSumStats } from '../../lib/sumstats'
 
 /* material ui and react ui */
 import SwitchLabel from './MuiSwitch'
@@ -14,9 +14,8 @@ import SelectSimple from './MuiSelects'
 import ExpansionPanel from './MuiExpansionPanel'
 import TextFields from './MuiTextField'
 import Autocomplete from './MuiAutocomplete'
-// import Collapse from '@material-ui/core/Collapse';
-import { ThemeProvider } from '@material-ui/styles';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles'
+import { createMuiTheme } from '@material-ui/core/styles'
 
 const theme = createMuiTheme({
     palette: {
@@ -57,7 +56,6 @@ const mapDispatchToProps = dispatch => ({
     // set1 selects
     setSelectedChartId: id => dispatch(setChartId(id)),
     setPlotAxisMapper: mapping => dispatch(setAxisMapper(mapping)),
-    setStackDrawingOrder: order => dispatch(setDrawingOrder(order)),
     setLineHighlights: (highlights, colors) => dispatch(setHighlights(highlights, colors)),
     // set2
     setDataAnswer: answers => dispatch(setAnswers(answers)),
@@ -141,7 +139,7 @@ class Questions extends React.PureComponent {
 
     render() {
         const { chartId, selection, axisMapper, drawingOrder, lineHighlights, dataSentence, dataQuestion, dataAnswer, dataSetup, stepActive } = this.props
-        const { setSelectedChartId, setPlotAxisMapper, setStackDrawingOrder, setLineHighlights, setDataSentenceQuestion, setDataAnswer } = this.props
+        const { setSelectedChartId, setPlotAxisMapper, setLineHighlights, setDataSentenceQuestion, setDataAnswer } = this.props
 
         // require at leaset chartId to generate questions
         if (!chartId) { return null; }
@@ -161,8 +159,6 @@ class Questions extends React.PureComponent {
 
         // use "string" instead of "string1"
         const col1DataType = col1Type.indexOf("str") > -1 ? "string" : col1Type
-        // console.log("this:", this.highlights)
-        // console.log("line:", lineHighlights)
         /* summary statisitc */
         if (dataSentence) {
             this.sentences = dataSentence
@@ -223,10 +219,8 @@ class Questions extends React.PureComponent {
         const isLine = chartId.includes("line")
 
         // autocomplete
-        // const isHighlight = lineHighlights.length > 0
         const keyHighlights = this.highlights.map(h => h.key)
         const groupFilter = this.sentences.text.map((s, i) => isLine ? keyHighlights.includes(i) : true)
-        // const groupFilter = this.sentences.text.map((s, i) => (isLine && isHighlight) ? keyHighlights.includes(i) : true)
 
         return (
             <div className="questions">
@@ -247,7 +241,6 @@ class Questions extends React.PureComponent {
                     </div> : null}
 
                     {/* Q2: axis and size for plots */}
-                    {/* TODO: loop optHeaders instead ? */}
                     {isPlot ? <div className="flex-baseline">
                         <div>So use the&nbsp;<b>x-axis</b>&nbsp;for&nbsp;</div>
                         <SelectSimple
@@ -309,9 +302,9 @@ class Questions extends React.PureComponent {
                     {/* Q5: stack drawing order */}
                     {chartId.includes("Stack") ? <div className="flex-baseline">
                         <div>And&nbsp;<b>stack</b>&nbsp;the chart&nbsp;</div>
-                        <SelectSimple qaId="S1Q5" options={optDrawing} value={drawingOrder} setChange={setStackDrawingOrder} />
+                        <SelectSimple qaId="S1Q5" options={optDrawing} value={drawingOrder.select} />
                         <div>{' '}</div>
-                        {drawingOrder === 2 ? <Autocomplete options={optHeaders} isSingle={true} /> : null}
+                        {drawingOrder.select === 2 ? <Autocomplete options={optHeaders} isSingle={true} /> : null}
                     </div> : null}
 
                     {/* Q6: line highlights, max 10 lines (colors) */}

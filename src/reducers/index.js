@@ -80,9 +80,6 @@ function chartId(id = "", action) {
       return action.selection.length !== 0 ? action.selection[0] : ""
     case 'SET_CHART_ID':
       return action.chartId
-    // case 'SELECT_CHART':
-    // case 'SET_PARAGRAPH':
-    // return action.chartId || id
     default:
       return id
   }
@@ -144,10 +141,16 @@ function dataChart(dataChart = {}, action) {
       // console.log(newDataChart.numberCols)
       return dataChart//newDataChart
 
+    case 'SET_PARAGRAPG':
+      return {
+        ...dataChart,
+        isInit: false
+      }
+
     /* TODO: rename and clean up */
     case 'APPEND_DATA':
       const { legend, scales, margin } = action
-      console.log("RANGE:", scales.y ? scales.y.domain() : null, "***")
+      //console.log("RANGE:", scales.y ? scales.y.domain() : null, "***")
       return {
         ...dataChart,
         legend,
@@ -202,7 +205,7 @@ function dataChart(dataChart = {}, action) {
 function axisMapper(axisMapper = [0, 1, 2], action) {
   return action.type === 'SET_AXIS_MAPPER' ? action.axisMapper : axisMapper
 }
-function drawingOrder(drawingOrder = 0, action) {
+function drawingOrder(drawingOrder = {select: 0, priority: {index: null, value:""}}, action) {
   return action.type === "SET_DRAWING_ORDER" ? action.drawingOrder : drawingOrder
 }
 function lineHighlights(highlights = [], action) {

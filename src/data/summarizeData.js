@@ -80,6 +80,7 @@ export default function(dataTable, show) {
   // data of 3 (4) types
   const numberData  = cols.filter(col => col.type === "number")
   const numberCols  = numberData.map(col => col.values)
+  const numberRows  = count.number !== 0 ? swapArray(numberCols) : []
   const numbers     = count.number !== 0 ? numberCols.reduce((col1, col2) => col1.concat(col2)) : []
   const dateData    = count.date > 0 ? cols.find(col => col.type === "date") : []
   const string1Data = count.string1 > 0 ? cols.filter(col => col.type === "string1") : []
@@ -117,9 +118,12 @@ export default function(dataTable, show) {
     dateHasDay:   dateData.hasDay,
     dateFormat:   dateData.format,
     // number
-    numberCols, numbers,
-    numberRows:   count.number !== 0 ? swapArray(numberCols) : [],
+    numbers,
+    numberCols, 
+    numberColSums: numberCols.map(ns => ns.reduce((n1, n2) => n1 + n2)),
     numbersButCol1: numbers.slice(-(numbers.length-count.row)),
+    numberRows,   
+    numberRowSums: numberRows.map(ns => Math.round(ns.reduce((n1, n2) => n1 + n2) * 10000) / 10000),
     numberFormat: count.number === 1 ? numberData[0].format : null,
     numberOnly:   count.date === 0 && count.string1 === 0,
     // key (legned)

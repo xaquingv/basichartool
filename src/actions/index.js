@@ -83,9 +83,8 @@ export const toggleData = (dataTable, show, { type, index }) => {
 }
 
 // chart list
-export const removeChartDuplicate = (selection, removeId) => {
-  let index = selection.indexOf(removeId)
-  let newSelection = index !== -1 ? selection.slice(0, index).concat(selection.slice(index+1)) : selection
+export const removeChartDuplicate = (selection, removeIds) => {
+  let newSelection = selection.filter(id => !removeIds.includes(id))
   return {
     type: "REMOVE_CHART_DUPLICATE",
     selection: newSelection
