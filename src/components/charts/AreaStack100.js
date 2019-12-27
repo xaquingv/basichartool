@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { d3 } from '../../lib/d3-lite'
 import { appendChartData } from '../../actions'
 import { width, height, viewBox } from '../../data/config'
+import drawChart from './area'
 
 const mapStateToProps = state => ({
   data: state.dataChart,
@@ -51,15 +52,14 @@ class Area extends React.Component {
 
     /* data */
     const { data, colors } = this.props
+    const { numberRows, numberRowSums } = data
     const dates = data.dateCol
-    const numberRows = data.numberRows
-    const numberRowSums = numberRows.map(ns => ns.reduce((n1, n2) => n1 + n2))
-
+    const domain = [0, 100] // diff vs. AreaStack
 
     // chart part 1/2
     const dataChartGroup = dates.map((date, i) => ({
         date, 
-        ...numberRows[i].map(n => 100 * n/numberRowSums[i]) // rescale to 100%
+        ...numberRows[i].map(n => 100 * n/numberRowSums[i]) // diff vs. AreaStack, rescale to 100%
     }))
 
     let keys = Object.keys(dataChartGroup[0])
@@ -77,7 +77,7 @@ class Area extends React.Component {
       .range([0, width])
 
     this.scale.y = d3.scaleLinear()
-      .domain([0, 100])
+      .domain(domain)
       .range([height, 0])
 
     // chart part 2/2
@@ -88,34 +88,8 @@ class Area extends React.Component {
 
 
     /* draw */
-    // init area
-    let els = this.refs
-    let svg = d3.select(els.svg)
-      .selectAll("path")
-      .data(dataChart)
-
-    // update
-    svg
-      .attr("d", d => area(d))
-      .attr("fill", (d, i) => colors[i])
-
-    // new
-    svg.enter().insert("path", ":first-child")
-      .attr("d", d => area(d))
-      .attr("fill", (d, i) => colors[i])
-      .attr("fill-opacity", .75)
-      .attr("shape-rendering", "auto")
-
-    // remove
-    svg.exit().remove()
-
-    // 50% line
-    d3.select(els.line)
-      .attr("fill-opacity", 1)
-      .attr("stroke", "white")
-      .attr("stroke-width", 1)
-      .attr("stroke-dasharray", "3, 3")
-  }
+    drawChart(this.refs, dataChart, area, colors)
+   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Area)

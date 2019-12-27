@@ -50,9 +50,8 @@ class ColStack extends React.Component {
 
     /* data */
     const { data, colors, id } = this.props
-    const labelGroup = data.string1Col.length > 0 ? data.string1Col : data.dateCol
-    const numberRows = data.numberRows
-    const numberRowSums = numberRows.map(ns => ns.reduce((n1, n2) => n1 + n2))
+    const { numberRows, numberRowSums, string1Col } = data
+    const labelGroup = string1Col.length > 0 ? string1Col : data.dateCol
     const domain = getDomainByDataRange(numberRowSums)
 
     // scale

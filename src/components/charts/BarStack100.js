@@ -49,8 +49,7 @@ class BarStack100 extends React.Component {
 
     /* data */
     const { data, colors, callByStep } = this.props
-    const numberRows = data.numberRows
-    const numberRowSums = numberRows.map(ns => Math.round(ns.reduce((n1, n2) => n1 + n2) * 100) / 100)
+    const { numberRows, numberRowSums } = data
 
     // scale
     this.scale = {}
@@ -75,16 +74,6 @@ class BarStack100 extends React.Component {
 
     /* draw */
     drawChart(this.refs, dataChart, { display: "inline-block", colors, callByStep })
-
-
-    /* validate special */
-    // TODO: move to another validatetion file
-    // TODO: remove barGStack or barGStack100 ?
-    // NOTE: check if BarStack100 and BarStack is duplicate
-    const isDuplicate = !numberRowSums.find(sum => sum !== 100)
-    if (isDuplicate) {
-      d3.select("#barGStack100").classed("d-n", true)
-    }
   }
 }
 

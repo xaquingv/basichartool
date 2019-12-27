@@ -80,9 +80,6 @@ function chartId(id = "", action) {
       return action.selection.length !== 0 ? action.selection[0] : ""
     case 'SET_CHART_ID':
       return action.chartId
-    // case 'SELECT_CHART':
-    // case 'SET_PARAGRAPH':
-    // return action.chartId || id
     default:
       return id
   }
@@ -143,6 +140,12 @@ function dataChart(dataChart = {}, action) {
       // console.log(dataChart.numberCols)
       // console.log(newDataChart.numberCols)
       return dataChart//newDataChart
+
+    case 'SET_PARAGRAPG':
+      return {
+        ...dataChart,
+        isInit: false
+      }
 
     /* TODO: rename and clean up */
     case 'APPEND_DATA':

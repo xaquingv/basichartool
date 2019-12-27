@@ -22,16 +22,16 @@ const mapDispatchToProps = (dispatch) => ({
 class Legend extends React.Component {
 
   render() {
-    const { id, dataChart, dataSetup, onDropColor, onDropColorLine, isBarBased, highlights } = this.props
-    const { legend, string1Width } = dataChart
+    const { id, dataChart, dataSetup, onDropColor, onDropColorLine/*, isBarBased*/, highlights } = this.props
+    const { legend/*, string1Width*/ } = dataChart
 
     const length = legend.length
     const colorLines = dataSetup.colorLines
     const display = dataSetup.display.legend
 
-    const chartWidth = dataSetup.size.w || 300
-    const labelWidth = string1Width
-    const marginLeft = isBarBased && !id.includes("broken") && (labelWidth <= chartWidth / 3) ? labelWidth : 0
+    // const chartWidth = dataSetup.size.w || 300
+    // const labelWidth = string1Width
+    // const marginLeft = isBarBased && !id.includes("broken") && (labelWidth <= chartWidth / 3) ? labelWidth : 0
     const isLine = id.includes("line")
 
     let drawLegend = null

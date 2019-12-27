@@ -62,7 +62,7 @@ class Cols extends React.Component {
     this.scale.y = d3.scaleLinear()
       .domain(getDomainByDataRange(data.numbers))
       .range([height, 0])
-    console.log("stack:", getDomainByDataRange(data.numbers))
+    // console.log("stack:", getDomainByDataRange(data.numbers))
 
     // b/n label groups
     const scaleBandGroups = d3.scaleBand()

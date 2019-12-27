@@ -12,35 +12,44 @@ const MSG_WARNING = "There is NO RESULT!!"
 const mapStateToProps = state => ({
   chartIdFirst: state.chartId,
   selection: state.selection,
-  isInit: state.dataChart.isInit
+  isInit: state.dataChart.isInit,
+  numberRowSums: state.dataChart.numberRowSums
 })
 
 const mapDispatchToProps = dispatch => ({
   onSelect: chartId => dispatch(selectChart(chartId)),
-  removeSelectionChartDuplicate: (selection, removeId) => dispatch(removeChartDuplicate(selection, removeId))
+  removeSelectionChartDuplicate: (selection, removeIds) => dispatch(removeChartDuplicate(selection, removeIds))
 })
 
 
 class Chartlist extends React.PureComponent {
   componentDidUpdate() {
-    const selection = this.props.selection
+    const { selection, numberRowSums, removeSelectionChartDuplicate } = this.props
+    if (!selection) { return; }
 
     /* validate special: remove one or more duplicated chart(s) */
-    
     /* case: line discrete vs conti. */
-    if (selection && (selection.indexOf("lineDiscrete") > -1 && selection.indexOf("lineContinue") > -1)) {
+    const isLines = selection.indexOf("lineDiscrete") > -1 && selection.indexOf("lineContinue") > -1
+    if (isLines) {
       // check if discrete and conti are the same
       // if the same (duplicate), remove the discrete line from the selection list
       const pathDiscrete = document.querySelector("#lineDiscrete path")
       const pathContinue = document.querySelector("#lineContinue path")
       if (pathDiscrete && pathContinue && pathDiscrete.getAttribute("d") === pathContinue.getAttribute("d")) {
-        this.props.removeSelectionChartDuplicate(selection, "lineDiscrete")
+        removeSelectionChartDuplicate(selection, ["lineDiscrete"])
       }
     }
     
     /* case: stack vs. stack100 in bar/col/area */
-    // TODO ...
-    // compare sum
+    //const stackIds = ["barGroupStack100", "colGroupStack100", "areaStack100"]
+    const stackIds = ["barGroupStack", "colGroupStack", "areaStack"]
+    const isStacks = selection.find(id => stackIds.includes(id))
+    const isAllSums100 = numberRowSums.every(sum => sum === 100)
+    if (isStacks && isAllSums100) {
+      // remove duplicated stack(s)
+      console.log("remove duplicate stacks")
+      removeSelectionChartDuplicate(selection, stackIds)
+    }
   }
 
   render() {
