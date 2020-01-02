@@ -1,9 +1,20 @@
 import React from 'react';
-// import { useSelector } from 'react-redux';
+import { connect } from 'react-redux'
+import { setDrawingOrder } from '../../actions'
 import { colors } from '../../data/config';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+
+// TODO: update to Hooks instead
+// https://react-redux.js.org/next/api/hooks#useselector-examples
+const mapStateToProps = state => ({
+    dataChart: state.dataChart,
+    drawingOrder: state.drawingOrder
+})
+const mapDispatchToProps = dispatch => ({
+    setStackDrawingOrder: order => dispatch(setDrawingOrder(order)),
+})
 
 const useStyles = makeStyles(theme => ({
     single: {
@@ -21,18 +32,23 @@ const useStyles = makeStyles(theme => ({
     // TODO: chips' height
 }));
 
-export default function AutocompleteTextField(props) {
-    // const state = useSelector(state => state)
-    const { options, isSingle, value, setChange, data } = props;
+function AutocompleteTextField(props) {
+    const { options, isSingle, value, setChange, data, drawingOrder } = props;
     const flatProps = {
         options: options.map(option => option.txt)
     };
 
     const classes = useStyles();
-    const [valueSingle, setValue] = React.useState(null);
 
     const handleChangeSingle = (event, newValue) => {
-        setValue(newValue);
+        const { dataChart, setStackDrawingOrder } = props
+        const newOrder = {
+            select: drawingOrder.select, 
+            priority: {
+                index: dataChart.keys.indexOf(newValue), 
+                value: newValue
+        }}
+        setStackDrawingOrder(newOrder);
     }
     
     const handleChangeMultiple = (event, newValue) => {
@@ -61,7 +77,7 @@ export default function AutocompleteTextField(props) {
     return isSingle ? (
         <Autocomplete
             {...flatProps}
-            value={valueSingle || options[0].txt}
+            value={drawingOrder.priority.value || options[0].txt}
             onChange={handleChangeSingle}
             className={classes.single}
             autoHighlight
@@ -93,3 +109,5 @@ export default function AutocompleteTextField(props) {
         />
     )
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(AutocompleteTextField)

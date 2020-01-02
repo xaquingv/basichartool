@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { d3 } from '../../lib/d3-lite'
+import { moveOneValueToTheFirstInArray } from '../../lib/array'
 import { appendChartData } from '../../actions'
 import { getDomainByDataRange } from '../../data/calcScaleDomain'
 import ComponentRow from './BarBase'
@@ -8,22 +9,29 @@ import drawChart from './bar'
 
 const mapStateToProps = state => ({
   data: state.dataChart,
-  colors: state.dataSetup.colors
+  colors: state.dataSetup.colors,
+  drawingOrder: state.drawingOrder
 })
 
 const mapDispatchToProps = dispatch => ({
-  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
+  onSelect: (legend, scale) => dispatch(appendChartData(legend, scale))
 })
 
 
 class BarStack extends React.Component {
   appendChartData() {
-    if (this.props.isSelected) { 
-      const { data, onSelect } = this.props
-      onSelect(data.keys, this.scale) 
+    const { data, drawingOrder, onSelect } = this.props
+    
+    const indexPriority = drawingOrder.priority.index
+    const legendPre = data.legend
+    const legendCur = indexPriority ? moveOneValueToTheFirstInArray(data.keys, indexPriority) : data.keys
+    const isLegendChange = legendCur.some((cur, i) => cur !== legendPre[i])
+    
+    if (isLegendChange) {
+      onSelect(legendCur, this.scale)
     }
-
   }
+  
   componentDidMount() {
     this.renderChart()
     this.appendChartData()
@@ -53,7 +61,7 @@ class BarStack extends React.Component {
   renderChart() {
 
     /* data */
-    const { data, colors, callByStep } = this.props
+    const { data, colors, drawingOrder, callByStep } = this.props
     const { numberRows, numberRowSums } = data
 
     // scale
@@ -63,13 +71,16 @@ class BarStack extends React.Component {
       .range([0, 100])
 
     // chart
-    const dataChart = numberRows.map((numRow, i) => ({
-      value: numRow.map((num, j) => ({
+    const indexPriority = drawingOrder.priority.index
+    const dataChart = numberRows.map((numRow, i) => {
+      const row = indexPriority ? moveOneValueToTheFirstInArray(numRow, indexPriority) : numRow
+      return {
+      value: row.map((num, j) => ({
         title: num,
         width: Math.abs(this.scale.x(num) - this.scale.x(0)),
         shift: (num < 0 && j === 0) ? this.scale.x(numberRowSums[i]) : null
       }))
-    }))
+    }})
 
 
     /* draw */

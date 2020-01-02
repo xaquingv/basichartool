@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { d3 } from '../../lib/d3-lite'
+import { moveOneValueToTheFirstInArray } from '../../lib/array'
 import { appendChartData } from '../../actions'
 import { width, height, viewBox } from '../../data/config'
 import { getDomainByDataRange } from '../../data/calcScaleDomain'
@@ -8,19 +9,26 @@ import drawChart from './col'
 
 const mapStateToProps = state => ({
   data: state.dataChart,
-  colors: state.dataSetup.colors
+  colors: state.dataSetup.colors,
+  drawingOrder: state.drawingOrder
 })
 
 const mapDispatchToProps = dispatch => ({
-  onSelect: (keys, scale) => dispatch(appendChartData(keys, scale))
+  onSelect: (legend, scale) => dispatch(appendChartData(legend, scale))
 })
 
 
-class ColStack extends React.Component {
+class ColStack100 extends React.Component {
   appendChartData() {
-    if (this.props.isSelected) {
-      const { data, onSelect } = this.props
-      onSelect(data.keys, this.scale)
+    const { data, drawingOrder, onSelect } = this.props
+    
+    const indexPriority = drawingOrder.priority.index
+    const legendPre = data.legend
+    const legendCur = indexPriority ? moveOneValueToTheFirstInArray(data.keys, indexPriority) : data.keys
+    const isLegendChange = legendCur.some((cur, i) => cur !== legendPre[i])
+    
+    if (isLegendChange) {
+      onSelect(legendCur, this.scale)
     }
   }
 
@@ -49,7 +57,7 @@ class ColStack extends React.Component {
   renderChart() {
 
     /* data */
-    const { data, colors, id } = this.props
+    const { data, colors, drawingOrder, id } = this.props
     const { numberRows, numberRowSums, string1Col } = data
     const labelGroup = string1Col.length > 0 ? string1Col : data.dateCol
     const domain = getDomainByDataRange(numberRowSums)
@@ -67,10 +75,15 @@ class ColStack extends React.Component {
       .paddingInner(0.1)
 
     // chart
-    const dataChartGroup = labelGroup.map((date, i) => ({
-      group: date,
-      ...numberRows[i].map(col => 100 * col/numberRowSums[i])  // diff vs. ColStack
-    }))
+    const indexPriority = drawingOrder.priority.index
+    const dataChartGroup = labelGroup.map((date, index) => {
+      // swap the priority index with 0 due to stack order option in step 2 question
+      const row = indexPriority ? moveOneValueToTheFirstInArray(numberRows[index], indexPriority) : numberRows[index]
+      return {
+        group: date,
+        ...row.map((n, i) => 100 * n / numberRowSums[index]) // diff vs. ColStack, rescale to 100%
+      }
+    })
 
     const stack = d3.stack().keys(Object.keys(numberRows[0]))
     const dataChart = stack(dataChartGroup).map((group, i) => ({
@@ -89,4 +102,4 @@ class ColStack extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ColStack)
+export default connect(mapStateToProps, mapDispatchToProps)(ColStack100)

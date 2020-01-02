@@ -120,6 +120,7 @@ export default function(dataTable, show) {
     // number
     numbers,
     numberCols, 
+    numberColSums: numberCols.map(ns => ns.reduce((n1, n2) => n1 + n2)),
     numbersButCol1: numbers.slice(-(numbers.length-count.row)),
     numberRows,   
     numberRowSums: numberRows.map(ns => Math.round(ns.reduce((n1, n2) => n1 + n2) * 10000) / 10000),
