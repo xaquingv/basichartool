@@ -24,5 +24,12 @@ export function moveOneValueToTheFirstInArray(arr, idx) {
   return value1.concat(newArr)
 }
 
-// areTwoArraysHaveSameValues
-// ...
+// compare two array, values all the same
+export function isSameValuesInArrays(arr1, arr2) {
+  return arr1.every((val, i) => val === arr2[i])
+}
+
+// compare two array, at least one different
+export function isValuesDifferentInArrays(arr1, arr2) {
+  return arr1.some((val, i) => val !== arr2[i])
+}

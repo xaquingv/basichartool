@@ -150,7 +150,7 @@ function dataChart(dataChart = {}, action) {
     /* TODO: rename and clean up */
     case 'APPEND_DATA':
       const { legend, scales, margin } = action
-      console.log("RANGE:", scales.y ? scales.y.domain() : null, "***")
+      //console.log("RANGE:", scales.y ? scales.y.domain() : null, "***")
       return {
         ...dataChart,
         legend,

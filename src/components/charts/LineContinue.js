@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { d3 } from '../../lib/d3-lite'
+import { isValuesDifferentInArrays } from '../../lib/array'
 import { appendChartData } from '../../actions'
 import { width, height, viewBox } from '../../data/config'
 import drawLine from './line'
@@ -18,8 +19,11 @@ const mapDispatchToProps = dispatch => ({
 
 class Line extends React.Component {
   appendChartData() {
-    if (this.props.isSelected) { 
-      const { data, onSelect } = this.props 
+    const { data, onSelect, callByStep } = this.props 
+    const isRangeChange = data.scales.y ? isValuesDifferentInArrays(this.scale.y.domain(), data.scales.y.domain()) : false
+    const isUpdate = /*callByStep 2*/ this.props.isSelected || (callByStep === 3 && isRangeChange)
+    
+    if (isUpdate) { 
       const keys = data.numberOnly ? data.keys.slice(1, data.keys.length) : data.keys
       onSelect(keys, this.scale) 
     }
@@ -68,7 +72,6 @@ class Line extends React.Component {
     this.scale.y = d3.scaleLinear()
       .domain(d3.extent(numbers))
       .range([height, 0])
-    console.log("lineC:", d3.extent(numbers))
 
     // chart
     const dataChart = numberCols.map((numberCol, iCol) => {

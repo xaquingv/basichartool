@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { d3 } from '../../lib/d3-lite'
-import { moveOneValueToTheFirstInArray } from '../../lib/array'
+import { moveOneValueToTheFirstInArray, isValuesDifferentInArrays } from '../../lib/array'
 import { appendChartData } from '../../actions'
 import { width, height, viewBox } from '../../data/config'
 import { getDomainByDataRange } from '../../data/calcScaleDomain'
@@ -20,14 +20,15 @@ const mapDispatchToProps = dispatch => ({
 
 class ColStack100 extends React.Component {
   appendChartData() {
-    const { data, drawingOrder, onSelect } = this.props
+    const { data, drawingOrder, onSelect, callByStep } = this.props
     
     const indexPriority = drawingOrder.priority.index
     const legendPre = data.legend
     const legendCur = indexPriority ? moveOneValueToTheFirstInArray(data.keys, indexPriority) : data.keys
-    const isLegendChange = legendCur.some((cur, i) => cur !== legendPre[i])
+    const isLegendChange = isValuesDifferentInArrays(legendPre, legendPre)
+    const isUpdate = /*callByStep 2*/ this.props.isSelected || (callByStep === 3 && isLegendChange)
     
-    if (isLegendChange) {
+    if (isUpdate) {
       onSelect(legendCur, this.scale)
     }
   }
