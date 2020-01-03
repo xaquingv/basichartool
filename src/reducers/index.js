@@ -142,6 +142,9 @@ function dataChart(dataChart = {}, action) {
       return dataChart//newDataChart
 
     case 'SET_PARAGRAPG':
+      // console.log("SET_PARAGRAPG =>")
+      // console.log("rangeY:", dataChart.scales.y ? dataChart.scales.y.domain() : null)
+      // console.log("legend:", dataChart.legend)
       return {
         ...dataChart,
         isInit: false
@@ -150,7 +153,9 @@ function dataChart(dataChart = {}, action) {
     /* TODO: rename and clean up */
     case 'APPEND_DATA':
       const { legend, scales, margin } = action
-      //console.log("RANGE:", scales.y ? scales.y.domain() : null, "***")
+      // console.log('APPEND_DATA=>')
+      // console.log("rangeY:", scales.y ? scales.y.domain() : null)
+      // console.log("legend:", legend)
       return {
         ...dataChart,
         legend,

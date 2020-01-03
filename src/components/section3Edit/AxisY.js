@@ -50,9 +50,6 @@ class AxisY extends React.Component {
     }
 
     this.axisData = {range: this.axisY.domain(), ticks: this.ticks}
-    // console.log("isTickFixed:", isTickFixed)
-    // console.log("isRangeFlex:", isRangeFlex)
-    // console.log(this.axisData)
   }
 
   resetAxisData() {
@@ -89,9 +86,6 @@ class AxisY extends React.Component {
     const domain = this.axisY.domain()
     const height = Math.round(((axisRanges.y[1] - axisRanges.y[0]) / (domain[1] - domain[0]))*10000)/100
     const marginTop = Math.round(((domain[1] - axisRanges.y[1]) / (domain[1] - domain[0]))*10000)*ratio/100
-    console.log("margin:", marginTop, "(top)")
-    console.log("domain:", domain)
-    console.log("ranges:", axisRanges)
 
     this.svgHeight = /*extend.*/height ? /*extend.*/height : 100
     this.svgMarginTop = /*extend.*/marginTop ? /*extend.*/marginTop : 0

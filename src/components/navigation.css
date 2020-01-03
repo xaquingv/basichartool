@@ -13,8 +13,6 @@
 
 .ul-flex {
     text-align: center;
-/*    border-bottom: 2px solid #333;
-*/
     /* ul */
     list-style: none;
     padding-left: 0;
@@ -26,7 +24,7 @@
 }
 
 .ul-flex li {
-    padding: 8px 5px 0;
+    padding-top: 8px;
     /* hack for res */
     height: 24px;
     line-height: 22px;
@@ -39,13 +37,10 @@
     margin-right: 8px;
 
 }
-/*.ul-flex li:last-child {
-    margin-left: 10px;
-}*/
 
 .li {
     color: rgba(255,255,255,.5)!important;
-    min-width: 10rem;
+    min-width: 154px;
 }
 .li:hover {
     color: #333;

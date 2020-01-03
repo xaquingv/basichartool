@@ -1,8 +1,11 @@
 #chartlist {
   background-color: #F0F0F0;   
+  position: sticky;
+  top: 64px;
   overflow: scroll;
-  width: 320px;
-  max-height: calc(100vh - 328px); /*230px*/
+  /* width: 345px; */
+  max-height: 640px; 
+  height: 80vh;
 }
 
 .charts {
@@ -14,7 +17,7 @@
 .charts > div {
   text-align: center;
   background-color: #FFF; 
-  width: calc(320px - 22px); /* 10 (padding) * 2 + 2 (border)*/
+  /* width: calc(322px - 22px); */
   border: 5px solid white;
   box-shadow:1px 1px 8px rgba(0,0,0,.1);
   pointer-events: none;
@@ -29,11 +32,6 @@
   overflow: hidden;
   text-align: left; /* for chart */
 }
-
-/* #section2 .canvas,
-#section2 svg {
-  cursor: pointer;
-} */
 
 /* hotfix for card layout */
 #chartlist svg {
