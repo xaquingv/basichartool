@@ -43,7 +43,7 @@ class Section extends React.Component {
     if (stepActive === 2 && !dataSentence) {
       const numberCols = dataChart.numberCols;
       const displaySwitches = {};
-      
+
       // palette colors
       // line > 10, only color the first line as highlight, keep others lightgrey
       this.colors = numberCols.length > 10 ?
@@ -69,14 +69,13 @@ class Section extends React.Component {
         <h1>2. Discover your dataset</h1>
         <p className="instruction">Instruction: {instruction}</p>
 
-        {/* table and charts */}
         <div className={"d-f"}>
-          <ComponentTable />
+          <div style={{ width: "calc(100% - 318px)" }}>
+            <ComponentTable />
+            <ComponentQuestions />
+          </div>
           <ComponentChartlist />
         </div>
-
-        {/* questions */}
-        <ComponentQuestions />
 
       </div>
     );

@@ -9,7 +9,8 @@ import drawLine from './line'
 
 const mapStateToProps = state => ({
   data: state.dataChart,
-  colors: state.dataSetup.colorLines
+  colors: state.dataSetup.colorLines,
+  chartId: state.chartId
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -19,9 +20,9 @@ const mapDispatchToProps = dispatch => ({
 
 class Line extends React.Component {
   appendChartData() {
-    const { data, onSelect, callByStep } = this.props 
+    const { data, onSelect, callByStep, chartId, id } = this.props 
     const isRangeChange = data.scales.y ? isValuesDifferentInArrays(this.scale.y.domain(), data.scales.y.domain()) : false
-    const isUpdate = /*callByStep 2*/ this.props.isSelected || (callByStep === 3 && isRangeChange)
+    const isUpdate = /*callByStep 2*/ this.props.isSelected || (callByStep === 2 && isRangeChange && chartId === id)
     
     if (isUpdate) { 
       const keys = data.numberOnly ? data.keys.slice(1, data.keys.length) : data.keys

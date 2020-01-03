@@ -25,7 +25,7 @@ class Area extends React.Component {
     const indexPriority = drawingOrder.priority.index
     const legendPre = data.legend
     const legendCur = indexPriority ? moveOneValueToTheFirstInArray(data.keys, indexPriority) : data.keys
-    const isLegendChange = isValuesDifferentInArrays(legendPre, legendPre)
+    const isLegendChange = isValuesDifferentInArrays(legendPre, legendCur)
     const isUpdate = /*callByStep 2*/ this.props.isSelected || (callByStep === 3 && isLegendChange)
     
     if (isUpdate) {
