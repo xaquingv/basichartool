@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     },
     multiple: {
         display: "inline-flex",
-        minWidth: 600,
+        // minWidth: 600,
         height: 32,
         marginLeft: theme.spacing(1),
     }

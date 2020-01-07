@@ -7,47 +7,22 @@ export default function(graph) {
     <meta charset="utf-8">
     <style>
       @font-face {
-        font-family: "Guardian Egyptian Web";
-        src: url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Regular.eot");
-        src: url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Regular.eot?#iefix") format("embedded-opentype"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Regular.woff2") format("woff2"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Regular.woff") format("woff"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Regular.ttf") format("truetype"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Regular.svg#GuardianEgyptianWeb-Regular") format("svg");
-        font-weight: 400;
-        font-style: normal;
-        font-stretch: normal;
+        font-family:"source-sans-pro";
+        src:url("https://use.typekit.net/af/be76d4/00000000000000003b9b3129/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff2"),url("https://use.typekit.net/af/be76d4/00000000000000003b9b3129/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff"),url("https://use.typekit.net/af/be76d4/00000000000000003b9b3129/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("opentype");
+        font-display:auto;font-style:normal;font-weight:400;
       }
       @font-face {
-        font-family: "Guardian Egyptian Web";
-        src: url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Semibold.eot");
-        src: url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Semibold.eot?#iefix") format("embedded-opentype"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Semibold.woff2") format("woff2"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Semibold.woff") format("woff"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Semibold.ttf") format("truetype"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianEgyptianWeb/GuardianEgyptianWeb-Semibold.svg#GuardianEgyptianWeb-Semibold") format("svg");
-        font-weight: 600;
-        font-style: normal;
-        font-stretch: normal;
+        font-family:"source-sans-pro";
+        src:url("https://use.typekit.net/af/de34bd/00000000000000003b9b312d/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff2"),url("https://use.typekit.net/af/de34bd/00000000000000003b9b312d/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff"),url("https://use.typekit.net/af/de34bd/00000000000000003b9b312d/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("opentype");
+        font-display:auto;font-style:normal;font-weight:700;
       }
       @font-face {
-        font-family: "Guardian Text Sans Web";
-        src: url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Regular.eot");
-        src: url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Regular.eot?#iefix") format("embedded-opentype"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Regular.woff2") format("woff2"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Regular.woff") format("woff"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Regular.ttf") format("truetype"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Regular.svg#GuardianTextSansWeb-Regular") format("svg");
-        font-weight: normal/*400;*/
-        font-style: normal;
-        font-stretch: normal;
-      }
-      @font-face {
-        font-family: "Guardian Text Sans Web";
-        src: url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Bold.eot");
-        src: url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Bold.eot?#iefix") format("embedded-opentype"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Bold.woff2") format("woff2"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Bold.woff") format("woff"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Bold.ttf") format("truetype"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianTextSansWeb/GuardianTextSansWeb-Bold.svg#GuardianTextSansWeb-Bold") format("svg");
-        font-weight: 700;
-        font-style: normal;
-        font-stretch: normal;
-      }
-      @font-face {
-        font-family: "Guardian Agate Sans 1 Web";
-        src: url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianAgateSans1Web/GuardianAgateSans1Web-Regular.eot");
-        src: url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianAgateSans1Web/GuardianAgateSans1Web-Regular.eot?#iefix") format("embedded-opentype"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianAgateSans1Web/GuardianAgateSans1Web-Regular.woff2") format("woff2"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianAgateSans1Web/GuardianAgateSans1Web-Regular.woff") format("woff"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianAgateSans1Web/GuardianAgateSans1Web-Regular.ttf") format("truetype"), url("https://interactive.guim.co.uk/fonts/guss-webfonts/GuardianAgateSans1Web/GuardianAgateSans1Web-Regular.svg#GuardianAgateSans1Web-Regular") format("svg");
-        font-weight: 400;
-        font-style: normal;
-        font-stretch: normal;
+        font-family:"source-serif-pro";
+        src:url("https://use.typekit.net/af/aa546d/00000000000000003b9b3a87/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff2"),url("https://use.typekit.net/af/aa546d/00000000000000003b9b3a87/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff"),url("https://use.typekit.net/af/aa546d/00000000000000003b9b3a87/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("opentype");
+        font-display:auto;font-style:normal;font-weight:400;
       }
       .f-bar {
-        font-family: 'Guardian Agate Sans 1 Web', monospace;
+        font-family: source-sans-pro, Helvetica, Arial, sans-serif;
         color: #f1f1f1; /* n-5 */
         text-align: right;
         line-height: 16px;
@@ -63,18 +38,25 @@ export default function(graph) {
       .graph {
         color: #767676; /*n-2*/
         font-size: 13px;
-        font-family: "Guardian Text Sans Web", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+        font-family: source-sans-pro, Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
+        margin: auto;
       }
       .chart {
         position: relative;
       }
+      .header {
+        margin-bottom: 30px;
+        text-align: center;
+      }
       .headline {
         color: black;
-        font-size: 18px;
-        font-family: 'Guardian Egyptian Web', Georgia, serif;
-        line-height: 24px;
-        margin-bottom: 12px;
+        font-size: 1.8rem;
+        font-family: source-sans-pro, Helvetica, Arial, sans-serif;
+        text-align: center;
+        line-height: 1.5;
+        max-width: 620px;
+        margin: 30px auto 0;
       }
       .standfirst {
         font-size: 14px;
@@ -82,9 +64,16 @@ export default function(graph) {
         margin-top: 12px;
         margin-bottom: 12px;
       }
+      .paragraph {
+        color: #333;
+        font-size: 1.2rem;
+        line-height: 1.5;
+        font-family: source-serif-pro, serif;
+        width: 620px;
+        margin: 15px auto 30px; 
+      }
       .legend {
         line-height: 18px;
-        margin-bottom: 24px;
       }
       .legend-item {
         white-space: nowrap;
@@ -94,20 +83,19 @@ export default function(graph) {
       }
       .legend-color {
         position: absolute;
-        top: 1px;
+        top: 3px;
         display: inline-block;
-        width: 6px;
-        height: 12px;
-        margin-right: 4px;
-        border-radius: 2px;
+        width: .7rem;
+        height: .7rem;
+        border-radius: .35rem;
       }
       .legend-label {
-        margin-left: 10px;
+        margin-left: 1rem;
       }
       .axis-x,
       .axis-y {
         color: #bdbdbd; /* n-3 */
-        font-family: 'Guardian Agate Sans 1 Web', monospace;
+        font-family: source-sans-pro, Helvetica, Arial, sans-serif;
       }
       .axis-top-text {
         white-space: nowrap;
@@ -123,26 +111,30 @@ export default function(graph) {
       .label-x span {
         word-break: break-word
       }
-      svg {
-        position: absolute;
-        right: 0;
-      }
-      svg path {
-        stroke-linejoin: round;
-      }
       footer {
         font-size: 12px;
         line-height: 16px;
         margin-top: 6px;
         padding-top: 8px;
         border-top: 1px dotted #bdbdbd; /*n-3*/
+        text-align: center;
       }
       footer > div {
         word-break: break-word;
       }
+      svg {
+        position: absolute;
+        right: 0;
+        top: -1px;
+      }
+      svg path {
+        stroke-linejoin: round;
+        /* for all but IE, use scale calc in template */
+        vector-effect: non-scaling-stroke;
+      }
       .test {
-        font-size: 13px;
-        font-family: 'Guardian Agate Sans 1 Web', monospace;
+        font-size: 14px;
+        font-family: source-sans-pro, Helvetica, Arial, sans-serif;
         visibility: hidden;
       }
       /* end of TOTHINK */

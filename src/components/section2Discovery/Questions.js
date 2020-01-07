@@ -117,15 +117,15 @@ class Questions extends React.PureComponent {
                             qs: dataQuestion.text[d.gIndex][d.sIndex]
                         }
                     })
-                // console.log("*** [dummy] arguments for nlg ***")
-                // console.log(tfs)
+                console.log("*** [dummy] arguments for nlg ***")
+                console.log(tfs)
             })
-        // console.log("*** [dummy] paragraphs ***")
+        console.log("*** [dummy] paragraphs ***")
 
         const dummyParagraph = "[Dummy paragraph] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nunc lacus, egestas vel pharetra ac, cursus ut sapien. In ac ligula nec odio consectetur facilisis eu posuere justo. In hac habitasse platea dictumst. Integer ac lectus id mi maximus iaculis. Nulla facilisi. Ut eu dictum turpis. Aenean suscipit venenatis odio."
         paragraphs = paragraphs.length === 0 ? [dummyParagraph] : paragraphs
-        // console.log(paragraphs)
-        // console.log("*** end of [dummy] content ***")
+        console.log(paragraphs)
+        console.log("*** end of [dummy] content ***")
         // console.log("submit:", chartId)
         setDataParagraph(paragraphs)
     }
@@ -312,7 +312,7 @@ class Questions extends React.PureComponent {
                     {/* case 2: 5-10, highlights all */}
                     {/* case 3: 10-, only highlight the first one */}
                     {isLine && numberColGroupsCount > 5 ? <div className="flex-baseline">
-                        <div>And&nbsp;<b>highlight</b>&nbsp;(max. 10 lines)</div>
+                        <div className="ws-n">And&nbsp;<b>highlight</b>&nbsp;(max. 10 lines)</div>
                         <Autocomplete 
                             options={optHeaders} value={this.highlights} 
                             setChange={setLineHighlights} 

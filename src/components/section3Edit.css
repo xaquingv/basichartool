@@ -102,9 +102,9 @@
   font-size: .85rem;
   font-family: source-sans-pro, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  margin: 15px auto; /* center */
   /* editor only */
   transition: all 1s ease-out;
-  margin: 15px auto; /* center */
 }
 .chart {
   position: relative;
@@ -117,11 +117,10 @@
   color: black;
   font-size: 1.8rem !important;
   font-family: source-sans-pro, Helvetica, Arial, sans-serif;
-  /* font-weight: 600; */
+  text-align: center;
   line-height: 1.5;
+  max-width: 620px;
   margin: 30px auto 0;
-  text-align: center; /* center */
-  max-width: 620px
 }
 .standfirst {
   font-size: 14px;
@@ -139,7 +138,6 @@
 }
 .legend {
   line-height: 18px;
-  /* text-align: center; center */
 }
 .legend-item {
   white-space: nowrap;
@@ -154,12 +152,12 @@
   width: .7rem;
   height: .7rem;
   border-radius: .35rem;
-  /* to help selection, no need in templates */
-/*  margin: 0 4px 4px 0;
-*/  cursor: url('../assets/icon/colordrop.svg') 12 12, auto;
+  /* editor only */
+  cursor: url('../assets/icon/colordrop.svg') 12 12, auto;
 }
 .legend-label {
   margin-left: 1rem; /* 6+4 */
+  /* editor only */
   pointer-events: all;
 }
 
@@ -182,7 +180,6 @@
 .label-x span {
   word-break: break-word
 }
-
 footer {
   font-size: 12px;
   line-height: 16px;
@@ -194,7 +191,6 @@ footer {
 footer > div {
   word-break: break-word;
 }
-
 #section3 svg {
   position: absolute;
   right: 0;
@@ -205,6 +201,11 @@ svg path {
   /* for all but IE, use scale calc in template */
   vector-effect: non-scaling-stroke;
 }
+/* .test {
+  font-size: 14px;
+  font-family: source-sans-pro, Helvetica, Arial, sans-serif;
+  visibility: hidden;
+} */
 /* end of TOTHINK*/
 
 

@@ -104,8 +104,14 @@ p {
 }
 .btn-clear:hover { opacity: 1 }
 /* section 2 */
-.btn-create {
+.btn-create,
+.btn-download {
   min-width: 165px;
+}
+
+.btn-download {
+  position: sticky;
+  top: 72px;
 }
 
 .test {

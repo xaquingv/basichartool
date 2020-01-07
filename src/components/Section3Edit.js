@@ -1,24 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './section3Edit.css'
-// import scrollTo from '../lib/scrollTo'
 import { default_metaText, ratio } from '../data/config'
 import { chartComponents } from './charts'
 import { updateWidth, setParagraph } from '../actions'
 
-import ComponentSize from './section3Edit/Size'
-import ComponentResponsive from './section3Edit/Responsive'
-import ComponentPalette from './section3Edit/Palette'
-import ComponentDisplay from './section3Edit/Display'
-import ComponentEditor from './section3Edit/Editor'
-import ComponentLegend from './section3Edit/Legend'
-import ComponentXLabel from './section3Edit/LabelX'
-import ComponentSetAxis from './section3Edit/SetAxis'
-import ComponentXAxis from './section3Edit/AxisX'
-import ComponentYAxis from './section3Edit/AxisY'
-import responsiveXTexts from './section3Edit/axisXTextAndSvgResponsive'
-import responsiveXLabel from './section3Edit/axisXLabelResponsive'
-import responsiveYTexts from './section3Edit/axisYTextResponsive'
+import ComponentSize        from './section3Edit/Size'
+import ComponentResponsive  from './section3Edit/Responsive'
+import ComponentPalette     from './section3Edit/Palette'
+import ComponentDisplay     from './section3Edit/Display'
+import ComponentEditor      from './section3Edit/Editor'
+import ComponentLegend      from './section3Edit/Legend'
+import ComponentXLabel      from './section3Edit/LabelX'
+import ComponentSetAxis     from './section3Edit/SetAxis'
+import ComponentXAxis       from './section3Edit/AxisX'
+import ComponentYAxis       from './section3Edit/AxisY'
+import responsiveXTexts     from './section3Edit/axisXTextAndSvgResponsive'
+import responsiveXLabel     from './section3Edit/axisXLabelResponsive'
+import responsiveYTexts     from './section3Edit/axisYTextResponsive'
+import ButtonDownload       from './section3Edit/ButtonDownload'
 
 const STEP = 3;
 
@@ -88,25 +88,6 @@ class Section extends React.Component {
       responsiveXTexts()
       responsiveXLabel()
     }
-
-    /* navigation */
-    // TODO: replace with 1. dispatch scrollSteps
-    // to let Navigation.js take care of it or ...
-    //const to = document.querySelector("#section3").offsetTop - 60
-    //scrollTo(to, null, 1000)
-
-    /* highlight */
-    //setTimeout({
-      // const {paragraphData} = this.props
-      // const els = document.querySelectorAll(".js-graph");
-      // [...els].forEach((els, idx) => {
-      //   const titles = paragraphData[idx].data.key.replace("and ", "").split(", ");
-      //     elCircle.setAttribute("stroke", "black")
-      //     elCircle.setAttribute("stroke-width", "2")
-      //   })
-      // })
-    //}, 1000)
-    // console.log("hightlight", chartData.ranges)
   }
 
 
@@ -180,9 +161,11 @@ class Section extends React.Component {
         
         {/* 3.1: setup */}
         {setupComponent}
+        <ButtonDownload />
 
         {/* 3.2: article with paragraph(es) and graph(s) */}
         {/* note that any styles inside graph needs to be either included in the template.js or inline */}
+        <div className="js-article">
         <div className="headline"><ComponentEditor text={"Headline"} bold={true} /></div>
         {paragraphData ? paragraphData.map((p, i) =>
             <div key={"p-" + i} id={"p-" + i}>
@@ -190,6 +173,9 @@ class Section extends React.Component {
               {graphComponent}
             </div>
         ) : null}
+        </div>
+        
+        {/* 3.3: download button */}
       </div>
     )
   }

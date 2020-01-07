@@ -147,7 +147,7 @@ function dataChart(dataChart = {}, action) {
       // console.log("legend:", dataChart.legend)
       return {
         ...dataChart,
-        isInit: false
+        // isInit: false
       }
 
     /* TODO: rename and clean up */
