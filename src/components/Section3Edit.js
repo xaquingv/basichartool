@@ -5,20 +5,20 @@ import { default_metaText, ratio } from '../data/config'
 import { chartComponents } from './charts'
 import { updateWidth, setParagraph } from '../actions'
 
-import ComponentSize        from './section3Edit/Size'
-import ComponentResponsive  from './section3Edit/Responsive'
-import ComponentPalette     from './section3Edit/Palette'
-import ComponentDisplay     from './section3Edit/Display'
-import ComponentEditor      from './section3Edit/Editor'
-import ComponentLegend      from './section3Edit/Legend'
-import ComponentXLabel      from './section3Edit/LabelX'
-import ComponentSetAxis     from './section3Edit/SetAxis'
-import ComponentXAxis       from './section3Edit/AxisX'
-import ComponentYAxis       from './section3Edit/AxisY'
-import responsiveXTexts     from './section3Edit/axisXTextAndSvgResponsive'
-import responsiveXLabel     from './section3Edit/axisXLabelResponsive'
-import responsiveYTexts     from './section3Edit/axisYTextResponsive'
-import ButtonDownload       from './section3Edit/ButtonDownload'
+import ComponentSize from './section3Edit/Size'
+import ComponentResponsive from './section3Edit/Responsive'
+import ComponentPalette from './section3Edit/Palette'
+import ComponentDisplay from './section3Edit/Display'
+import ComponentEditor from './section3Edit/Editor'
+import ComponentLegend from './section3Edit/Legend'
+import ComponentXLabel from './section3Edit/LabelX'
+import ComponentSetAxis from './section3Edit/SetAxis'
+import ComponentXAxis from './section3Edit/AxisX'
+import ComponentYAxis from './section3Edit/AxisY'
+import responsiveXTexts from './section3Edit/axisXTextAndSvgResponsive'
+import responsiveXLabel from './section3Edit/axisXLabelResponsive'
+import responsiveYTexts from './section3Edit/axisYTextResponsive'
+import ButtonDownload from './section3Edit/ButtonDownload'
 
 const STEP = 3;
 
@@ -31,14 +31,13 @@ const mapStateToProps = (state) => ({
   display: state.dataSetup.display,
   graphWidth: state.dataSetup.width,
   axis: state.dataEditable.axis,
-
   width: state.dataSetup.width,
   paragraphData: state.dataParagraph
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setWidth: (width) => dispatch(updateWidth(width)),
-  setDataParagraph: (paragraph) => dispatch(setParagraph(paragraph))
+  setWidth: width => dispatch(updateWidth(width)),
+  setDataParagraph: paragraph => dispatch(setParagraph(paragraph))
 })
 
 
@@ -57,27 +56,27 @@ class Section extends React.Component {
 
     setDataParagraph(paragraphs)
   }
-  
-  setHighlight() {
-    const {paragraphData} = this.props
-    const els = document.querySelectorAll(".js-graph");
-    [...els].forEach((els, idx) => {
-      const titles = paragraphData[idx].data.key.replace("and ", "").split(", ");
-      console.log(titles)
-      titles.forEach(title => {
-        let elCircle = els.querySelector('circle[title^="' + title + '"]');
-        console.log(elCircle)
-        elCircle.setAttribute("stroke", "black")
-        elCircle.setAttribute("stroke-width", "2")
-      })
-    })
-  }
+
+  // setHighlight() {
+  //   const { paragraphData } = this.props
+  //   const els = document.querySelectorAll(".js-graph");
+  //   [...els].forEach((els, idx) => {
+  //     const titles = paragraphData[idx].data.key.replace("and ", "").split(", ");
+  //     console.log(titles)
+  //     titles.forEach(title => {
+  //       let elCircle = els.querySelector('circle[title^="' + title + '"]');
+  //       console.log(elCircle)
+  //       elCircle.setAttribute("stroke", "black")
+  //       elCircle.setAttribute("stroke-width", "2")
+  //     })
+  //   })
+  // }
 
   componentDidMount() {
     this.props.setWidth("860px")
   }
   componentDidUpdate() {
-    const { stepActive, chartId, chartData} = this.props
+    const { stepActive, chartId, chartData } = this.props
     if (stepActive < STEP) return
 
     /* chart axes responsive */
@@ -119,11 +118,8 @@ class Section extends React.Component {
     const graphComponent = isRender
       ? (
         <div className="graph js-graph" style={{ width: graphWidth }}>
-          {/* header */}
+          {/* header: standfirst and legend */}
           <header className="header">
-            {/* <div className={"headline" + (display["headline"] ? "" : " d-n")} >
-              <ComponentEditor text={this.getMetaText("headline")} bold={true} />
-            </div> */}
             <div className={"standfirst" + (display["standfirst"] ? "" : " d-n")}>
               <ComponentEditor text={this.getMetaText("standfirst")} />
             </div>
@@ -158,24 +154,27 @@ class Section extends React.Component {
     return (
       <div className={"section" + ((isRender) ? "" : " d-n")} id="section3">
         <h1>3. Edit your Visualization</h1>
-        
+
         {/* 3.1: setup */}
         {setupComponent}
+
+        {/* 3.2: download button, sticky layout */}
         <ButtonDownload />
 
-        {/* 3.2: article with paragraph(es) and graph(s) */}
+        {/* 3.3: article with a headline, paragraph(es) and graph(s) */}
         {/* note that any styles inside graph needs to be either included in the template.js or inline */}
         <div className="js-article">
-        <div className="headline"><ComponentEditor text={"Headline"} bold={true} /></div>
-        {paragraphData ? paragraphData.map((p, i) =>
+          {/* headline */}
+          <div className="headline"><ComponentEditor text={"Headline"} bold={true} /></div>
+          {/* paragraph(es) and graph(s) */}
+          {paragraphData ? paragraphData.map((p, i) =>
             <div key={"p-" + i} id={"p-" + i}>
               <div className="paragraph"><ComponentEditor text={p} /></div>
               {graphComponent}
             </div>
-        ) : null}
+          ) : null}
         </div>
-        
-        {/* 3.3: download button */}
+
       </div>
     )
   }

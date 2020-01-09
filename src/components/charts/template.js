@@ -149,6 +149,8 @@ export default function(graph) {
 
   <body>
     <script>
+      /* TODO: add responsvie to all charts or ... */
+
       var elChart = document.querySelector(".js-chart")
       var elAxisX = document.querySelector(".axis-x")
       var elsText = elAxisX ? elAxisX.querySelectorAll(".axis-x-text") : []

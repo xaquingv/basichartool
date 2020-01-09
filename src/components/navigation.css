@@ -30,17 +30,16 @@
     line-height: 22px;
     overflow-y: hidden;
 }
-.ul-flex li:first-child {
-    /* hack for res */
+/* .ul-flex li:first-child {
+    /* hack for res * /
     padding-left: 0;
     padding-right: 8px;
     margin-right: 8px;
-
-}
+} */
 
 .li {
     color: rgba(255,255,255,.5)!important;
-    min-width: 154px;
+    min-width: 160px;
 }
 .li:hover {
     color: #333;

@@ -67,57 +67,53 @@ const mapDispatchToProps = dispatch => ({
 
 class Questions extends React.PureComponent {
 
-    // handleSubmit() {
-    //     const { dataQuestion, setDataParagraph, dataChart } = this.props
-    //     const newQuestionAnswer = this.answers.set2FollowUp.textField.map((as, idx) => as.map((a, i) => ({ a, q: dataQuestion.sentence[idx][i] })))
-    //     const dataParagraph = newQuestionAnswer.map((qas, i) => {
-    //         const index = dataQuestion.index[i]
-    //         return {
-    //             //index: index,
-    //             data: {
-    //                 ...this.dataStats[index.set][index.ui],
-    //                 units: this.answers.set2[index.set].textField
-    //             },
-    //             explanation: qas.filter(qa => qa.a !== "")
-    //         }
-    //     }).filter(d => d.explanation.length !== 0)
+    // TODO: connect with the paragraph api
+    handleSubmit = () => {
 
-    //     const chartId = document.querySelector(".charts div").id
-    //     //console.log(dataParagraph)
-    //     setDataParagraph(write(dataParagraph), dataChart, chartId)
-    // }
-
-    // TODO: ...
-    handleSubmit() {
         const { chartId, dataAnswer, dataSentence, dataQuestion, lineHighlights, setDataParagraph } = this.props
         const { switches, textfields } = dataAnswer
         const keyHighlights = lineHighlights.map(h => h.key)
         const isGroupFilter = chartId.includes("line") && keyHighlights.length > 0
-        // console.log("submit as group?", isGroupFilter)
-        // console.log("a:", dataAnswer.switches.flat()) ...
+        console.log("chart:", chartId)
+        // console.log("fields:", textfields)
+        // console.log("switch:", switches)
 
         let paragraphs = []
-        // group level
+        // group level answers
         textfields
+            .map((answers, index) => ({ gAnswers: answers, gIndex: index }))
             .filter((data, index) => isGroupFilter ? keyHighlights.includes(index) : true)
-            .forEach((data, index) => {
-                // sentence level
-                const tfs = data
-                    .map((d, i) => ({ as: d, gIndex: index, sIndex: i }))
-                    .filter((d, i) => switches[index][i])
+            .forEach(data => {
+                // sentence level answers
+                const index = data.gIndex
+                const tfs = data.gAnswers
+                    .map((as, idx) => ({ as, idx }))
+                    .filter((as, idx) => switches[index][idx])
                     .map(d => {
-                        const dummyAnswer = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam erat odio, facilisis tincidunt risus at, placerat porta magna. Ut vel pulvinar ipsum, vel cursus erat."
+                        // question level answers
+                        const {as, idx} = d
+                        console.log(index, idx, as)
 
-                        const s = dataSentence.text[d.gIndex][d.sIndex]
-                        const p = "[Paragraph" + d.sIndex + "] " + s + d.as.filter(answers => answers.trim() !== "").map(answers => answers + dummyAnswer)
+                        const dummyAnswer = "In ac ligula nec odio consectetur facilisis eu posuere justo. In hac habitasse platea dictumst. Integer ac lectus id mi maximus iaculis."
+
+                        const s = dataSentence.text[index][idx]
+                        const p = "[G" + index + "S" + idx + "] " + s + " "+ (
+                            as.length > 0 ?
+                            as.filter(aa => aa.trim() !== "").map((aa, ii) => 
+                                "[Q&A: " + aa + "] " + 
+                                dummyAnswer
+                            ) : dummyAnswer + " [Questions is on the way ...] "
+                                
+                        )
                         paragraphs.push(p)
 
                         return {
-                            ...d, s, p,
-                            qs: dataQuestion.text[d.gIndex][d.sIndex]
+                            as, 
+                            qs: dataQuestion.text[index][idx], 
+                            s, p
                         }
                     })
-                console.log("*** [dummy] arguments for nlg ***")
+                console.log("=> [dummy] arguments for nlg:")
                 console.log(tfs)
             })
         console.log("*** [dummy] paragraphs ***")
@@ -126,7 +122,7 @@ class Questions extends React.PureComponent {
         paragraphs = paragraphs.length === 0 ? [dummyParagraph] : paragraphs
         console.log(paragraphs)
         console.log("*** end of [dummy] content ***")
-        // console.log("submit:", chartId)
+        
         setDataParagraph(paragraphs)
     }
 
@@ -347,7 +343,7 @@ class Questions extends React.PureComponent {
                         type="button"
                         className={"button btn-create mb-5 mt-15"}
                         value="Submit"
-                        onClick={() => this.handleSubmit()}
+                        onClick={this.handleSubmit}
                     /> : null}
 
                 </ThemeProvider>

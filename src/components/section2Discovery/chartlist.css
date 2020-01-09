@@ -3,7 +3,7 @@
   position: sticky;
   top: 64px;
   overflow: scroll;
-  /* width: 345px; */
+  width: 332px; /* to make the chart's width close to 320px */
   max-height: 640px; 
   height: 80vh;
 }
