@@ -10,14 +10,14 @@ import kurtosis from 'compute-kurtosis'
 import skew from 'compute-skewness'
 import pcorr from 'compute-pcorr'
 import mmean from 'compute-mmean'
-import tversky from 'compute-tversky-index'
-import shuffle from 'compute-shuffle'
+// import tversky from 'compute-tversky-index'
+// import shuffle from 'compute-shuffle'
 import Complex from './complex'
 import {getDateAnalysis} from './../data/typeDate'
 import {getDateScaleValues} from './../data/typeDate'
 import getSentence from './nlg/sentences'
 import {statsByType} from './statsByType'
-import { jsxClosingElement } from '@babel/types'
+// import { jsxClosingElement } from '@babel/types'
 
 /*
     @param {keys} {header, type, [values], format}
@@ -35,13 +35,13 @@ export function getSumStats(data) {
 
     let sentenceList = [], questionList = [];
     
-    cols.map(col => {
+    cols.forEach(col => {
 
         let type = "country"; //getColumnType(col.header);
         let data = keys.values.map((d,i)=> d = {key:d, value: col.values[i]})
         let sumData = summarize(col.header, data, type, keys.type, ...stats);
         let sentences = [], questions = [];
-        sumData.map(data => {
+        sumData.forEach(data => {
             let sentence = getSentence(data, "sentence");
             let question = getSentence(data, "questions");
             sentences.push(sentence);
@@ -58,7 +58,7 @@ export function getSumStats(data) {
 
 function summarize(col, data, type, keyType, ...stats) {
 
-    stats = keyType != "date" ? stats.filter(a => a!=="roi"):stats;
+    stats = keyType !== "date" ? stats.filter(a => a!=="roi") : stats;
 
     let sumstats = stats.map((d, i) => {
 
@@ -199,22 +199,22 @@ export function intersect(data1, data2, ...stats) {
     // console.log(leastSquares(data1.map(d=> d=d.value),data2.map(d=> d=d.value)))
 }
 
- function leastSquares(x, y) {
-     const lr = {};
-     let n = y.length;
-     let sum_x = x.reduce((a, b) => a + b, 0);
-     let sum_y = y.reduce((a, b) => a + b, 0);
-     let sum_xy = x.map((d, i) => x[i] * y[i]).reduce((a, b) => a + b, 0);
-     let sum_xx = x.map((d) => d * d).reduce((a, b) => a + b, 0);
-     let sum_yy = y.map((d) => d * d).reduce((a, b) => a + b, 0);
+//  function leastSquares(x, y) {
+//      const lr = {};
+//      let n = y.length;
+//      let sum_x = x.reduce((a, b) => a + b, 0);
+//      let sum_y = y.reduce((a, b) => a + b, 0);
+//      let sum_xy = x.map((d, i) => x[i] * y[i]).reduce((a, b) => a + b, 0);
+//      let sum_xx = x.map((d) => d * d).reduce((a, b) => a + b, 0);
+//      let sum_yy = y.map((d) => d * d).reduce((a, b) => a + b, 0);
 
-     lr.slope = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x);
-     lr.intercept = (sum_y - lr.slope * sum_x) / n;
-     lr.r2 = Math.pow((n * sum_xy - sum_x * sum_y) / Math.sqrt((n * sum_xx - sum_x * sum_x) * (n * sum_yy - sum_y * sum_y)), 2);
-     lr.residuals = y.map((d, i) => y[i] - (lr.intercept + lr.slope * x[i]))
-     return lr;
+//      lr.slope = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x);
+//      lr.intercept = (sum_y - lr.slope * sum_x) / n;
+//      lr.r2 = Math.pow((n * sum_xy - sum_x * sum_y) / Math.sqrt((n * sum_xx - sum_x * sum_x) * (n * sum_yy - sum_y * sum_y)), 2);
+//      lr.residuals = y.map((d, i) => y[i] - (lr.intercept + lr.slope * x[i]))
+//      return lr;
 
-}
+// }
 
 function getValue(d, data) {
 
@@ -296,235 +296,235 @@ function percentile(data, p) {
     return sorted;
 }
 
-function pct(data, p) {
-    data = data.sort((a, b) => a - b);
-    const i = Math.ceil(data.length * (p / 100)) - 1;
-    let index = i;
-    if (i < 1) index = 1;
-    else if (i >= data.length - 1) index = data.length - 2;
-    const _data = data.filter((d, i) => (p > 50) ? i > index : i < index);
-    const sorted = (p > 50) ? _data.sort((a, b) => b.value - a.value) : _data.sort((a, b) => a.value - b.value);
-    return sorted[0];
-}
+// function pct(data, p) {
+//     data = data.sort((a, b) => a - b);
+//     const i = Math.ceil(data.length * (p / 100)) - 1;
+//     let index = i;
+//     if (i < 1) index = 1;
+//     else if (i >= data.length - 1) index = data.length - 2;
+//     const _data = data.filter((d, i) => (p > 50) ? i > index : i < index);
+//     const sorted = (p > 50) ? _data.sort((a, b) => b.value - a.value) : _data.sort((a, b) => a.value - b.value);
+//     return sorted[0];
+// }
 
-function roi(data, keyType) {
-    let result = [];
-    if(keyType === "date")
-    {
-        if(data.length > 0){
-            data.sort((a,b) => a.key - b.key);
-        }
-        //const key = data.map((d, i) => i = parseFloat(d.key.replace(",", ".")));
-        let _data = data.map((d, i) => i = d.value);
+// function roi(data, keyType) {
+//     let result = [];
+//     if(keyType === "date")
+//     {
+//         if(data.length > 0){
+//             data.sort((a,b) => a.key - b.key);
+//         }
+//         //const key = data.map((d, i) => i = parseFloat(d.key.replace(",", ".")));
+//         let _data = data.map((d, i) => i = d.value);
     
 
-        //let _cfft = _data.map((a,i) => a);
+//         //let _cfft = _data.map((a,i) => a);
         
-        //_cfft = cfft(_cfft);
-        //let fft = _cfft.map((a,i) => Math.sqrt(a[0]*a[0]+a[1]*a[1]));
-        //let period = findPeriod(fft);
-        let trend, season, residuals;
-        [trend, season, residuals] = getTimeSerieDecomposition(_data, "month");
+//         //_cfft = cfft(_cfft);
+//         //let fft = _cfft.map((a,i) => Math.sqrt(a[0]*a[0]+a[1]*a[1]));
+//         //let period = findPeriod(fft);
+//         let trend, season, residuals;
+//         [trend, season, residuals] = getTimeSerieDecomposition(_data, "month");
         
         
-        //let trend = applyAverageFilterWithPeriod(_data, period);
-        //let _validData = _data.slice(((_data.length-trend.length)/2),data.length-(_data.length-trend.length)/2);
-        //trend.unshift(_data[0]);
-        //trend.push(_data[data.length-1])
+//         //let trend = applyAverageFilterWithPeriod(_data, period);
+//         //let _validData = _data.slice(((_data.length-trend.length)/2),data.length-(_data.length-trend.length)/2);
+//         //trend.unshift(_data[0]);
+//         //trend.push(_data[data.length-1])
 
-        //let detrend = getDetrend(_validData, trend);
-        //let season = getSeasonality(detrend, period);
-        //let residuals = getResiduals(_validData, trend, season);
-
-    
-        //Attemp Smooth
-        let dataSmooth = smoothData(data);
-        let _dataSmooth = dataSmooth.map((d, i) => i = d.value);
-    
-        console.log("============================trend==========================")
-        //trend.map((a,i) => console.log(a+";"));
-        console.log(trend);
-        //console.log("============================detrend==========================")
-        //detrend.map((a,i) => console.log(a+";"));
-        //console.log(detrend);
-        console.log("============================season==========================")
-        //season.map((a,i) => console.log(a+";"));
-        console.log(season);
-        console.log("============================residuals==========================")
-        //residuals.map((a,i) => console.log(a+";"));
-        console.log(residuals);
-        //console.log("============================fft==========================")
-        //fft.map((a,i) => console.log(a+";"));
-        //console.log(fft);
+//         //let detrend = getDetrend(_validData, trend);
+//         //let season = getSeasonality(detrend, period);
+//         //let residuals = getResiduals(_validData, trend, season);
 
     
-        //let lr = leastSquares(key, _data);
-        let tmin = min(_dataSmooth);
-        let tmax = max(_dataSmooth);
-        let tdif = tmax - tmin;
-        let indexResult = 0;
+//         //Attemp Smooth
+//         let dataSmooth = smoothData(data);
+//         let _dataSmooth = dataSmooth.map((d, i) => i = d.value);
+    
+//         console.log("============================trend==========================")
+//         //trend.map((a,i) => console.log(a+";"));
+//         console.log(trend);
+//         //console.log("============================detrend==========================")
+//         //detrend.map((a,i) => console.log(a+";"));
+//         //console.log(detrend);
+//         console.log("============================season==========================")
+//         //season.map((a,i) => console.log(a+";"));
+//         console.log(season);
+//         console.log("============================residuals==========================")
+//         //residuals.map((a,i) => console.log(a+";"));
+//         console.log(residuals);
+//         //console.log("============================fft==========================")
+//         //fft.map((a,i) => console.log(a+";"));
+//         //console.log(fft);
+
+    
+//         //let lr = leastSquares(key, _data);
+//         let tmin = min(_dataSmooth);
+//         let tmax = max(_dataSmooth);
+//         let tdif = tmax - tmin;
+//         let indexResult = 0;
 
 
 
-        let index = 0;
-        while(index < data.length-1)
-        {
-            let tslope = 0;
-            let direction = _dataSmooth[index+1] - _dataSmooth[index];
-            let follow = direction !== 0;
-            let initialIndex = index;
-            while(follow && index < _dataSmooth.length-1)
-            {
-                if((direction > 0 && _dataSmooth[index] <= _dataSmooth[index+1]) || (direction < 0 && _dataSmooth[index] >= _dataSmooth[index+1]))
-                {
-                    tslope = tslope + Math.abs(slope(data[index+1], data[index]));
-                    index++;
-                }
-                else
-                {
-                    //if(direction < 0 && _data[index] >= _data[index+1])
-                    //{
-                    //    tslope = tslope + slope(data[index+1], data[index]);
-                    //    index++;
-                    //}
-                    //else
-                    //{
-                        follow = false;
-                        if(tslope > 0.1*tdif)
-                        {
-                            result[indexResult] = [data[initialIndex], data[index]];
-                            indexResult++;
-                        }
-                        else{
-                            index++;
-                        }
-                    //}
-                }
-            }
-            if(index >= data.length-1)
-            {
-                if(tslope > 0.1*tdif)
-                {
-                    result[indexResult] = [data[initialIndex], data[index]];
-                    indexResult++;
-                }
-            }
-        }
+//         let index = 0;
+//         while(index < data.length-1)
+//         {
+//             let tslope = 0;
+//             let direction = _dataSmooth[index+1] - _dataSmooth[index];
+//             let follow = direction !== 0;
+//             let initialIndex = index;
+//             while(follow && index < _dataSmooth.length-1)
+//             {
+//                 if((direction > 0 && _dataSmooth[index] <= _dataSmooth[index+1]) || (direction < 0 && _dataSmooth[index] >= _dataSmooth[index+1]))
+//                 {
+//                     tslope = tslope + Math.abs(slope(data[index+1], data[index]));
+//                     index++;
+//                 }
+//                 else
+//                 {
+//                     //if(direction < 0 && _data[index] >= _data[index+1])
+//                     //{
+//                     //    tslope = tslope + slope(data[index+1], data[index]);
+//                     //    index++;
+//                     //}
+//                     //else
+//                     //{
+//                         follow = false;
+//                         if(tslope > 0.1*tdif)
+//                         {
+//                             result[indexResult] = [data[initialIndex], data[index]];
+//                             indexResult++;
+//                         }
+//                         else{
+//                             index++;
+//                         }
+//                     //}
+//                 }
+//             }
+//             if(index >= data.length-1)
+//             {
+//                 if(tslope > 0.1*tdif)
+//                 {
+//                     result[indexResult] = [data[initialIndex], data[index]];
+//                     indexResult++;
+//                 }
+//             }
+//         }
 
-        result.sort((a, b) => Math.abs(b[0].value-b[1].value) - Math.abs(a[0].value-a[1].value));
-        /*
-        const roi = data.filter((d, i) => 
+//         result.sort((a, b) => Math.abs(b[0].value-b[1].value) - Math.abs(a[0].value-a[1].value));
+//         /*
+//         const roi = data.filter((d, i) => 
         
-        data = data.sort((a, b) => a.value - b.value);
-        const i = Math.ceil(data.length * (p / 100)) - 1;
-        let index = i;
-        if (i < 1) index = 1;
-        else if (i >= data.length - 1) index = data.length - 2;
-        const _data = data.filter((d, i) => (d > 50) ? i > index : i < index);
-        const sorted = (p > 50) ? _data.sort((a, b) => b.value - a.value) : _data.sort((a, b) => a.value - b.value);
-        return sorted;*/
-    }
-    return result;
-}
+//         data = data.sort((a, b) => a.value - b.value);
+//         const i = Math.ceil(data.length * (p / 100)) - 1;
+//         let index = i;
+//         if (i < 1) index = 1;
+//         else if (i >= data.length - 1) index = data.length - 2;
+//         const _data = data.filter((d, i) => (d > 50) ? i > index : i < index);
+//         const sorted = (p > 50) ? _data.sort((a, b) => b.value - a.value) : _data.sort((a, b) => a.value - b.value);
+//         return sorted;*/
+//     }
+//     return result;
+// }
 
-function roi2(data, keyType) {
-    let result = [];
-    if(keyType === "date")
-    {
-        if(data.length > 0){
-            data.sort((a,b) => a.key - b.key);
-        }
+// function roi2(data, keyType) {
+//     let result = [];
+//     if(keyType === "date")
+//     {
+//         if(data.length > 0){
+//             data.sort((a,b) => a.key - b.key);
+//         }
 
-        autocorrelation = getAutoCorrelation(data);
-        console.log(`autocorrelation: ${autocorrelation}`);
+//         autocorrelation = getAutoCorrelation(data);
+//         console.log(`autocorrelation: ${autocorrelation}`);
     
-        //TODO: candidates depen on month, day, ...
-        let period = getPeriodWithCandidates(autocorrelation, [3,4,12, 25, 365]);
-        let period2 = getPeriod(autocorrelation);
-        //TODO: aproximate period2 to a valid period
+//         //TODO: candidates depen on month, day, ...
+//         let period = getPeriodWithCandidates(autocorrelation, [3,4,12, 25, 365]);
+//         let period2 = getPeriod(autocorrelation);
+//         //TODO: aproximate period2 to a valid period
 
-        let _data = data.map((d, i) => i = d.value);
-        let additive = max(_data) >= 0 && min(_data) < 0;
-        let trend, season, residuals;
-        [trend, season, residuals] = getTimeSerieDecompositionWithPeriod(_data, period2, additive);
-        if(validPeriod(period2, season, residuals))
-        {
-            //Attemp Smooth
-            let dataSmooth = smoothData(data);
-            let _dataSmooth = dataSmooth.map((d, i) => i = d.value);
+//         let _data = data.map((d, i) => i = d.value);
+//         let additive = max(_data) >= 0 && min(_data) < 0;
+//         let trend, season, residuals;
+//         [trend, season, residuals] = getTimeSerieDecompositionWithPeriod(_data, period2, additive);
+//         if(validPeriod(period2, season, residuals))
+//         {
+//             //Attemp Smooth
+//             let dataSmooth = smoothData(data);
+//             let _dataSmooth = dataSmooth.map((d, i) => i = d.value);
 
-            console.log("============================trend==========================")
-            //trend.map((a,i) => console.log(a+";"));
-            console.log(trend);
-            //console.log("============================detrend==========================")
-            //detrend.map((a,i) => console.log(a+";"));
-            //console.log(detrend);
-            console.log("============================season==========================")
-            //season.map((a,i) => console.log(a+";"));
-            console.log(season);
-            console.log("============================residuals==========================")
-            //residuals.map((a,i) => console.log(a+";"));
-            console.log(residuals);
-            //console.log("============================fft==========================")
-            //fft.map((a,i) => console.log(a+";"));
-            //console.log(fft);
+//             console.log("============================trend==========================")
+//             //trend.map((a,i) => console.log(a+";"));
+//             console.log(trend);
+//             //console.log("============================detrend==========================")
+//             //detrend.map((a,i) => console.log(a+";"));
+//             //console.log(detrend);
+//             console.log("============================season==========================")
+//             //season.map((a,i) => console.log(a+";"));
+//             console.log(season);
+//             console.log("============================residuals==========================")
+//             //residuals.map((a,i) => console.log(a+";"));
+//             console.log(residuals);
+//             //console.log("============================fft==========================")
+//             //fft.map((a,i) => console.log(a+";"));
+//             //console.log(fft);
 
-            //let lr = leastSquares(key, _data);
-            let tmin = min(_dataSmooth);
-            let tmax = max(_dataSmooth);
-            let tdif = tmax - tmin;
-            let indexResult = 0;
+//             //let lr = leastSquares(key, _data);
+//             let tmin = min(_dataSmooth);
+//             let tmax = max(_dataSmooth);
+//             let tdif = tmax - tmin;
+//             let indexResult = 0;
 
-            let index = 0;
-            while(index < data.length-1)
-            {
-                let tslope = 0;
-                let direction = _dataSmooth[index+1] - _dataSmooth[index];
-                let follow = direction !== 0;
-                let initialIndex = index;
-                while(follow && index < _dataSmooth.length-1)
-                {
-                    if((direction > 0 && _dataSmooth[index] <= _dataSmooth[index+1]) || (direction < 0 && _dataSmooth[index] >= _dataSmooth[index+1]))
-                    {
-                        tslope = tslope + Math.abs(slope(data[index+1], data[index]));
-                        index++;
-                    }
-                    else
-                    {
-                        //if(direction < 0 && _data[index] >= _data[index+1])
-                        //{
-                        //    tslope = tslope + slope(data[index+1], data[index]);
-                        //    index++;
-                        //}
-                        //else
-                        //{
-                            follow = false;
-                            if(tslope > 0.1*tdif)
-                            {
-                                result[indexResult] = [data[initialIndex], data[index]];
-                                indexResult++;
-                            }
-                            else{
-                                index++;
-                            }
-                        //}
-                    }
-                }
-                if(index >= data.length-1)
-                {
-                    if(tslope > 0.1*tdif)
-                    {
-                        result[indexResult] = [data[initialIndex], data[index]];
-                        indexResult++;
-                    }
-                }
-            }
+//             let index = 0;
+//             while(index < data.length-1)
+//             {
+//                 let tslope = 0;
+//                 let direction = _dataSmooth[index+1] - _dataSmooth[index];
+//                 let follow = direction !== 0;
+//                 let initialIndex = index;
+//                 while(follow && index < _dataSmooth.length-1)
+//                 {
+//                     if((direction > 0 && _dataSmooth[index] <= _dataSmooth[index+1]) || (direction < 0 && _dataSmooth[index] >= _dataSmooth[index+1]))
+//                     {
+//                         tslope = tslope + Math.abs(slope(data[index+1], data[index]));
+//                         index++;
+//                     }
+//                     else
+//                     {
+//                         //if(direction < 0 && _data[index] >= _data[index+1])
+//                         //{
+//                         //    tslope = tslope + slope(data[index+1], data[index]);
+//                         //    index++;
+//                         //}
+//                         //else
+//                         //{
+//                             follow = false;
+//                             if(tslope > 0.1*tdif)
+//                             {
+//                                 result[indexResult] = [data[initialIndex], data[index]];
+//                                 indexResult++;
+//                             }
+//                             else{
+//                                 index++;
+//                             }
+//                         //}
+//                     }
+//                 }
+//                 if(index >= data.length-1)
+//                 {
+//                     if(tslope > 0.1*tdif)
+//                     {
+//                         result[indexResult] = [data[initialIndex], data[index]];
+//                         indexResult++;
+//                     }
+//                 }
+//             }
 
-            result.sort((a, b) => Math.abs(b[0].value-b[1].value) - Math.abs(a[0].value-a[1].value));
-        }
-    }
-    return result;
-}
+//             result.sort((a, b) => Math.abs(b[0].value-b[1].value) - Math.abs(a[0].value-a[1].value));
+//         }
+//     }
+//     return result;
+// }
 
 
 function roi3(data, keyType) {
@@ -562,7 +562,7 @@ function roi3(data, keyType) {
             //console.log(_data);
 
             let energy = energyDifference(period[i], season, residuals);
-            console.log(period[i] + " " + energy );
+            // console.log(period[i] + " " + energy );
             if( energy > 0 && isCandidatePeriod(period[i]))
             {
                 [trend2, season2, residuals2] = getTimeSerieDecompositionWithPeriod(_data, period[i], false);
@@ -573,7 +573,7 @@ function roi3(data, keyType) {
                 let aproximation2 = trend2.map((a,i) => a*season2[i]);
                 let squarediff = aproximation.map((a,i) =>(a-_data[i])*(a-_data[i])).reduce((a,b) => a+b,0)/_data.length;
                 let squarediff2 = aproximation2.map((a,i) =>(a-_data[i])*(a-_data[i])).reduce((a,b) => a+b,0)/_data.length;
-                let additive = squarediff<squarediff2;
+                // let additive = squarediff<squarediff2;
                 if(squarediff<squarediff2)
                 {
                     result.push({period: period[i], energy: energy, trend: trend, season: season, residuals: residuals});
@@ -589,7 +589,7 @@ function roi3(data, keyType) {
 
         result.sort((a,b) => b.energy-a.energy);
 
-        let dataSmooth;
+        // let dataSmooth;
         
         if(result.length === 0)
         {
@@ -638,9 +638,9 @@ function addFeatures(result, data, additive)
     let hasPeriod = result[0].period !== null;
     //let _dataSmooth = hasPeriod ? result[0].trend : applyAverageFilterWithPeriod(data.map((d, i) => i = d.value), 0.1*data.length);
     let _dataSmooth = result[0].trend;
-    console.log(result[0].trend);
-    console.log(result[0].season);
-    console.log(result[0].residuals);
+    // console.log(result[0].trend);
+    // console.log(result[0].season);
+    // console.log(result[0].residuals);
     let index = 0;
     let slopes = [];
     while(index < _dataSmooth.length-1)
@@ -1376,7 +1376,7 @@ function autocorrelation(signal) {
     
     let paddedSignal = [];
     
-    if (n==n2) paddedSignal = signal;
+    if (n===n2) paddedSignal = signal;
 
     else {
         for (let i = 0; i < n2; i++){
@@ -1493,7 +1493,7 @@ function nextpow2(v) {
 }
 
 function previouspow2(v) {
-    if (v == 0) {
+    if (v === 0) {
         return 0;
     }
     // v--; Uncomment this, if you want a strictly less than 'v' result.

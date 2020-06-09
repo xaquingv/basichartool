@@ -18,7 +18,7 @@ export default function (els, dataChart, opt = {}) {
   // HACK: for events
   //const cc = clickcancel()
   const isAnnotate = opt.callByStep === 3 && barHeight === barHeightDefault
-  const isOneColor = isHighlight(opt.callByStep)
+  const isOneColor = dataChart[0].value.length === 1//isHighlight(opt.callByStep)
   if (isOneColor || isAnnotate) { dataChart.map((d, i) => d.value.map(dv => dv.index = i)) }
 
   // bar group
@@ -51,6 +51,7 @@ export default function (els, dataChart, opt = {}) {
   //cc
   .on("dblclick", (d, i) => {
     if (isOneColor) {
+      console.log("single color change")
       dropColorToHighlight(d.index, "backgroundColor")
     }
     if (isAnnotate) {

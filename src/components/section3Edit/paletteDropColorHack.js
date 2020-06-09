@@ -1,7 +1,7 @@
 import {rgbToHex} from '../../lib/utils'
 
 export function isHighlight(step) {
-  if (step!==4) {
+  if (step!==3) {
     return false
   } else {
     const elLegend = document.querySelector(".legend")
@@ -13,10 +13,13 @@ export function isHighlight(step) {
 export function dropColorToHighlight(index, styleCSS) {
   const elColorPicked = document.querySelector(".color-picked")
   const colorPicked = elColorPicked ? elColorPicked.style.fill : null
-
+  console.log(colorPicked, index, styleCSS)
   if (colorPicked) {
+    // TODO: all
     const elColor = document.querySelector(".c" + index)
+    console.log(elColor)
     elColor.style[styleCSS] = colorPicked
+    console.log(elColor)
   }
 }
 

@@ -76,6 +76,7 @@ class Line extends React.Component {
 
     // chart
     const dataChart = numberCols.map((numberCol, iCol) => {
+      console.log(colors, iCol)
       const color = colors[iCol]   
       const line = numberCol.map((number, i) => ({
         x: dataX[i],
@@ -86,6 +87,7 @@ class Line extends React.Component {
       
 
     /* draw */
+    console.log(dataChart)
     drawLine(this.refs, dataChart, this.scale)
     // dataChart.forEach(data => drawPlot(this.refs, data.line, this.scale, "line", colors, callByStep))
   }

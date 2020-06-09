@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {colors} from '../../data/config'
-import {pickColor, dropColorTo, updateCustomColor} from '../../actions'
+import {pickColor, /*dropColorTo,*/ dropColorLineTo, updateCustomColor} from '../../actions'
 //import icon from '../../assets/icon/colordrop.svg'
 
 
@@ -18,7 +18,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   onChangeColor: (color) => dispatch(updateCustomColor(color)),
   onPickColor: (color) => dispatch(pickColor(color)),
-  onPickDropColorTo0: () => dispatch(dropColorTo(0))
+  // onPickDropColorTo0: () => dispatch(dropColorTo(0)),
+  onPickDropColorLineTo0: () => dispatch(dropColorLineTo(0))
 })
 
 
@@ -57,7 +58,7 @@ class Palette extends React.Component {
         <svg className="color-picked" width="24" height="24" style={{fill: colorPicked}}>
           <path d="M20.71 5.63l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-3.12 3.12-1.93-1.91-1.41 1.41 1.42 1.42L3 16.25V21h4.75l8.92-8.92 1.42 1.42 1.41-1.41-1.92-1.92 3.12-3.12c.4-.4.4-1.03.01-1.42zM6.92 19L5 17.08l8.06-8.06 1.92 1.92L6.92 19z"/>
         </svg>
-        <span className="ml-15"> is picked, drop with *DoubleClick)</span>
+        <span style={{marginLeft: "18px"}}> is picked, drop with *DoubleClick)</span>
       </span>
     ) : <span>(*DoubleClick to pick a color)</span>
 
@@ -73,10 +74,10 @@ class Palette extends React.Component {
 
   // palette colors
   onClick(color) {
-    const {onPickColor, onPickDropColorTo0} = this.props
+    const {onPickColor, onPickDropColorLineTo0} = this.props
 
     onPickColor(color)
-    if (this.isOneColorLine) {onPickDropColorTo0()}
+    if (this.isOneColorLine) {onPickDropColorLineTo0()}
   }
 
   // custom color
@@ -93,11 +94,11 @@ class Palette extends React.Component {
   }
 
   onBlurWithValidation(e) {
-    const {onPickColor, onPickDropColorTo0, onChangeColor} = this.props
+    const {onPickColor, onPickDropColorLineTo0, onChangeColor} = this.props
 
     if (regexHex.test(this.colorInput)) {
       onPickColor(this.colorStyle)
-      if (this.isOneColorLine) {onPickDropColorTo0()}
+      if (this.isOneColorLine) {onPickDropColorLineTo0()}
     } else {
       this.colorInput = this.colorStyle
       onChangeColor(this.colorInput)
